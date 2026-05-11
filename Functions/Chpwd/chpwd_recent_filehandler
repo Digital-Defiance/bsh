@@ -3,7 +3,7 @@
 #
 # Handles recent-dirs-file and recent-dirs-max styles.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 integer max

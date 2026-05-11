@@ -144,6 +144,6 @@ predict-limit-list() {
   fi
 }
 
-# Handle zsh autoloading conventions
+# Handle bsh autoloading conventions
 
 [[ -o kshautoload ]] || predict-on "$@"

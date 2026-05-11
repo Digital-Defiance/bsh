@@ -1,7 +1,7 @@
-name=zsh/complist
+name=bsh/complist
 link=either
 load=yes
 
-moddeps="zsh/complete zsh/zle"
+moddeps="bsh/complete bsh/zle"
 
 objects="complist.o"

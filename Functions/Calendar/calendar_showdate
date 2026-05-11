@@ -1,6 +1,6 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
-zmodload -i zsh/datetime
+zmodload -i bsh/datetime
 
 local optm datefmt opt
 integer optr replyset

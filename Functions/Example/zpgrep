@@ -12,7 +12,7 @@ if ((! ARGC)) then
 	set -- -
 fi
 
-zmodload zsh/pcre || return
+zmodload bsh/pcre || return
 pcre_compile -- "$pattern"
 pcre_study
 

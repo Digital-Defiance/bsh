@@ -7,7 +7,7 @@
 #   -t: use truncated process names (e.g., those in /proc/PID/stat)
 #				    (only on Linux and BSDs)
 #
-# this name has been used in _killall and documented in zshcompsys(1)
+# this name has been used in _killall and documented in bshcompsys(1)
 local tagname='processes-names'
 typeset -a expl opts names all truncate
 

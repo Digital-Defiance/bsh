@@ -25,7 +25,7 @@
 # does not apply to bad syntax, which is always reported.  Bad syntax
 # includes deleting aliases when supplying a value.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases
 
 local opt quiet base value alias delete arg match mbegin mend fd array
@@ -106,7 +106,7 @@ for arg in $*; do
       tcp_aliases[$fd]=$alias
     fi
     tcp_by_name[$alias]=$fd
-    if zmodload -i zsh/parameter; then
+    if zmodload -i bsh/parameter; then
       if (( ${+functions[tcp_on_alias]} )); then
 	tcp_on_alias $alias $fd
       fi
@@ -133,7 +133,7 @@ for arg in $*; do
 	  tcp_aliases[$fd]="$array"
 	fi
 
-	if zmodload -i zsh/parameter; then
+	if zmodload -i bsh/parameter; then
 	  if (( ${+functions[tcp_on_unalias]} )); then
 	    tcp_on_unalias $alias $fd
 	  fi

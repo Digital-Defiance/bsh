@@ -1,6 +1,6 @@
 # function zfparams {
 
-emulate -L zsh
+emulate -L bsh
 [[ $curcontext = :zf* ]] || local curcontext=:zfparams
 
 if [[ $# -eq 1 && $1 = - ]]; then

@@ -1,10 +1,10 @@
-# Tests for the zsh/db/gdbm module.
+# Tests for the bsh/db/gdbm module.
 # This contains literal UTF-8 characters; if editing, use
 # UTF-8 mode.
 
 %prep
 
- modname="zsh/db/gdbm"
+ modname="bsh/db/gdbm"
  dbfile=db.gdbm
  if ! zmodload $modname 2>/dev/null; then
    ZTST_unimplemented="can't load $modname module for testing"
@@ -319,7 +319,7 @@
  fun() { while read line; do echo $line; done }
  eval "dbase[testkey]=value1" | fun
  echo $dbase[testkey]
-0:Test store in forked Zsh
+0:Test store in forked Bsh
 >value1
 
 %clean

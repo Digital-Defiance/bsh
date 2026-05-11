@@ -9,7 +9,7 @@
 #                - if they have the same size but remote is newer        )
 #                  which is safe if the remote files are always the right ones.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfuput
 local loc rem locstats remstats doit

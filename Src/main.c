@@ -1,7 +1,7 @@
 /*
  * main.c - the main() function
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,22 +12,22 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "main.pro"
 
 /*
@@ -41,7 +41,7 @@
  * based on the mount attributes of the filesystem.  If a file is on
  * a binary mounted filesystem, you get exactly what's in the file, CRLF's
  * and all.  If it's on a text mounted filesystem, Cygwin will strip out
- * the CRs.  This presents a problem because zsh code doesn't allow for
+ * the CRs.  This presents a problem because bsh code doesn't allow for
  * CRLF's as line terminators.  So, we must force all open files to be
  * in text mode regardless of the underlying filesystem attributes.
  * However, we only want to do this for reading, not writing as we still
@@ -90,5 +90,5 @@ cygwin_premain0 (int argc, char **argv, void *myself)
 int
 main(int argc, char **argv)
 {
-    return (zsh_main(argc, argv));
+    return (bsh_main(argc, argv));
 }

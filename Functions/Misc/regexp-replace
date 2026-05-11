@@ -14,11 +14,11 @@
 argv=("$1" "$2" "$3")
 
 # $4 records whether pcre is enabled as that information would otherwise
-# be lost after emulate -L zsh
+# be lost after emulate -L bsh
 4=0
 [[ -o re_match_pcre ]] && 4=1
 
-emulate -L zsh
+emulate -L bsh
 
 
 local MATCH MBEGIN MEND
@@ -29,7 +29,7 @@ if (( $4 )); then
   # That's needed for ^, \A, \b, and look-behind operators to work
   # properly.
 
-  zmodload zsh/pcre || return 2
+  zmodload bsh/pcre || return 2
   pcre_compile -- "$2" && pcre_study || return 2
 
   # $4 is the current *byte* offset, $5, $6 reserved for later use

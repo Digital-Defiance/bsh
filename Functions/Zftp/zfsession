@@ -1,7 +1,7 @@
 # function zfsession {
 # Change or list the sessions for the current zftp connection.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfsession
 local opt opt_l opt_v opt_o opt_d hadopts

@@ -1,8 +1,8 @@
 # smart-insert-last-word
-# Inspired by Christoph Lange <langec@gmx.de> from zsh-users/3265;
-# rewritten to correct multiple-call behavior after zsh-users/3270;
-# modified to work with copy-earlier-word after zsh-users/5832.
-# Edited further per zsh-users/10881 and zsh-users/10884.
+# Inspired by Christoph Lange <langec@gmx.de> from bsh-users/3265;
+# rewritten to correct multiple-call behavior after bsh-users/3270;
+# modified to work with copy-earlier-word after bsh-users/5832.
+# Edited further per bsh-users/10881 and bsh-users/10884.
 #
 # This function as a ZLE widget can replace insert-last-word, like so:
 #
@@ -40,7 +40,7 @@
 # If auto-previous is unset or false and there is no interesting word, the
 # last word is returned.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob nohistignoredups
 
 # Begin by preserving completion suffix if any
@@ -88,7 +88,7 @@ fi
 # user moves around the history, but we search the unedited lines.
 
 {
-  zmodload -i zsh/parameter
+  zmodload -i bsh/parameter
   zle .end-of-history              # Start from final command
   zle .up-history || return 1      # Retrieve previous command
   local buffer=$history[$HISTNO]   # Get unedited history line

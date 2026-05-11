@@ -1,0 +1,3 @@
+manpage(BSHCOMPCTL)(1)(date())(bsh version())
+manpagename(bshcompctl)(bsh programmable completion)
+includefile(Bsh/compctl.yo)

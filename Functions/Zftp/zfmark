@@ -5,7 +5,7 @@
 #
 # Without bname, list the current bookmarks and their locations.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 [[ $curcontext = :zf* ]] || local curcontext=:zfmark
 

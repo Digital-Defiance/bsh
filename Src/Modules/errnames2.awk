@@ -23,7 +23,7 @@
 END {
     ps = "%s"
     printf "/** errnames.c                                 **/\n"
-    printf "/** architecture-customized errnames.c for zsh **/\n"
+    printf "/** architecture-customized errnames.c for bsh **/\n"
     printf "\n"
     printf "#define ERRCOUNT\t%d\n", max
     printf "\n"

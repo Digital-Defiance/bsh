@@ -8,8 +8,8 @@
 # your file needs to be set in local time, we need to do some
 # hacking around with time.
 
-emulate -L zsh
-zmodload zsh/datetime
+emulate -L bsh
+zmodload bsh/datetime
 
 local time gmtime loctime year mon mday hr min sec y tmpdate
 local -i days_since_epoch

@@ -6,10 +6,10 @@
 #
 # To use this system,
 #
-#   autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-#   add-zsh-hook chpwd chpwd_recent_dirs
+#   autoload -Uz chpwd_recent_dirs cdr add-bsh-hook
+#   add-bsh-hook chpwd chpwd_recent_dirs
 #
-# (add-zsh-hook appeared in zsh version 4.3.4.)  This ensures that all
+# (add-bsh-hook appeared in bsh version 4.3.4.)  This ensures that all
 # directories you change to interactively are registered.  The
 # chpwd_recent_dirs function does some guesswork to see if you are "really"
 # changing directory permanently, see below.
@@ -165,7 +165,7 @@
 #         list are not pruned.  For example, changing from ~pws/yet/another
 #         to ~pws/some/other/dir does not cause ~pws to be pruned.
 #       pattern:<pattern>
-#         Gives a zsh pattern for directories that should not be
+#         Gives a bsh pattern for directories that should not be
 #         added to the recent list (if not already there).  This element
 #         can be repeated to add different patterns.  For example,
 #         'pattern:/tmp(|/*)' stops /tmp or its descendants from being
@@ -183,8 +183,8 @@
 # =================================
 #
 # It is possible to refer to recent directories using the dynamic directory
-# name syntax that appeared in zsh version 4.3.7.  If you create and
-# autoload a function zsh_directory_name containing the following code,
+# name syntax that appeared in bsh version 4.3.7.  If you create and
+# autoload a function bsh_directory_name containing the following code,
 # ~[1] will refer to the most recent directory other than $PWD, and so on.
 # This also includes completion (version 4.3.11 is required for this to
 # work; previous versions needed the file _dynamic_directory_name to
@@ -219,7 +219,7 @@
 #   return 1
 
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 autoload -Uz chpwd_recent_filehandler chpwd_recent_add

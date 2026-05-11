@@ -1,7 +1,7 @@
 /*
  * module.c - deal with dynamic modules
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Zoltán Hidvégi
  * All rights reserved.
@@ -12,21 +12,21 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Zoltán Hidvégi or the Zsh Development Group be liable
+ * In no event shall Zoltán Hidvégi or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Zoltán Hidvégi and the Zsh Development Group have been advised of
+ * even if Zoltán Hidvégi and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Zoltán Hidvégi and the Zsh Development Group specifically disclaim any
+ * Zoltán Hidvégi and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Zoltán Hidvégi and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "module.pro"
 
 /*
@@ -294,10 +294,10 @@ newmoduletable(int size, char const *name)
 }
 
 /************************************************************************
- * zsh/main standard module functions
+ * bsh/main standard module functions
  ************************************************************************/
 
-/* The `zsh/main' module contains all the base code that can't actually be *
+/* The `bsh/main' module contains all the base code that can't actually be *
  * built as a separate module.  It is initialised by main(), so there's    *
  * nothing for the boot function to do.                                    */
 
@@ -428,7 +428,7 @@ add_autobin(const char *module, const char *bnam, int flags)
     Builtin bn;
     int ret;
 
-    bn = zshcalloc(sizeof(*bn));
+    bn = bshcalloc(sizeof(*bn));
     bn->node.nam = ztrdup(bnam);
     bn->optstr = ztrdup(module);
     if (flags & FEAT_AUTOALL)
@@ -1579,7 +1579,7 @@ hpux_dlsym(void *handle, char *name)
 
 /*
  * Attempt to load a module.  This is the lowest level of
- * zsh function for dynamical modules.  Returns the handle
+ * bsh function for dynamical modules.  Returns the handle
  * from the dynamic loader.
  */
 
@@ -1678,7 +1678,7 @@ find_module(const char *name, int flags, const char **namep)
     }
     if (!(flags & FINDMOD_CREATE))
 	return NULL;
-    m = zshcalloc(sizeof(*m));
+    m = bshcalloc(sizeof(*m));
     modulestab->addnode(modulestab, ztrdup(name), m);
     return m;
 }
@@ -2227,7 +2227,7 @@ load_module(char const *name, Feature_enables enablesarr, int silent)
 	    unqueue_signals();
 	    return 1;
 	}
-	m = zshcalloc(sizeof(*m));
+	m = bshcalloc(sizeof(*m));
 	if (handle) {
 	    m->u.handle = handle;
 	    m->node.flags |= MOD_SETUP;
@@ -2526,7 +2526,7 @@ bin_zmodload_alias(char *nam, char **args, Options ops)
      * to making it possible to force an alias onto an existing unloaded
      * module which has dependencies.  This would simply transfer
      * the dependencies down the line to the aliased-to module name.
-     * This is actually useful, since then you can alias zsh/zle=mytestzle
+     * This is actually useful, since then you can alias bsh/zle=mytestzle
      * to load another version of zle.  But then what happens when the
      * alias is removed?  Do you transfer the dependencies back? And
      * suppose other names are aliased to the same file?  It might be
@@ -2595,7 +2595,7 @@ bin_zmodload_alias(char *nam, char **args, Options ops)
 		    }
 		    zsfree(m->u.alias);
 		} else {
-		    m = (Module) zshcalloc(sizeof(*m));
+		    m = (Module) bshcalloc(sizeof(*m));
 		    m->node.flags = MOD_ALIAS;
 		    modulestab->addnode(modulestab, ztrdup(*args), m);
 		}
@@ -2910,7 +2910,7 @@ unload_module(Module m)
 	 * Module has autoloadable features.  Restore them
 	 * so that the module will be reloaded when needed.
 	 */
-	autofeatures("zsh", m->node.nam,
+	autofeatures("bsh", m->node.nam,
 		     hlinklist2array(m->autoloads, 0), 0, FEAT_IGNORE);
     } else if (!m->deps) {
 	delete_module(m);

@@ -31,7 +31,7 @@ for ri in $r; do
   (( ri < rows )) && (( rows=ri ))
 done
 (( rows = rows / 8 ))
-zmodload -i zsh/datetime || rows=0
+zmodload -i bsh/datetime || rows=0
 
 _tags dates || return 0
 _comp_mesg=yes

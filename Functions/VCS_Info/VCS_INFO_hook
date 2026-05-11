@@ -1,6 +1,6 @@
-### vim:ft=zsh:foldmethod=marker
+### vim:ft=bsh:foldmethod=marker
 ## Written by Frank Terbeck <ft@bewatermyfriend.org>
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 local hook static func
 local context hook_name

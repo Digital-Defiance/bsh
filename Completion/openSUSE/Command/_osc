@@ -4,13 +4,13 @@
 #
 # This file is released under the GPLv2.
 #
-# Based on the zsh guide from http://zsh.dotsrc.org/Guide/zshguide06.html
+# Based on the bsh guide from http://bsh.dotsrc.org/Guide/bshguide06.html
 #
 # Toggle verbose completions: zstyle ':completion:*:osc:*' verbose no
 #                             zstyle ':completion:*:osc-subcommand:*' verbose no
 # 
-# Use the variables $ZSH_OSC_BUILD_TARGETS_EXTRA and $ZSH_OSC_PROJECTS_EXTRA to
-# extend the list of possible completions in your ~/.zshrc like that:
+# Use the variables $BSH_OSC_BUILD_TARGETS_EXTRA and $BSH_OSC_PROJECTS_EXTRA to
+# extend the list of possible completions in your ~/.bshrc like that:
 #  export OSC_PROJECTS_EXTRA="Base:System Base:shells"
 #
 # version 0.2
@@ -21,8 +21,8 @@ OSC_PROJECTS="openSUSE:Factory openSUSE:Tumbleweed openSUSE:12.3 openSUSE:12.2 o
 
 # user defined variables $OSC_BUILD_TARGETS_EXTRA and
 # $OSC_PROJECTS_EXTRA can add to the project/build target list
-OSC_BUILD_TARGETS="$OSC_BUILD_TARGETS $ZSH_OSC_BUILD_TARGETS_EXTRA"
-OSC_PROJECTS="$OSC_PROJECTS $ZSH_OSC_PROJECTS_EXTRA"
+OSC_BUILD_TARGETS="$OSC_BUILD_TARGETS $BSH_OSC_BUILD_TARGETS_EXTRA"
+OSC_PROJECTS="$OSC_PROJECTS $BSH_OSC_PROJECTS_EXTRA"
 
 # Main dispatcher
 

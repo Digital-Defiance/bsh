@@ -67,7 +67,7 @@ prompt_sprint2_setup () {
     zstyle ':vcs_info:*' check-for-changes true
     zstyle ':vcs_info:*' formats '(%s)-[%b%u%c]-'
 
-    add-zsh-hook precmd prompt_sprint2_precmd
+    add-bsh-hook precmd prompt_sprint2_precmd
 }
 
 prompt_sprint2_precmd () {
@@ -125,4 +125,4 @@ prompt_sprint2_preview () {
 
 prompt_sprint2_setup "$@"
 
-# vim:ft=zsh
+# vim:ft=bsh

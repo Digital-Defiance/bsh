@@ -43,7 +43,7 @@
 #          than to
 #   -T TO  Overall timeout; tcp_expect will time out if the overall operation
 #          takes longer than this many seconds.
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 if [[ ${(t)SECONDS} != float* ]]; then

@@ -9,7 +9,7 @@
 #    this creates the required directories.  Any files in subdirectories
 #    whose names begin with a `.' will also be included.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfput
 local opt opt_r

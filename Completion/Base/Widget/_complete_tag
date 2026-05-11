@@ -8,7 +8,7 @@
 #
 # Could be rewritten by some sed expert to use sed instead of perl.
 
-emulate -L zsh
+emulate -L bsh
 
 # Tags file to look for
 local c_Tagsfile=${TAGSFILE:-TAGS} c_tagsfile=${tagsfile:-tags} expl

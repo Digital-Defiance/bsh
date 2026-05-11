@@ -1,0 +1,94 @@
+ifzman(\
+IFDEF(BSHALL)(\
+def(ifbshone)(1)()\
+def(ifbshall)(1)(ARG1)\
+manpage(BSHALL)(1)(date())(bsh version())
+manpagename(bshall)(the BrightShell meta-man page)
+)(\
+def(ifbshone)(1)(ARG1)\
+def(ifbshall)(1)()\
+manpage(BSH)(1)(date())(bsh version())
+manpagename(bsh)(the BrightShell)
+)\
+)\
+ifnzman(\
+def(ifbshone)(1)()\
+def(ifbshall)(1)()\
+)\
+ifztexi(
+texinfo(bsh.info)(bsh)
+NOTRANS(@iftex
+@finalout
+@end iftex)
+texititlepage()
+texititle(The BrightShell Manual)
+texisubtitle(Version version())
+texisubtitle(Updated date())
+texiauthor(Original documentation by Paul Falstad)
+texipage()
+This is a texinfo version of the documentation for the BrightShell, originally by 
+Paul Falstad.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions.
+texiendtitlepage()
+NOTRANS(@contents)
+)\
+ifnzman(includefile(Bsh/manual.yo))
+includefile(Bsh/intro.yo)
+ifnzman(includefile(Bsh/roadmap.yo))
+includefile(Bsh/invoke.yo)
+includefile(Bsh/files.yo)
+ifnzman(includefile(Bsh/grammar.yo))
+ifnzman(includefile(Bsh/redirect.yo))
+ifnzman(includefile(Bsh/exec.yo))
+ifnzman(includefile(Bsh/func.yo))
+ifnzman(includefile(Bsh/jobs.yo))
+ifnzman(includefile(Bsh/arith.yo))
+ifnzman(includefile(Bsh/cond.yo))
+ifnzman(includefile(Bsh/prompt.yo))
+ifnzman(includefile(Bsh/expn.yo))
+ifnzman(includefile(Bsh/params.yo))
+ifnzman(includefile(Bsh/options.yo))
+ifnzman(includefile(Bsh/builtins.yo))
+ifnzman(includefile(Bsh/zle.yo))
+ifnzman(includefile(Bsh/compwid.yo))
+ifnzman(includefile(Bsh/compsys.yo))
+ifnzman(includefile(Bsh/compctl.yo))
+ifnzman(includefile(Bsh/modules.yo))
+ifnzman(includefile(Bsh/calsys.yo))
+ifnzman(includefile(Bsh/tcpsys.yo))
+ifnzman(includefile(Bsh/zftpsys.yo))
+ifnzman(includefile(Bsh/contrib.yo))
+ifbshall(\
+def(source)(1)(NOTRANS(.so )man1/ARG1+NOTRANS(.)1)\
+CMT()
+source(bshroadmap)
+source(bshmisc)
+source(bshexpn)
+source(bshparam)
+source(bshoptions)
+source(bshbuiltins)
+source(bshzle)
+source(bshcompwid)
+source(bshcompsys)
+source(bshcompctl)
+source(bshmodules)
+source(bshcalsys)
+source(bshtcpsys)
+source(bshzftpsys)
+source(bshcontrib)
+manpage(BSHALL)(1)(date())(bsh version())
+)\
+ifzman(includefile(Bsh/filelist.yo))
+ifzman(includefile(Bsh/seealso.yo))
+ifnzman(includefile(Bsh/index.yo))

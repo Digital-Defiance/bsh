@@ -11,11 +11,11 @@
 # contains the compadd output.
 
 %prep
-  if ( zmodload zsh/zpty 2>/dev/null ); then
+  if ( zmodload bsh/zpty 2>/dev/null ); then
     . $ZTST_srcdir/comptest
     mkdir match.tmp
     cd match.tmp
-    comptestinit -z $ZTST_testdir/../Src/zsh &&
+    comptestinit -z $ZTST_testdir/../Src/bsh &&
     {
       list1=(IndianRed IndianRed2 IndianRed3 IndianRed4)
       test_code () {
@@ -33,7 +33,7 @@
       }
     }
   else
-    ZTST_unimplemented="the zsh/zpty module is not available"
+    ZTST_unimplemented="the bsh/zpty module is not available"
   fi
 
 
@@ -770,4 +770,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

@@ -148,10 +148,10 @@
 #   4d,10hr
 # In this case absolute dates are ignored.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob # xtrace
 
-zmodload -i zsh/datetime || return 1
+zmodload -i bsh/datetime || return 1
 
 # separator characters before time or between time and date
 # allow , - or : before the time: this allows spaceless but still
@@ -198,7 +198,7 @@ integer date_found time_found
 # Flag that it's OK to have a time only
 integer time_ok
 # Indices of positions of start and end of time and dates found.
-# These are actual character indices as zsh would normally use, i.e.
+# These are actual character indices as bsh would normally use, i.e.
 # line[time_start,time_end] is the string for the time.
 integer time_start time_end date_start date_end
 integer anchor anchor_end debug setvar

@@ -1,7 +1,7 @@
 #autoload
 
 _mailboxes() {
-  #emulate -L zsh
+  #emulate -L bsh
   local expl ret=1
   local maildirectory pinedirectory
   zstyle -s ":completion:${curcontext}:" mail-directory maildirectory || maildirectory="~/Mail"

@@ -1,4 +1,4 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 
 # Tmux has lots of options and sub-commands. It's very tedious to manually
 # check if the actual command's idea of all this matches the completion
@@ -7,7 +7,7 @@
 #
 # You need to call it like this, with a running tmux server:
 #
-# zsh -f check-tmux-state <path-to-tmux-binary> <path-to-_tmux-function>
+# bsh -f check-tmux-state <path-to-tmux-binary> <path-to-_tmux-function>
 #
 # The script will tell you the differences in available and supported
 # sub-commands, command aliases, server options, session options and
@@ -18,11 +18,11 @@
 # of the involved scopes. First fix the scope changes, then the "new/old" lists
 # are accurate.
 
-emulate zsh
+emulate bsh
 setopt extended_glob null_glob no_octal_zeroes
 
 if (( $#argv != 2 )); then
-    printf 'usage: zsh -f check-tmux-state <tmux-binary> <_tmux-function>\n'
+    printf 'usage: bsh -f check-tmux-state <tmux-binary> <_tmux-function>\n'
     exit 1
 fi
 

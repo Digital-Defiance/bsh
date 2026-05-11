@@ -1,6 +1,6 @@
 # multicomp() {
 # Completes all manner of files given prefixes for each path segment.
-# e.g. s/z/s -> src/zsh-2.4/src
+# e.g. s/z/s -> src/bsh-2.4/src
 #
 # Usage: e.g.
 # compctl -D -f + -U -Q -S '' -K multicomp
@@ -12,7 +12,7 @@
 # Liable to screw up escaped metacharacters royally.
 # $fignore is not used: feel free to add your own bit.
 
-emulate -R zsh				# Requires zsh 3.0-pre4 or later
+emulate -R bsh				# Requires bsh 3.0-pre4 or later
 local pref head sofar origtop newtop globdir="(-/)" wild
 setopt localoptions nullglob rcexpandparam globdots
 unsetopt markdirs globsubst shwordsplit nounset

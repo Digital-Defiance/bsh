@@ -110,7 +110,7 @@
  :
  fn
  ' >fnfile
- $ZTST_testdir/../Src/zsh -fx ./fnfile 2>errfile
+ $ZTST_testdir/../Src/bsh -fx ./fnfile 2>errfile
  grep '\./fnfile' errfile 1>&2
 0:Trace output with sourcefile and line number.
 >This is fn.

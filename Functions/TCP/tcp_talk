@@ -8,7 +8,7 @@
 : ${TCP_TALK_ESCAPE:=:}
 
 tcp-accept-line-or-exit() {
-  emulate -L zsh
+  emulate -L bsh
   setopt extendedglob
   local match mbegin mend
 

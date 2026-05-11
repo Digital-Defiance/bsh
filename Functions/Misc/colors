@@ -1,7 +1,7 @@
 # Put standard ANSI color codes in shell parameters for easy use.
 # Note that some terminals do not support all combinations.
 
-emulate -L zsh
+emulate -L bsh
 
 typeset -Ag color colour
 

@@ -1,4 +1,4 @@
-name=zsh/watch
+name=bsh/watch
 link=dynamic
 load=yes
 

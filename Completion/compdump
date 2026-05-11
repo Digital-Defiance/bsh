@@ -13,7 +13,7 @@
 # Print the number of files used for completion. This is used in compinit
 # to see if auto-dump should re-dump the dump-file.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob noshglob
 
 typeset _d_file _d_f _d_fd _d_bks _d_line _d_als _d_files _d_name _d_tmp
@@ -34,7 +34,7 @@ if [[ -n "$_comp_secure" ]]; then
 fi
 
 exec {_d_fd}>$_d_file
-print "#files: $#_d_files\tversion: $ZSH_VERSION" >& $_d_fd
+print "#files: $#_d_files\tversion: $BSH_VERSION" >& $_d_fd
 
 # Dump the arrays _comps, _services and _patcomps.  The quoting
 # hieroglyphics ensure that a single quote inside a variable is itself
@@ -85,7 +85,7 @@ zle -lL |
   while read -rA _d_line; do
     if [[ ${_d_line[3]} = _* && ${_d_line[5]} = _* ]]; then
       if [[ -z "$_d_complist" && ${_d_line[4]} = .menu-select ]]; then
-        print 'zmodload -i zsh/complist'
+        print 'zmodload -i bsh/complist'
 	_d_complist=yes
       fi
       print -r - ${_d_line}

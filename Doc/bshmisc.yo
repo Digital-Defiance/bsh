@@ -1,0 +1,10 @@
+manpage(BSHMISC)(1)(date())(bsh version())
+manpagename(bshmisc)(everything and then some)
+includefile(Bsh/grammar.yo)
+includefile(Bsh/redirect.yo)
+includefile(Bsh/exec.yo)
+includefile(Bsh/func.yo)
+includefile(Bsh/jobs.yo)
+includefile(Bsh/arith.yo)
+includefile(Bsh/cond.yo)
+includefile(Bsh/prompt.yo)

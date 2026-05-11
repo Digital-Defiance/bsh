@@ -8,8 +8,8 @@ endif
 let s:cpo_save = &cpo
 set cpo&vim
 
-" Inherit zsh.vim
-runtime! ftplugin/zsh.vim
+" Inherit bsh.vim
+runtime! ftplugin/bsh.vim
 
 let b:undo_ftplugin .= "| setl fo< comments< commentstring<"
 

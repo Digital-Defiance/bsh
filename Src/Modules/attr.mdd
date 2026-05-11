@@ -1,5 +1,5 @@
-name=zsh/attr
-link='if test "x$zsh_cv_use_xattr" = xyes; then
+name=bsh/attr
+link='if test "x$bsh_cv_use_xattr" = xyes; then
   echo dynamic
 else
   echo no

@@ -9,9 +9,9 @@ case $service in
   setopt) onopts=(no$onopts) ;;
   unsetopt) offopts=(no$offopts) ;;
 esac
-_wanted zsh-options expl 'zsh options (set)' \
+_wanted bsh-options expl 'bsh options (set)' \
     compadd -J 'enabled options' -M 'M:_= M:{A-Z}={a-z}' -k - onopts && ret=0
-_wanted zsh-options expl 'zsh options (unset)' \
+_wanted bsh-options expl 'bsh options (unset)' \
     compadd -J 'disabled options' -M 'M:_= M:{A-Z}={a-z}' -k - offopts && ret=0
 
 return ret

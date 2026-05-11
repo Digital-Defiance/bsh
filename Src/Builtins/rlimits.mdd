@@ -1,4 +1,4 @@
-name=zsh/rlimits
+name=bsh/rlimits
 link=either
 load=yes
 

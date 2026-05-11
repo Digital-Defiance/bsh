@@ -1,7 +1,7 @@
 /*
  * tcp.h - builtin FTP client
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1998-2001 Peter Stephenson
  * All rights reserved.
@@ -12,23 +12,23 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Peter Stephenson or the Zsh Development
+ * In no event shall Peter Stephenson or the Bsh Development
  * Group be liable to any party for direct, indirect, special, incidental,
  * or consequential damages arising out of the use of this software and
- * its documentation, even if Peter Stephenson, and the Zsh
+ * its documentation, even if Peter Stephenson, and the Bsh
  * Development Group have been advised of the possibility of such damage.
  *
- * Peter Stephenson and the Zsh Development Group specifically
+ * Peter Stephenson and the Bsh Development Group specifically
  * disclaim any warranties, including, but not limited to, the implied
  * warranties of merchantability and fitness for a particular purpose.  The
  * software provided hereunder is on an "as is" basis, and Peter Stephenson
- * and the Zsh Development Group have no obligation to provide maintenance,
+ * and the Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
 /*
- * We need to include the zsh headers later to avoid clashes with
+ * We need to include the bsh headers later to avoid clashes with
  * the definitions on some systems, however we need the configuration
  * file to decide whether we can include netinet/in_systm.h, which
  * doesn't exist on cygwin.

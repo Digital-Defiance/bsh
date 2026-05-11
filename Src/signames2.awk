@@ -62,11 +62,11 @@ END {
     ifdstr = sprintf("# ifdef USE_SUSPENDED\n\t%csuspended%s%c,\n%s else\n\t%cstopped%s%c,\n# endif\n", 34, ps, 34, "#", 34, ps, 34)
 
     printf "/** signames.c                                 **/\n"
-    printf "/** architecture-customized signames.c for zsh **/\n"
+    printf "/** architecture-customized signames.c for bsh **/\n"
     printf "\n"
     printf "#define SIGCOUNT\t%d\n", max
     printf "\n"
-    printf "#include %czsh.mdh%c\n", 34, 34
+    printf "#include %cbsh.mdh%c\n", 34, 34
     printf "\n"
     printf "/**/\n"
     printf "mod_export char *sig_msg[SIGCOUNT+2] = {\n"

@@ -28,7 +28,7 @@
 # in this case.  Note the caller is responsible for
 # making reply local.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local vdatefmt="%Y%m%dT%H%M%S"

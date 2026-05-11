@@ -1,7 +1,7 @@
 /*
  * jobs.c - job control
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,29 +12,29 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "jobs.pro"
 
 /*
- * Job control in zsh
+ * Job control in bsh
  * ==================
  *
- * A 'job' represents a pipeline; see the section JOBS in zshmisc(1)) for an
+ * A 'job' represents a pipeline; see the section JOBS in bshmisc(1)) for an
  * introduction.  The 'struct job's are allocated in the array 'jobtab' which
  * has 'jobtabsize' elements.  The job whose processes we are currently
  * preparing to execute is identified by the global variable 'thisjob'.
@@ -822,6 +822,24 @@ printtime(struct timespec *real, child_times_t *ti, char *desc)
 	    case 'S':
 		fprintf(stderr, "%4.2fs", system_time);
 		break;
+	    case 'd':
+		/* BrightDate millidays: %dE=elapsed %dU=user %dS=sys */
+		switch (*++s) {
+		case 'E':
+		    fprintf(stderr, "%.6f md", elapsed_time / 86.4);
+		    break;
+		case 'U':
+		    fprintf(stderr, "%.6f md", user_time / 86.4);
+		    break;
+		case 'S':
+		    fprintf(stderr, "%.6f md", system_time / 86.4);
+		    break;
+		default:
+		    fprintf(stderr, "%%d");
+		    s--;
+		    break;
+		}
+		break;
 	    case 'm':
 		switch (*++s) {
 		case 'E':
@@ -1276,7 +1294,7 @@ printjob(Job jn, int lng, int synch)
 		    else
 			fprintf(fout, (job > 9) ? "        " : "       ");
 		} else
-		    fprintf(fout, "zsh: ");
+		    fprintf(fout, "bsh: ");
 		if (lng & 1)
 		    fprintf(fout, "%ld ", (long) pn->pid);
 		else if (lng & 2) {
@@ -1541,7 +1559,7 @@ addproc(pid_t pid, char *text, int aux, struct timespec *bgtime,
     Process pn, *pnlist;
 
     DPUTS(thisjob == -1, "No valid job in addproc.");
-    pn = (Process) zshcalloc(sizeof *pn);
+    pn = (Process) bshcalloc(sizeof *pn);
     pn->pid = pid;
     if (text)
 	strcpy(pn->text, text);

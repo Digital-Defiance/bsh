@@ -1,4 +1,4 @@
-name=zsh/param/private
+name=bsh/param/private
 link=dynamic
 load=yes
 

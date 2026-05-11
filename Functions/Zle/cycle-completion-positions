@@ -4,7 +4,7 @@
 # characters, repeatedly calling this widget cycles between all these
 # positions.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local p="$_lastcomp[insert_positions]"

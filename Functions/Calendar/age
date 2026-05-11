@@ -26,10 +26,10 @@
 # dates stay in effect until unset, but will be overridden if
 # any argument is passed in the first format.
 
-emulate -L zsh
+emulate -L bsh
 
-zmodload -F zsh/stat b:zstat
-zmodload -i zsh/parameter
+zmodload -F bsh/stat b:zstat
+zmodload -i bsh/parameter
 
 autoload -Uz calendar_scandate
 

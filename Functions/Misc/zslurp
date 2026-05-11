@@ -1,26 +1,26 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 
 # Read stdin verbatim and as efficiently as possible into $REPLY,
 # stopping without any change to $REPLY in the event of any error.
-# Benchmarked by Roman Perepelitsa in zsh-users/29472
+# Benchmarked by Roman Perepelitsa in bsh-users/29472
 
 # Although this function faithfully records the input stream, later
 # references to $REPLY with the multibyte option back in effect will
 # (re-)interpret the content as multibyte characters.  This may not be
 # what is desired.
 
-emulate -L zsh -o no_multibyte
+emulate -L bsh -o no_multibyte
 
 ### Alternate formulation, faster on bigger files
 # # /dev/fd/0 is treated specially by -f so also check /dev/fd
-# if [[ -d /dev/fd && -f /dev/fd/0 ]] && zmodload zsh/mapfile
+# if [[ -d /dev/fd && -f /dev/fd/0 ]] && zmodload bsh/mapfile
 # then
 #     local +h -Ar mapfile
 #     typeset -g REPLY="${mapfile[/dev/fd/0]}" && return
 # fi
 # # else fall through to read from pipe/socket
 
-zmodload zsh/system || return
+zmodload bsh/system || return
 local -a content
 local -i i=0
 while true; do

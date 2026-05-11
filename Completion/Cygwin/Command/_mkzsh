@@ -1,7 +1,7 @@
-#compdef mkzsh mkzsh.exe
+#compdef mkbsh mkbsh.exe
 
 _arguments -s -S \
   '(--allusers -A)'{-A,--allusers}'[creates item for All Users instead of just current user]' \
-  '(--desktop -D)'{-D,--desktop}'[creates a Desktop icon for running /zsh.bat]' \
-  '(--smprograms -P)'{-P,--smprograms}'[creates a Program menu item for running /zsh.bat]' \
+  '(--desktop -D)'{-D,--desktop}'[creates a Desktop icon for running /bsh.bat]' \
+  '(--smprograms -P)'{-P,--smprograms}'[creates a Program menu item for running /bsh.bat]' \
   '(--help -h)'{-h,--help}'[display help information]'

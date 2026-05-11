@@ -6,7 +6,7 @@
 #
 # Accepts the -s and -l arguments for consistency with other functions,
 # but there is no particular gain in using them
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases
 
 local all quiet opt alias noclose
@@ -62,7 +62,7 @@ integer stat curstat
 local -A ztcp_fds
 local line match mbegin mend
 
-if zmodload -e zsh/net/tcp; then
+if zmodload -e bsh/net/tcp; then
     ztcp | while read line; do
         if [[ $line = (#b)*fd\ ([0-9]##) ]]; then
 	    ztcp_fds[$match[1]]=1

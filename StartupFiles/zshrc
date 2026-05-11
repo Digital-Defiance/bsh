@@ -1,16 +1,16 @@
 #
-# Example .zshrc file for zsh 4.0
+# Example .bshrc file for bsh 4.0
 #
-# .zshrc is sourced in interactive shells.  It
+# .bshrc is sourced in interactive shells.  It
 # should contain commands to set up aliases, functions,
 # options, key bindings, etc.
 #
 
-# THIS FILE IS NOT INTENDED TO BE USED AS /etc/zshrc, NOR WITHOUT EDITING
+# THIS FILE IS NOT INTENDED TO BE USED AS /etc/bshrc, NOR WITHOUT EDITING
 return 0	# Remove this line after editing this file as appropriate
 
 # Search path for the cd command
-cdpath=(.. ~ ~/src ~/zsh)
+cdpath=(.. ~ ~/src ~/bsh)
 
 # Use hard limits, except for a smaller stack and no core dumps
 unlimit
@@ -32,6 +32,9 @@ alias h=history
 alias grep=egrep
 alias ll='ls -l'
 alias la='ls -a'
+
+# BrightDate builtins shadow standard system commands
+
 
 # List only directories and symbolic
 # links that point to directories
@@ -75,7 +78,7 @@ RPROMPT=' %~'     # prompt for right side of screen
 # Some environment variables
 export MAIL=/var/spool/mail/$USERNAME
 export LESS=-cex3M
-export HELPDIR=/usr/share/zsh/$ZSH_VERSION/help  # directory for run-help function to find docs
+export HELPDIR=/usr/share/bsh/$BSH_VERSION/help  # directory for run-help function to find docs
 unalias run-help && autoload -Uz run-help
 
 MAILCHECK=300
@@ -95,12 +98,12 @@ setopt   autoresume histignoredups pushdsilent noclobber
 setopt   autopushd pushdminus extendedglob rcquotes mailwarning
 unsetopt bgnice autoparamslash
 
-# Autoload zsh modules when they are referenced
-zmodload -a zsh/zpty zpty
-zmodload -a zsh/zprof zprof
-zmodload -ap zsh/mapfile mapfile
+# Autoload bsh modules when they are referenced
+zmodload -a bsh/zpty zpty
+zmodload -a bsh/zprof zprof
+zmodload -ap bsh/mapfile mapfile
 # stat(1) is now commonly an external command, so just load zstat
-zmodload -aF zsh/stat b:zstat
+zmodload -aF bsh/stat b:zstat
 
 # Some nice key bindings
 #bindkey '^X^Z' universal-argument ' ' magic-space
@@ -117,7 +120,7 @@ bindkey ' ' magic-space    # also do history expansion on space
 bindkey '^I' complete-word # complete on tab, leave expansion to _expand
 
 # Setup new style completion system. To see examples of the old style (compctl
-# based) programmable completion, check Misc/compctl-examples in the zsh
+# based) programmable completion, check Misc/compctl-examples in the bsh
 # distribution.
 autoload -Uz compinit
 compinit

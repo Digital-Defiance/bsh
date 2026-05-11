@@ -1,5 +1,5 @@
-#!/bin/zsh -fi
-# A zsh sticky-note ("post-it") application.  Load this file as a function:
+#!/bin/bsh -fi
+# A bsh sticky-note ("post-it") application.  Load this file as a function:
 #    autoload -Uz sticky-note
 #
 # It may then be bound as a widget:
@@ -48,7 +48,7 @@
 
 # I encourage all you creative people to contribute enhancements ...
 
-emulate -LR zsh
+emulate -LR bsh
 setopt nobanghist extendedhistory histignoredups
 
 local STICKYFILE=${STICKYFILE:-$HOME/.zsticky}
@@ -89,7 +89,7 @@ zstyle -a :sticky-note theme theme
 # If invoked as a widget, behave a bit like run-help
 if zle
 then
-  zmodload -i zsh/parameter
+  zmodload -i bsh/parameter
   if [[ $* == -*l* || $functrace == *zle-line-init:* ]]
   then
     fc -ap $stickyfile $stickysize $stickysize

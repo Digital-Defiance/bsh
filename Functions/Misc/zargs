@@ -3,7 +3,7 @@
 # This function works like GNU xargs, except that instead of reading lines
 # of arguments from the standard input, it takes them from the command
 # line.  This is possible/useful because, especially with recursive glob
-# operators, zsh often can construct a command line for a shell function
+# operators, bsh often can construct a command line for a shell function
 # that is longer than can be accepted by an external command.
 #
 # Like xargs, zargs exits with the following status:
@@ -33,20 +33,20 @@
 #
 # In the interests of expediency, numeric options (max-procs, max-lines,
 # etc.) are range-checked only when their values make a difference to the
-# end result.  Because of the way zsh handles variables in math context,
+# end result.  Because of the way bsh handles variables in math context,
 # it's possible to pass the name of a variable as the value of a numeric
 # option, and the value of that variable becomes the value of the option.
 #
 # "Killed by a signal" is determined by the usual shell rule that $? is
 # the signal number plus 128, so zargs can be fooled by a command that
 # explicitly exits with 129+.  If the command passed to zargs is a shell
-# function which uses "exit" instead of "return", zsh interprets 129+ as
+# function which uses "exit" instead of "return", bsh interprets 129+ as
 # a signal sent to the process group and may terminate zargs with that
 # status.  This is avoided when running zargs -P 2 or greater.
 #
-# ZARGS_VERSION 1.5 is the last to support zsh 4.x.  Also, zsh prior to
+# ZARGS_VERSION 1.5 is the last to support bsh 4.x.  Also, bsh prior to
 # 4.1.x returns 1 rather than 127 for "command not found" so zargs
-# incorrectly returned 123 in that case if used with zsh 4.0.x.
+# incorrectly returned 123 in that case if used with bsh 4.0.x.
 #
 # Because of "wait" limitations, --max-procs spawns max-procs jobs, then
 # waits for all of those, then spawns another batch, etc.
@@ -81,7 +81,7 @@
 local ZARGS_VERSION="1.8"
 
 # First, capture the current setopts as "sticky emulation"
-if zmodload zsh/parameter
+if zmodload bsh/parameter
 then
   emulate $(emulate -l) -c "\
     _zarun() {
@@ -104,7 +104,7 @@ _zatraps() {
   unset _zaTRAPS
 }
 
-emulate -L zsh || return 1
+emulate -L bsh || return 1
 local -a opts eof n s l P i
 
 if zparseopts -a opts -D -- \
@@ -124,7 +124,7 @@ if zparseopts -a opts -D -- \
 then
     if (( $opts[(I)--version] ))
     then
-	print -u2 zargs version $ZARGS_VERSION zsh $ZSH_VERSION
+	print -u2 zargs version $ZARGS_VERSION bsh $BSH_VERSION
     fi
     if (( $opts[(I)--help] ))
     then

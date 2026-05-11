@@ -6,9 +6,9 @@
 # will give ksh-like behaviour for that key,
 # except that it will handle multi-line buffers properly.
 
-emulate -L zsh
+emulate -L bsh
 local left right prebuffer buffer=$BUFFER lbuffer=$LBUFFER
-local TMPSUFFIX=.zsh
+local TMPSUFFIX=.bsh
 # set up parameters depending on which context we are called from,
 # see below comment for more details
 if (( REGION_ACTIVE == 1 )); then

@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 # This programme turns the ChangeLog into changelog.html for display
-# on the website.  That lives at https://zsh.sourceforge.io/Etc/changelog.html.
+# on the website.  That lives at https://bsh.sourceforge.io/Etc/changelog.html.
 
 my $out = "changelog.html";
 
@@ -43,10 +43,10 @@ print <<"EOH";
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
 <html>
 <head>
-<title>ChangeLog for zsh version $version</title>
+<title>ChangeLog for bsh version $version</title>
 </head>
 <body>
-<h1>ChangeLog for zsh version $version</h1>
+<h1>ChangeLog for bsh version $version</h1>
 <pre>
 EOH
 

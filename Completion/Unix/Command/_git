@@ -24,7 +24,7 @@
 #     #description DESCRIPTION
 #
 # as the second line in the file.  See
-# Completion/Debian/Command/_git-buildpackage in the Zsh sources for an
+# Completion/Debian/Command/_git-buildpackage in the Bsh sources for an
 # example.
 #
 # When _git does not know a given sub-command (say `bar'), it falls back to

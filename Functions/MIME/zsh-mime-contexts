@@ -1,4 +1,4 @@
-# Helper for zsh-mime-handler.
+# Helper for bsh-mime-handler.
 #
 # Pass in a zstyle option, a suffix, which might include multiple parts
 # (e.g. pdf.gz), plus remaining zstyle arguments plus arguments to zstyle.

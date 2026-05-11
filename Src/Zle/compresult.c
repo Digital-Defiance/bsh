@@ -1,7 +1,7 @@
 /*
  * compresult.c - the complete module, completion result handling
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Sven Wischnowsky or the Zsh Development Group be liable
+ * In no event shall Sven Wischnowsky or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Sven Wischnowsky and the Zsh Development Group have been advised of
+ * even if Sven Wischnowsky and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Sven Wischnowsky and the Zsh Development Group specifically disclaim any
+ * Sven Wischnowsky and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Sven Wischnowsky and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -908,7 +908,7 @@ do_allmatches(UNUSED(int end))
     for (minfo.group = amatches;
 	 minfo.group && !(minfo.group)->mcount;
 	 minfo.group = (minfo.group)->next) {
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(minfo.group->heap_id)) {
 	    HEAP_ERROR(minfo.group->heap_id);
 	}
@@ -1185,7 +1185,7 @@ do_single(Cmatch m)
 	struct chdata dat;
 
 	dat.matches = amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(dat.matches->heap_id)) {
 	    HEAP_ERROR(dat.matches->heap_id);
 	}
@@ -1219,7 +1219,7 @@ valid_match(Cmatch* m, int next)
 		do {
 		    if (!(minfo.group = (minfo.group)->next)) {
 			minfo.group = amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 			if (memory_validate(minfo.group->heap_id)) {
 			    HEAP_ERROR(minfo.group->heap_id);
 			}
@@ -1307,7 +1307,7 @@ accept_last(void)
 	    Cmatch *m;
 
 	    for (g = amatches, m = NULL; g && (!m || !*m); g = g->next) {
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 		if (memory_validate(g->heap_id)) {
 		    HEAP_ERROR(g->heap_id);
 		}
@@ -1403,7 +1403,7 @@ do_ambig_menu(void)
 	for (minfo.group = amatches;
 	     minfo.group && (minfo.group)->num != insgnum + 1;
 	     minfo.group = (minfo.group)->next) {
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(minfo.group->heap_id)) {
 		HEAP_ERROR(minfo.group->heap_id);
 	    }
@@ -1422,7 +1422,7 @@ do_ambig_menu(void)
 	     minfo.group && (minfo.group)->mcount <= insmnum;
 	     minfo.group = (minfo.group)->next) {
 	    insmnum -= (minfo.group)->mcount;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(minfo.group->heap_id)) {
 		HEAP_ERROR(minfo.group->heap_id);
 	    }
@@ -1516,7 +1516,7 @@ calclist(int showall)
 	int nl = 0, l, glong = 1, gshort = zterm_columns, ndisp = 0, totl = 0;
         int hasf = 0;
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(g->heap_id)) {
 	    HEAP_ERROR(g->heap_id);
 	}
@@ -1662,7 +1662,7 @@ calclist(int showall)
 	for (g = amatches; g; g = g->next) {
 	    glines = 0;
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(g->heap_id)) {
 		HEAP_ERROR(g->heap_id);
 	    }
@@ -1899,7 +1899,7 @@ calclist(int showall)
     else
 	for (g = amatches; g; g = g->next)
 	{
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(g->heap_id)) {
 		HEAP_ERROR(g->heap_id);
 	    }
@@ -1940,9 +1940,9 @@ asklist(void)
 
 	zsetterm();
 	l = (listdat.nlist > 0 ?
-	     fprintf(shout, "zsh: do you wish to see all %d possibilities (%d lines)? ",
+	     fprintf(shout, "bsh: do you wish to see all %d possibilities (%d lines)? ",
 		     listdat.nlist, listdat.nlines) :
-	     fprintf(shout, "zsh: do you wish to see all %d lines? ",
+	     fprintf(shout, "bsh: do you wish to see all %d lines? ",
 		     listdat.nlines));
 	qup = ((l + zterm_columns - 1) / zterm_columns) - 1;
 	fflush(shout);
@@ -1991,7 +1991,7 @@ printlist(int over, CLPrintFunc printm, int showall)
     for (g = amatches; g; g = g->next) {
 	char **pp = g->ylist;
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(g->heap_id)) {
 	    HEAP_ERROR(g->heap_id);
 	}
@@ -2194,7 +2194,7 @@ bld_all_str(Cmatch all)
     buf[0] = '\0';
 
     for (g = amatches; g && !g->mcount; g = g->next) {
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(g->heap_id)) {
 	    HEAP_ERROR(g->heap_id);
 	}
@@ -2315,7 +2315,7 @@ list_matches(UNUSED(Hookdef dummy), UNUSED(void *dummy2))
 #endif
 
     dat.matches = amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     if (memory_validate(dat.matches->heap_id)) {
 	HEAP_ERROR(dat.matches->heap_id);
     }

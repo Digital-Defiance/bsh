@@ -1,7 +1,7 @@
 /*
  * mem.c - memory management
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,27 +12,27 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "mem.pro"
 
 /*
-	There are two ways to allocate memory in zsh.  The first way is
-	to call zalloc/zshcalloc, which call malloc/calloc directly.  It
+	There are two ways to allocate memory in bsh.  The first way is
+	to call zalloc/bshcalloc, which call malloc/calloc directly.  It
 	is legal to call realloc() or free() on memory allocated this way.
 	The second way is to call zhalloc/hcalloc, which allocates memory
 	from one of the memory pools on the heap stack.  Such memory pools 
@@ -56,8 +56,8 @@
 	attempting to free this memory may result in a core dump.
 
 	If possible, the heaps are allocated using mmap() so that the
-	(*real*) heap isn't filled up with empty zsh heaps. If mmap()
-	is not available and zsh's own allocator is used, we use a simple trick
+	(*real*) heap isn't filled up with empty bsh heaps. If mmap()
+	is not available and bsh's own allocator is used, we use a simple trick
 	to avoid that: we allocate a large block of memory before allocating
 	a heap pool, this memory is freed again immediately after the pool
 	is allocated. If there are only small blocks on the free list this
@@ -97,13 +97,13 @@
 #endif
 #endif
 
-#ifdef ZSH_MEM_WARNING
+#ifdef BSH_MEM_WARNING
 # ifndef DEBUG
 #  define DEBUG 1
 # endif
 #endif
 
-#if defined(ZSH_MEM) && defined(ZSH_MEM_DEBUG)
+#if defined(BSH_MEM) && defined(BSH_MEM_DEBUG)
 
 static int h_m[1025], h_push, h_pop, h_free;
 
@@ -124,7 +124,7 @@ union mem_align {
 /* Memory available for user data in heap h */
 #define ARENA_SIZEOF(h) ((h)->size - sizeof(struct heap))
 
-/* list of zsh heaps */
+/* list of bsh heaps */
 
 static Heap heaps;
 
@@ -134,7 +134,7 @@ static Heap heaps;
 static Heap fheap;
 
 /**/
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 /*
  * The heap ID we'll allocate next.
  *
@@ -201,7 +201,7 @@ new_heaps(void)
     fheap = heaps = NULL;
     unqueue_signals();
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     if (heap_debug_verbosity & HDV_NEW) {
 	fprintf(stderr, "HEAP DEBUG: heap " HEAPID_FMT
 		" saved, new heaps created.\n", h->heap_id);
@@ -225,7 +225,7 @@ old_heaps(Heap old)
     for (h = heaps; h; h = n) {
 	n = h->next;
 	DPUTS(h->sp, "BUG: old_heaps() with pushed heaps");
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (heap_debug_verbosity & HDV_FREE) {
 	    fprintf(stderr, "HEAP DEBUG: heap " HEAPID_FMT
 		    "freed in old_heaps().\n", h->heap_id);
@@ -236,12 +236,12 @@ old_heaps(Heap old)
 #else
 	zfree(h, HEAPSIZE);
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	VALGRIND_DESTROY_MEMPOOL((char *)h);
 #endif
     }
     heaps = old;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     if (heap_debug_verbosity & HDV_OLD) {
 	fprintf(stderr, "HEAP DEBUG: heap " HEAPID_FMT
 		"restored.\n", heaps->heap_id);
@@ -271,7 +271,7 @@ switch_heaps(Heap new)
     queue_signals();
     h = heaps;
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     if (heap_debug_verbosity & HDV_SWITCH) {
 	fprintf(stderr, "HEAP DEBUG: heap temporarily switched from "
 		HEAPID_FMT " to " HEAPID_FMT ".\n", h->heap_id, new->heap_id);
@@ -284,7 +284,7 @@ switch_heaps(Heap new)
     return h;
 }
 
-/* save states of zsh heaps */
+/* save states of bsh heaps */
 
 /**/
 mod_export void
@@ -295,7 +295,7 @@ pushheap(void)
 
     queue_signals();
 
-#if defined(ZSH_MEM) && defined(ZSH_MEM_DEBUG)
+#if defined(BSH_MEM) && defined(BSH_MEM_DEBUG)
     h_push++;
 #endif
 
@@ -305,7 +305,7 @@ pushheap(void)
 	hs->next = h->sp;
 	h->sp = hs;
 	hs->used = h->used;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	hs->heap_id = h->heap_id;
 	h->heap_id = new_heap_id();
 	if (heap_debug_verbosity & HDV_PUSH) {
@@ -328,7 +328,7 @@ freeheap(void)
 
     queue_signals();
 
-#if defined(ZSH_MEM) && defined(ZSH_MEM_DEBUG)
+#if defined(BSH_MEM) && defined(BSH_MEM_DEBUG)
     h_free++;
 #endif
 
@@ -363,8 +363,8 @@ freeheap(void)
     for (h = (fheap ? fheap : heaps); h; h = hn) {
 	hn = h->next;
 	if (h->sp) {
-#ifdef ZSH_MEM_DEBUG
-#ifdef ZSH_VALGRIND
+#ifdef BSH_MEM_DEBUG
+#ifdef BSH_VALGRIND
 	    VALGRIND_MAKE_MEM_UNDEFINED((char *)arena(h) + h->sp->used,
 					h->used - h->sp->used);
 #endif
@@ -378,7 +378,7 @@ freeheap(void)
 		       ARENA_SIZEOF(fheap) - fheap->used)
 		fheap = h;
 	    hl = h;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    /*
 	     * As the free makes the heap invalid, give it a new
 	     * identifier.  We're not popping it, so don't use
@@ -394,7 +394,7 @@ freeheap(void)
 		h->heap_id = new_id;
 	    }
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_MEMPOOL_TRIM((char *)h, (char *)arena(h), h->used);
 #endif
 	} else {
@@ -423,7 +423,7 @@ freeheap(void)
 #else
 	    zfree(h, HEAPSIZE);
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_DESTROY_MEMPOOL((char *)h);
 #endif
 	}
@@ -447,7 +447,7 @@ popheap(void)
 
     queue_signals();
 
-#if defined(ZSH_MEM) && defined(ZSH_MEM_DEBUG)
+#if defined(BSH_MEM) && defined(BSH_MEM_DEBUG)
     h_pop++;
 #endif
 
@@ -456,15 +456,15 @@ popheap(void)
 	hn = h->next;
 	if ((hs = h->sp)) {
 	    h->sp = hs->next;
-#ifdef ZSH_MEM_DEBUG
-#ifdef ZSH_VALGRIND
+#ifdef BSH_MEM_DEBUG
+#ifdef BSH_VALGRIND
 	    VALGRIND_MAKE_MEM_UNDEFINED((char *)arena(h) + hs->used,
 					h->used - hs->used);
 #endif
 	    memset(arena(h) + hs->used, 0xff, h->used - hs->used);
 #endif
 	    h->used = hs->used;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (heap_debug_verbosity & HDV_POP) {
 		fprintf(stderr, "HEAP DEBUG: heap " HEAPID_FMT
 			" popped, old heap was " HEAPID_FMT ".\n",
@@ -472,7 +472,7 @@ popheap(void)
 	    }
 	    h->heap_id = hs->heap_id;
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_MEMPOOL_TRIM((char *)h, (char *)arena(h), h->used);
 #endif
 	    if (!fheap) {
@@ -504,7 +504,7 @@ popheap(void)
 #else
 	    zfree(h, HEAPSIZE);
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_DESTROY_MEMPOOL((char *)h);
 #endif
 	}
@@ -578,7 +578,7 @@ zhalloc(size_t size)
 {
     Heap h, hp = NULL;
     size_t n;
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
     size_t req_size = size;
 
     if (size == 0)
@@ -589,7 +589,7 @@ zhalloc(size_t size)
 
     queue_signals();
 
-#if defined(ZSH_MEM) && defined(ZSH_MEM_DEBUG)
+#if defined(BSH_MEM) && defined(BSH_MEM_DEBUG)
     h_m[size < (1024 * H_ISIZE) ? (size / H_ISIZE) : 1024]++;
 #endif
 
@@ -610,14 +610,14 @@ zhalloc(size_t size)
 	    h->used = n;
 	    ret = arena(h) + n - size;
 	    unqueue_signals();
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    last_heap_id = h->heap_id;
 	    if (heap_debug_verbosity & HDV_ALLOC) {
 		fprintf(stderr, "HEAP DEBUG: allocated memory from heap "
 			HEAPID_FMT ".\n", h->heap_id);
 	    }
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_MEMPOOL_ALLOC((char *)h, (char *)ret, req_size);
 #endif
 	    return ret;
@@ -625,7 +625,7 @@ zhalloc(size_t size)
     }
     {
         /* not found, allocate new heap */
-#if defined(ZSH_MEM) && !defined(USE_MMAP)
+#if defined(BSH_MEM) && !defined(USE_MMAP)
 	static int called = 0;
 	void *foo = called ? (void *)malloc(HEAPFREE) : NULL;
             /* tricky, see above */
@@ -639,7 +639,7 @@ zhalloc(size_t size)
 	h = (Heap) zalloc(n);
 #endif
 
-#if defined(ZSH_MEM) && !defined(USE_MMAP)
+#if defined(BSH_MEM) && !defined(USE_MMAP)
 	if (called)
 	    zfree(foo, HEAPFREE);
 	called = 1;
@@ -649,14 +649,14 @@ zhalloc(size_t size)
 	h->used = size;
 	h->next = NULL;
 	h->sp = NULL;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	h->heap_id = new_heap_id();
 	if (heap_debug_verbosity & HDV_CREATE) {
 	    fprintf(stderr, "HEAP DEBUG: create new heap " HEAPID_FMT ".\n",
 		    h->heap_id);
 	}
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	VALGRIND_CREATE_MEMPOOL((char *)h, 0, 0);
 	VALGRIND_MAKE_MEM_NOACCESS((char *)arena(h),
 				   n - ((char *)arena(h)-(char *)h));
@@ -671,7 +671,7 @@ zhalloc(size_t size)
 	fheap = h;
 
 	unqueue_signals();
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	last_heap_id = h->heap_id;
 	if (heap_debug_verbosity & HDV_ALLOC) {
 	    fprintf(stderr, "HEAP DEBUG: allocated memory from heap "
@@ -688,7 +688,7 @@ hrealloc(char *p, size_t old, size_t new)
 {
     Heap h, ph;
 
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
     size_t new_req = new;
 #endif
 
@@ -698,7 +698,7 @@ hrealloc(char *p, size_t old, size_t new)
     if (old == new)
 	return p;
     if (!old && !p)
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	return zhalloc(new_req);
 #else
 	return zhalloc(new);
@@ -725,16 +725,16 @@ hrealloc(char *p, size_t old, size_t new)
      */
     if (p + old < arena(h) + h->used) {
 	if (new > old) {
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    char *ptr = (char *) zhalloc(new_req);
 #else
 	    char *ptr = (char *) zhalloc(new);
 #endif
 	    memcpy(ptr, p, old);
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 	    memset(p, 0xff, old);
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_MEMPOOL_FREE((char *)h, (char *)p);
 	    /*
 	     * zhalloc() marked h,ptr,new as an allocation so we don't
@@ -744,7 +744,7 @@ hrealloc(char *p, size_t old, size_t new)
 	    unqueue_signals();
 	    return ptr;
 	} else {
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_MEMPOOL_FREE((char *)h, (char *)p);
 	    if (p) {
 		VALGRIND_MEMPOOL_ALLOC((char *)h, (char *)p,
@@ -768,7 +768,7 @@ hrealloc(char *p, size_t old, size_t new)
      * don't use the heap for anything else.)
      */
     if (p == arena(h)) {
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	Heapid heap_id = h->heap_id;
 #endif
 	/*
@@ -786,7 +786,7 @@ hrealloc(char *p, size_t old, size_t new)
 #else
 	    zfree(h, HEAPSIZE);
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_DESTROY_MEMPOOL((char *)h);
 #endif
 	    unqueue_signals();
@@ -823,7 +823,7 @@ hrealloc(char *p, size_t old, size_t new)
 #else
 	    hnew = (Heap) realloc(h, n);
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	    VALGRIND_MEMPOOL_FREE((char *)h, p);
 	    VALGRIND_DESTROY_MEMPOOL((char *)h);
 	    VALGRIND_CREATE_MEMPOOL((char *)hnew, 0, 0);
@@ -839,7 +839,7 @@ hrealloc(char *p, size_t old, size_t new)
 	    else
 		heaps = h;
 	}
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	else {
 	    VALGRIND_MEMPOOL_FREE((char *)h, (char *)p);
 	    VALGRIND_MEMPOOL_ALLOC((char *)h, (char *)p, new_req);
@@ -847,7 +847,7 @@ hrealloc(char *p, size_t old, size_t new)
 	}
 #endif
 	h->used = new;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	h->heap_id = heap_id;
 #endif
 	unqueue_signals();
@@ -859,7 +859,7 @@ hrealloc(char *p, size_t old, size_t new)
     if (h->used + (new - old) <= ARENA_SIZEOF(h)) {
 	h->used += new - old;
 	unqueue_signals();
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	VALGRIND_MEMPOOL_FREE((char *)h, (char *)p);
 	VALGRIND_MEMPOOL_ALLOC((char *)h, (char *)p, new_req);
 	VALGRIND_MAKE_MEM_DEFINED((char *)h, (char *)p);
@@ -869,10 +869,10 @@ hrealloc(char *p, size_t old, size_t new)
 	char *t = zhalloc(new);
 	memcpy(t, p, old > new ? new : old);
 	h->used -= old;
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 	memset(p, 0xff, old);
 #endif
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 	VALGRIND_MEMPOOL_FREE((char *)h, (char *)p);
 	/* t already marked as allocated by zhalloc() */
 #endif
@@ -882,7 +882,7 @@ hrealloc(char *p, size_t old, size_t new)
 }
 
 /**/
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 /*
  * Check if heap_id is the identifier of a currently valid heap,
  * including any heap buried on the stack, or of permanent memory.
@@ -974,7 +974,7 @@ zalloc(size_t size)
 
 /**/
 mod_export void *
-zshcalloc(size_t size)
+bshcalloc(size_t size)
 {
     void *ptr = zalloc(size);
     if (!size)
@@ -1023,7 +1023,7 @@ zrealloc(void *ptr, size_t size)
 }
 
 /**/
-#ifdef ZSH_MEM
+#ifdef BSH_MEM
 
 /*
    Below is a simple segment oriented memory allocator for systems on
@@ -1044,15 +1044,15 @@ zrealloc(void *ptr, size_t size)
    (free) contains a pointer to the first free block in the array. The
    last field (used) gives the number of already used blocks in the array.
 
-   If the macro name ZSH_MEM_DEBUG is defined, some information about the memory
+   If the macro name BSH_MEM_DEBUG is defined, some information about the memory
    usage is stored. This information can than be viewed by calling the
-   builtin `mem' (which is only available if ZSH_MEM_DEBUG is set).
+   builtin `mem' (which is only available if BSH_MEM_DEBUG is set).
 
-   If ZSH_MEM_WARNING is defined, error messages are printed in case of errors.
+   If BSH_MEM_WARNING is defined, error messages are printed in case of errors.
 
-   If ZSH_SECURE_FREE is defined, free() checks if the given address is really
+   If BSH_SECURE_FREE is defined, free() checks if the given address is really
    one that was returned by malloc(), it ignores it if it wasn't (printing
-   an error message if ZSH_MEM_WARNING is also defined).
+   an error message if BSH_MEM_WARNING is also defined).
 */
 #if !defined(__hpux) && !defined(DGUX) && !defined(__osf__)
 # if defined(_BSD)
@@ -1084,7 +1084,7 @@ struct m_shdr {
 
 struct m_hdr {
     zlong len;			/* length of memory block */
-#if defined(PAD_64_BIT) && !defined(ZSH_64_BIT_TYPE)
+#if defined(PAD_64_BIT) && !defined(BSH_64_BIT_TYPE)
     /* either 1 or 2 zlong's, whichever makes up 64 bits. */
     zlong dummy1;
 #endif
@@ -1094,7 +1094,7 @@ struct m_hdr {
     struct m_shdr *free;	/* if block of small blocks: free list */
     zlong used;			/* if block of small blocks: number of used
 				                                     blocks */
-#if defined(PAD_64_BIT) && !defined(ZSH_64_BIT_TYPE)
+#if defined(PAD_64_BIT) && !defined(BSH_64_BIT_TYPE)
     zlong dummy2;
 #endif
 };
@@ -1111,7 +1111,7 @@ struct m_hdr {
    the free list) */
 
 #define M_HSIZE (sizeof(struct m_hdr))
-#if defined(PAD_64_BIT) && !defined(ZSH_64_BIT_TYPE)
+#if defined(PAD_64_BIT) && !defined(BSH_64_BIT_TYPE)
 # define M_ISIZE (2*sizeof(zlong))
 #else
 # define M_ISIZE (sizeof(zlong))
@@ -1160,7 +1160,7 @@ static char *m_high, *m_low;
 #define M_SIDX(S)  ((S) / M_ISIZE)
 #define M_SNUM     128
 #define M_SLEN(M)  ((M)->len / M_SNUM)
-#if defined(PAD_64_BIT) && !defined(ZSH_64_BIT_TYPE)
+#if defined(PAD_64_BIT) && !defined(BSH_64_BIT_TYPE)
 /* Include the dummy in the alignment */
 #define M_SBLEN(S) ((S) * M_SNUM + sizeof(struct m_shdr *) +  \
 		    2*sizeof(zlong) + sizeof(struct m_hdr *))
@@ -1176,14 +1176,14 @@ static char *m_high, *m_low;
 
 static struct m_hdr *m_small[M_NSMALL];
 
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 
 static int m_s = 0, m_b = 0;
 static int m_m[1025], m_f[1025];
 
 static struct m_hdr *m_l;
 
-#endif /* ZSH_MEM_DEBUG */
+#endif /* BSH_MEM_DEBUG */
 
 void *
 malloc(size_t size)
@@ -1266,7 +1266,7 @@ malloc(size_t size)
 		    m_small[s] = m->next;
 		m->next = NULL;
 	    }
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 	    m_m[size / M_ISIZE]++;
 #endif
 
@@ -1286,7 +1286,7 @@ malloc(size_t size)
 
 #ifndef USE_MMAP
 
-    /* if there is an empty zsh heap at a lower address we steal it and take
+    /* if there is an empty bsh heap at a lower address we steal it and take
        the memory from it, putting the rest on the free list (remember
        that the blocks on the free list are ordered) */
 
@@ -1339,7 +1339,7 @@ malloc(size_t size)
 	if (!m_low)
 	    m_low = (char *)m;
 
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 	m_s += n;
 
 	if (!m_l)
@@ -1408,14 +1408,14 @@ malloc(size_t size)
 	m->next = m_small[s];
 	m_small[s] = m;
 
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 	m_m[os / M_ISIZE]++;
 #endif
 
 	unqueue_signals();
 	return (void *) (((char *)m) + sizeof(struct m_hdr));
     }
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
     m_m[m->len < (1024 * M_ISIZE) ? (m->len / M_ISIZE) : 1024]++;
 #endif
 
@@ -1438,7 +1438,7 @@ zfree(void *p, int sz)
     int osz = sz;
 # endif
 
-#ifdef ZSH_SECURE_FREE
+#ifdef BSH_SECURE_FREE
     sz = 0;
 #else
     sz = (sz + M_ALIGN - 1) & ~(M_ALIGN - 1);
@@ -1473,7 +1473,7 @@ zfree(void *p, int sz)
 		/* we found the block holding the small block */
 		struct m_shdr *sh = (struct m_shdr *)p;
 
-#ifdef ZSH_SECURE_FREE
+#ifdef BSH_SECURE_FREE
 		struct m_shdr *sh2;
 
 		/* check if the given address is equal to the address of
@@ -1498,7 +1498,7 @@ zfree(void *p, int sz)
 		DPUTS(M_BSLEN(mt->len) < osz,
 		      "BUG: attempt to free more than allocated.");
 
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 		m_f[M_BSLEN(mt->len) / M_ISIZE]++;
 		memset(sh, 0xff, M_BSLEN(mt->len));
 #endif
@@ -1541,12 +1541,12 @@ zfree(void *p, int sz)
 		goto fr_rec;
 	    }
 	}
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
     if (!mt)
 	m_f[m->len < (1024 * M_ISIZE) ? (m->len / M_ISIZE) : 1024]++;
 #endif
 
-#ifdef ZSH_SECURE_FREE
+#ifdef BSH_SECURE_FREE
     /* search all memory blocks, if one of them is at the given address */
     for (mt = (struct m_hdr *)m_low;
 	 ((char *)mt) < m_high;
@@ -1572,7 +1572,7 @@ zfree(void *p, int sz)
 	return;
     }
     DPUTS(m->len < osz, "BUG: attempt to free more than allocated");
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
     memset(p, 0xff, m->len);
 #endif
     if (mt && ((char *)mt) == (((char *)m) + M_ISIZE + m->len)) {
@@ -1620,7 +1620,7 @@ zfree(void *p, int sz)
 	    DPUTS(1, "MEM: allocation error at brk.");
 	}
 
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 	m_b += n;
 #endif
     }
@@ -1715,7 +1715,7 @@ calloc(size_t n, size_t size)
     return (void *) r;
 }
 
-#ifdef ZSH_MEM_DEBUG
+#ifdef BSH_MEM_DEBUG
 
 /**/
 int
@@ -1836,10 +1836,10 @@ bin_mem(char *name, char **argv, Options ops, int func)
 	}
     if (OPT_ISSET(ops,'v')) {
 	printf("\n\nBelow is some information about the allocation\n");
-	printf("behaviour of the zsh heaps. First the number of times\n");
+	printf("behaviour of the bsh heaps. First the number of times\n");
 	printf("pushheap(), popheap(), and freeheap() were called.\n");
     }
-    printf("\nzsh heaps:\n\n");
+    printf("\nbsh heaps:\n\n");
 
     printf("push %d\tpop %d\tfree %d\n\n", h_push, h_pop, h_free);
 
@@ -1862,7 +1862,7 @@ bin_mem(char *name, char **argv, Options ops, int func)
 #endif
 
 /**/
-#else				/* not ZSH_MEM */
+#else				/* not BSH_MEM */
 
 /**/
 mod_export void

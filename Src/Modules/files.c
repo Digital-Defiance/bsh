@@ -1,7 +1,7 @@
 /*
  * files.c - file operation builtins
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Andrew Main
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Andrew Main or the Zsh Development Group be liable
+ * In no event shall Andrew Main or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Andrew Main and the Zsh Development Group have been advised of
+ * even if Andrew Main and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Andrew Main and the Zsh Development Group specifically disclaim any
+ * Andrew Main and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Andrew Main and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -794,6 +794,318 @@ bin_chown(char *nam, char **args, Options ops, int func)
 
 /* module paraphernalia */
 
+/* BrightDate FFI — converts a Unix time_t (seconds) to a BrightDate value */
+extern double bsh_unix_to_brightdate(double unix_secs);
+
+/* ── colour codes ──────────────────────────────────────────── */
+#define COL_DIR  "\033[1;34m"
+#define COL_LNK  "\033[1;36m"
+#define COL_EXE  "\033[1;32m"
+#define COL_RST  "\033[0m"
+
+/* ── display options passed through to print helpers ───────── */
+struct ls_opts {
+    int color;      /* -G or isatty(stdout) */
+    int human;      /* -h: human-readable sizes */
+    int numeric;    /* -n: numeric uid/gid */
+    int type_ind;   /* -F: append type indicator */
+    int use_atime;  /* -u: show/sort by atime instead of mtime */
+    int blocks;     /* -s: show block count */
+    int sort_time;  /* -t: sort by time */
+    int reverse;    /* -r: reverse sort */
+};
+
+/* ── collected directory entry (for sorting) ───────────────── */
+#ifndef NAME_MAX
+# define NAME_MAX 255
+#endif
+struct ls_ent {
+    char        name[NAME_MAX + 1];
+    char        path[PATH_MAX];
+    struct stat st;
+};
+
+/*
+ * Build a 10-character POSIX mode string (type + rwxrwxrwx) into buf[11].
+ */
+static void
+ls_modestr(mode_t mode, char *buf)
+{
+    static const mode_t bits[9] = {
+	S_IRUSR, S_IWUSR, S_IXUSR,
+	S_IRGRP, S_IWGRP, S_IXGRP,
+	S_IROTH, S_IWOTH, S_IXOTH
+    };
+    static const char rwx[3] = "rwx";
+    int i;
+
+    if      (S_ISREG(mode))  buf[0] = '-';
+    else if (S_ISDIR(mode))  buf[0] = 'd';
+    else if (S_ISLNK(mode))  buf[0] = 'l';
+    else if (S_ISCHR(mode))  buf[0] = 'c';
+    else if (S_ISBLK(mode))  buf[0] = 'b';
+    else if (S_ISFIFO(mode)) buf[0] = 'p';
+    else if (S_ISSOCK(mode)) buf[0] = 's';
+    else                     buf[0] = '?';
+
+    for (i = 0; i < 9; i++)
+	buf[1 + i] = (mode & bits[i]) ? rwx[i % 3] : '-';
+    if (mode & S_ISUID) buf[3] = (mode & S_IXUSR) ? 's' : 'S';
+    if (mode & S_ISGID) buf[6] = (mode & S_IXGRP) ? 's' : 'S';
+    if (mode & S_ISVTX) buf[9] = (mode & S_IXOTH) ? 't' : 'T';
+    buf[10] = '\0';
+}
+
+/* Return the -F type-indicator character, or 0 if none. */
+static char
+ls_type_indicator(mode_t mode)
+{
+    if (S_ISDIR(mode))  return '/';
+    if (S_ISLNK(mode))  return '@';
+    if (S_ISFIFO(mode)) return '|';
+    if (S_ISSOCK(mode)) return '=';
+    if (mode & (S_IXUSR | S_IXGRP | S_IXOTH)) return '*';
+    return 0;
+}
+
+/* Format size into buf: plain bytes, or human-readable with -h. */
+static void
+ls_fmt_size(unsigned long long sz, int human, char *buf, size_t bufsz)
+{
+    static const char units[] = "BKMGTP";
+    int u = 0;
+    double v;
+
+    if (!human) {
+	snprintf(buf, bufsz, "%llu", sz);
+	return;
+    }
+    v = (double)sz;
+    while (v >= 1024.0 && u < 5) { v /= 1024.0; u++; }
+    if (u == 0)
+	snprintf(buf, bufsz, "%llu", sz);
+    else
+	snprintf(buf, bufsz, "%.1f%c", v, units[u]);
+}
+
+/* Return the ANSI colour prefix appropriate for this file, or "". */
+static const char *
+ls_color_str(struct stat *st, int color)
+{
+    if (!color) return "";
+    if (S_ISDIR(st->st_mode)) return COL_DIR;
+    if (S_ISLNK(st->st_mode)) return COL_LNK;
+    if (st->st_mode & (S_IXUSR | S_IXGRP | S_IXOTH)) return COL_EXE;
+    return "";
+}
+
+/*
+ * Print one long-format line.  The BrightDate timestamp shown is mtime
+ * by default, or atime when o->use_atime is set — matching standard ls.
+ */
+static void
+ls_print_long(struct stat *st, const char *name, const struct ls_opts *o)
+{
+    char modestr[11];
+    char owner[64] = "", grp[64] = "";
+    char sizebuf[32];
+    char indic[3] = "";
+    double bd_ts;
+    const char *col, *rst;
+
+    bd_ts = o->use_atime
+	? bsh_unix_to_brightdate((double)st->st_atime)
+	: bsh_unix_to_brightdate((double)st->st_mtime);
+
+    ls_modestr(st->st_mode, modestr);
+    ls_fmt_size((unsigned long long)st->st_size, o->human, sizebuf, sizeof(sizebuf));
+
+#ifdef HAVE_GETPWUID
+    if (!o->numeric) {
+	struct passwd *pw = getpwuid(st->st_uid);
+	if (pw) strncpy(owner, pw->pw_name, sizeof(owner) - 1);
+    }
+#endif
+    if (!owner[0])
+	snprintf(owner, sizeof(owner), "%lu", (unsigned long)st->st_uid);
+
+#ifdef USE_GETGRGID
+    if (!o->numeric) {
+	struct group *gr = getgrgid(st->st_gid);
+	if (gr) strncpy(grp, gr->gr_name, sizeof(grp) - 1);
+    }
+#endif
+    if (!grp[0])
+	snprintf(grp, sizeof(grp), "%lu", (unsigned long)st->st_gid);
+
+    if (o->type_ind) {
+	char c = ls_type_indicator(st->st_mode);
+	if (c) { indic[0] = c; indic[1] = '\0'; }
+    }
+
+    col = ls_color_str(st, o->color);
+    rst = (col[0] != '\0') ? COL_RST : "";
+
+    if (o->blocks)
+	printf("%llu ", (unsigned long long)st->st_blocks);
+
+    printf("%s %3lu %-8s %-8s %8s  %.6f  %s%s%s%s\n",
+	   modestr,
+	   (unsigned long)st->st_nlink,
+	   owner, grp,
+	   sizebuf,
+	   bd_ts,
+	   col, name, indic, rst);
+}
+
+/* Print a short (name-only) entry. */
+static void
+ls_print_short(const char *name, struct stat *st, const struct ls_opts *o)
+{
+    const char *col = ls_color_str(st, o->color);
+    const char *rst = (col[0] != '\0') ? COL_RST : "";
+    char indic[3] = "";
+
+    if (o->type_ind) {
+	char c = ls_type_indicator(st->st_mode);
+	if (c) { indic[0] = c; indic[1] = '\0'; }
+    }
+    printf("%s%s%s%s\n", col, name, indic, rst);
+}
+
+/* Sort comparators — sort_use_atime set by bin_ls before calling qsort. */
+static int ls_sort_use_atime;
+
+static int
+ls_cmp_name(const void *a, const void *b)
+{
+    return strcmp(((const struct ls_ent *)a)->name,
+		  ((const struct ls_ent *)b)->name);
+}
+
+static int
+ls_cmp_time(const void *a, const void *b)
+{
+    const struct ls_ent *ea = (const struct ls_ent *)a;
+    const struct ls_ent *eb = (const struct ls_ent *)b;
+    time_t ta = ls_sort_use_atime ? ea->st.st_atime : ea->st.st_mtime;
+    time_t tb = ls_sort_use_atime ? eb->st.st_atime : eb->st.st_mtime;
+    /* newer first, matching standard ls -t */
+    if (tb > ta) return  1;
+    if (tb < ta) return -1;
+    return 0;
+}
+
+/* ls builtin — list files with BrightDate timestamps */
+
+/**/
+static int
+bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
+{
+    struct ls_opts o;
+    struct stat st;
+    struct ls_ent *ents;
+    struct ls_ent *tmp;
+    struct dirent *de;
+    DIR *dp;
+    size_t nents, cap, i, idx;
+    int long_fmt    = OPT_ISSET(ops, 'l');
+    int follow_syms = OPT_ISSET(ops, 'L');
+    int show_all    = OPT_ISSET(ops, 'a');
+    int err = 0;
+    int rv;
+    char *dot[] = { ".", NULL };
+
+    o.use_atime = OPT_ISSET(ops, 'u');
+    o.human     = OPT_ISSET(ops, 'h');
+    o.numeric   = OPT_ISSET(ops, 'n');
+    o.type_ind  = OPT_ISSET(ops, 'F');
+    o.blocks    = OPT_ISSET(ops, 's');
+    o.sort_time = OPT_ISSET(ops, 't');
+    o.reverse   = OPT_ISSET(ops, 'r');
+    o.color     = OPT_ISSET(ops, 'G') || isatty(STDOUT_FILENO);
+    ls_sort_use_atime = o.use_atime;
+
+    if (!*args)
+	args = dot;
+
+    for (; *args; args++) {
+	rv = follow_syms ? stat(*args, &st) : lstat(*args, &st);
+
+	if (rv) {
+	    zwarnnam(nam, "%s: %e", *args, errno);
+	    err = 1;
+	    continue;
+	}
+
+	if (S_ISDIR(st.st_mode)) {
+	    dp = opendir(*args);
+	    if (!dp) {
+		zwarnnam(nam, "%s: %e", *args, errno);
+		err = 1;
+		continue;
+	    }
+
+	    ents = NULL;
+	    nents = 0;
+	    cap = 0;
+
+	    while ((de = readdir(dp))) {
+		if (!show_all && de->d_name[0] == '.')
+		    continue;
+
+		if (nents >= cap) {
+		    cap = cap ? cap * 2 : 32;
+		    tmp = realloc(ents, cap * sizeof(*ents));
+		    if (!tmp) {
+			zwarnnam(nam, "out of memory");
+			free(ents);
+			closedir(dp);
+			return 1;
+		    }
+		    ents = tmp;
+		}
+
+		strncpy(ents[nents].name, de->d_name, NAME_MAX);
+		ents[nents].name[NAME_MAX] = '\0';
+		snprintf(ents[nents].path, PATH_MAX, "%s/%s", *args, de->d_name);
+		rv = follow_syms
+		    ? stat(ents[nents].path, &ents[nents].st)
+		    : lstat(ents[nents].path, &ents[nents].st);
+		if (rv) {
+		    zwarnnam(nam, "%s: %e", ents[nents].path, errno);
+		    err = 1;
+		    memset(&ents[nents].st, 0, sizeof(ents[nents].st));
+		}
+		nents++;
+	    }
+	    closedir(dp);
+
+	    if (nents > 0) {
+		if (o.sort_time)
+		    qsort(ents, nents, sizeof(*ents), ls_cmp_time);
+		else
+		    qsort(ents, nents, sizeof(*ents), ls_cmp_name);
+	    }
+
+	    for (i = 0; i < nents; i++) {
+		idx = o.reverse ? (nents - 1 - i) : i;
+		if (long_fmt)
+		    ls_print_long(&ents[idx].st, ents[idx].name, &o);
+		else
+		    ls_print_short(ents[idx].name, &ents[idx].st, &o);
+	    }
+	    free(ents);
+	} else {
+	    if (long_fmt)
+		ls_print_long(&st, *args, &o);
+	    else
+		ls_print_short(*args, &st, &o);
+	}
+    }
+    return err;
+}
+
 #ifdef HAVE_LSTAT
 # define LN_OPTS "dfhins"
 #else
@@ -807,16 +1119,18 @@ static struct builtin bintab[] = {
     BUILTIN("chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
+    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "alLGFhnrstu",   NULL),
     BUILTIN("mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),
     BUILTIN("rmdir", 0, bin_rmdir, 1, -1, 0,         NULL,    NULL),
     BUILTIN("sync",  0, bin_sync,  0,  0, 0,         NULL,    NULL),
-    /* The "safe" zsh-only names */
+    /* The "safe" bsh-only names */
     BUILTIN("zf_chgrp", 0, bin_chown, 2, -1, BIN_CHGRP, "hRs",    NULL),
     BUILTIN("zf_chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("zf_chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("zf_ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
+    BUILTIN("zf_ls",    0, bin_ls,    0, -1, 0,         "alLGFhnrstu",   NULL),
     BUILTIN("zf_mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("zf_mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("zf_rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),

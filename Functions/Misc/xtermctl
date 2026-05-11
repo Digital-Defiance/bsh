@@ -45,7 +45,7 @@ function xterm-tell {
 }
 
 # The following use of "read -st 2 ..." with the control sequences in
-# the prompt string requires zsh 4.3.5-dev-1 or later (zsh-users/12600
+# the prompt string requires bsh 4.3.5-dev-1 or later (bsh-users/12600
 # or equivalent patch).
 
 function xterm-ask {
