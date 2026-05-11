@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/db/gdbm
+COMMENT(!MOD!bsh/db/gdbm
 Builtins for managing associative array parameters tied to GDBM databases.
 !MOD!)
-The tt(zsh/db/gdbm) module is used to create "tied" associative arrays
+The tt(bsh/db/gdbm) module is used to create "tied" associative arrays
 that interface to database files.  If the GDBM interface is not available,
 the builtins defined by this module will report an error.  This module is
 also intended as a prototype for creating additional database interfaces,

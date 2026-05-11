@@ -1,6 +1,6 @@
-## vim:ft=zsh
+## vim:ft=bsh
 ## fossil support by: Mike Meyer <mwm@mired.org>
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 setopt localoptions NO_shwordsplit
 

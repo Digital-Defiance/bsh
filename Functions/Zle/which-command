@@ -1,4 +1,4 @@
-zmodload -i zsh/parameter zsh/zutil
+zmodload -i bsh/parameter bsh/zutil
 
 zle -I
 

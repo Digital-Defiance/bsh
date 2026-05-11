@@ -18,15 +18,15 @@
 #       separated by `--'. For example:
 #
 #         zrecompile -p \
-#                    -R ~/.zshrc -- \
+#                    -R ~/.bshrc -- \
 #                    -M ~/.zcompdump -- \
-#                    ~/zsh/comp.zwc ~/zsh/Completion/*/_* \
+#                    ~/bsh/comp.zwc ~/bsh/Completion/*/_* \
 #
-#       This makes ~/.zshrc be compiled into ~/.zshrc.zwc if that doesn't
-#       exist or if it is older than ~/.zshrc. The wordcode file will be
+#       This makes ~/.bshrc be compiled into ~/.bshrc.zwc if that doesn't
+#       exist or if it is older than ~/.bshrc. The wordcode file will be
 #       marked for reading instead of mapping. The same is done for
 #       ~/.zcompdump and ~/.zcompdump.zwc, but the wordcode file is marked
-#       for mapping. The last line re-creates the file ~/zsh/comp.zwc if
+#       for mapping. The last line re-creates the file ~/bsh/comp.zwc if
 #       any of the files matching the given pattern is newer than it.
 #
 # Without the -t option, the return status is zero if all wordcode files
@@ -184,7 +184,7 @@ for zwc; do
 
   # Maybe this is even for an older version of the shell?
 
-  if [[ $files[1] != *$ZSH_VERSION ]]; then
+  if [[ $files[1] != *$BSH_VERSION ]]; then
     re=yes
   else
     re=

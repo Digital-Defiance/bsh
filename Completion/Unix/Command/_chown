@@ -3,7 +3,7 @@
 local curcontext="$curcontext" state line expl ret=1 variant
 local suf usr grp req deref pattern arg args aopts=( -A '-*' )
 
-_pick_variant -r variant -b zsh gnu='(Free Soft|uutils)' $OSTYPE --version
+_pick_variant -r variant -b bsh gnu='(Free Soft|uutils)' $OSTYPE --version
 case "$variant" in
   gnu)
     aopts=()
@@ -30,7 +30,7 @@ case "$variant" in
       '-R[change files and directories recursively]'
     )
     ;|
-  zsh)
+  bsh)
     args+=(
       '-s[enable paranoid behavior]'
     )
@@ -93,7 +93,7 @@ case $state in
   files)
     (( $+opt_args[-h] || $+opt_args[--no-dereference] )) || deref="-"
     if (( $+opt_args[--reference] )); then
-      zmodload -F zsh/stat b:zstat 2>/dev/null
+      zmodload -F bsh/stat b:zstat 2>/dev/null
       usr=$(zstat +uid $opt_args[--reference]:Q)
       grp=$(zstat +gid $opt_args[--reference]:Q)
       _wanted files expl file _files -g "*($deref^u$usr,$deref^g$grp)" && ret=0

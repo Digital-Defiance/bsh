@@ -1,4 +1,4 @@
-name=zsh/net/socket
+name=bsh/net/socket
 link=dynamic
 load=no
 

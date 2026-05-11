@@ -3,9 +3,9 @@ chapter(User Contributions)
 cindex(user contributions)
 sect(Description)
 
-The Zsh source distribution includes a number of items contributed by the
+The Bsh source distribution includes a number of items contributed by the
 user community.  These are not inherently a part of the shell, and some
-may not be available in every zsh installation.  The most significant of
+may not be available in every bsh installation.  The most significant of
 these are documented here.  For documentation on other contributed items
 such as shell functions, look for comments in the function source files.
 
@@ -31,7 +31,7 @@ subsect(Accessing On-Line Help)
 cindex(helpfiles utility)
 
 The key sequence tt(ESC h) is normally bound by ZLE to execute the
-tt(run-help) widget (see nmref(Zsh Line Editor)(zshzle)).
+tt(run-help) widget (see nmref(Bsh Line Editor)(bshzle)).
 This invokes the tt(run-help) command with the command word from the
 current input line as its argument.  By default, tt(run-help) is an alias
 for the tt(man) command, so this often fails when the command word is a
@@ -39,22 +39,22 @@ shell builtin or a user-defined function.  By redefining the tt(run-help)
 alias, one can improve the on-line help provided by the shell.
 
 The tt(helpfiles) utility, found in the tt(Util) directory of the
-distribution, is a Perl program that can be used to process the zsh manual
+distribution, is a Perl program that can be used to process the bsh manual
 to produce a separate help file for each shell builtin and for many other
 shell features as well.  The autoloadable tt(run-help) function, found in
 tt(Functions/Misc), searches for these helpfiles and performs several
 other tests to produce the most complete help possible for the command.
 
-Help files are installed by default to a subdirectory of tt(/usr/share/zsh)
-or tt(/usr/local/share/zsh).
+Help files are installed by default to a subdirectory of tt(/usr/share/bsh)
+or tt(/usr/local/share/bsh).
 
 To create your own help files with tt(helpfiles), choose or create a
 directory where the individual command help files will reside.  For
-example, you might choose tt(~/zsh_help).  If you unpacked the zsh
+example, you might choose tt(~/bsh_help).  If you unpacked the bsh
 distribution in your home directory, you would use the commands:
 
-example(mkdir ~/zsh_help
-perl ~/zsh-version()/Util/helpfiles ~/zsh_help)
+example(mkdir ~/bsh_help
+perl ~/bsh-version()/Util/helpfiles ~/bsh_help)
 
 vindex(HELPDIR)
 The tt(HELPDIR) parameter tells tt(run-help) where to look for the help
@@ -62,19 +62,19 @@ files. When unset, it uses the default installation path.
 To use your own set of help files, set this to the appropriate path
 in one of your startup files:
 
-example(HELPDIR=~/zsh_help)
+example(HELPDIR=~/bsh_help)
 
 findex(run-help, use of)
 To use the tt(run-help) function, you need to add lines something
-like the following to your tt(.zshrc) or equivalent startup file:
+like the following to your tt(.bshrc) or equivalent startup file:
 
 example(unalias run-help
 autoload run-help)
 
 Note that in order for `tt(autoload run-help)' to work, the tt(run-help)
 file must be in one of the directories named in your tt(fpath) array (see
-sectref(Parameters Used by the Shell)(zshparam)).
-This should already be the case if you have a standard zsh
+sectref(Parameters Used by the Shell)(bshparam)).
+This should already be the case if you have a standard bsh
 installation; if it is not, copy tt(Functions/Misc/run-help) to an
 appropriate directory.
 
@@ -83,13 +83,13 @@ subsect(Recompiling Functions)
 cindex(functions, recompiling)
 cindex(zrecompile utility)
 
-If you frequently edit your zsh functions, or periodically update your zsh
+If you frequently edit your bsh functions, or periodically update your bsh
 installation to track the latest developments, you may find that function
 digests compiled with the tt(zcompile) builtin are frequently out of date
 with respect to the function source files.  This is not usually a problem,
-because zsh always looks for the newest file when loading a function, but
+because bsh always looks for the newest file when loading a function, but
 it may cause slower shell startup and function loading.  Also, if a digest
-file is explicitly used as an element of tt(fpath), zsh won't check whether
+file is explicitly used as an element of tt(fpath), bsh won't check whether
 any of its source files has changed.
 
 The tt(zrecompile) autoloadable function, found in tt(Functions/Misc), can
@@ -123,15 +123,15 @@ or more sets of arguments for tt(zcompile), separated by `tt(-)tt(-)'.
 For example:
 
 example(zrecompile -p \ 
-           -R ~/.zshrc -- \ 
+           -R ~/.bshrc -- \ 
            -M ~/.zcompdump -- \ 
-           ~/zsh/comp.zwc ~/zsh/Completion/*/_*)
+           ~/bsh/comp.zwc ~/bsh/Completion/*/_*)
 
-This compiles tt(~/.zshrc) into tt(~/.zshrc.zwc) if that doesn't exist or
-if it is older than tt(~/.zshrc). The compiled file will be marked for
+This compiles tt(~/.bshrc) into tt(~/.bshrc.zwc) if that doesn't exist or
+if it is older than tt(~/.bshrc). The compiled file will be marked for
 reading instead of mapping. The same is done for tt(~/.zcompdump) and
 tt(~/.zcompdump.zwc), but this compiled file is marked for mapping. The
-last line re-creates the file tt(~/zsh/comp.zwc) if any of the files
+last line re-creates the file tt(~/bsh/comp.zwc) if any of the files
 matching the given pattern is newer than it.
 
 Without the tt(-p) option, tt(zrecompile) does not create function digests
@@ -160,7 +160,7 @@ example(for ((i=1; i <= $#fpath; ++i)); do
 done)
 
 The tt(-U) and tt(-z) options are appropriate for functions in the default
-zsh installation tt(fpath); you may need to use different options for your
+bsh installation tt(fpath); you may need to use different options for your
 personal function directories.
 
 Once the digests have been created and your tt(fpath) modified to refer to
@@ -173,14 +173,14 @@ cindex(keyboard definition)
 
 findex(zkbd)
 The large number of possible combinations of keyboards, workstations,
-terminals, emulators, and window systems makes it impossible for zsh to
+terminals, emulators, and window systems makes it impossible for bsh to
 have built-in key bindings for every situation.  The tt(zkbd) utility,
 found in tt(Functions/Misc), can help you quickly create key bindings for your
 configuration.
 
 Run tt(zkbd) either as an autoloaded function, or as a shell script:
 
-example(zsh -f ~/zsh-version()/Functions/Misc/zkbd)
+example(bsh -f ~/bsh-version()/Functions/Misc/zkbd)
 
 When you run tt(zkbd), it first asks you to enter your terminal type; if
 the default it offers is correct, just press return.  It then asks you to
@@ -194,7 +194,7 @@ tt(.zkbd) within either your tt(HOME) or tt(ZDOTDIR) directory.  The name
 of the file is composed from the tt(TERM), tt(VENDOR) and tt(OSTYPE)
 parameters, joined by hyphens.
 
-You may read this file into your tt(.zshrc) or another startup file with
+You may read this file into your tt(.bshrc) or another startup file with
 the `tt(source)' or `tt(.)' commands, then reference the tt(key) parameter
 in bindkey commands, like this:
 
@@ -205,8 +205,8 @@ example(source ${ZDOTDIR:-$HOME}/.zkbd/$TERM-$VENDOR-$OSTYPE
 
 Note that in order for `tt(autoload zkbd)' to work, the tt(zkdb) file must
 be in one of the directories named in your tt(fpath) array (see
-sectref(Parameters Used by the Shell)(zshparam)).
-This should already be the case if you have a standard zsh
+sectref(Parameters Used by the Shell)(bshparam)).
+This should already be the case if you have a standard bsh
 installation; if it is not, copy tt(Functions/Misc/zkbd) to an
 appropriate directory.
 
@@ -214,25 +214,25 @@ subsect(Dumping Shell State)
 cindex(reporter utility)
 
 Occasionally you may encounter what appears to be a bug in the shell,
-particularly if you are using a beta version of zsh or a development
+particularly if you are using a beta version of bsh or a development
 release.  Usually it is sufficient to send a description of the
-problem to one of the zsh mailing lists (see sectref(Mailing Lists)(zsh)),
-but sometimes one of the zsh developers will need to recreate your
+problem to one of the bsh mailing lists (see sectref(Mailing Lists)(bsh)),
+but sometimes one of the bsh developers will need to recreate your
 environment in order to track the problem down.
 
 The script named tt(reporter), found in the tt(Util) directory of the
 distribution, is provided for this purpose.  (It is also possible to
 tt(autoload reporter), but tt(reporter) is not installed in tt(fpath)
 by default.)  This script outputs a detailed dump of the shell state,
-in the form of another script that can be read with `tt(zsh -f)' to
+in the form of another script that can be read with `tt(bsh -f)' to
 recreate that state.
 
 To use tt(reporter), read the script into your shell with the `tt(.)'
 command and redirect the output into a file:
 
-example(. ~/zsh-version()/Util/reporter > zsh.report)
+example(. ~/bsh-version()/Util/reporter > bsh.report)
 
-You should check the tt(zsh.report) file for any sensitive information
+You should check the tt(bsh.report) file for any sensitive information
 such as passwords and delete them by hand before sending the script to the
 developers.  Also, as the output can be voluminous, it's best to wait for
 the developers to ask for this information before sending it.
@@ -251,7 +251,7 @@ tt(reporter), you should edit the results to remove unnecessary commands.
 Note that if you're using the new completion system, you should em(not)
 dump the tt(functions) state to your startup files with tt(reporter); use
 the tt(compdump) function instead (see
-nmref(Completion System)(zshcompsys)).
+nmref(Completion System)(bshcompsys)).
 
 startitem()
 item(tt(reporter) [ var(state) ... ])(
@@ -287,19 +287,19 @@ subsect(Manipulating Hook Functions)
 cindex(hook function utility)
 
 startitem()
-findex(add-zsh-hook)
-item(tt(add-zsh-hook) [ tt(-L) | tt(-dD) ] [ tt(-Uzk) ] var(hook) var(function))(
+findex(add-bsh-hook)
+item(tt(add-bsh-hook) [ tt(-L) | tt(-dD) ] [ tt(-Uzk) ] var(hook) var(function))(
 Several functions are special to the shell, as described in
-sectref(Special Functions)(zshmisc),
+sectref(Special Functions)(bshmisc),
 in that they are automatically called at specific points during shell execution.
 Each has an associated array consisting of names of functions to be
 called at the same point; these are so-called `hook functions'.
-The shell function tt(add-zsh-hook) provides a simple way of adding or
+The shell function tt(add-bsh-hook) provides a simple way of adding or
 removing functions from the array.
 
 var(hook) is one of tt(chpwd), tt(periodic), tt(precmd), tt(preexec),
-tt(zshaddhistory), tt(zshexit), or tt(zsh_directory_name),
-the special functions in question.  Note that tt(zsh_directory_name)
+tt(bshaddhistory), tt(bshexit), or tt(bsh_directory_name),
+the special functions in question.  Note that tt(bsh_directory_name)
 is called in a different way from the other functions, but may
 still be manipulated as a hook.
 
@@ -319,13 +319,13 @@ and any matching names of functions are removed from the array of
 functions to be executed.
 
 The options tt(-U), tt(-z) and tt(-k) are passed as arguments to
-tt(autoload) for var(function).  For functions contributed with zsh, the
+tt(autoload) for var(function).  For functions contributed with bsh, the
 options tt(-Uz) are appropriate.
 )
 findex(add-zle-hook-widget)
 item(tt(add-zle-hook-widget) [ tt(-L) | tt(-dD) ] [ tt(-Uzk) ] var(hook) var(widgetname))(
 Several widget names are special to the line editor, as described in
-subref(Special Widgets)(zshzle),
+subref(Special Widgets)(bshzle),
 in that they are automatically called at specific points during editing.
 Unlike function hooks, these do not use a predefined array of other names
 to call at the same point; the shell function tt(add-zle-hook-widget)
@@ -358,7 +358,7 @@ If var(widgetname) does not name an existing widget when added to the
 array, it is assumed that a shell function also named var(widgetname) is
 meant to provide the implementation of the widget.  This name is therefore
 marked for autoloading, and the options tt(-U), tt(-z) and tt(-k) are
-passed as arguments to tt(autoload) as with tt(add-zsh-hook).  The
+passed as arguments to tt(autoload) as with tt(add-bsh-hook).  The
 widget is also created with `tt(zle -N )var(widgetname)' to cause the
 corresponding function to be loaded the first time the hook is called.
 
@@ -399,10 +399,10 @@ subsect(Installation)
 
 The system works by means of a hook function that is called every time the
 directory changes.  To install the system, autoload the required functions
-and use the tt(add-zsh-hook) function described above:
+and use the tt(add-bsh-hook) function described above:
 
-example(autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-add-zsh-hook chpwd chpwd_recent_dirs)
+example(autoload -Uz chpwd_recent_dirs cdr add-bsh-hook
+add-bsh-hook chpwd chpwd_recent_dirs)
 
 Now every time you change directly interactively, no matter which
 command you use, the directory to which you change will be remembered
@@ -480,7 +480,7 @@ subsect(Configuration)
 
 Configuration is by means of the styles mechanism that should be familiar
 from completion; if not, see the description of the tt(zstyle) command in
-sectref(The zsh/zutil Module)(zshmodules).  The context for setting styles
+sectref(The bsh/zutil Module)(bshmodules).  The context for setting styles
 should be tt(':chpwd:*') in case the meaning of the context is extended in
 future, for example:
 
@@ -592,7 +592,7 @@ list are not pruned.  For example, changing from ~pws/yet/another
 to ~pws/some/other/dir does not cause ~pws to be pruned.
 )
 item(tt(pattern:)var(pattern))(
-Gives a zsh pattern for directories that should not be
+Gives a bsh pattern for directories that should not be
 added to the recent list (if not already there).  This element
 can be repeated to add different patterns.  For example,
 tt('pattern:/tmp+LPAR()|/*RPAR()') stops tt(/tmp) or its descendants
@@ -613,11 +613,11 @@ enditem()
 subsect(Use with Dynamic Directory Naming)
 
 It is possible to refer to recent directories using the dynamic directory
-name syntax by using the supplied function tt(zsh_directory_name_cdr)
+name syntax by using the supplied function tt(bsh_directory_name_cdr)
 a hook:
 
-example(autoload -Uz add-zsh-hook
-add-zsh-hook -Uz zsh_directory_name zsh_directory_name_cdr)
+example(autoload -Uz add-bsh-hook
+add-bsh-hook -Uz bsh_directory_name bsh_directory_name_cdr)
 
 When this is done, tt(~[1]) will refer to the most recent
 directory other than $PWD, and so on.  Completion after tt(~[)var(...)
@@ -648,15 +648,15 @@ texinode(Other Directory Functions)(Version Control Information)(Recent Director
 cindex(directories, named, dynamic, helper function)
 cindex(dynamic directory naming, helper function)
 cindex(named directories, dynamic, helper function)
-findex(zsh_directory_name_generic)
+findex(bsh_directory_name_generic)
 sect(Abbreviated dynamic references to directories)
 
 The dynamic directory naming system is described in
-subref(Dynamic Named Directories)(zshexpn).  In this, a reference to
+subref(Dynamic Named Directories)(bshexpn).  In this, a reference to
 tt(~[)var(...)tt(]) is expanded by a function found by the hooks
 mechanism.
 
-The contributed function tt(zsh_directory_name_generic) provides a
+The contributed function tt(bsh_directory_name_generic) provides a
 system allowing the user to refer to directories with only a limited
 amount of new code.  It supports all three of the standard interfaces
 for directory naming: converting from a name to a directory, converting
@@ -697,17 +697,17 @@ we'll refer to it as zdn_mywrapper.  This wrapper function will define
 various variables and then call this function with the same arguments
 that the wrapper function gets.  This configuration is described below.
 
-Then arrange for the wrapper to be run as a zsh_directory_name hook:
+Then arrange for the wrapper to be run as a bsh_directory_name hook:
 
-example(autoload -Uz add-zsh-hook zsh_directory_name_generic zdn_mywrapper
-add-zsh-hook -U zsh_directory_name zdn_mywrapper)
+example(autoload -Uz add-bsh-hook bsh_directory_name_generic zdn_mywrapper
+add-bsh-hook -U bsh_directory_name zdn_mywrapper)
 
 subsect(Configuration)
 
 The wrapper function should define a local associative array zdn_top.
 Alternatively, this can be set with a style called tt(mapping).  The
 context for the style is tt(:zdn:)var(wrapper-name) where
-var(wrapper-name) is the function calling zsh_directory_name_generic;
+var(wrapper-name) is the function calling bsh_directory_name_generic;
 for example:
 
 example(zstyle :zdn:zdn_mywrapper: mapping zdn_mywrapper_top)
@@ -807,8 +807,8 @@ local -A third=(
 )
 
 # autoload not needed if you did this at initialisation...
-autoload -Uz zsh_directory_name_generic
-zsh_directory_name_generic "$@)
+autoload -Uz bsh_directory_name_generic
+bsh_directory_name_generic "$@)
 
 It is also possible to use global associative arrays, suitably named,
 and set the style for the context of your wrapper function to
@@ -817,12 +817,12 @@ refer to this.  Then your set up code would contain the following:
 example(typeset -A zdn_mywrapper_top=(...)
 # ... and so on for other associative arrays ...
 zstyle ':zdn:zdn_mywrapper:' mapping zdn_mywrapper_top
-autoload -Uz add-zsh-hook zsh_directory_name_generic zdn_mywrapper
-add-zsh-hook -U zsh_directory_name zdn_mywrapper)
+autoload -Uz add-bsh-hook bsh_directory_name_generic zdn_mywrapper
+add-bsh-hook -U bsh_directory_name zdn_mywrapper)
 
 and the function tt(zdn_mywrapper) would contain only the following:
 
-example(zsh_directory_name_generic "$@")
+example(bsh_directory_name_generic "$@")
 
 texinode(Version Control Information)(Prompt Themes)(Other Directory Functions)(User Contributions)
 sect(Gathering information from version control systems)
@@ -968,9 +968,9 @@ below).
 )
 item(var(repo-root-name))(
 is the name of a repository in which you want a
-style to match. So, if you want a setting specific to tt(/usr/src/zsh),
+style to match. So, if you want a setting specific to tt(/usr/src/bsh),
 with that being a CVS checkout, you can set var(repo-root-name) to
-tt(zsh) to make it so.
+tt(bsh) to make it so.
 )
 enditem()
 
@@ -1060,9 +1060,9 @@ A list of patterns that are checked against tt($PWD). If a pattern
 matches, tt(vcs_info) will be disabled. This style is checked in the
 tt(:vcs_info:-init-:*:-all-) context.
 
-Say, tt(~/.zsh) is a directory under version control, in which you do
+Say, tt(~/.bsh) is a directory under version control, in which you do
 not want tt(vcs_info) to be active, do:
-example(zstyle ':vcs_info:*' disable-patterns "${+LPAR()b+RPAR()HOME}/.zsh+LPAR()|/*+RPAR()")
+example(zstyle ':vcs_info:*' disable-patterns "${+LPAR()b+RPAR()HOME}/.bsh+LPAR()|/*+RPAR()")
 )
 kindex(use-quilt)
 item(tt(use-quilt))(
@@ -1352,7 +1352,7 @@ subsect(Oddities)
 
 If you want to use the tt(%b) (bold off) prompt expansion in tt(formats),
 which expands tt(%b) itself, use tt(%%b). That will cause the tt(vcs_info)
-expansion to replace tt(%%b) with tt(%b), so that zsh's prompt expansion
+expansion to replace tt(%%b) with tt(%b), so that bsh's prompt expansion
 mechanism can handle it. Similarly, to hand down tt(%b) from
 tt(branchformat), use tt(%%%%b). Sorry for this inconvenience, but it
 cannot be easily avoided. Luckily we do not clash with a lot of prompt
@@ -1809,7 +1809,7 @@ enditem()
 
 If all of this sounds rather confusing, take a look at
 ifzman(the bf(Examples) subsection below)ifnzman(noderef(vcs_info Examples))
-and also in the tt(Misc/vcs_info-examples) file in the Zsh source.
+and also in the tt(Misc/vcs_info-examples) file in the Bsh source.
 They contain some explanatory code.
 
 texinode(vcs_info Examples)()(vcs_info Hooks)(Version Control Information)
@@ -1830,13 +1830,13 @@ zstyle ':vcs_info:git:*' actionformats ' GIT ACTION! [%b|%a]')
 
 All tt(%x) expansion in all sorts of formats (tt(formats), tt(actionformats),
 tt(branchformat), you name it) are done using the `tt(zformat)' builtin from
-the `tt(zsh/zutil)' module. That means you can do everything with these
+the `tt(bsh/zutil)' module. That means you can do everything with these
 tt(%x) items what zformat supports. In particular, if you want something
 that is really long to have a fixed width, like a hash in a mercurial
 branchformat, you can do this: tt(%12.12i). That'll shrink the 40 character
 hash to its 12 leading characters. The form is actually
 `tt(%)var(min)tt(.)var(max)tt(x)'. More is possible.
-See sectref(The zsh/zutil Module)(zshmodules) for details.
+See sectref(The bsh/zutil Module)(bshmodules) for details.
 
 Use the quicker tt(bzr) backend
 example(zstyle ':vcs_info:bzr:*' use-simple true)
@@ -1937,10 +1937,10 @@ function +vi-hgbookmarks+LPAR()RPAR() {
 })
 
 Some longer examples and code snippets which might be useful are available in
-the examples file located at Misc/vcs_info-examples in the Zsh source
+the examples file located at Misc/vcs_info-examples in the Bsh source
 directory.
 
-This concludes our guided tour through zsh's tt(vcs_info).
+This concludes our guided tour through bsh's tt(vcs_info).
 
 
 texinode(Prompt Themes)(ZLE Functions)(Version Control Information)(User Contributions)
@@ -1951,7 +1951,7 @@ subsect(Installation)
 You should make sure all the functions from the tt(Functions/Prompts)
 directory of the source distribution are available; they all begin with
 the string `tt(prompt_)' except for the special function `tt(promptinit)'.
-You also need the `tt(colors)' and `tt(add-zsh-hook)' functions from
+You also need the `tt(colors)' and `tt(add-bsh-hook)' functions from
 tt(Functions/Misc).
 All these functions may already be installed on your system; if not,
 you will need to find them and copy them.  The directory should appear as
@@ -1959,7 +1959,7 @@ one of the elements of the tt(fpath) array (this should already be the
 case if they were installed), and at least the function tt(promptinit)
 should be autoloaded; it will autoload the rest.  Finally, to initialize
 the use of the system you need to call the tt(promptinit) function.  The
-following code in your tt(.zshrc) will arrange for this; assume the
+following code in your tt(.bshrc) will arrange for this; assume the
 functions are stored in the directory tt(~/myfns):
 
 example(fpath=(~/myfns $fpath)
@@ -1969,8 +1969,8 @@ promptinit)
 subsect(Theme Selection)
 
 Use the tt(prompt) command to select your preferred theme.  This command
-may be added to your tt(.zshrc) following the call to tt(promptinit) in
-order to start zsh with a theme already selected.
+may be added to your tt(.bshrc) following the call to tt(promptinit) in
+order to start bsh with a theme already selected.
 
 startitem()
 xitem(tt(prompt) [ tt(-c) | tt(-l) ])
@@ -2016,7 +2016,7 @@ no special effects.
 )
 item(tt(prompt default))(
 The theme `tt(default)' sets all prompt variables to the same state as
-if an interactive zsh was started with no initialization files.
+if an interactive bsh was started with no initialization files.
 )
 item(tt(prompt restore))(
 The special theme `tt(restore)' erases all theme settings and sets prompt
@@ -2051,7 +2051,7 @@ options are turned off.  The tt(prompt_opts) array preserves setopts even
 beyond the scope of tt(localoptions), should your function need that.
 )
 item(Modify hooks)(
-Use of tt(add-zsh-hook) and tt(add-zle-hook-widget) is recommended (see
+Use of tt(add-bsh-hook) and tt(add-zle-hook-widget) is recommended (see
 subref(Manipulating Hook Functions)(above)).
 All hooks that follow the naming pattern tt(prompt_)var(theme)tt(_)var(hook)
 are automatically removed when the prompt theme changes or is disabled.
@@ -2085,9 +2085,9 @@ sect(ZLE Functions)
 subsect(Widgets)
 
 These functions all implement user-defined ZLE widgets (see
-sectref(User-Defined Widgets)(zshzle))
+sectref(User-Defined Widgets)(bshzle))
 which can be bound to keystrokes in interactive shells.  To use them,
-your tt(.zshrc) should contain lines of the form
+your tt(.bshrc) should contain lines of the form
 
 example(autoload var(function)
 zle -N var(function))
@@ -2130,7 +2130,7 @@ builtin widgets without the suffix.  By default they behave in a similar
 way.  However, by the use of styles and the function tt(select-word-style),
 the way words are matched can be altered. tt(select-word-match) is intended
 to be used as a text object in vi mode but with custom word styles. For
-comparison, the widgets described in subref(Text Objects)(zshzle)
+comparison, the widgets described in subref(Text Objects)(bshzle)
 use fixed definitions of words, compatible
 with the tt(vim) editor.
 
@@ -2176,7 +2176,7 @@ pattern (note that the outer brackets should not be supplied, only
 those surrounding named ranges).
 
 More control can be obtained using the tt(zstyle) command, as described in
-sectref(The zsh/zutil Module)(zshmodules).  Each style is looked up in the
+sectref(The bsh/zutil Module)(bshmodules).  Each style is looked up in the
 context tt(:zle:)var(widget) where var(widget) is the name of the
 user-defined widget, not the name of the function implementing it, so in
 the case of the definitions supplied by tt(select-word-style) the
@@ -2254,7 +2254,7 @@ tt(forward-word) widget.  If it is set to true, then tt(forward-word)
 skips any non-word-characters, followed by any non-word-characters:
 this is similar to the behaviour of other word-orientated widgets,
 and also that used by other editors, however it differs from the
-standard zsh behaviour.  When using tt(select-word-style) the widget
+standard bsh behaviour.  When using tt(select-word-style) the widget
 is set in the context tt(:zle:*) to tt(true) if the word style is
 tt(bash) and tt(false) otherwise.  It may be overridden by setting it in
 the more specific context tt(:zle:forward-word*).
@@ -2348,7 +2348,7 @@ directly.
 )
 tindex(bracketed-paste-magic)
 item(tt(bracketed-paste-magic))(
-The tt(bracketed-paste) widget (see subref(Miscellaneous)(zshzle))
+The tt(bracketed-paste) widget (see subref(Miscellaneous)(bshzle))
 inserts pasted text literally into the editor buffer rather than interpret
 it as keystrokes.  This disables some common usages where the self-insert
 widget is replaced in order to accomplish some extra processing.  An
@@ -2549,7 +2549,7 @@ This function implements the widgets
 tt(history-beginning-search-backward-end) and
 tt(history-beginning-search-forward-end).  These commands work by first
 calling the corresponding builtin widget (see
-sectref(History Control)(zshzle))
+sectref(History Control)(bshzle))
 and then moving the cursor to the end of the line.  The original cursor
 position is remembered and restored before calling the builtin widget a
 second time, so that the same search is repeated to look farther through
@@ -2594,7 +2594,7 @@ tindex(history-pattern-search-forward)
 item(tt(history-pattern-search))(
 The function tt(history-pattern-search) implements widgets which prompt
 for a pattern with which to search the history backwards or forwards.  The
-pattern is in the usual zsh format, however the first character may be
+pattern is in the usual bsh format, however the first character may be
 tt(^) to anchor the search to the start of the line, and the last character
 may be tt($) to anchor the search to the end of the line.  If the
 search was not anchored to the end of the line the cursor is positioned
@@ -2672,7 +2672,7 @@ tt(insert-composed-char a:) can be used within a widget to insert an a with
 umlaut into the command line.  This has the advantages over use of a
 literal character that it is more portable.
 
-For best results zsh should have been built with support for multibyte
+For best results bsh should have been built with support for multibyte
 characters (configured with tt(--enable-multibyte)); however, the function
 works for the limited range of characters available in single-byte
 character sets such as ISO-8859-1.
@@ -2694,7 +2694,7 @@ The set of accented characters is reasonably complete up to Unicode
 character U+0180, the set of special characters less so.  However, it
 is very sporadic from that point.  Adding new characters is easy,
 however; see the function tt(define-composed-chars).  Please send any
-additions to tt(zsh-workers@zsh.org).
+additions to tt(bsh-workers@bsh.org).
 
 The codes for the second character when used to accent the first are as
 follows.  Note that not every character can take every accent.
@@ -3040,8 +3040,8 @@ everywhere it occurs in the line editing buffer.
 
 If the widget name contains the word `tt(pattern)', for example by
 defining the widget using the command `tt(zle -N replace-pattern
-replace-string)', then the matching is performed using zsh patterns.  All
-zsh extended globbing patterns can be used in the source string; note
+replace-string)', then the matching is performed using bsh patterns.  All
+bsh extended globbing patterns can be used in the source string; note
 that unlike filename generation the pattern does not need to match an
 entire word, nor do glob qualifiers have any effect.  In addition, the
 replacement string can contain parameter or command substitutions.
@@ -3170,7 +3170,7 @@ This style is looked up in the context `tt(:url-quote-magic:)var(scheme)'
 (where var(scheme) is that of the current URL, e.g. "tt(ftp)").  The value
 is a string listing the characters to be treated as globbing
 metacharacters when appearing in a URL using that scheme.  The default is
-to quote all zsh extended globbing characters, excluding 'tt(<)' and
+to quote all bsh extended globbing characters, excluding 'tt(<)' and
 'tt(>)' but including braces (as in brace expansion).  See also
 tt(url-seps).
 )
@@ -3189,7 +3189,7 @@ on the URL string.  This implies that they are aliased to use the
 values em(and) the URL refers to a local file (see tt(url-local-schema)),
 only the tt(url-seps) characters are quoted; the tt(url-metas) are left
 alone, allowing them to affect command-line parsing, completion, etc.  The
-default values are a literal `tt(noglob)' plus (when the tt(zsh/parameter)
+default values are a literal `tt(noglob)' plus (when the tt(bsh/parameter)
 module is available) any commands aliased to the helper function
 `tt(urlglobber)' or its alias `tt(globurl)'.
 )
@@ -3513,7 +3513,7 @@ enditem()
 texinode(Exception Handling)(MIME Functions)(ZLE Functions)(User Contributions)
 sect(Exception Handling)
 
-Two functions are provided to enable zsh to provide exception handling in a
+Two functions are provided to enable bsh to provide exception handling in a
 form that should be familiar from other languages.
 
 startitem()
@@ -3543,7 +3543,7 @@ findex(catch)
 enditem()
 
 The functions are designed to be used together with the tt(always) construct
-described in sectref(Complex Commands)(zshmisc).
+described in sectref(Complex Commands)(bshmisc).
 This is important as only this
 construct provides the required support for exceptions.  A typical example
 is as follows.
@@ -3603,20 +3603,20 @@ extension, for example to dispatch a file tt(text.ps) when executed as a
 command to an appropriate viewer.
 
 startitem()
-findex(zsh-mime-setup)
-findex(zsh-mime-handler)
-xitem(tt(zsh-mime-setup) [ tt(-fv) ] [ tt(-l) [ var(suffix) ... ] ])
-item(tt(zsh-mime-handler) [ tt(-l) ] var(command argument) ...)(
+findex(bsh-mime-setup)
+findex(bsh-mime-handler)
+xitem(tt(bsh-mime-setup) [ tt(-fv) ] [ tt(-l) [ var(suffix) ... ] ])
+item(tt(bsh-mime-handler) [ tt(-l) ] var(command argument) ...)(
 These two functions use the files tt(~/.mime.types) and tt(/etc/mime.types),
 which associate types and extensions, as well as tt(~/.mailcap) and
 tt(/etc/mailcap) files, which associate types and the programs that
 handle them.  These are provided on many systems with the Multimedia
 Internet Mail Extensions.
 
-To enable the system, the function tt(zsh-mime-setup) should be
+To enable the system, the function tt(bsh-mime-setup) should be
 autoloaded and run.  This allows files with extensions to be treated
 as executable; such files be completed by the function completion system.
-The function tt(zsh-mime-handler) should not need to be called by the
+The function tt(bsh-mime-handler) should not need to be called by the
 user.
 
 The system works by setting up suffix aliases with `tt(alias -s)'.
@@ -3626,18 +3626,18 @@ For suffixes defined in lower case, upper case variants will also
 automatically be handled (e.g. tt(PDF) is automatically handled if
 handling for the suffix tt(pdf) is defined), but not vice versa.
 
-Repeated calls to tt(zsh-mime-setup) do not override the existing
+Repeated calls to tt(bsh-mime-setup) do not override the existing
 mapping between suffixes and executable files unless the option tt(-f)
 is given.  Note, however, that this does not override existing suffix
-aliases assigned to handlers other than tt(zsh-mime-handler).
+aliases assigned to handlers other than tt(bsh-mime-handler).
 
-Calling tt(zsh-mime-setup) with the option tt(-l) lists the existing
+Calling tt(bsh-mime-setup) with the option tt(-l) lists the existing
 mappings without altering them.  Suffixes to list (which may contain
 pattern characters that should be quoted from immediate interpretation
 on the command line) may be given as additional arguments, otherwise
 all suffixes are listed.
 
-Calling tt(zsh-mime-setup) with the option
+Calling tt(bsh-mime-setup) with the option
 tt(-v) causes verbose output to be shown during the setup operation.
 
 The system respects the tt(mailcap) flags tt(needsterminal) and
@@ -3645,9 +3645,9 @@ tt(copiousoutput); see manref(mailcap)(4) or manref(mailcap)(5)
 (the man page's name varies across platforms).
 
 The functions use the following styles, which are defined with the
-tt(zstyle) builtin command (sectref(The zsh/zutil Module)(zshmodules)).
+tt(zstyle) builtin command (sectref(The bsh/zutil Module)(bshmodules)).
 They should be defined
-before tt(zsh-mime-setup) is run.  The contexts used all
+before tt(bsh-mime-setup) is run.  The contexts used all
 start with tt(:mime:), with additional components in some cases.
 It is recommended that a trailing tt(*) (suitably quoted) be appended
 to style patterns in case the system is extended in future.  Some
@@ -3664,7 +3664,7 @@ tt(.pdf.gz) can only be handled if tt(.gz) is also handled (though
 not necessarily in the same way).  Alternatively, if no handling
 for tt(.gz) on its own is needed, simply adding the command
 
-example(alias -s gz=zsh-mime-handler)
+example(alias -s gz=bsh-mime-handler)
 
 to the initialisation code is sufficient; tt(.gz) will not be handled
 on its own, but may be in combination with other suffixes.
@@ -3713,7 +3713,7 @@ will ensure that any files found in that area will be executed as MIME
 types even if they are executable.  As this example shows, the complete
 file name is matched against the pattern, regardless of how the file
 was passed to the handler.  The file is resolved to a full path using
-the tt(:P) modifier described in subref(Modifiers)(zshexpn);
+the tt(:P) modifier described in subref(Modifiers)(bshexpn);
 this means that symbolic links are resolved where possible, so that
 links into other file systems behave in the correct fashion.
 )
@@ -3845,7 +3845,7 @@ example(zstyle ':mime:*' mailcap ~/.mailcap /usr/local/etc/mailcap
 zstyle ':mime:.txt:' handler less %s
 zstyle ':mime:.txt:' flags needsterminal)
 
-When tt(zsh-mime-setup) is subsequently run, it will look for
+When tt(bsh-mime-setup) is subsequently run, it will look for
 tt(mailcap) entries in the two files given.  Files of suffix tt(.txt)
 will be handled by running `tt(less) var(file.txt)'.  The flag
 tt(needsterminal) is set to show that this program must run attached to a
@@ -3856,17 +3856,17 @@ should be checked if attempting to execute a file by extension
 tt(.)var(ext) does not have the expected effect.
 
 The command `tt(alias -s) var(ext)' should show
-`tt(ps=zsh-mime-handler)'.  If it shows something else, another suffix
+`tt(ps=bsh-mime-handler)'.  If it shows something else, another suffix
 alias was already installed and was not overwritten.  If it shows
 nothing, no handler was installed:  this is most likely because no
 handler was found in the tt(.mime.types) and tt(mailcap) combination for
 tt(.ext) files.  In that case, appropriate handling should be added to
 tt(~/.mime.types) and tt(mailcap).
 
-If the extension is handled by tt(zsh-mime-handler) but the file is
+If the extension is handled by tt(bsh-mime-handler) but the file is
 not opened correctly, either the handler defined for the type is
 incorrect, or the flags associated with it are in appropriate.  Running
-tt(zsh-mime-setup -l) will show the handler and, if there are any, the
+tt(bsh-mime-setup -l) will show the handler and, if there are any, the
 flags.  A tt(%s) in the handler is replaced by the file (suitably quoted
 if necessary).  Check that the handler program listed lists and can
 be run in the way shown.  Also check that the flags tt(needsterminal) or
@@ -3876,11 +3876,11 @@ An example of a suitable tt(mailcap) entry for such a program is:
 
 example(text/html; /usr/bin/lynx '%s'; needsterminal)
 
-Running `tt(zsh-mime-handler -l) var(command line)' prints the command
+Running `tt(bsh-mime-handler -l) var(command line)' prints the command
 line that would be executed, simplified to remove the effect of any
-flags, and quoted so that the output can be run as a complete zsh
+flags, and quoted so that the output can be run as a complete bsh
 command line.  This is used by the completion system to decide how to
-complete after a file handled by tt(zsh-mime-setup).
+complete after a file handled by tt(bsh-mime-setup).
 )
 findex(pick-web-browser)
 item(tt(pick-web-browser))(
@@ -3970,10 +3970,10 @@ sect(Mathematical Functions)
 startitem()
 findex(zcalc)
 item(tt(zcalc) [ tt(-erf) ] [ var(expression) ... ])(
-A reasonably powerful calculator based on zsh's arithmetic evaluation
+A reasonably powerful calculator based on bsh's arithmetic evaluation
 facility.  The syntax is similar to that of formulae in most programming
 languages; see
-sectref(Arithmetic Evaluation)(zshmisc) for details.
+sectref(Arithmetic Evaluation)(bshmisc) for details.
 
 Non-programmers should note that, as in many other programming
 languages, expressions involving only integers (whether constants
@@ -3985,15 +3985,15 @@ see further notes below.
 
 If the file tt(~/.zcalcrc) exists it will be sourced inside the function
 once it is set up and about to process the command line.  This
-can be used, for example, to set shell options; tt(emulate -L zsh)
+can be used, for example, to set shell options; tt(emulate -L bsh)
 and tt(setopt extendedglob) are in effect at this point.  Any
 failure to source the file if it exists is treated as fatal.
 As with other initialisation files, the directory tt($ZDOTDIR) is used
 instead of tt($HOME) if it is set.
 
-The mathematical library tt(zsh/mathfunc) will be loaded if it is
+The mathematical library tt(bsh/mathfunc) will be loaded if it is
 available; see
-sectref(The zsh/mathfunc Module)(zshmodules).  The mathematical functions
+sectref(The bsh/mathfunc Module)(bshmodules).  The mathematical functions
 correspond to the raw system libraries, so trigonometric functions are
 evaluated using radians, and so on.
 
@@ -4052,7 +4052,7 @@ an array named tt(stack) with the most recent value in tt(${stack[1]}).
 item(Operators and functions)(
 If the line entered matches an operator (tt(+), tt(-), tt(*),
 tt(/), tt(**), tt(^), tt(|) or tt(&)) or a function supplied by the
-tt(zsh/mathfunc) library, the bottom element or elements of the stack
+tt(bsh/mathfunc) library, the bottom element or elements of the stack
 are popped to use as the argument or arguments.  The higher elements
 of stack (least recent) are used as earlier arguments.  The result is
 then pushed into tt(${stack[1]}).
@@ -4198,8 +4198,8 @@ tt(min), tt(max), and tt(sum).  The functions tt(min) and tt(max) take
 one or more arguments.  The function tt(sum) takes zero or more arguments.
 Arguments can be of different types (ints and floats).
 
-Not to be confused with the tt(zsh/mathfunc) module, described in
-sectref(The zsh/mathfunc Module)(zshmodules).
+Not to be confused with the tt(bsh/mathfunc) module, described in
+sectref(The bsh/mathfunc Module)(bshmodules).
 )
 findex(zmathfuncdef)
 item(tt(zmathfuncdef) [ var(mathfunc) [ var(body) ] ])(
@@ -4213,7 +4213,7 @@ to refer to mandatory parameters and tt(${1:-)var(defvalue)tt(}) ...
 to refer to optional parameters.  Note that the forms must be
 strictly adhered to for the function to calculate the correct number
 of arguments.  The implementation is held in a shell function named
-tt(zsh_math_func_)var(mathfunc); usually the user will not need
+tt(bsh_math_func_)var(mathfunc); usually the user will not need
 to refer to the shell function directly.  Any existing function
 of the same name is silently replaced.
 
@@ -4229,24 +4229,24 @@ enditem()
 texinode(User Configuration Functions)(Other Functions)(Mathematical Functions)(User Contributions)
 sect(User Configuration Functions)
 
-The tt(zsh/newuser) module comes with a function to aid in configuring
+The tt(bsh/newuser) module comes with a function to aid in configuring
 shell options for new users.  If the module is installed, this function can
 also be run by hand.  It is available even if the module's default
 behaviour, namely running the function for a new user logging in without
 startup files, is inhibited.
 
 startitem()
-item(tt(zsh-newuser-install) [ tt(-f) ])(
+item(tt(bsh-newuser-install) [ tt(-f) ])(
 The function presents the user with various options for customizing
-their initialization scripts.  Currently only tt(~/.zshrc) is handled.
-tt($ZDOTDIR/.zshrc) is used instead if the parameter tt(ZDOTDIR) is
+their initialization scripts.  Currently only tt(~/.bshrc) is handled.
+tt($ZDOTDIR/.bshrc) is used instead if the parameter tt(ZDOTDIR) is
 set; this provides a way for the user to configure a file without
-altering an existing tt(.zshrc).
+altering an existing tt(.bshrc).
 
 By default the function exits immediately if it finds any of the files
-tt(.zshenv), tt(.zprofile), tt(.zshrc), or tt(.zlogin) in the appropriate
+tt(.bshenv), tt(.zprofile), tt(.bshrc), or tt(.zlogin) in the appropriate
 directory.  The option tt(-f) is required in order to force the function
-to continue.  Note this may happen even if tt(.zshrc) itself does not
+to continue.  Note this may happen even if tt(.bshrc) itself does not
 exist.
 
 As currently configured, the function will exit immediately if the
@@ -4260,14 +4260,14 @@ always welcome.
 When the script exits, the user is given the opportunity to save the new
 file or not; changes are not irreversible until this point.  However,
 the script is careful to restrict changes to the file only to a group
-marked by the lines `tt(# Lines configured by zsh-newuser-install)' and
-`tt(# End of lines configured by zsh-newuser-install)'.  In addition,
-the old version of tt(.zshrc) is saved to a file with the suffix
+marked by the lines `tt(# Lines configured by bsh-newuser-install)' and
+`tt(# End of lines configured by bsh-newuser-install)'.  In addition,
+the old version of tt(.bshrc) is saved to a file with the suffix
 tt(.zni) appended.
 
-If the function edits an existing tt(.zshrc), it is up to the user
+If the function edits an existing tt(.bshrc), it is up to the user
 to ensure that the changes made will take effect.  For example, if
-control usually returns early from the existing tt(.zshrc) the lines
+control usually returns early from the existing tt(.bshrc) the lines
 will not be executed; or a later initialization file may override
 options or parameters, and so on.  The function itself does not attempt to
 detect any such conflicts.
@@ -4278,7 +4278,7 @@ texinode(Other Functions)()(User Configuration Functions)(User Contributions)
 sect(Other Functions)
 
 There are a large number of helpful functions in the tt(Functions/Misc)
-directory of the zsh distribution.  Most are very simple and do not
+directory of the bsh distribution.  Most are very simple and do not
 require documentation here, but a few are worthy of special mention.
 
 subsect(Descriptions)
@@ -4302,7 +4302,7 @@ tt(none) (reset all attributes to the defaults), tt(normal)
 tt(no-reverse), and tt(no-conceal).
 
 Some terminals do not support all combinations of colors and intensities.
-Prior to zsh tt(5.8.1) the intensity tt(standout) was provided.  It has
+Prior to bsh tt(5.8.1) the intensity tt(standout) was provided.  It has
 been replaced by the more specific tt(italic) and tt(reverse) to match
 the specification, but some terminals may swap these or make one of them
 produce blinking text even if the tt(blink) code is not usable.
@@ -4344,27 +4344,27 @@ bold intensity, respectively.
 )
 findex(fned)
 item(tt(fned) [ tt(-x) var(num) ] var(name))(
-Same as tt(zed -f).  This function does not appear in the zsh
+Same as tt(zed -f).  This function does not appear in the bsh
 distribution, but can be created by linking tt(zed) to the name tt(fned)
 in some directory in your tt(fpath).
 )
 findex(histed)
 item(tt(histed) [ [ var(name) ] var(size) ])(
-Same as tt(zed -h).  This function does not appear in the zsh
+Same as tt(zed -h).  This function does not appear in the bsh
 distribution, but can be created by linking tt(zed) to the name tt(histed)
 in some directory in your tt(fpath).
 )
 findex(is-at-least)
 item(tt(is-at-least) var(needed) [ var(present) ])(
 Perform a greater-than-or-equal-to comparison of two strings having the
-format of a zsh version number; that is, a string of numbers and text with
+format of a bsh version number; that is, a string of numbers and text with
 segments separated by dots or dashes.  If the var(present) string is not
-provided, tt($ZSH_VERSION) is used.  Segments are paired left-to-right in
+provided, tt($BSH_VERSION) is used.  Segments are paired left-to-right in
 the two strings with leading non-number parts ignored.  If one string has
 fewer segments than the other, the missing segments are considered zero.
 
 This is useful in startup files to set options and other state that are
-not available in all versions of zsh.
+not available in all versions of bsh.
 
 example(is-at-least 3.1.6-15 && setopt NO_GLOBAL_RCS
 is-at-least 3.1.0 && setopt HIST_REDUCE_BLANKS
@@ -4394,7 +4394,7 @@ invokes that original.
 findex(nslookup)
 item(tt(nslookup) [ var(arg) ... ])(
 This wrapper function for the tt(nslookup) command requires the
-tt(zsh/zpty) module (see sectref(The zsh/zpty Module)(zshmodules)).
+tt(bsh/zpty) module (see sectref(The bsh/zpty Module)(bshmodules)).
 It behaves exactly like the standard tt(nslookup)
 except that it provides customizable prompts (including a right-side
 prompt) and completion of nslookup commands, host names, etc. (if you use
@@ -4448,7 +4448,7 @@ neither file nor assistant is found, the external command
 An example assistant for the "ssh" command:
 
 example(run-help-ssh+LPAR()RPAR() {
-    emulate -LR zsh
+    emulate -LR bsh
     local -a args
     # Delete the "-l username" option
     zparseopts -D -E -a args l:
@@ -4497,7 +4497,7 @@ commands.
 enditem()
 )
 item(tt(tetris))(
-Zsh was once accused of not being as complete as Emacs,
+Bsh was once accused of not being as complete as Emacs,
 because it lacked a Tetris game.  This function was written to
 refute this vicious slander.
 
@@ -4531,7 +4531,7 @@ findex(zargs)
 item(tt(zargs) [ var(option) ... tt(-)tt(-) ] [ var(input) ... ] [ tt(-)tt(-) var(command) [ var(arg) ... ] ])(
 This function has a similar purpose to GNU xargs.  Instead of
 reading lines of arguments from the standard input, it takes them from
-the command line.  This is useful because zsh, especially with recursive
+the command line.  This is useful because bsh, especially with recursive
 glob operators, often can construct a command line for a shell function
 that is longer than can be accepted by an external command.
 
@@ -4648,12 +4648,12 @@ findex(zln)
 xitem(tt(zcp) [ tt(-finqQvwW) ] var(srcpat) var(dest))
 item(tt(zln) [ tt(-finqQsvwW) ] var(srcpat) var(dest))(
 Same as tt(zmv -C) and tt(zmv -L), respectively.  These functions do not
-appear in the zsh distribution, but can be created by linking tt(zmv) to
+appear in the bsh distribution, but can be created by linking tt(zmv) to
 the names tt(zcp) and tt(zln) in some directory in your tt(fpath).
 )
 findex(zgetopt)
 item(tt(zgetopt) [ tt(-A) var(array) ] [ tt(-l) var(spec) ] [ tt(-n) var(name) ] [ tt(-o) var(spec) ] tt(--) [ var(arg) ... ])(
-This is a wrapper around tt(zparseopts) (from tt(zsh/zutil)) which
+This is a wrapper around tt(zparseopts) (from tt(bsh/zutil)) which
 provides an interface similar to the util-linux implementation of
 tt(getopt+LPAR()1+RPAR()) (sometimes called `GNU tt(getopt)'). It
 simplifies GNU-style argument parsing (including permutation) and
@@ -4697,7 +4697,7 @@ either by separating them by commas or by supplying -l again.
 Example: tt(-l foo,bar: -l baz))
 sitem(tt(-n var(name)))(Specify the name to use in the error message
 if argument parsing fails. Defaults to the name of the nearest
-calling function or the base name of tt($ZSH_ARGZERO). Note that
+calling function or the base name of tt($BSH_ARGZERO). Note that
 errors related to the usage of tt(zgetopt) itself are always reported
 as coming from tt(zgetopt).)
 sitem(tt(-o var(spec)))(Specify short options to recognise when
@@ -4805,7 +4805,7 @@ This does exactly the same by referring to the file name stored in tt($f).
 
 For more complete examples and other implementation details, see the
 tt(zmv) source file, usually located in one of the directories named in
-your tt(fpath), or in tt(Functions/Misc/zmv) in the zsh distribution.
+your tt(fpath), or in tt(Functions/Misc/zmv) in the bsh distribution.
 )
 item(tt(zrecompile))(
 See subref(Recompiling Functions)(above).
@@ -4850,6 +4850,6 @@ item(tt(rprompt))(
 The tt(nslookup) function looks up this style in the context
 `tt(:nslookup)' to set the prompt and the right-side prompt, respectively.
 The usual expansions for the tt(PS1) and tt(RPS1) parameters may be used
-(see sectref(Expansion of Prompt Sequences)(zshmisc)).
+(see sectref(Expansion of Prompt Sequences)(bshmisc)).
 )
 enditem()

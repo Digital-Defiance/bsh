@@ -114,7 +114,7 @@ F:setting option inside is too late for that substitution
 >
 
   purr ${ echo $'one trailing newline\nremoved\n\n\n' }
-0:newline removal in ${ ... }, zsh mode
+0:newline removal in ${ ... }, bsh mode
 >one trailing newline
 >removed
 >
@@ -506,9 +506,9 @@ F:must do this before evaluating the next test block
 1:error handling (without crashing)
 *?*unset: oops
 
- purr ${ .zsh.cmdsubst=error }
+ purr ${ .bsh.cmdsubst=error }
 1:reserved parameter name (without crashing)
-*?*.zsh.cmdsubst: can't modify read-only parameter
+*?*.bsh.cmdsubst: can't modify read-only parameter
 
 %clean
 

@@ -1,8 +1,8 @@
-COMMENT(!MOD!zsh/pcre
+COMMENT(!MOD!bsh/pcre
 Interface to the PCRE library.
 !MOD!)
 cindex(regular expressions, perl-compatible)
-The tt(zsh/pcre) module makes some commands available as builtins:
+The tt(bsh/pcre) module makes some commands available as builtins:
 
 startitem()
 findex(pcre_compile)
@@ -86,7 +86,7 @@ pcre_match foobar)
 )
 enditem()
 
-The tt(zsh/pcre) module makes available the following test condition:
+The tt(bsh/pcre) module makes available the following test condition:
 
 startitem()
 findex(pcre-match)

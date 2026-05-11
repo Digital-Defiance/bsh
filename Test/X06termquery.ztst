@@ -1,26 +1,26 @@
 # Tests for handling terminal responses to escape sequences
 %prep
 
-  if zmodload zsh/zpty 2> /dev/null; then
+  if zmodload bsh/zpty 2> /dev/null; then
     termresp() {
       setopt localoptions extendedglob
       export PS1= PS2= COLORTERM= TERM=
       typeset +x TERM_PROGRAM
       typeset +x -m .term.\*
       zpty -d
-      zpty zsh "${(q)ZTST_testdir}/../Src/zsh -fiV +Z"
-      zpty -w zsh "module_path=( ${(j< >)${(@q-)module_path}} \$module_path )"
-      zpty -w zsh ".term.extensions=( -bracketed-paste -integration )"
-      zpty -w zsh "setopt zle"
-      zpty -r zsh REPLY $'\e*\r'
-      zpty -n -w zsh "$1"
-      zpty -w zsh "typeset -p -m .term.\*"
-      zpty -w zsh 'exit'
-      { zpty -r zsh } | tr -d '\015' | grep -v '^ '
+      zpty bsh "${(q)ZTST_testdir}/../Src/bsh -fiV +Z"
+      zpty -w bsh "module_path=( ${(j< >)${(@q-)module_path}} \$module_path )"
+      zpty -w bsh ".term.extensions=( -bracketed-paste -integration )"
+      zpty -w bsh "setopt zle"
+      zpty -r bsh REPLY $'\e*\r'
+      zpty -n -w bsh "$1"
+      zpty -w bsh "typeset -p -m .term.\*"
+      zpty -w bsh 'exit'
+      { zpty -r bsh } | tr -d '\015' | grep -v '^ '
       zpty -d
     }
   else
-    ZTST_unimplemented='the zsh/zpty module is not available'
+    ZTST_unimplemented='the bsh/zpty module is not available'
   fi
 
 %test
@@ -108,4 +108,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

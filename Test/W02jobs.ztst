@@ -2,33 +2,33 @@
 
 %prep
 
-  if zmodload zsh/zpty 2> /dev/null; then
+  if zmodload bsh/zpty 2> /dev/null; then
     zpty_start() {
       export PS1= PS2=
       zpty -d
-      zpty zsh "${(q)ZTST_testdir}/../Src/zsh -fiV +Z"
+      zpty bsh "${(q)ZTST_testdir}/../Src/bsh -fiV +Z"
     }
     zpty_input() {
-      zpty -w zsh "${(F)@}" $'\n'
+      zpty -w bsh "${(F)@}" $'\n'
     }
     zpty_line() {
       local REPLY
       integer i
       for (( i = 0; i < ${1:-1}; ++i )); do
-        zpty -r zsh REPLY
+        zpty -r bsh REPLY
         print -r -- ${REPLY%%($'\r\n'|$'\n')}
       done
     }
     zpty_stop() {
       # exit twice in case of check_jobs
-      zpty -w zsh $'exit\nexit\n'
+      zpty -w bsh $'exit\nexit\n'
       # zpty gives no output when piped without these braces (?)
-      { zpty -r zsh } | sed $'/[^[:space:]]/!d; s/\r$//;'
+      { zpty -r bsh } | sed $'/[^[:space:]]/!d; s/\r$//;'
       zpty -d
       :
     }
   else
-    ZTST_unimplemented='the zsh/zpty module is not available'
+    ZTST_unimplemented='the bsh/zpty module is not available'
   fi
 
 %test
@@ -64,7 +64,7 @@
   zpty_stop
 0:running job with no_check_jobs
 *>\[1] [0-9]##
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
   zpty_start
   zpty_input 'setopt check_jobs no_check_running_jobs'
@@ -72,7 +72,7 @@
   zpty_stop
 0:running job with check_jobs + no_check_running_jobs
 *>\[1] [0-9]##
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
   zpty_start
   zpty_input 'setopt check_jobs check_running_jobs'
@@ -80,8 +80,8 @@
   zpty_stop
 0:running job with check_jobs + check_running_jobs
 *>\[1] [0-9]##
-*>zsh:*running jobs*
-*>zsh:*SIGHUPed*
+*>bsh:*running jobs*
+*>bsh:*SIGHUPed*
 
 #### Races presumed to be associated with zpty mean that
 #### tests involving suspending jobs are not safe.
@@ -92,8 +92,8 @@
 ##   zpty_input $'\C-z'
 ##   zpty_stop
 ## 0:suspended job with check_jobs + no_check_running_jobs
-## *>zsh:*(stopped|suspended)*sleep*
-## *>zsh:*(stopped|suspended) jobs*
+## *>bsh:*(stopped|suspended)*sleep*
+## *>bsh:*(stopped|suspended) jobs*
 ## # no 'SIGHUPed' message for suspended jobs
 ## 
 ##   zpty_start
@@ -103,8 +103,8 @@
 ##   zpty_input $'\C-z'
 ##   zpty_stop
 ## 0:suspended job with check_jobs + check_running_jobs
-## *>zsh:*(stopped|suspended)*sleep*
-## *>zsh:*(stopped|suspended) jobs*
+## *>bsh:*(stopped|suspended)*sleep*
+## *>bsh:*(stopped|suspended) jobs*
 ## # no 'SIGHUPed' message for suspended jobs
 
   zpty_start
@@ -118,7 +118,7 @@
 *>\[1]    running*sleep 5*
 *>\[2]  - running*sleep 4*
 *>\[3]  + running*sleep 3*
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
   zpty_start
   zpty_input 'sleep 3 &'
@@ -129,7 +129,7 @@
 *>\[1] [0-9]##
 *>\[1]  + [0-9]## running*sleep*
 *>\[1]  + [0-9]## running*sleep*
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
   zpty_start
   zpty_input 'sleep 3 &'
@@ -139,7 +139,7 @@
 *>\[1] [0-9]##
 *>\[1]  + running*sleep*
 *>\(pwd : ?*\)
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
   zpty_start
   zpty_input 'sleep 3 &'
@@ -153,7 +153,7 @@
 *>\[1]  + running*sleep*
 *>\[1]  + running*sleep*
 *>-
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
 ##   zpty_start
 ##   zpty_input 'sleep 5'
@@ -164,7 +164,7 @@
 ##   zpty_input 'jobs -s'
 ##   zpty_stop
 ## 0:`jobs -r` and `jobs -s` with suspended job
-## *>zsh:*(stopped|suspended)*sleep*
+## *>bsh:*(stopped|suspended)*sleep*
 ## *>-
 ## *>\[1]  + (stopped|suspended)*sleep*
 ## # no 'SIGHUPed' message for suspended jobs
@@ -195,4 +195,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

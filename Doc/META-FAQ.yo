@@ -45,9 +45,9 @@ DECWSLEVEL()\
 ENDDEF()\
 )\
 ------------------------
-META-FAQ for the Z Shell
+META-FAQ for the BrightShell
 ------------------------
 
 The latest version of this META-FAQ can be found at any of the FTP sites
 listed below.
-INCLUDEFILE(Zsh/metafaq.yo)\
+INCLUDEFILE(Bsh/metafaq.yo)\

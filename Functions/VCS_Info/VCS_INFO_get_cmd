@@ -1,4 +1,4 @@
-## vim:ft=zsh
+## vim:ft=bsh
 # find out if the user wants us to use a special binary.
 # the default command name is the same as the backend name.
 local cmd

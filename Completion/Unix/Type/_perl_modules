@@ -1,6 +1,6 @@
 #compdef pmpath pmvers pmdesc pmload pmexp pmeth pmls pmcat pman pmfunc podgrep podtoc podpath
 #
-# _perl_modules - zsh completion function
+# _perl_modules - bsh completion function
 #
 # Adam Spiers <adam@spiers.net>
 #
@@ -27,10 +27,10 @@
 #
 # * try-to-use-pminst
 #
-#   Set this if you have pminst and want to use it.  The zsh code
+#   Set this if you have pminst and want to use it.  The bsh code
 #   actually produces better results because pminst misses modules of
 #   the form Foo/bar/Baz.pm through its clumsy -d && /^[A-Z]/ && prune
-#   algorithm (the zsh code does almost the same, but only misses
+#   algorithm (the bsh code does almost the same, but only misses
 #   modules which don't begin with an uppercase letter).
 
 _perl_modules () {

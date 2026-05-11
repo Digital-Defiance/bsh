@@ -6,7 +6,7 @@
 # Maybe this should try and look for an appropriate session to use
 # for the transfer.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 [[ $curcontext = :zf* ]] || local curcontext=:zfgoto
 

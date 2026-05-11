@@ -1,4 +1,4 @@
-name=zsh/regex
+name=bsh/regex
 link=`if test x$ac_cv_func_regcomp = xyes && \
          test x$ac_cv_func_regexec = xyes && \
          test x$ac_cv_func_regerror = xyes && \

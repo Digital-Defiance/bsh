@@ -1,20 +1,20 @@
-# Tests for the zsh/param/private module
+# Tests for the bsh/param/private module
 
 %prep
 
- if ! zmodload zsh/param/private 2>/dev/null; then
-   ZTST_unimplemented="can't load the zsh/param/private module for testing"
+ if ! zmodload bsh/param/private 2>/dev/null; then
+   ZTST_unimplemented="can't load the bsh/param/private module for testing"
  else
-   # Do not use .tmp here, ztst.zsh will remove it too soon (see %cleanup)
+   # Do not use .tmp here, ztst.bsh will remove it too soon (see %cleanup)
    mkdir private.TMP
-   sed -e 's,# test_zsh_param_private,zmodload zsh/param/private,' < $ZTST_srcdir/B02typeset.ztst > private.TMP/B02
+   sed -e 's,# test_bsh_param_private,zmodload bsh/param/private,' < $ZTST_srcdir/B02typeset.ztst > private.TMP/B02
  fi
 
  setopt TYPESET_TO_UNSET
 
 %test
 
- (zmodload -u zsh/param/private && zmodload zsh/param/private)
+ (zmodload -u bsh/param/private && zmodload bsh/param/private)
 0:unload and reload the module without crashing
 
  typeset scalar_test=toplevel
@@ -58,7 +58,7 @@
 >setme
 >0
 
- # Depends on zsh-5.0.9 typeset keyword
+ # Depends on bsh-5.0.9 typeset keyword
  typeset -a array_test=(top level)
  () {
   local -Pa array_test=(in function)
@@ -147,11 +147,11 @@ F:note "typeset" rather than "private" in output from outer
 
  inner () {
   print $+scalar_test
-  $ZTST_testdir/../Src/zsh -fc 'print X $scalar_test'
+  $ZTST_testdir/../Src/bsh -fc 'print X $scalar_test'
  }
  () {
   private -x scalar_test=whaat
-  $ZTST_testdir/../Src/zsh -fc 'print X $scalar_test'
+  $ZTST_testdir/../Src/bsh -fc 'print X $scalar_test'
   inner
   print Y $scalar_test
  }
@@ -163,12 +163,12 @@ F:note "typeset" rather than "private" in output from outer
 
  inner () {
   typeset -p array_test
-  $ZTST_testdir/../Src/zsh -fc 'print X $array_test'
+  $ZTST_testdir/../Src/bsh -fc 'print X $array_test'
  }
  () {
   local -Pax array_test=(whaat)
   print Y $array_test
-  $ZTST_testdir/../Src/zsh -fc 'print X $array_test'
+  $ZTST_testdir/../Src/bsh -fc 'print X $array_test'
   inner
  }
 0:exported private behaves like a local, part 2 (arrays do not export)
@@ -179,16 +179,16 @@ F:note "typeset" rather than "private" in output from outer
 
  inner () {
   print $+scalar_test
-  $ZTST_testdir/../Src/zsh -fc 'print X $scalar_test'
+  $ZTST_testdir/../Src/bsh -fc 'print X $scalar_test'
  }
  () {
   private scalar_test=whaat
   export scalar_test
-  $ZTST_testdir/../Src/zsh -fc 'print X $scalar_test'
+  $ZTST_testdir/../Src/bsh -fc 'print X $scalar_test'
   inner
   () {
    print $+scalar_test
-   $ZTST_testdir/../Src/zsh -fc 'print X $scalar_test'
+   $ZTST_testdir/../Src/bsh -fc 'print X $scalar_test'
   }
   print Y $scalar_test
  }
@@ -293,11 +293,11 @@ F:future revision will create a global with this assignment
 0:private parameter may hide a special parameter
 
  if (( UID )); then
-   ZTST_verbose=0 $ZTST_exe +Z -f $ZTST_srcdir/ztst.zsh private.TMP/B02
+   ZTST_verbose=0 $ZTST_exe +Z -f $ZTST_srcdir/ztst.bsh private.TMP/B02
  else
    ZTST_skip="cannot re-run typeset tests when tests run as superuser"
  fi
-0:typeset still works with zsh/param/private module loaded
+0:typeset still works with bsh/param/private module loaded
 *>*
 *>*
 

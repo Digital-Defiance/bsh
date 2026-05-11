@@ -11,6 +11,6 @@ _arguments -S -A '-*' -s \
   '-q[run quietly]' \
   '(3)-r[reverse lookup using strptime]' \
   '-s+[assign result to parameter]:param:_parameters' \
-  '1:format: _date_formats zsh' \
+  '1:format: _date_formats bsh' \
   "2:$two" \
   '3:nanoseconds' \

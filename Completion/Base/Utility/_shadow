@@ -28,7 +28,7 @@
 # * name collisions are possible in alternate usage
 # * functions that examine $0 probably misfire
 
-zmodload zsh/parameter # Or what?
+zmodload bsh/parameter # Or what?
 
 # This probably never comes up, but protect ourself from recursive call
 # chains that may duplicate the top elements of $funcstack by creating
@@ -38,7 +38,7 @@ builtin typeset -gHa .shadow.stack
 
 # Create a copy of each fname so that a caller may redefine
 _shadow() {
-  emulate -L zsh
+  emulate -L bsh
   local -A fsfx=( -s ${funcstack[2]}:${functrace[2]}:$((.shadow.depth+1)) )
   local fname shadowname
   local -a fnames
@@ -69,7 +69,7 @@ _shadow() {
 
 # Remove the redefined function and shadowing name
 _unshadow() {
-  emulate -L zsh
+  emulate -L bsh
   local fname shadowname fsfx=${.shadow.stack[1]}
   local -a fnames
   [[ -n $fsfx ]] || return 1

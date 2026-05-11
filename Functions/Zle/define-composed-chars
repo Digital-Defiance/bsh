@@ -1,15 +1,15 @@
 # This is not a widget function, it is only a helper for insert-composed-char
 # to cut down on resident memory use.
 
-emulate -L zsh
+emulate -L bsh
 setopt cbases
 
-# The associative array zsh_accent_chars is indexed by the
+# The associative array bsh_accent_chars is indexed by the
 # accent.  The values are sets of character / Unicode pairs for
 # the character with the given accent.  The Unicode value is
 # a hex index with no base discriminator; essentially a UCS-4 index
 # with the leading zeroes suppressed.
-typeset -gA zsh_accented_chars
+typeset -gA bsh_accented_chars
 
 # Save quite a lot of space by using short names internally.
 local -A z
@@ -466,4 +466,4 @@ z[D]+=" U 2195"
 a=\=
 z[$a]+=" < 21D0 = 21D4"
 
-zsh_accented_chars=("${(kv)z[@]}")
+bsh_accented_chars=("${(kv)z[@]}")

@@ -1,11 +1,11 @@
-# Someone once accused zsh of not being as complete as Emacs, because it
+# Someone once accused bsh of not being as complete as Emacs, because it
 # lacks Tetris and an adventure game.
 #
 # autoload -Uz tetris
 # zle -N tetris
 # bindkey '...' tetris
 
-emulate -L zsh
+emulate -L bsh
 
 tetris_hsz=11
 tetris_vsz=20
@@ -57,7 +57,7 @@ unset tetris_board tetris_score
 
 zle -N tetris
 function tetris {
-	emulate -L zsh
+	emulate -L bsh
 	if ! zle; then
 		print -u2 "Use M-x tetris RET to play tetris."
 		return 2
@@ -75,7 +75,7 @@ function tetris {
 }
 
 function tetris-new-block {
-	emulate -L zsh
+	emulate -L bsh
 	tetris_block=$tetris_shapes[1+RANDOM%$#tetris_shapes]
 	tetris_block_y=0
 	tetris_block_x=4
@@ -92,7 +92,7 @@ function tetris-new-block {
 
 zle -N tetris-left
 function tetris-left {
-	emulate -L zsh
+	emulate -L bsh
 	tetris-place-block " "
 	(( tetris_block_x-- ))
 	tetris-block-fits || (( tetris_block_x++ ))
@@ -102,7 +102,7 @@ function tetris-left {
 
 zle -N tetris-right
 function tetris-right {
-	emulate -L zsh
+	emulate -L bsh
 	tetris-place-block " "
 	(( tetris_block_x++ ))
 	tetris-block-fits || (( tetris_block_x-- ))
@@ -112,7 +112,7 @@ function tetris-right {
 
 zle -N tetris-rotate
 function tetris-rotate {
-	emulate -L zsh
+	emulate -L bsh
 	tetris-place-block " "
 	local save_block=$tetris_block
 	tetris_block=$tetris_rotations[$tetris_block]
@@ -123,7 +123,7 @@ function tetris-rotate {
 
 zle -N tetris-drop
 function tetris-drop {
-	emulate -L zsh
+	emulate -L bsh
 	tetris-place-block " "
 	((tetris_block_y++))
 	while tetris-block-fits; do
@@ -135,7 +135,7 @@ function tetris-drop {
 
 zle -N tetris-timeout
 function tetris-timeout {
-	emulate -L zsh
+	emulate -L bsh
 	tetris-place-block " "
 	((tetris_block_y++))
 	if tetris-block-fits; then
@@ -148,7 +148,7 @@ function tetris-timeout {
 }
 
 function tetris-block-dropped {
-	emulate -L zsh
+	emulate -L bsh
 	tetris-place-block "O"
 	local fl=${tetris_blankline// /O} i=$((tetris_block_y*tetris_hsz)) y
 	for ((y=0; y!=4; y++)); do
@@ -163,7 +163,7 @@ function tetris-block-dropped {
 }
 
 function tetris-block-fits {
-	emulate -L zsh
+	emulate -L bsh
 	local y x i=$((1+tetris_block_y*tetris_hsz+tetris_block_x)) b=0x8000
 	for ((y=0; y!=4; y++)); do
 		for ((x=0; x!=4; x++)); do
@@ -183,7 +183,7 @@ function tetris-block-fits {
 }
 
 function tetris-place-block {
-	emulate -L zsh
+	emulate -L bsh
 	local y x i=$((1+tetris_block_y*tetris_hsz+tetris_block_x)) b=0x8000
 	for ((y=0; y!=4; y++)); do
 		for ((x=0; x!=4; x++)); do
@@ -196,7 +196,7 @@ function tetris-place-block {
 }
 
 function tetris-timed-move {
-	emulate -L zsh
+	emulate -L bsh
 	tetris-render-screen
 	LBUFFER=
 	RBUFFER=$'\n'$tetris_screen
@@ -205,7 +205,7 @@ function tetris-timed-move {
 }
 
 function tetris-render-screen {
-	emulate -L zsh
+	emulate -L bsh
 	setopt extendedglob
 	local s i extras
 	extras=(
@@ -229,7 +229,7 @@ function tetris-render-screen {
 
 zle -N tetris-quit
 function tetris-quit {
-	emulate -L zsh
+	emulate -L bsh
 	if [[ ! -o always_last_prompt ]]; then
 		BUFFER=
 		zle -M $tetris_screen

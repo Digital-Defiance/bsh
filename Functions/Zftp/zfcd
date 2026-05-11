@@ -19,7 +19,7 @@
 #   second, we can no do 'zfcd $PWD' and the like, and that will
 #     work just as long as the directory structures under the home match.
 
-emulate -L zsh
+emulate -L bsh
 [[ $curcontext = :zf* ]] || local curcontext=:zfcd
 
 if [[ $1 = /* ]]; then

@@ -1,4 +1,4 @@
-name=zsh/mathfunc
+name=bsh/mathfunc
 link=dynamic
 load=no
 

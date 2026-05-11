@@ -43,7 +43,7 @@
 1:error test for max()
 ?(eval):1: wrong number of arguments: max()
 
- zsh_math_func_min "foo bar" x y z
+ bsh_math_func_min "foo bar" x y z
 2d:check errors from an unsupported use-case (workers/48156)
 # We expect one non-empty line of stderr, but don't care about the specific
 # error message; thus, the expectation is a pattern (*), for stderr (?), which
@@ -51,7 +51,7 @@
 #
 # Sorry, Perl, but I had to give you a run for your money.
 *??*
-F:Calling zsh_math_func_min directly isn't a supported use-case, but if it
+F:Calling bsh_math_func_min directly isn't a supported use-case, but if it
 F:returns zero, something's probably wrong.
 
 

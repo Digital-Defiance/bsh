@@ -10,7 +10,7 @@
 # To read from midway through a local file, `tail +<n>c' is used.
 # It would be nice to find a way of doing this which works on all OS's.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfcput
 local loc rem stat=0 locst remst offs tailtype

@@ -1,6 +1,6 @@
-## vim:ft=zsh
+## vim:ft=bsh
 ## Written by Frank Terbeck <ft@bewatermyfriend.org>
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 setopt localoptions extendedglob NO_shwordsplit
 local base=${1%%/##} tmp

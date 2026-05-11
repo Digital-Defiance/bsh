@@ -3,7 +3,7 @@
 # numbers of arguments, but that could be done.  Type overloading would be
 # more fraught.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 local -a match mbegin mend line
 local func
@@ -13,7 +13,7 @@ if (( $# > 2 )); then
   return 1
 fi
 
-zmodload -i zsh/parameter || return 1
+zmodload -i bsh/parameter || return 1
 
 if (( $# == 0 )); then
   functions -M | while read -A line; do
@@ -26,7 +26,7 @@ if (( $# == 0 )); then
 fi
 
 local mname=$1
-local fname="zsh_math_func_$1"
+local fname="bsh_math_func_$1"
 
 if (( $# == 1 )); then
   functions +M $mname && unfunction $fname
@@ -53,7 +53,7 @@ functions -M $mname $iarg $ioptarg $fname || return 1
 
 # See if we need to autoload a math function from the standard
 # library.
-if ! zmodload -e zsh/mathfunc; then
+if ! zmodload -e bsh/mathfunc; then
   local -a mathfuncs match mbegin mend loads
   local mathfuncpat bodysearch
 
@@ -73,7 +73,7 @@ if ! zmodload -e zsh/mathfunc; then
     fi
   done
   if (( ${#loads} )); then
-    zmodload -af zsh/mathfunc $loads
+    zmodload -af bsh/mathfunc $loads
   fi
 fi
 

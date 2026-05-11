@@ -1,5 +1,5 @@
 # Prompt for an search in the history for a pattern.
-# Patterns to search are standard zsh patterns, but may include
+# Patterns to search are standard bsh patterns, but may include
 # ^ at the start or $ at the end to anchor the pattern to the
 # start or end of the history entry respectively.
 #
@@ -9,12 +9,12 @@
 #   zle -N history-pattern-search-forward history-pattern-search
 
 # Use extended globbing by default.
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 # Load required features.
 autoload -Uz read-from-minibuffer
-zmodload -i zsh/parameter
+zmodload -i bsh/parameter
 
 local REPLY dir new
 integer i

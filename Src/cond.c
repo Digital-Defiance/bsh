@@ -1,7 +1,7 @@
 /*
  * cond.c - evaluate conditional expressions
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,22 +12,22 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "cond.pro"
 
 /**/
@@ -112,7 +112,7 @@ evalcond(Estate state, char *fromtest)
 	}
     case COND_REGEX:
 	{
-	    char *modname = isset(REMATCHPCRE) ? "zsh/pcre" : "zsh/regex";
+	    char *modname = isset(REMATCHPCRE) ? "bsh/pcre" : "bsh/regex";
 	    sprintf(overridename = overridebuf, "-%s-match", modname+4);
 	    (void)ensurefeature(modname, "C:", overridename+1);
 	    ctype = COND_MODI;

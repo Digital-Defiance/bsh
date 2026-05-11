@@ -1,6 +1,6 @@
 # function zfanon {
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfanon
 local opt opt_1 dir

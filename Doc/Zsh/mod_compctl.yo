@@ -1,8 +1,8 @@
-COMMENT(!MOD!zsh/compctl
+COMMENT(!MOD!bsh/compctl
 The tt(compctl) builtin for controlling completion.
 !MOD!)
-The tt(zsh/compctl) module makes available two builtin commands. tt(compctl),
+The tt(bsh/compctl) module makes available two builtin commands. tt(compctl),
 is the old, deprecated way to control completions for ZLE.  See
-nmref(Completion Using compctl)(zshcompctl).
+nmref(Completion Using compctl)(bshcompctl).
 The other builtin command, tt(compcall) can be used in user-defined
-completion widgets, see nmref(Completion Widgets)(zshcompwid).
+completion widgets, see nmref(Completion Widgets)(bshcompwid).

@@ -4,17 +4,17 @@ use strict;
 
 =head1 NAME
 
-make-zsh-urls -- create F<~/.zsh/urls> hierarchy
+make-bsh-urls -- create F<~/.bsh/urls> hierarchy
 
 =head1 SYNOPSIS
 
-% make-zsh-urls [B<OPTION>] ...
+% make-bsh-urls [B<OPTION>] ...
 
 =head1 DESCRIPTION
 
-make-zsh-urls creates a hierarchy of files and directories under
-F<~/.zsh/urls> for use by the _urls completion function in the new
-completion system of zsh 3.1.6 and higher.
+make-bsh-urls creates a hierarchy of files and directories under
+F<~/.bsh/urls> for use by the _urls completion function in the new
+completion system of bsh 3.1.6 and higher.
 
 It needs the B<URI::Bookmarks> suite of modules to run, which are
 available from CPAN, the Comprehensive Perl Archive Network.
@@ -23,7 +23,7 @@ See B<http://www.perl.com/cpan> or L<CPAN> for more information.
 The following options are available:
 
 B<--output-dir>, B<-o>   Specify the output directory for the 
-                   hierarchy.  Defaults to F<~/.zsh/urls>.
+                   hierarchy.  Defaults to F<~/.bsh/urls>.
 
 B<--input-file>, B<-i>   Specify the input bookmarks file.
                    Defaults to F<~/.netscape/bookmarks.html>.
@@ -48,7 +48,7 @@ GetOptions('output-dir|o=s' => \$out_dir,
 
 usage() if $help;
 
-$out_dir ||= "$ENV{HOME}/.zsh/urls";
+$out_dir ||= "$ENV{HOME}/.bsh/urls";
 $input_file ||= "$ENV{HOME}/.netscape/bookmarks.html";
 
 my $bookmarks =
@@ -128,10 +128,10 @@ sub post_callback {
 
 sub usage {
   print <<EOF;
-Usage: make-zsh-urls [OPTION] ...
+Usage: make-bsh-urls [OPTION] ...
   --help, -h         Display this help.
   --output-dir, -o   Specify the output directory for the hierarchy.
-                     Defaults to ~/.zsh/urls.
+                     Defaults to ~/.bsh/urls.
   --input-file, -i   Specify the input bookmarks file.
                      Defaults to ~/.netscape/bookmarks.html.
   --root-node, -r    Specify which folder contains the bookmarks which
@@ -150,6 +150,6 @@ EOF
 
   Copyright (c) 1999 Adam Spiers <adam@spiers.net>. All rights
   reserved. This program is free software; you can redistribute it and/or
-  modify it under the same terms as Perl or zsh.
+  modify it under the same terms as Perl or bsh.
 
 =cut

@@ -1,7 +1,7 @@
 /*
  * zle_utils.c - miscellaneous line editor utilities
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -121,8 +121,8 @@ zlecharasstring(ZLE_CHAR_T inchar, char *buf)
     char *ptr;
 
 #ifdef __STDC_ISO_10646__
-    if (ZSH_INVALID_WCHAR_TEST(inchar)) {
-	buf[0] = ZSH_INVALID_WCHAR_TO_CHAR(inchar);
+    if (BSH_INVALID_WCHAR_TEST(inchar)) {
+	buf[0] = BSH_INVALID_WCHAR_TO_CHAR(inchar);
 	ret = 1;
     } else
 #endif
@@ -226,8 +226,8 @@ zlelineasstring(ZLE_STRING_T instr, int inll, int incs, int *outllp,
 	    }
 	}
 #ifdef __STDC_ISO_10646__
-	if (ZSH_INVALID_WCHAR_TEST(instr[i])) {
-	    s[mb_len++] = ZSH_INVALID_WCHAR_TO_CHAR(instr[i]);
+	if (BSH_INVALID_WCHAR_TEST(instr[i])) {
+	    s[mb_len++] = BSH_INVALID_WCHAR_TO_CHAR(instr[i]);
 	} else
 #endif
 	{
@@ -449,7 +449,7 @@ stringaszleline(char *instr, int incs, int *outll, int *outsz, int *outcs)
 #ifdef __STDC_ISO_10646__
 	    if (cnt == MB_INCOMPLETE || cnt == MB_INVALID) {
 		/* Use private encoding for invalid single byte */
-		*outptr = ZSH_CHAR_TO_INVALID_WCHAR(*inptr);
+		*outptr = BSH_CHAR_TO_INVALID_WCHAR(*inptr);
 		cnt = 1;
 	    }
 #else
@@ -1003,7 +1003,7 @@ cuttext(ZLE_STRING_T line, int ct, int flags)
 	Cutbuffer kptr;
 	if (!kring) {
 	    kringsize = KRINGCTDEF;
-	    kring = (Cutbuffer)zshcalloc(kringsize * sizeof(struct cutbuffer));
+	    kring = (Cutbuffer)bshcalloc(kringsize * sizeof(struct cutbuffer));
 	} else
 	    kringnum = (kringnum + 1) % kringsize;
 	kptr = kring + kringnum;

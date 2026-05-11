@@ -1,11 +1,11 @@
-emulate -L zsh
+emulate -L bsh
 
 if [[ $1 != -n ]]; then
-   zmodload -i zsh/net/tcp || return 1
-   zmodload -ia zsh/zftp zftp || return 1
+   zmodload -i bsh/net/tcp || return 1
+   zmodload -ia bsh/zftp zftp || return 1
 fi
 
-if zmodload -i zsh/zutil; then
+if zmodload -i bsh/zutil; then
   local arr
   # Set defaults for styles if none set.
   zstyle -g arr ':zftp:*' progress || zstyle ':zftp:*' progress bar

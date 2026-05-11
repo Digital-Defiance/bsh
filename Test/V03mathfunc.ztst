@@ -1,8 +1,8 @@
-# Tests for the module zsh/mathfunc
+# Tests for the module bsh/mathfunc
 
 %prep
-  if ! zmodload zsh/mathfunc 2>/dev/null; then
-    ZTST_unimplemented="The module zsh/mathfunc is not available."
+  if ! zmodload bsh/mathfunc 2>/dev/null; then
+    ZTST_unimplemented="The module bsh/mathfunc is not available."
   fi
 
 %test

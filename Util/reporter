@@ -1,4 +1,4 @@
-#!/usr/local/bin/zsh
+#!/usr/local/bin/bsh
 #
 # NAME:
 #	reporter
@@ -12,7 +12,7 @@
 #	variables, limits, completion settings, and option settings to
 #	stdout in the form of a script.
 #
-#	If you run into a zsh bug, someone can source the output script to
+#	If you run into a bsh bug, someone can source the output script to
 #	recreate most of the environment under which you were working.
 #
 #	IMPORTANT:	"source" this script, don't try to run it directly.
@@ -41,7 +41,7 @@
 #		awk, cut, echo, grep, sed, sort
 #	Assumes that your C preprocessor lives in /lib/cpp or /usr/ccs/lib/cpp.
 #	Uses (and unsets) variables beginning with "reporter_".
-#	Won't work for versions of zsh that are older than 3.1.3 or so.
+#	Won't work for versions of bsh that are older than 3.1.3 or so.
 #
 # RESTRICTIONS:
 #	DON'T:	pretend you wrote it, sell it, or blame me if it breaks.
@@ -49,7 +49,7 @@
 #					--Wiccan saying, I think
 #
 # BUGS:
-#	I'm sure there are more than a few.  To be safe, run "zsh -f" before
+#	I'm sure there are more than a few.  To be safe, run "bsh -f" before
 #	sourcing the output from this script.  If you have "screen", you may
 #	want to use that, too; I hammered my terminal settings beyond repair
 #	when using an early version, and "screen" saved me from having to
@@ -57,7 +57,7 @@
 #
 # HISTORY:
 #	The name was ripped off from the Emacs "reporter.el" function.
-#	The idea came from a mail message to the ZSH mailing list:
+#	The idea came from a mail message to the BSH mailing list:
 #
 # Begin Configuration Section
 #
@@ -194,7 +194,7 @@ do
 	esac
 done
 
-echo '# START zsh saveset'
+echo '# START bsh saveset'
 echo '# uname: ' `eval $reporter_uname -a`
 echo
 
@@ -244,7 +244,7 @@ fi
 
 #
 #	COMPLETION COMMANDS
-#	Warning:  this won't work for zsh-2.5.03.
+#	Warning:  this won't work for bsh-2.5.03.
 #
 
 if [[ "$reporter_do_all" = "yes" || "$reporter_do_compctl" = "yes" ]]
@@ -466,7 +466,7 @@ then
 fi
 
 echo
-echo '# END zsh saveset'
+echo '# END bsh saveset'
 
 #
 #	Don't put an exit here, or you'll get a nasty surprise when you

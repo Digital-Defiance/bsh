@@ -1,6 +1,6 @@
 # function zfcd_match {
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 # see zfcd for details of this hack

@@ -41,12 +41,12 @@ After the first one or two arguments have been appropriated as described above,
 the remaining arguments are assigned to the positional parameters.
 
 For further options, which are common to invocation and the tt(set)
-builtin, see nmref(Options)(zshoptions).
+builtin, see nmref(Options)(bshoptions).
 
 The long option `tt(-)tt(-emulate)' followed (in a separate word) by an
 emulation mode may be passed to the shell.
 The emulation modes are those described for the tt(emulate) builtin,
-see nmref(Shell Builtin Commands)(zshbuiltins).
+see nmref(Shell Builtin Commands)(bshbuiltins).
 The `tt(-)tt(-emulate)' option must precede any other options (which might
 otherwise be overridden), but following options are honoured, so
 may be used to modify the requested emulation mode.  Note that certain
@@ -59,7 +59,7 @@ Options may be specified by name using the tt(-o) option.  tt(-o) acts like
 a single-letter option, but takes a following string as the option name.
 For example,
 
-example(zsh -x -o shwordsplit scr)
+example(bsh -x -o shwordsplit scr)
 
 runs the script tt(scr), setting the tt(XTRACE) option by the corresponding
 letter `tt(-x)' and the tt(SH_WORD_SPLIT) option by name.
@@ -72,7 +72,7 @@ cindex(long option)
 Options may also be specified by name in GNU long option style,
 `tt(-)tt(-)var(option-name)'.  When this is done, `tt(-)' characters in the
 option name are permitted: they are translated into `tt(_)', and thus ignored.
-So, for example, `tt(zsh -)tt(-sh-word-split)' invokes zsh with the
+So, for example, `tt(bsh -)tt(-sh-word-split)' invokes bsh with the
 tt(SH_WORD_SPLIT) option turned on.  Like other option syntaxes, options can
 be turned off by replacing the initial `tt(-)' with a `tt(PLUS())'; thus
 `tt(+-sh-word-split)' is equivalent to `tt(-)tt(-no-sh-word-split)'.
@@ -107,4 +107,4 @@ startmenu()
 menu(Compatibility)
 endmenu()
 
-includefile(Zsh/compat.yo)
+includefile(Bsh/compat.yo)

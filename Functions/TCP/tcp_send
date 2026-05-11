@@ -1,4 +1,4 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases
 
 local opt quiet all sess fd nonewline cat line
@@ -51,7 +51,7 @@ fi
 # Writing on a TCP connection closed by the remote end can cause SIGPIPE.
 # The following test is reasonably robust, though in principle we can
 # mistake a SIGPIPE owing to another fd.  That doesn't seem like a big worry.
-# `emulate -L zsh' will already have set localtraps.
+# `emulate -L bsh' will already have set localtraps.
 local TCP_FD_CLOSED
 trap 'TCP_FD_CLOSED=1' PIPE
 

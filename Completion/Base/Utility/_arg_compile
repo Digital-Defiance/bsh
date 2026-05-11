@@ -88,7 +88,7 @@
 # Something less obscure than "unless :" would be nice.
 # Warning or other syntax check for stuff after the last phrase.
 
-emulate -L zsh
+emulate -L bsh
 local -h argspec dspec helpspec prelude xor
 local -h -A amap dmap safe
 

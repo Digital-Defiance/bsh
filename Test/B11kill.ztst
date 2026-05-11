@@ -8,24 +8,24 @@
 
 # Correct invocation
 
-  if zmodload zsh/system &>/dev/null; then
+  if zmodload bsh/system &>/dev/null; then
     (
       trap 'exit 19' TERM
       kill $sysparams[pid]
     )
   else
-    ZTST_skip='Cannot zmodload zsh/system, skipping kill with no sigspec'
+    ZTST_skip='Cannot zmodload bsh/system, skipping kill with no sigspec'
   fi
 19:kill with no sigspec
 
 
-  if zmodload zsh/system &>/dev/null; then
+  if zmodload bsh/system &>/dev/null; then
     (
       trap 'exit 11' USR1
       kill -USR1 $sysparams[pid]
     )
   else
-    ZTST_skip='Cannot zmodload zsh/system, skipping kill with sigspec'
+    ZTST_skip='Cannot zmodload bsh/system, skipping kill with sigspec'
   fi
 11:kill with sigspec
 

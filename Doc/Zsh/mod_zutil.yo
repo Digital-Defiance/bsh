@@ -1,9 +1,9 @@
-COMMENT(!MOD!zsh/zutil
+COMMENT(!MOD!bsh/zutil
 Some utility builtins, e.g. the one for supporting configuration via 
 styles.
 !MOD!)
 cindex(builtins, utility)
-The tt(zsh/zutil) module only adds some builtins:
+The tt(bsh/zutil) module only adds some builtins:
 
 startitem()
 findex(zstyle)
@@ -39,7 +39,7 @@ findex(weather, example function)
 For example, a fictional `tt(weather)' plugin might state in its documentation
 that it looks up the tt(preferred-precipitation) style under the
 `tt(:weather:)var(continent)tt(:)var(day-of-the-week)tt(:)var(phase-of-the-moon)' context.
-According to this, you might set the following in your tt(zshrc):
+According to this, you might set the following in your tt(bshrc):
 
 example(zstyle ':weather:europe:*' preferred-precipitation rain
 zstyle ':weather:*:Sunday:*' preferred-precipitation snow)

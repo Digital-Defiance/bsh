@@ -52,7 +52,7 @@ _zcalc_line() {
     # but it may jog the user's memory...
     if (( CURRENT == 2 )); then
       _wanted math-functions expl 'math function' \
-	compadd -- ${${(k)functions:#^zsh_math_func_*}##zsh_math_func_}
+	compadd -- ${${(k)functions:#^bsh_math_func_*}##bsh_math_func_}
     else
       _math
     fi

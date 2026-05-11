@@ -1,7 +1,7 @@
 # Generic colour fade-bar prompt theme from bashprompt
 # Created by Jim Foltz <aa204@acorn.net>
 # Changed by Spidey 08/06
-# Converted to zsh prompt theme by <adam@spiers.net>
+# Converted to bsh prompt theme by <adam@spiers.net>
 
 prompt_fade_help () {
   cat <<EOH

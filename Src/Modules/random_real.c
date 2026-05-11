@@ -4,7 +4,7 @@
 /*
  * random_real.c - module to access kernel random sources.
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2022 Clinton Bunch
  * All rights reserved.
@@ -15,17 +15,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Clinton Bunch or the Zsh Development Group be liable
+ * In no event shall Clinton Bunch or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Clinton Bunch and the Zsh Development Group have been advised of
+ * even if Clinton Bunch and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Clinton Bunch and the Zsh Development Group specifically disclaim any
+ * Clinton Bunch and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Clinton Bunch and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -85,7 +85,7 @@ random_64bit(void) {
     uint64_t r;
 
     if(getrandom_buffer(&r,sizeof(r)) < 0) {
-	zwarn("zsh/random: Can't get sufficient random data.");
+	zwarn("bsh/random: Can't get sufficient random data.");
 	return 1; /* 0 will cause loop */
     }
 

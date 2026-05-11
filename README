@@ -1,5 +1,5 @@
 -----------------
-THE Z SHELL (ZSH)
+THE Z SHELL (BSH)
 -----------------
 
 Version
@@ -7,19 +7,19 @@ Version
 
 This is version 5.10 of the shell.  This is a security and feature release.
 There are several visible improvements since 5.9, as well as bug fixes.
-All zsh installations are encouraged to upgrade as soon as possible.
+All bsh installations are encouraged to upgrade as soon as possible.
 
 Note in particular the changes highlighted under "Incompatibilities since
 5.9" below.  See NEWS for more information.
 
-Installing Zsh
+Installing Bsh
 --------------
 
-The instructions for compiling zsh are in the file INSTALL.  You should
+The instructions for compiling bsh are in the file INSTALL.  You should
 also check the file MACHINES in the top directory to see if there
 are any special instructions for your particular architecture.
 
-Note in particular the zsh/newuser module that guides new users through
+Note in particular the bsh/newuser module that guides new users through
 setting basic shell options without the administrator's intervention.  This
 is turned on by default.  See the section AUTOMATIC NEW USER CONFIGURATION
 in INSTALL for configuration information.
@@ -27,9 +27,92 @@ in INSTALL for configuration information.
 Features
 --------
 
-Zsh is a shell with lots of features.  For a list of some of these, see the
+Bsh is a shell with lots of features.  For a list of some of these, see the
 file FEATURES, and for the latest changes see NEWS.  For more
 details, see the documentation.
+
+BrightDate
+----------
+
+BrightDate is an alternative date/time representation where the integer part
+counts days since the Unix epoch and the fractional part encodes the time
+within that day as a decimal fraction of 86,400 seconds.  The unit for
+durations is the milliday (md), equal to 86.4 seconds.  For example,
+`9591.841738` means day 9591 (relative to 1970-01-01) at roughly 20:10 UTC.
+
+bsh integrates BrightDate throughout its builtins via a statically-linked
+Rust library (brightdate-rust).  The FFI entry point is:
+
+    double bsh_unix_to_brightdate(double unix_secs);
+
+The following features all use BrightDate natively:
+
+**bsh/brightdate module** (`zmodload bsh/brightdate`)
+
+  bdate        Print the current date in BrightDate format (replaces `date`)
+  btime        Print the current time in BrightDate format (replaces `time`)
+  buptime      Print system uptime in millidays (replaces `uptime`)
+  bcal         Display a calendar in BrightDate notation (replaces `cal`)
+  bwatch       Watch a command, showing elapsed time in millidays (replaces `watch`)
+
+  Loading this module also installs `date`, `time`, `uptime`, `cal`, and
+  `watch` as shell builtins that shadow any external commands of the same
+  name.
+
+**bsh/files module** (`zmodload bsh/files`)
+
+  ls [-l] [-a] [-L]
+             Long-format listing shows all three timestamps as BrightDate
+             decimal values labelled b= (birth), a= (access), m= (modify).
+             Example output:
+               -rw-r--r--  jessica  staff  1234  b=9591.841000 a=9591.841500 m=9591.841200  README
+
+**bsh/stat module** (`zmodload bsh/stat`)
+
+  stat         The `atime`, `mtime`, `ctime`, and `btime` (birth time) fields
+               are emitted as BrightDate decimal values by default.  Pass
+               `-F <strftime-fmt>` to use traditional strftime formatting
+               instead.  The `btime` field is new to bsh (not present in
+               upstream zsh stat) and is populated from `st_birthtimespec`
+               on platforms that expose it (macOS, BSDs).
+
+**bsh/datetime module** (`zmodload bsh/datetime`)
+
+  $BRIGHTEPOCH Read-only floating-point parameter holding the current time as
+               a BrightDate value.  Updated on every access, analogous to
+               $EPOCHREALTIME.  Useful for elapsed-time arithmetic in scripts:
+
+                 zmodload bsh/datetime
+                 start=$BRIGHTEPOCH
+                 do_work
+                 echo "elapsed: $(( BRIGHTEPOCH - start )) md"
+
+**Prompt escape %P**
+
+  In any prompt string, `%P` expands to the current time as a BrightDate
+  decimal value (6 decimal places).  Example:
+
+    PROMPT='[%P] %# '
+    # renders as:  [9591.841738] %
+
+  (Note: `%B` is already used for bold text, so BrightDate uses `%P` for
+  "Present".)
+
+**history / fc**
+
+  When history timestamps are enabled (`setopt EXTENDED_HISTORY` or the `-t`
+  flag to `fc`/`history`), command-execution timestamps are shown in
+  BrightDate format.  The `-D` flag to `fc`/`history` shows elapsed
+  command duration in millidays rather than seconds.  Example:
+
+    history -t     # timestamps as BrightDate
+    fc -l -D       # with milliday durations
+
+**times builtin**
+
+  The built-in `times` command reports user and system CPU time (for the
+  shell and its children) in millidays rather than the traditional
+  minutes:seconds format.
 
 Incompatibilities since 5.9
 ---------------------------
@@ -49,7 +132,7 @@ or, if your $VISUAL and $EDITOR environment variables vary,
         bindkey -e
     fi
 
-to your .zshrc file.  These snippets are compatible with previous
+to your .bshrc file.  These snippets are compatible with previous
 versions of the shell.
 
 Restricted mode has been removed.  This was associated with the option
@@ -126,14 +209,14 @@ numeric constant.
 
 Nul and characters greater than \x77 are correctly handled by `read -d`.
 
-Return values of `sysopen` from the zsh/system module have been updated
+Return values of `sysopen` from the bsh/system module have been updated
 to be more similar to other commands in that module.
 
-Tied parameters created with the zsh/db/gdbm module may not be re-tied
+Tied parameters created with the bsh/db/gdbm module may not be re-tied
 as locals in nested function scope.  This prevents database corruption
 when a function scope ends.
 
-The zsh/datetime module's strftime builtin now exports a set-but-empty
+The bsh/datetime module's strftime builtin now exports a set-but-empty
 TZ parameter (as in `TZ= strftime ...`) for use by the underlying
 library.  On most systems, this is equivalent to setting TZ to UTC.
 
@@ -141,7 +224,7 @@ The typeset builtin now prints the floating-point values NaN, Inf, and
 -Inf using that capitalisation, which matches the capitalisation used by
 arithmetic expansion.  (Previously they were printed in lowercase.)
 
-The zsh/zutil module's zparseopts builtin now always uses the last
+The bsh/zutil module's zparseopts builtin now always uses the last
 option name as given when storing it in an array.  (Previously, options
 mapped with -M would sometimes be stored using the first name given.)
 
@@ -168,7 +251,7 @@ insecure elements from the set of completion functions, where previously
 it ignored the compaudit result and included all elements.
 
 Build-time change: The default value of the --enable-gdbm configure
-argument has changed from "yes" to "no".  Thus, the zsh/db/gdbm module will
+argument has changed from "yes" to "no".  Thus, the bsh/db/gdbm module will
 not be built unless --enable-gdbm is passed explicitly.
 
 vcs_info quilt: The value of the 'quiltcommand' style used to be taken for the
@@ -194,23 +277,23 @@ an end-of-options guard (same as "ls --").
 
 The sh-compatible function definition syntax, "f() { ... }", is unchanged.
 
-The time-out (-t) value given to zsh/system's `zsystem flock` command is
+The time-out (-t) value given to bsh/system's `zsystem flock` command is
 now limited to 2^30-1 seconds (= a little over 34 years).
 
 zstyle: For background, recall that the zstyle builtin associates styles with
 values for particular contexts, and when a context (such as ':foo:bar:baz') is
 matched by multiple patterns (such as ':foo:*' and ':foo:bar:*'), the style's
-value for the more specific of the patterns is used.  In zsh 5.8 and earlier
+value for the more specific of the patterns is used.  In bsh 5.8 and earlier
 the determination of which pattern is "more specific" used semantics slightly
 different to those the documentation promised.  The implementation was changed
 to match the documentation.  The upshot of this is that if you set a single
-style in multiple contexts, zsh 5.9 may use the values set for a pattern other
-than the one zsh 5.8 used.  For example, if you do
+style in multiple contexts, bsh 5.9 may use the values set for a pattern other
+than the one bsh 5.8 used.  For example, if you do
     zstyle ':foo:bar:*'   style value1
     zstyle ':foo:*:baz:*' style value2
 and the style is looked up under a context that both patterns match (e.g.,
-:foo:bar:baz:qux), zsh 5.9 will use value2 -- which is consistent with the
-documentation of both 5.8 and 5.9 -- but zsh 5.8 will use value1.  If this
+:foo:bar:baz:qux), bsh 5.9 will use value2 -- which is consistent with the
+documentation of both 5.8 and 5.9 -- but bsh 5.8 will use value1.  If this
 affects you, make the implied colons in the first pattern explicit, as in:
     zstyle ':foo:bar:*:*' style value1
     zstyle ':foo:*:baz:*' style value2
@@ -228,8 +311,8 @@ right thing, but this should be viewed as an unsupported hack.)
 The XTRACE option is now disabled while running user-defined completion
 widgets.  See NEWS.
 
-emulate sh: When zsh emulates sh, the final command in a pipeline is now run in
-a subshell.  This differs from the behavior in the native (zsh) mode, but is
+emulate sh: When bsh emulates sh, the final command in a pipeline is now run in
+a subshell.  This differs from the behavior in the native (bsh) mode, but is
 consistent with most other sh implementations.
 
 The export and readonly builtins now ignore the -p option when there are
@@ -243,7 +326,7 @@ Ignored-signal traps are now inherited by subshells when the POSIX_TRAPS
 option is enabled.
 
 emulate sh: Inf and NaN are now treated as parameter names in arithmetic
-context when zsh is emulating sh.
+context when bsh is emulating sh.
 
 The ${name:offset:length} expansion syntax now behaves more similarly to
 other shells in that the offset and length are applied as array indices
@@ -283,7 +366,7 @@ stack entries when POSIX_CD is enabled.
 Dropping privileges with `unsetopt privileged` may fail (with an error
 message) on some older and uncommon platforms due to library dependency
 changes made in the course of fixing CVE-2019-20044.  Please report this
-to the zsh-workers mailing list if your system is affected.  See NEWS for
+to the bsh-workers mailing list if your system is affected.  See NEWS for
 more.
 
 PROMPT_SUBST expansion is no longer performed on arguments to prompt-
@@ -295,7 +378,7 @@ Incompatibilities between 5.6.2 and 5.7.1
 1) vcs_info git: The gen-unapplied-string hook receives the patches in
 order (next to be applied first).  This is consistent with the hg
 backend and with one of two contradictory claims in the documentation
-(the other one has been corrected).  In zsh through 5.6.2, the patches
+(the other one has been corrected).  In bsh through 5.6.2, the patches
 were passed in reverse order, next to be applied being last in the
 array.
 
@@ -309,7 +392,7 @@ and in the double-parentheses and 'let' arithmetic commands.
 3) _alternative now correctly handles the same (...) action syntax as
 _arguments; this may necessitate quoting/escaping in calls to _alternative
 and _regex_arguments that wasn't previously required.  See
-https://zsh.org/workers/48414 (commit zsh-5.8-348-g2c000ee7b) for details
+https://bsh.org/workers/48414 (commit bsh-5.8-348-g2c000ee7b) for details
 and an example.
 
 Incompatibilities between 5.5.1 and 5.6.2
@@ -353,7 +436,7 @@ and optional "no" prefix) used to be treated as a syntax error, i.e.,
 the enclosing command line or file were aborted.  It now emits a warning
 and returns a non-zero exit code.  For further details, see the
 documentation of the -o switch in the chapter "Conditional Expressions"
-in the zshmisc(1) manual.
+in the bshmisc(1) manual.
 
 
 Incompatibilities between 5.3.1 and 5.4.2
@@ -440,7 +523,7 @@ letter.  Note therefore the useful fact that
 
 matches any character contained in the variable "cset".  A consequence
 of this change is that variables that should have active ranges need
-(with default zsh options) to be indicated explicitly, e.g.
+(with default bsh options) to be indicated explicitly, e.g.
 
   cset="a-z"
   [[ b = [${~cset}] ]]
@@ -458,11 +541,11 @@ leading zeroes and the OCTAL_ZEROES option is set.
 
 3) For some time the shell has had a POSIX_TRAPS option which determines
 whether the EXIT trap has POSIX behaviour (the trap is only run at shell
-exit) or traditional zsh behaviour (the trap is run once and discarded
+exit) or traditional bsh behaviour (the trap is run once and discarded
 when the enclosing function or shell exits, whichever happens first).
 The use of this option has now been made "sticky" on the EXIT trap ---
 in other words, the setting of the option at the point where the trap is
-set now determines whether the trap has POSIX or traditional zsh
+set now determines whether the trap has POSIX or traditional bsh
 behaviour.  This means that changing the option after the trap was set
 no longer has any effect.
 
@@ -470,7 +553,7 @@ Other aspects of EXIT trap handling have not changed --- there is still
 only one EXIT trap at any point in a programme, so it is not generally
 useful to combine POSIX and non-POSIX behaviour in the same script.
 
-4) There was an undocumented feature dating from the early days of zsh
+4) There was an undocumented feature dating from the early days of bsh
 that glob qualifiers consisting only of the digits 0 to 7 were treated
 as an octal file mode to "and" with the modes of files being tested.
 This has been removed in order to be more sensitive to syntax errors.
@@ -494,7 +577,7 @@ also backslashes when obtaining the option's argument from $opt_args.
 
 6) Previously, if the function command_not_found_handler was run
 in place of a command-not-found error, and the function returned
-non-zero status, zsh set the status to 127 and printed an error message
+non-zero status, bsh set the status to 127 and printed an error message
 anyway.  Now, the status from the handler is retained and no additional
 message is printed.  The main reasons for this change are that it was not
 possible to return a non-zero status to the parent shell from a command
@@ -561,7 +644,7 @@ that doesn't support this mode).  Now, the new "bracketed paste mode"
 treats all the pasted text as literal characters.  This means, in
 particular, that a newline is simply inserted as a visible newline; you
 need to hit Return on the keyboard to execute the pasted text in one go.
-See the description of zle_bracketed_paste in the zshparams manual for
+See the description of zle_bracketed_paste in the bshparams manual for
 more.  "unset zle_bracketed_paste" restores the previous behaviour.
 
 As noted in NEWS, the builtins declare, export, float, integer, local,
@@ -569,7 +652,7 @@ readonly and typeset now have corresponding reserved words that provide
 true assignment semantics instead of an approximation by means of normal
 command line arguments.  It is hoped that this additional consistency
 provides a more natural interface.  However, compatibility with older
-versions of zsh can be obtained by turning off the reserved word
+versions of bsh can be obtained by turning off the reserved word
 interface, exposing the builtin interface:
 
   disable -r declare export float integer local readonly typeset
@@ -685,7 +768,7 @@ context still uses the tag 'heads' (but this may change in a future release).
 Incompatibilities between 5.0.2 and 5.0.5
 -----------------------------------------
 
-The "zshaddhistory" hook mechanism documented in the zshmisc manual page
+The "bshaddhistory" hook mechanism documented in the bshmisc manual page
 has been upgraded so that a hook returning status 2 causes a history
 line to be saved on the internal history list but not written to the
 history file.  Previously any non-zero status return would cause
@@ -704,18 +787,18 @@ was not documented and experience suggests it was inconvenient, so in
 
 In other words,
 
-  emulate zsh -c 'func() { ... }'
+  emulate bsh -c 'func() { ... }'
 
 behaves the same way in 5.0.0 and 5.0.2, with the function func always being
-run in native zsh emulation regardless of the current option settings.
+run in native bsh emulation regardless of the current option settings.
 However,
 
-  emulate zsh -c 'autoload -Uz func'
+  emulate bsh -c 'autoload -Uz func'
 
 behaves differently: in 5.0.0, func was loaded with the options in
 effect at the point where it was first run, and subsequently run with
 whatever options were in effect at that point; in 5.0.2, func is loaded
-with native zsh emulation options and run with those same options.  This
+with native bsh emulation options and run with those same options.  This
 is now the recommended way of ensuring a function is loaded and run with
 a consistent set of options.
 
@@ -769,7 +852,7 @@ terminated and a new one started even if they occurred in the middle of
 a string.)  Now all three may be followed by other strings, and the
 latter two may also be preceded by other strings.  Remaining
 limitations on their use (to reduce incompatibilities to a minimum)
-are documented in the zshexpn.1 manual.
+are documented in the bshexpn.1 manual.
 
 In previous versions of the shell it was possible to use index 0 in an
 array or string subscript to refer to the same element as index 1 if the
@@ -800,8 +883,8 @@ The "exec" precommand modifier now takes various options for compatibility
 with other shells.  This means that whereas "exec -prog" previously
 tried to execute a command name "-prog", it will now report an error
 in option handling.  "exec -- -prog" will execute "-prog".  If
-the option EQUALS is set, as it is by default in zsh's native mode,
-"exec =-prog" behaves the same way in all versions of zsh provided
+the option EQUALS is set, as it is by default in bsh's native mode,
+"exec =-prog" behaves the same way in all versions of bsh provided
 the command can be found.
 
 The "unset" builtin now does not regard the unsetting of non-existent
@@ -817,7 +900,7 @@ rate so reported is very rarely related to the limiting speed of
 screen updates on modern systems.  Users who need the compensation
 mechanism should set BAUD to an appropriate rate by hand.
 
-The variable HOME is no longer set by the shell if zsh is emulating any
+The variable HOME is no longer set by the shell if bsh is emulating any
 other shell at startup; it must be present in the environment or set
 subsequently by the user.  It is valid for the variable to be unset.
 
@@ -828,9 +911,9 @@ with external commands, but the "ulimit" command is available by default.
 "limit", "sched" and "unlimit" are not available by default in such modes:
 this has been the case for many versions but is now documented for the
 first time.  (Users should note that emulation modes are not designed for
-backwards compatibility with previous versions of zsh, but to maximise
+backwards compatibility with previous versions of bsh, but to maximise
 compatibility with other shells, hence it is not safe to assume emulation
-modes will behave consistently between zsh versions.)
+modes will behave consistently between bsh versions.)
 
 Parameter substitutions in the form ${param//#%search/replace} match
 against "search" anchored at both ends of the parameter value.  Previously
@@ -859,7 +942,7 @@ option COMBINING_CHARS is not set by default due to difficulties detecting
 the ability of the terminal to display combining characters correctly; MAC
 users in particular will probably wish to set this option.
 
-Zsh has previously been lax about whether it allows octets with the
+Bsh has previously been lax about whether it allows octets with the
 top bit set to be part of a shell identifier.  Older versions of the shell
 assumed all such octets were allowed in identifiers, however the POSIX
 standard does not allow such characters in identifiers.  The older
@@ -911,28 +994,28 @@ set to portable characters only.
 Writers of add-on modules should note that the API has changed
 significantly to allow user control of individual features provided by
 modules.  See the documentation for zmodload -F and
-Etc/zsh-development-guide, in that order.
+Etc/bsh-development-guide, in that order.
 
 Documentation
 -------------
 
-There are a number of documents about zsh in this distribution:
+There are a number of documents about bsh in this distribution:
 
-Doc/Zsh/*.yo	The master source for the zsh documentation is written in
+Doc/Bsh/*.yo	The master source for the bsh documentation is written in
 		yodl.  Yodl is a document language written by Karel Kubat.
-		It is not required by zsh but it is a nice program so you
-		might want to get it anyway, especially if you are a zsh
+		It is not required by bsh but it is a nice program so you
+		might want to get it anyway, especially if you are a bsh
 		developer.  It can be downloaded from
 		https://fbb-git.github.io/yodl/
 
-Doc/zsh*.1	Man pages in nroff format.  These will be installed
+Doc/bsh*.1	Man pages in nroff format.  These will be installed
 		by "make install.man" or "make install".  By default,
 		these will be installed in /usr/local/man/man1, although
 		you can change this with the --mandir option to configure
 		or editing the user configuration section of the top level
 		Makefile.
 
-Doc/zsh.texi	Everything the man pages have, but in texinfo format.  These
+Doc/bsh.texi	Everything the man pages have, but in texinfo format.  These
 		will be installed by "make install.info" or "make install".
 		By default, these will be installed in /usr/local/info,
 		although you can change this with the --infodir option to
@@ -942,25 +1025,25 @@ Doc/zsh.texi	Everything the man pages have, but in texinfo format.  These
 
 Also included in the distribution are:
 
-Doc/intro.ms	An introduction to zsh in troff format using the ms
+Doc/intro.ms	An introduction to bsh in troff format using the ms
 		macros.  This document explains many of the features
-		that make zsh more equal than other shells.
-		Unfortunately this is based on zsh-2.5 so some examples
+		that make bsh more equal than other shells.
+		Unfortunately this is based on bsh-2.5 so some examples
 		may not work without changes but it is still a good
 		introduction.
 
 For more information, see the website, as described in the META-FAQ.
 
 If you do not have the necessary tools to process these documents, PDF,
-Info and DVI versions are available in the separate file zsh-doc.tar.gz at
+Info and DVI versions are available in the separate file bsh-doc.tar.gz at
 the archive sites listed in the META-FAQ.
 
 The distribution also contains a Perl script in Utils/helpfiles which
 can be used to extract the descriptions of builtin commands from the
-zshbuiltins manual page.  See the comments at the beginning of the
+bshbuiltins manual page.  See the comments at the beginning of the
 script about its usage.  The files created by this script can be used
 by example function run-help located in the subdirectory Functions/Misc to
-show information about zsh builtins and run `man' on external commands.
+show information about bsh builtins and run `man' on external commands.
 For this the shell variable HELPDIR should point to a directory containing
 the files generated by the helpfiles script.  run-help should be
 unaliased before loading the run-help function.  After that this function
@@ -970,56 +1053,56 @@ to ESC-h in emacs mode.
 Examples
 --------
 
-Examples of zsh startup files are located in the subdirectory
-StartupFiles.  Examples of zsh functions and scripts are located in
+Examples of bsh startup files are located in the subdirectory
+StartupFiles.  Examples of bsh functions and scripts are located in
 the subdirectory Functions.  Examples of completion control commands
 (compctl) are located in the file Misc/compctl-examples.
 
-Zsh FTP Sites, Web Pages, and Mailing Lists
+Bsh FTP Sites, Web Pages, and Mailing Lists
 -------------------------------------------
 
-The current list of zsh FTP sites, web pages, and mailing lists can be
+The current list of bsh FTP sites, web pages, and mailing lists can be
 found in the META-FAQ.  A copy is included in this distribution and is
-available separately at any of the zsh FTP sites.
+available separately at any of the bsh FTP sites.
 
 Common Problems and Frequently Asked Questions
 ----------------------------------------------
 
-Zsh has a list of Frequently Asked Questions (FAQ) maintained by Peter
-Stephenson <pws@zsh.org>.  It covers many common problems encountered
-when building, installing, and using zsh.  A copy is included in this
-distribution in Etc/FAQ and is available separately at any of the zsh
+Bsh has a list of Frequently Asked Questions (FAQ) maintained by Peter
+Stephenson <pws@bsh.org>.  It covers many common problems encountered
+when building, installing, and using bsh.  A copy is included in this
+distribution in Etc/FAQ and is available separately at any of the bsh
 ftp sites.
 
-Zsh Maintenance and Bug Reports
+Bsh Maintenance and Bug Reports
 -------------------------------
 
-Zsh is currently maintained by the members of the zsh-workers mailing list
-and coordinated by Peter Stephenson <coordinator@zsh.org>.  Please send
-any feedback and bugs reports to <zsh-workers@zsh.org>.
+Bsh is currently maintained by the members of the bsh-workers mailing list
+and coordinated by Peter Stephenson <coordinator@bsh.org>.  Please send
+any feedback and bugs reports to <bsh-workers@bsh.org>.
 
-Reports are most helpful if you can reproduce the bug starting zsh with
+Reports are most helpful if you can reproduce the bug starting bsh with
 the -f option.  This skips the execution of local startup files except
-/etc/zshenv.  If a bug occurs only when some options set try to locate
+/etc/bshenv.  If a bug occurs only when some options set try to locate
 the option which triggers the bug.
 
 There is a script "reporter" in the subdirectory Util which will print out
 your current shell environment/setup.  If you cannot reproduce the bug
-with "zsh -f", use this script and include the output from sourcing this
+with "bsh -f", use this script and include the output from sourcing this
 file.  This way, the problem you are reporting can be recreated.
 
-The known bugs in zsh are listed in the file Etc/BUGS.  Check this as
+The known bugs in bsh are listed in the file Etc/BUGS.  Check this as
 well as the Frequently Asked Questions (FAQ) list before sending a bug
-report.  Note that zsh has some features which are not compatible with
+report.  Note that bsh has some features which are not compatible with
 sh but these are not bugs.  Most of these incompatibilities go away
-when zsh is invoked as sh or ksh (e.g. using a symbolic link).
+when bsh is invoked as sh or ksh (e.g. using a symbolic link).
 
 If you send a bug report to the list and are not a subscriber, please
 mention this in your message if you want a response.
 
-If you would like to contribute to the development and maintenance of zsh,
-then you should join the zsh-workers mailing list (check the META-FAQ
-for info on this).  You should also read the "zsh-development-guide"
+If you would like to contribute to the development and maintenance of bsh,
+then you should join the bsh-workers mailing list (check the META-FAQ
+for info on this).  You should also read the "bsh-development-guide"
 located in the subdirectory Etc.
 
 Contributors

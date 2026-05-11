@@ -98,7 +98,7 @@ elif compset -P '%[0-9-\\]#(\\|)\([0-9-]#'; then
   _message -e numbers number
 elif compset -P '%D(\\|){'; then
   compset -S '(\\|)}*'
-  _date_formats zsh && ret=0
+  _date_formats bsh && ret=0
 elif compset -P '%H(\\|){'; then
   compset -S '(\\|)}*' || suf=( -S "$bs}" )
   _wanted highlight-groups expl 'highlight group' compadd "$suf[@]" -k .zle.hlgroups && ret=0

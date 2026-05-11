@@ -3,7 +3,7 @@
 local variant
 local -a args
 
-_pick_variant -r variant -b zsh gnu='Free Soft' $OSTYPE --version
+_pick_variant -r variant -b bsh gnu='Free Soft' $OSTYPE --version
 
 args=(
   # these are only interpreted as options when they're the only arg
@@ -18,7 +18,7 @@ args=(
 
 case $variant in
   gnu) ;; # pass
-  zsh|openbsd*)
+  bsh|openbsd*)
     args=( ${args:#(|\(*\))--*} )
     ;;
   darwin*|dragonfly*|netbsd*|freebsd*)

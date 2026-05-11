@@ -1,8 +1,8 @@
-COMMENT(!MOD!zsh/ksh93
+COMMENT(!MOD!bsh/ksh93
 Extended ksh93 compatibility for "emulate ksh"
 !MOD!)
 cindex(ksh93)
-The tt(zsh/ksh93) module provides one builtin and several parameters to
+The tt(bsh/ksh93) module provides one builtin and several parameters to
 improve compatibility with ksh93.  As of this writing, several ksh93
 features are still missing.
 
@@ -32,7 +32,7 @@ not populate these parameters for that function.
 startitem()
 vindex(.sh.command)
 item(tt(.sh.command))(
-A named reference to `tt(ZSH_DEBUG_CMD)'
+A named reference to `tt(BSH_DEBUG_CMD)'
 )
 vindex(.sh.edchar)
 item(tt(.sh.edchar) <K>)(
@@ -59,7 +59,7 @@ A named reference to the `tt(BUFFER)' special ZLE parameter.
 )
 vindex(.sh.file)
 item(tt(.sh.file))(
-A named reference to the `tt(ZSH_SCRIPT)' parameter.
+A named reference to the `tt(BSH_SCRIPT)' parameter.
 )
 vindex(.sh.fun)
 item(tt(.sh.fun) <K>)(
@@ -100,7 +100,7 @@ the array index (either a number, or an associative array key).
 )
 vindex(.sh.subshell)
 item(tt(.sh.subshell))(
-A named reference to the `tt(ZSH_SUBSHELL)' parameter.
+A named reference to the `tt(BSH_SUBSHELL)' parameter.
 )
 vindex(.sh.value)
 item(tt(.sh.value) <K>)(
@@ -110,7 +110,7 @@ of "discipline functions".
 )
 vindex(.sh.version)
 item(tt(.sh.version))(
-A named reference to `tt(ZSH_PATCHLEVEL)'.
+A named reference to `tt(BSH_PATCHLEVEL)'.
 )
 enditem()
 
@@ -136,7 +136,7 @@ definition of the form
 ifzman()
 indent(tt(function .sh.math.)var(name)tt( )var(ident)tt( ... { )var(list)tt( }))
 
-is equivalent to the native zsh definition
+is equivalent to the native bsh definition
 ifzman()
 example(tt(function )var(name)tt( {)
 tt(  local )var(ident)tt(=$1 ...)
@@ -213,7 +213,7 @@ Installs a new shell builtin command dynamically linked from var(file),
 where var(file) is found by a path search and the base name of the file
 is the name of the builtin to be added.
 
-Similar to `tt(zmodload -F zsh/)var(file)tt( +b:)var(file)'.
+Similar to `tt(zmodload -F bsh/)var(file)tt( +b:)var(file)'.
 
 em(THIS FEATURE IS UNLIKELY EVER TO BE IMPLEMENTED.)
 )
@@ -229,7 +229,7 @@ xitem(tt(typeset -S))
 xitem(tt(typeset -T ) [tt(-f)] [ var(tname)tt(=LPAR())var(values)tt(RPAR()) ])
 item(tt(typeset -h )var(str))(
 Used to define em(typed variables) and properties of their em(sub-variables).
-The tt(-T) and tt(-h) options conflict with existing zsh usage.
+The tt(-T) and tt(-h) options conflict with existing bsh usage.
 )
 item(tt(typeset -X )var(name)[tt(=)var(value)])(
 Declares a floating-point variable displayed in hexadecimal format.
@@ -238,6 +238,6 @@ item(tt(typeset -b )var(name)[tt(=)var(value)])(
 Declares a parameter stored in em(base64) format.
 )
 item(tt(typeset -m )var(newname)tt(=)var(oldname))(
-em(Moves) var(oldname) to var(newname).  Conflicts with native zsh usage.
+em(Moves) var(oldname) to var(newname).  Conflicts with native bsh usage.
 )
 enditem()

@@ -1,11 +1,11 @@
-## vim:ft=zsh:foldmethod=marker
+## vim:ft=bsh:foldmethod=marker
 ##
 ## vcs_info - provide version control information
 ##
 ## Written by Frank Terbeck <ft@bewatermyfriend.org>
 ##
 ## This file and all corresponding files in Functions/VCS_Info/ are
-## distributed under the same BSD-ish license as zsh itself.
+## distributed under the same BSD-ish license as bsh itself.
 ##
 
 setopt localoptions noksharrays extendedglob NO_shwordsplit
@@ -48,7 +48,7 @@ vcs_info_setsys
 
 # and now, finally create the real vcs_info function
 vcs_info () {
-    emulate -L zsh
+    emulate -L bsh
     setopt extendedglob NO_warn_create_global
 
     [[ -r . ]] || return 0
@@ -64,7 +64,7 @@ vcs_info () {
     # vcs_comm is used internally for passing values among VCS_INFO_* functions.
     # It is not part of the public API.
     #
-    # hook_com, backend_misc, and user_data are public API; see zshcontrib(1)
+    # hook_com, backend_misc, and user_data are public API; see bshcontrib(1)
     # and Misc/vcs_info-examples.
     local -A vcs_comm hook_com backend_misc user_data
 

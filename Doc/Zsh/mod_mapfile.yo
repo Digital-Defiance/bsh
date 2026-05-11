@@ -1,8 +1,8 @@
-COMMENT(!MOD!zsh/mapfile
+COMMENT(!MOD!bsh/mapfile
 Access to external files via a special associative array.
 !MOD!)
 cindex(parameter, file access via)
-The tt(zsh/mapfile) module provides one special associative array parameter of
+The tt(bsh/mapfile) module provides one special associative array parameter of
 the same name.
 
 startitem()
@@ -40,7 +40,7 @@ enditem()
 subsect(Limitations)
 
 Although reading and writing of the file in question is efficiently
-handled, zsh's internal memory management may be arbitrarily baroque;
+handled, bsh's internal memory management may be arbitrarily baroque;
 however, tt(mapfile) is usually very much more efficient than
 anything involving a loop.  Note in particular that
 the whole contents of the file will always reside physically in memory when

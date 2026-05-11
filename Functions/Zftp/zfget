@@ -17,7 +17,7 @@
 # use.  The file is put in the current directory (i.e. using the basename
 # of the remote file only); for more control, use zfgcp.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfget
 local loc rem opt remlist opt_G opt_t opt_c

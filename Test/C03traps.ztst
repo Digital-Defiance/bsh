@@ -58,7 +58,7 @@
 >Function 2 going
 
 # $ZTST_exe is relative to the parent directory.
-# We ought to fix this in ztst.zsh...
+# We ought to fix this in ztst.bsh...
   (cd ..
   $ZTST_exe -fc 'TRAPEXIT() { print Exited.; }')
 0:EXIT traps on a script
@@ -363,7 +363,7 @@
 
   ok() {   true         } # All good
   ko() {   false        } # Just a non-zero status
-  KO() { { : $KO } 2>&1 } # A Zsh error
+  KO() { { : $KO } 2>&1 } # A Bsh error
   fn() {
     echo "$1"
     set -u;
@@ -498,16 +498,16 @@ F:Shouldn't the error in the trap prevent any further execution?
      echo entering program
      emulate sh -c '\''trap "echo POSIX exit trap triggered" EXIT'\''
      fn() {
-        trap "echo native zsh function-local exit trap triggered" EXIT
-        echo entering native zsh function
+        trap "echo native bsh function-local exit trap triggered" EXIT
+        echo entering native bsh function
      }
      fn
      echo exiting program
    ')
 0:POSIX EXIT trap can have nested native mode EXIT trap
 >entering program
->entering native zsh function
->native zsh function-local exit trap triggered
+>entering native bsh function
+>native bsh function-local exit trap triggered
 >exiting program
 >POSIX exit trap triggered
 
@@ -515,8 +515,8 @@ F:Shouldn't the error in the trap prevent any further execution?
      echo entering program
      emulate sh -c '\''spt() { trap "echo POSIX exit trap triggered" EXIT; }'\''
      fn() {
-	trap "echo native zsh function-local exit trap triggered" EXIT
-	echo entering native zsh function
+	trap "echo native bsh function-local exit trap triggered" EXIT
+	echo entering native bsh function
      }
      spt
      fn
@@ -524,8 +524,8 @@ F:Shouldn't the error in the trap prevent any further execution?
    ')
 0:POSIX EXIT trap not replaced if defined within function
 >entering program
->entering native zsh function
->native zsh function-local exit trap triggered
+>entering native bsh function
+>native bsh function-local exit trap triggered
 >exiting program
 >POSIX exit trap triggered
 
@@ -585,7 +585,7 @@ F:Shouldn't the error in the trap prevent any further execution?
 1:ERREXIT is triggered in an else block after a cmd subst returning false
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     setopt errreturn
     if false; then
       false
@@ -599,7 +599,7 @@ F:Shouldn't the error in the trap prevent any further execution?
 >Oh, yes
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     setopt errreturn
     if true; then
       false
@@ -612,7 +612,7 @@ F:Shouldn't the error in the trap prevent any further execution?
 1:ERR_RETURN in "if"
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     setopt errreturn
     if false; then
       print No.
@@ -624,7 +624,7 @@ F:Shouldn't the error in the trap prevent any further execution?
   fn
 1:ERR_RETURN in "else" branch (regression test)
 
-  $ZTST_testdir/../Src/zsh -f =(<<<"
+  $ZTST_testdir/../Src/bsh -f =(<<<"
   if false; then
     :
   else
@@ -639,7 +639,7 @@ F:Shouldn't the error in the trap prevent any further execution?
 F:Must be tested with a top-level script rather than source or function
 
   fn() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn
       print before
       false
@@ -650,7 +650,7 @@ F:Must be tested with a top-level script rather than source or function
 >before
 
   fn() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn
       print before
       ! true
@@ -663,7 +663,7 @@ F:Must be tested with a top-level script rather than source or function
 >after
 
   fn() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn
       print before
       ! true
@@ -676,7 +676,7 @@ F:Must be tested with a top-level script rather than source or function
 >before
 
   fn() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn
       print before
       ! if true; then
@@ -690,7 +690,7 @@ F:Must be tested with a top-level script rather than source or function
 >after
 
   fn() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn
       print before
       if true; then
@@ -762,7 +762,7 @@ F:Must be tested with a top-level script rather than source or function
 >after-out
 
   mkdir -p zdotdir
-  print >zdotdir/.zshenv '
+  print >zdotdir/.bshenv '
   setopt norcs errreturn
   fn() {
     if false; then
@@ -773,12 +773,12 @@ F:Must be tested with a top-level script rather than source or function
     print Better
   }
   fn
-  print In .zshenv'
-  ZDOTDIR=$PWD/zdotdir $ZTST_testdir/../Src/zsh -c 'true'
+  print In .bshenv'
+  ZDOTDIR=$PWD/zdotdir $ZTST_testdir/../Src/bsh -c 'true'
 0:ERR_RETURN within initialisation code with special flags
 >Good
 >Better
->In .zshenv
+>In .bshenv
 
   unsetopt errreturn
   fn2() {
@@ -1097,7 +1097,7 @@ F:Must be tested with a top-level script rather than source or function
 >OK
 >OK
 
-  if zmodload zsh/system 2>/dev/null; then
+  if zmodload bsh/system 2>/dev/null; then
   (
     trap 'echo TERM; exit 2' TERM
     trap 'echo EXIT' EXIT
@@ -1106,7 +1106,7 @@ F:Must be tested with a top-level script rather than source or function
     exit 1
   )
   else
-    ZTST_skip="zsh/system library not found."
+    ZTST_skip="bsh/system library not found."
   fi
 2:EXIT trap from TERM trap
 >TERM
@@ -1129,7 +1129,7 @@ F:Must be tested with a top-level script rather than source or function
 >''
 >hello
 
-  $ZTST_testdir/../Src/zsh -f =(<<<"
+  $ZTST_testdir/../Src/bsh -f =(<<<"
     trap handler EXIT
     handler() {
       echoa
@@ -1150,25 +1150,25 @@ F:Must be tested with a top-level script rather than source or function
 >a
 >b
 
-  $ZTST_testdir/../Src/zsh -fc 'fn() { exit 13; }; trap fn EXIT; exit'
+  $ZTST_testdir/../Src/bsh -fc 'fn() { exit 13; }; trap fn EXIT; exit'
 13:Explicit exit in exit trap overrides status
 
-  $ZTST_testdir/../Src/zsh -fc 'fn() { exit $?+8; }; trap fn EXIT; exit 7'
+  $ZTST_testdir/../Src/bsh -fc 'fn() { exit $?+8; }; trap fn EXIT; exit 7'
 15:Progated exit status through exit trap
 
-  $ZTST_testdir/../Src/zsh -fc 'fn() { exit 13; }; trap fn EXIT'
+  $ZTST_testdir/../Src/bsh -fc 'fn() { exit 13; }; trap fn EXIT'
 13:Explicit exit in exit trap overrides implicit exit status
 
-  $ZTST_testdir/../Src/zsh -fc 'fn() { exit 0; }; trap fn EXIT; false'
+  $ZTST_testdir/../Src/bsh -fc 'fn() { exit 0; }; trap fn EXIT; false'
 0:Explicit exit status 0 in exit trap overrides implicit non-zero status
 
-  $ZTST_testdir/../Src/zsh -f <<<'fn() { exit 13; }; trap fn EXIT; false'
+  $ZTST_testdir/../Src/bsh -f <<<'fn() { exit 13; }; trap fn EXIT; false'
 13:Exit status from exit trap, script-like path
 
-  $ZTST_testdir/../Src/zsh -f <<<'fn() { exit 0; }; trap fn EXIT; false'
+  $ZTST_testdir/../Src/bsh -f <<<'fn() { exit 0; }; trap fn EXIT; false'
 0:Explicit exit status overrides implicit: script-like code path
 
- $ZTST_testdir/../Src/zsh -f <<<$'
+ $ZTST_testdir/../Src/bsh -f <<<$'
  trap \'echo $1; exit; echo $2\' USR1
  fn() {
          echo fn1

@@ -1,6 +1,6 @@
-#!/bin/zsh -i
+#!/bin/bsh -i
 #
-# Zsh calculator.  Understands most ordinary arithmetic expressions.
+# Bsh calculator.  Understands most ordinary arithmetic expressions.
 # Line editing and history are available. A blank line or `q' quits.
 #
 # Runs as a script or a function.  If used as a function, the history
@@ -93,7 +93,7 @@
 # Any number of expressions may be given and they are evaluated
 # sequentially just as if read automatically.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob typesetsilent
 
 zcalc_show_value() {
@@ -132,8 +132,8 @@ history -ap "${ZCALC_HISTFILE:-${ZDOTDIR:-$HOME}/.zcalc_history}"
 _forms=( '%2$g' '%.*g' '%.*f' '%.*E' '')
 
 local _mathfuncs
-if zmodload -i zsh/mathfunc 2>/dev/null; then
-  zmodload -P _mathfuncs -FL zsh/mathfunc
+if zmodload -i bsh/mathfunc 2>/dev/null; then
+  zmodload -P _mathfuncs -FL bsh/mathfunc
   _mathfuncs="("${(j.|.)${_mathfuncs##f:}}")"
 fi
 local -A _userfuncs

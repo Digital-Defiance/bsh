@@ -1,11 +1,11 @@
-texinode(Shell Builtin Commands)(Zsh Line Editor)(Options)(Top)
+texinode(Shell Builtin Commands)(Bsh Line Editor)(Options)(Top)
 chapter(Shell Builtin Commands)
 ifzman(\
 sect(Shell Builtin Commands)
 )\
 def(prefix)(1)(\
 item(tt(ARG1) var(simple command))(
-See sectref(Precommand Modifiers)(zshmisc).
+See sectref(Precommand Modifiers)(bshmisc).
 )\
 )\
 def(alias)(2)(\
@@ -16,12 +16,12 @@ Same as tt(ARG2).
 )\
 def(module)(2)(\
 item(tt(ARG1))(
-See sectref(The ARG2 Module)(zshmodules).
+See sectref(The ARG2 Module)(bshmodules).
 )\
 )\
 def(zlecmd)(1)(\
 item(tt(ARG1))(
-See sectref(Zle Builtins)(zshzle).
+See sectref(Zle Builtins)(bshzle).
 )\
 )\
 
@@ -144,14 +144,14 @@ status is nonzero if a var(name) (with no var(value)) is given for
 which no alias has been defined.
 
 For more on aliases, including common problems,
-see sectref(Aliasing)(zshmisc).
+see sectref(Aliasing)(bshmisc).
 )
 findex(autoload)
 cindex(functions, autoloading)
 cindex(autoloading functions)
 item(tt(autoload) [ {tt(PLUS())|tt(-)}tt(RTUXdkmrtWz) ] [ tt(-w) ] [ var(name) ... ])(
 vindex(fpath, searching)
-See sectref(Autoloading Functions)(zshmisc)
+See sectref(Autoloading Functions)(bshmisc)
 for full details.  The tt(fpath) parameter
 will be searched to find the function definition when the function is
 first referenced.
@@ -212,7 +212,7 @@ with the tt(zcompile) builtin, and all functions defined in them are
 marked for autoloading.
 
 The flags tt(-z) and tt(-k) mark the function to be autoloaded using the
-zsh or ksh style, as if the option tt(KSH_AUTOLOAD) were unset or were
+bsh or ksh style, as if the option tt(KSH_AUTOLOAD) were unset or were
 set, respectively.  The flags override the setting of the option at the
 time the function is loaded.
 
@@ -220,9 +220,9 @@ Note that the tt(autoload) command makes no attempt to ensure the
 shell options set during the loading or execution of the file have
 any particular value.  For this, the tt(emulate) command can be used:
 
-example(emulate zsh -c 'autoload -Uz var(func)')
+example(emulate bsh -c 'autoload -Uz var(func)')
 
-arranges that when var(func) is loaded the shell is in native tt(zsh)
+arranges that when var(func) is loaded the shell is in native tt(bsh)
 emulation, and this emulation is also applied when var(func) is run.
 
 Some of the functions of tt(autoload) are also provided by tt(functions
@@ -250,7 +250,7 @@ item(tt(builtin) var(name) [ var(args) ... ])(
 Executes the builtin var(name), with the given var(args).
 )
 alias(bye)(exit)
-module(cap)(zsh/cap)
+module(cap)(bsh/cap)
 findex(cd)
 cindex(directories, changing)
 xitem(tt(cd) [ tt(-qsLP) ] [ var(arg) ])
@@ -308,7 +308,7 @@ retained in the directory (and not resolved) regardless of the state of
 the tt(CHASE_LINKS) option.
 )
 alias(chdir)(cd)
-module(clone)(zsh/clone)
+module(clone)(bsh/clone)
 findex(command)
 item(tt(command) [ tt(-pvV) ] var(simple command))(
 The simple command argument is taken as an external command instead of
@@ -319,18 +319,18 @@ searched instead of that in tt($path). With the tt(-v) flag, tt(command)
 is similar to tt(whence) and with tt(-V), it is equivalent to tt(whence
 -v).
 
-See also sectref(Precommand Modifiers)(zshmisc).
+See also sectref(Precommand Modifiers)(bshmisc).
 )
-module(comparguments)(zsh/computil)
-module(compcall)(zsh/compctl)
-module(compctl)(zsh/compctl)
-module(compdescribe)(zsh/computil)
-module(compfiles)(zsh/computil)
-module(compgroups)(zsh/computil)
-module(compquote)(zsh/computil)
-module(comptags)(zsh/computil)
-module(comptry)(zsh/computil)
-module(compvalues)(zsh/computil)
+module(comparguments)(bsh/computil)
+module(compcall)(bsh/compctl)
+module(compctl)(bsh/compctl)
+module(compdescribe)(bsh/computil)
+module(compfiles)(bsh/computil)
+module(compgroups)(bsh/computil)
+module(compquote)(bsh/computil)
+module(comptags)(bsh/computil)
+module(comptry)(bsh/computil)
+module(compvalues)(bsh/computil)
 findex(continue)
 cindex(loops, continuing)
 cindex(continuing loops)
@@ -358,7 +358,7 @@ clear the directory stack.
 )
 item(tt(-l))(
 print directory names in full instead of using tt(~) expressions
-(see sectref(Filename Expansion)(zshexpn)).
+(see sectref(Filename Expansion)(bshexpn)).
 )
 item(tt(-p))(
 print directory entries one per line.
@@ -388,7 +388,7 @@ are disabled.  Disabled objects can be enabled with the tt(enable)
 command.
 
 With the option tt(-p), var(name) ... refer to elements of the
-shell's pattern syntax as described in sectref(Filename Generation)(zshexpn).
+shell's pattern syntax as described in sectref(Filename Generation)(bshexpn).
 Certain elements can be disabled separately, as given below.
 
 Note that patterns
@@ -513,11 +513,11 @@ single dash does terminate option processing, so the first dash,
 possibly following options, is not printed, but everything following it
 is printed as an argument.  The single dash behaviour is different
 from other shells.  For a more portable way of printing text, see
-tt(printf), and for a more controllable way of printing text within zsh,
+tt(printf), and for a more controllable way of printing text within bsh,
 see tt(print).
 )
-module(echotc)(zsh/termcap)
-module(echoti)(zsh/terminfo)
+module(echotc)(bsh/termcap)
+module(echoti)(bsh/terminfo)
 findex(emulate)
 cindex(compatibility, sh)
 cindex(compatibility, ksh)
@@ -525,16 +525,16 @@ cindex(compatibility, csh)
 cindex(sh, compatibility)
 cindex(ksh, compatibility)
 cindex(csh, compatibility)
-item(tt(emulate) [ tt(-lLR) ] [ {tt(zsh)|tt(sh)|tt(ksh)|tt(csh)} [ var(flags) ... ] ])(
+item(tt(emulate) [ tt(-lLR) ] [ {tt(bsh)|tt(sh)|tt(ksh)|tt(csh)} [ var(flags) ... ] ])(
 Without any argument print current emulation mode.
 
-With single argument set up zsh options to emulate the specified shell
+With single argument set up bsh options to emulate the specified shell
 as much as possible.
 bf(csh) will never be fully emulated.
-If the argument is not one of the shells listed above, tt(zsh)
+If the argument is not one of the shells listed above, tt(bsh)
 will be used as a default; more precisely, the tests performed on the
 argument are the same as those used to determine the emulation at startup
-based on the shell name, see sectref(Compatibility)(zsh).
+based on the shell name, see sectref(Compatibility)(bsh).
 In addition to setting shell options, the command also restores
 the pristine state of pattern enables, as if all patterns had been
 enabled using tt(enable -p).
@@ -569,7 +569,7 @@ options that may in principle change, not just those that would actually
 change.
 
 The var(flags) may be any of the invocation-time flags described in
-sectref(Invocation)(zsh),
+sectref(Invocation)(bsh),
 except that `tt(-o EMACS)' and `tt(-o VI)' may not be used.
 
 If tt(-c) var(arg) appears in var(flags), var(arg) is evaluated while the
@@ -633,7 +633,7 @@ corresponds to different sticky emulation modes, so for example
 are treated as three distinct sticky emulations.)
 sitem(5.)(Difference in shell options supplied in addition to the
 basic emulation also mean the sticky emulations are different, so for
-example `tt(emulate zsh -c)' and `tt(emulate zsh -o cbases -c)' are
+example `tt(emulate bsh -c)' and `tt(emulate bsh -o cbases -c)' are
 treated as distinct sticky emulations.)
 endsitem()
 )
@@ -679,7 +679,7 @@ With tt(-c) clear the environment; with tt(-l) prepend tt(-) to the
 tt(argv[0]) string of the command executed (to simulate a login shell);
 with tt(-a) var(argv0) set the tt(argv[0]) string of the command
 executed.
-See sectref(Precommand Modifiers)(zshmisc).
+See sectref(Precommand Modifiers)(bshmisc).
 
 If the option tt(POSIX_BUILTINS) is set, var(command) is never
 interpreted as a shell builtin command or shell function.  This
@@ -700,7 +700,7 @@ pindex(IGNORE_EOF, use of)
 An EOF condition will also cause the shell to exit, unless
 the tt(IGNORE_EOF) option is set.
 
-See notes at the end of sectref(Signals)(zshmisc)
+See notes at the end of sectref(Signals)(bshmisc)
 for some possibly unexpected interactions
 of the tt(exit) command with jobs.
 )
@@ -747,7 +747,7 @@ startsitem()
 sitem(tt(-I))(restricts to only internal events (not from tt($HISTFILE)))
 sitem(tt(-L))(restricts to only local events (not from other shells, see
 tt(SHARE_HISTORY) in
-nmref(Description of Options)(zshoptions) -- note that tt($HISTFILE) is
+nmref(Description of Options)(bshoptions) -- note that tt($HISTFILE) is
 considered local when read at startup))
 sitem(tt(-m))(takes the first argument as a pattern (which should be
 quoted) and only the history events matching this pattern are considered)
@@ -783,9 +783,9 @@ sitem(tt(-E))(prints full time-date stamps in the European
 sitem(tt(-i))(prints full time-date stamps in ISO8601
 `var(yyyy)tt(-)var(mm)tt(-)var(dd) var(hh)tt(:)var(mm)' format)
 sitem(tt(-t) var(fmt))(prints time and date stamps in the given format;
-var(fmt) is formatted with the strftime function with the zsh extensions
+var(fmt) is formatted with the strftime function with the bsh extensions
 described for the tt(%D{)var(string)tt(}) prompt format in
-sectref(Simple Prompt Escapes)(zshmisc).
+sectref(Simple Prompt Escapes)(bshmisc).
 The resulting formatted string must be
 no more than 256 characters or will not be printed
 )
@@ -889,7 +889,7 @@ handled by tt(typeset -f).
 
 tt(functions -M) var(mathfn) defines var(mathfn) as the name of
 a mathematical function recognised in all forms of arithmetical expressions;
-see sectref(Arithmetic Evaluation)(zshmisc).
+see sectref(Arithmetic Evaluation)(bshmisc).
 By default var(mathfn) may take
 any number of comma-separated arguments.  If var(min) is given,
 it must have exactly var(min) args; if var(min) and var(max) are
@@ -977,7 +977,7 @@ all functions whose var(mathfn) matches the pattern are removed.  Note
 that the shell function implementing the behaviour is not removed
 (regardless of whether its name coincides with var(mathfn)).
 )
-module(getcap)(zsh/cap)
+module(getcap)(bsh/cap)
 findex(getln)
 cindex(line, reading)
 cindex(reading a line)
@@ -1171,7 +1171,7 @@ on systems that support tt(sigqueue+LPAR()RPAR()).
 findex(let)
 item(tt(let) var(arg) ...)(
 Evaluate each var(arg) as an arithmetic expression.
-See sectref(Arithmetic Evaluation)(zshmisc)
+See sectref(Arithmetic Evaluation)(bshmisc)
 for a description of arithmetic expressions.  The exit status is 0 if the
 value of the last expression is nonzero, 1 if it is zero, and 2 if
 an error occurred.
@@ -1253,7 +1253,7 @@ endsitem()
 
 The tt(limit) command is not made available by default when the
 shell starts in a mode emulating another shell.  It can be made available
-with the command `tt(zmodload -F zsh/rlimits b:limit)'.
+with the command `tt(zmodload -F bsh/rlimits b:limit)'.
 )
 findex(local)
 item(tt(local) [ {tt(PLUS())|tt(-)}tt(AHUahlprtux) ] \
@@ -1306,7 +1306,7 @@ tt(-c) and tt(-C) options.
 )
 item(tt(-b))(
 Recognize all the escape sequences defined for the tt(bindkey) command,
-see sectref(Zle Builtins)(zshzle).
+see sectref(Zle Builtins)(bshzle).
 )
 item(tt(-c))(
 Print the arguments in columns.  Unless tt(-a) is also given, arguments are
@@ -1354,7 +1354,7 @@ Print the arguments to the input of the coprocess.
 )
 item(tt(-P))(
 Perform prompt expansion (see
-sectref(Expansion of Prompt Sequences)(zshmisc)).
+sectref(Expansion of Prompt Sequences)(bshmisc)).
 In combination with `tt(-f)',
 prompt escape sequences are parsed only within interpolated arguments,
 not within the format string.
@@ -1428,7 +1428,7 @@ that allows it to be reused as shell input. With the numeric format
 specifiers, if the corresponding argument starts with a quote character,
 the numeric value of the following character is used as the number to
 print; otherwise the argument is evaluated as an arithmetic expression. See
-sectref(Arithmetic Evaluation)(zshmisc) for a description of arithmetic
+sectref(Arithmetic Evaluation)(bshmisc) for a description of arithmetic
 expressions. With `tt(%n)', the corresponding argument is taken as an
 identifier which is created as an integer parameter.
 
@@ -1548,7 +1548,7 @@ item(tt(-z))(
 Read one entry from the editor buffer stack and assign it to the first
 var(name), without word splitting.  Text is pushed onto the stack with
 `tt(print -z)' or with tt(push-line) from the line editor (see
-nmref(Zsh Line Editor)(zshzle)).
+nmref(Bsh Line Editor)(bshzle)).
 This flag is ignored when the tt(-k) or tt(-q) flags are present.
 )
 xitem(tt(-e))
@@ -1662,7 +1662,7 @@ which caused the trap is passed as the first argument, so the statement
 `tt(return "128PLUS()$1")' will return the same status as if the signal
 had not been trapped.
 )
-module(sched)(zsh/sched)
+module(sched)(bsh/sched)
 findex(set)
 cindex(parameters, listing)
 cindex(parameters, positional)
@@ -1677,7 +1677,7 @@ declare and set an array.  If the tt(-s) option is given, it causes the
 specified arguments to be sorted before assigning them to the positional
 parameters (or to the array var(name) if tt(-A) is used).  With tt(PLUS()s)
 sort arguments in descending order.  For the meaning of the other flags, see
-nmref(Options)(zshoptions).
+nmref(Options)(bshoptions).
 Flags may be specified by name using the tt(-o) option. If no option
 name is supplied with tt(-o), the current option states are printed:  see
 the description of tt(setopt) below for more information on the format.
@@ -1715,9 +1715,9 @@ all parameters are printed on the standard output.  If the only argument is
 
 For historical reasons, `tt(set -)' is treated as `tt(set +xv)'
 and `tt(set -) var(args)' as `tt(set +xv --) var(args)' when in
-any other emulation mode than zsh's native mode.
+any other emulation mode than bsh's native mode.
 )
-module(setcap)(zsh/cap)
+module(setcap)(bsh/cap)
 findex(setopt)
 cindex(options, setting)
 item(tt(setopt) [ {tt(PLUS())|tt(-)}var(options) | \
@@ -1728,8 +1728,8 @@ with flags or by name are set.
 If no arguments are supplied, the names of all options currently set are
 printed.  The form is chosen so as to minimize the differences from the
 default options for the current emulation (the default emulation being
-native tt(zsh), shown as tt(<Z>) in
-sectref(Description of Options)(zshoptions)).
+native tt(bsh), shown as tt(<Z>) in
+sectref(Description of Options)(bshoptions)).
 Options that are on by default for the emulation are
 shown with the prefix tt(no) only if they are off, while other options are
 shown without the prefix tt(no) and only if they are on.  In addition to
@@ -1765,7 +1765,7 @@ item(tt(source) var(file) [ var(arg) ... ])(
 Same as `tt(.)', except that the current directory is always searched and
 is always searched first, before directories in tt($path).
 )
-module(stat)(zsh/stat)
+module(stat)(bsh/stat)
 findex(suspend)
 cindex(shell, suspending)
 cindex(suspending the shell)
@@ -1779,7 +1779,7 @@ xitem(tt(test) [ var(arg) ... ])
 item(tt([) [ var(arg) ... ] tt(]))(
 Like the system version of tt(test).  Added for compatibility;
 use conditional expressions instead (see
-sectref(Conditional Expressions)(zshmisc)).
+sectref(Conditional Expressions)(bshmisc)).
 The main differences between the conditional expression syntax and the
 tt(test) and tt([) builtins are:  these commands are not handled
 syntactically, so for example an empty variable expansion may cause an
@@ -1835,12 +1835,12 @@ If var(sig) is tt(DEBUG) then var(arg) will be executed
 before each command if the option tt(DEBUG_BEFORE_CMD) is set
 (as it is by default), else after each command.  Here, a `command' is
 what is described as a `sublist' in the shell grammar, see
-sectref(Simple Commands & Pipelines)(zshmisc).
+sectref(Simple Commands & Pipelines)(bshmisc).
 If tt(DEBUG_BEFORE_CMD) is set various additional features are available.
 First, it is possible to skip the next command by setting the option
 tt(ERR_EXIT); see the description of the tt(ERR_EXIT) option in
-nmref(Description of Options)(zshoptions).  Also, the shell parameter
-tt(ZSH_DEBUG_CMD) is set to the string corresponding to the command
+nmref(Description of Options)(bshoptions).  Also, the shell parameter
+tt(BSH_DEBUG_CMD) is set to the string corresponding to the command
 to be executed following the trap.  Note that this string is reconstructed
 from the internal format and may not be formatted the same way as the
 original text.  The parameter is unset after the trap is executed.
@@ -1853,7 +1853,7 @@ shell or the return status of the function exiting.
 If var(sig) is tt(0) or tt(EXIT)
 and the tt(trap) statement is not executed inside the body of a function,
 then the command var(arg) is executed when the shell terminates; the
-trap runs before any tt(zshexit) hook functions.
+trap runs before any tt(bshexit) hook functions.
 
 tt(ZERR), tt(DEBUG), and tt(EXIT) traps are not executed inside other
 traps.  tt(ZERR) and tt(DEBUG) traps are kept within subshells, while
@@ -1930,7 +1930,7 @@ Except as noted below for control flags that change the behavior,
 a parameter is created for each var(name) that does not already refer
 to one.  When inside a function, a new parameter is created for every
 var(name) (even those that already exist), and is unset again when the
-function completes.  See sectref(Local Parameters)(zshparam).
+function completes.  See sectref(Local Parameters)(bshparam).
 The same rules apply to special shell parameters, which
 retain their special attributes when made local.
 
@@ -2049,8 +2049,8 @@ is applied to a named reference, the parameter identified by var(value)
 is always found in the calling function scope rather than the current
 local scope.  In this case, if there is no such parameter in the calling
 scope, assignments to the named reference may fail, setting tt($?) to 1.
-See sectref(Parameter Expansion)(zshexpn) and
-sectref(Named References)(zshparam) for details of the
+See sectref(Parameter Expansion)(bshexpn) and
+sectref(Named References)(bshparam) for details of the
 behavior of named references.
 
 Local function scoping rules for `tt(typeset)' do apply with `tt(-n)',
@@ -2131,7 +2131,7 @@ readability.
 
 The names and values of readonly special parameters
 (most of the parameters marked `<S>' in
-sectref(Parameters Set by the Shell)(zshparam),
+sectref(Parameters Set by the Shell)(bshparam),
 except those documented as settable)
 are not printed with `tt(-)tt(p)' because to execute those typeset commands
 would cause errors.  However, these parameters are printed when they
@@ -2182,7 +2182,7 @@ The following attribute flags may be specified:
 startitem()
 item(tt(-A))(
 The names refer to associative array parameters; see
-sectref(Array Parameters)(zshparam).
+sectref(Array Parameters)(bshparam).
 )
 item(tt(-L) [ var(n) ])(
 Left justify and remove leading blanks from the value when the parameter
@@ -2198,7 +2198,7 @@ if the tt(MULTIBYTE) option is in effect.  Note that the screen
 width of the character is not taken into account; if this is required,
 use padding with parameter expansion flags
 tt(${+LPAR()ml)var(...)tt(RPAR())var(...)tt(}) as described in
-subref(Parameter Expansion Flags)(zshexpn).
+subref(Parameter Expansion Flags)(bshexpn).
 
 When the parameter is expanded, it is filled on the right with
 blanks or truncated if necessary to fit the field.
@@ -2256,7 +2256,7 @@ tt(typeset -fU).
 )
 item(tt(-h))(
 Hide: only useful for special parameters (those marked `<S>' in the table in
-sectref(Parameters Set by the Shell)(zshparam)),
+sectref(Parameters Set by the Shell)(bshparam)),
 and for local parameters with the same name as a special parameter,
 though harmless for others.  A special parameter with this attribute will
 not retain its special effect when made local.  Thus after `tt(typeset -h
@@ -2268,7 +2268,7 @@ special tt(PATH) parameter is not altered in any way.  It is also possible
 to create a local parameter using `tt(typeset +h )var(special)', where the
 local copy of var(special) will retain its special properties regardless of
 having the tt(-h) attribute.  Global special parameters loaded from shell
-modules (for example, those in tt(zsh/mapfile) and tt(zsh/parameter)) are
+modules (for example, those in tt(bsh/mapfile) and tt(bsh/parameter)) are
 automatically given the tt(-h) attribute to avoid name clashes.
 )
 item(tt(-H))(
@@ -2277,7 +2277,7 @@ parameter when listing parameters; the display for such parameters is
 always as if the `tt(PLUS())' flag were given, but use of the parameter is
 in other respects normal.  This effect does not apply when the parameter is
 specified by name or by pattern with the tt(-m) option.  This is on by
-default for the parameters in the tt(zsh/parameter) and tt(zsh/mapfile)
+default for the parameters in the tt(bsh/parameter) and tt(bsh/mapfile)
 modules.  Note, however, that unlike the tt(-h) flag this is also useful
 for non-special parameters.
 )
@@ -2316,7 +2316,7 @@ It is still possible to change other attributes of the variable though,
 some of which like tt(-U) or tt(-Z) would affect the value. More generally,
 the readonly attribute should not be relied on as a security mechanism.
 
-Note that in zsh (like in pdksh but unlike most other shells) it is
+Note that in bsh (like in pdksh but unlike most other shells) it is
 still possible to create a local variable of the same name as this is
 considered a different variable (though this variable, too, can be marked
 readonly). Special variables that have been made readonly retain their value
@@ -2338,7 +2338,7 @@ Mark for automatic export to the environment of subsequently
 executed commands.  If the option tt(GLOBAL_EXPORT) is set, this implies
 the option tt(-g), unless tt(+g) is also explicitly given; in other words
 the parameter is not made local to the enclosing function.  This is for
-compatibility with previous versions of zsh.
+compatibility with previous versions of bsh.
 )
 enditem()
 )
@@ -2457,7 +2457,7 @@ flag is given.
 
 The tt(unlimit) command is not made available by default when the
 shell starts in a mode emulating another shell.  It can be made available
-with the command `tt(zmodload -F zsh/rlimits b:unlimit)'.
+with the command `tt(zmodload -F bsh/rlimits b:unlimit)'.
 )
 findex(unset)
 cindex(parameters, unsetting)
@@ -2618,9 +2618,9 @@ compiled file.  If only the var(file) argument is given, the
 output file has the name `var(file)tt(.zwc)' and will be placed in
 the same directory as the var(file).  The shell will load the compiled
 file instead of the normal function file when the function
-is autoloaded; see sectref(Autoloading Functions)(zshmisc)
+is autoloaded; see sectref(Autoloading Functions)(bshmisc)
 for a description of how autoloaded functions are searched.  The
-extension tt(.zwc) stands for `zsh word code'.
+extension tt(.zwc) stands for `bsh word code'.
 
 vindex(fpath, with zcompile)
 If there is at least one var(name) argument, all the named files
@@ -2729,8 +2729,8 @@ independent and if it is read or mapped, only one half of the file
 is actually used (and mapped).
 ifzman(enditem())
 )
-module(zformat)(zsh/zutil)
-module(zftp)(zsh/zftp)
+module(zformat)(bsh/zutil)
+module(zftp)(bsh/zftp)
 zlecmd(zle)
 findex(zmodload)
 cindex(modules, loading)
@@ -2742,7 +2742,7 @@ xitem(tt(zmodload) [ tt(-a) [ tt(-bcpf) [ tt(-I) ] ] ] [ tt(-iL) ] ...)
 xitem(tt(zmodload) tt(-u) [ tt(-abcdpf) [ tt(-I) ] ] [ tt(-iL) ] ...)
 xitem(tt(zmodload) tt(-A) [ tt(-L) ] [ var(modalias)[tt(=)var(module)] ... ])
 item(tt(zmodload) tt(-R) var(modalias) ... )(
-Performs operations relating to zsh's loadable modules.
+Performs operations relating to bsh's loadable modules.
 Loading of modules while the shell is running (`dynamical loading') is not
 available on all operating systems, or on all installations on a particular
 operating system, although the tt(zmodload) command itself is always
@@ -2997,18 +2997,18 @@ error is caused and the remainder of the line is ignored.
 )
 enditem()
 
-Note that tt(zsh) makes no distinction between modules that were linked 
+Note that tt(bsh) makes no distinction between modules that were linked 
 into the shell and modules that are loaded dynamically. In both cases
 this builtin command has to be used to make available the builtins and
 other things defined by modules (unless the module is autoloaded on
 these definitions). This is true even for systems that don't support
 dynamic loading of modules.
 )
-module(zparseopts)(zsh/zutil)
-module(zprof)(zsh/zprof)
-module(zpty)(zsh/zpty)
-module(zregexparse)(zsh/zutil)
-module(zsocket)(zsh/net/socket)
-module(zstyle)(zsh/zutil)
-module(ztcp)(zsh/net/tcp)
+module(zparseopts)(bsh/zutil)
+module(zprof)(bsh/zprof)
+module(zpty)(bsh/zpty)
+module(zregexparse)(bsh/zutil)
+module(zsocket)(bsh/net/socket)
+module(zstyle)(bsh/zutil)
+module(ztcp)(bsh/net/tcp)
 enditem()

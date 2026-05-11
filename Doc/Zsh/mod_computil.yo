@@ -1,11 +1,11 @@
-COMMENT(!MOD!zsh/computil
+COMMENT(!MOD!bsh/computil
 A module with utility builtins needed for the shell function based
 completion system.
 !MOD!)
 cindex(completion, utility)
-The tt(zsh/computil) module adds several builtin commands that are used by
+The tt(bsh/computil) module adds several builtin commands that are used by
 some of the completion functions in the completion system based on shell
-functions (see nmref(Completion System)(zshcompsys)).
+functions (see nmref(Completion System)(bshcompsys)).
 Except for tt(compquote) these builtin commands are very
 specialised and thus not very interesting when writing your own
 completion functions.  In summary, these builtin commands are:

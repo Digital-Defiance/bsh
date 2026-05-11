@@ -1,7 +1,7 @@
 /*
  * compctl.c - the compctl builtin
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -202,7 +202,7 @@ compctlread(char *name, char **args, Options ops, char *reply)
     if (OPT_ISSET(ops,'l')) {
 	/*
 	 * -ln gives the index of the word the cursor is currently on, which
-	 * is available in zlemetacs (but remember that Zsh counts from one,
+	 * is available in zlemetacs (but remember that Bsh counts from one,
 	 * not zero!)
 	 */
 	if (OPT_ISSET(ops,'n')) {
@@ -228,7 +228,7 @@ compctlread(char *name, char **args, Options ops, char *reply)
 	int i;
 
 	/* -cn gives the current cursor position within the current word, which
-	is available in clwpos (but remember that Zsh counts from one, not
+	is available in clwpos (but remember that Bsh counts from one, not
 	zero!) */
 	if (OPT_ISSET(ops,'n')) {
 	    char nbuf[14];
@@ -246,7 +246,7 @@ compctlread(char *name, char **args, Options ops, char *reply)
 	if (OPT_ISSET(ops,'A') && !OPT_ISSET(ops,'e')) {
 	    /* the -A option means that one array is specified, instead of
 	    many parameters */
-	    char **p, **b = (char **)zshcalloc((clwnum + 1) * sizeof(char *));
+	    char **p, **b = (char **)bshcalloc((clwnum + 1) * sizeof(char *));
 
 	    for (i = 0, p = b; i < clwnum; p++, i++)
 		*p = ztrdup(clwords[i]);
@@ -880,7 +880,7 @@ get_compctl(char *name, char ***av, Compctl cc, int first, int isdef, int cl)
 		    cc->xor = &cc_default;
 	    } else {
 		/* more flags follow:  prepare to loop again */
-		cc->xor = (Compctl) zshcalloc(sizeof(*cc));
+		cc->xor = (Compctl) bshcalloc(sizeof(*cc));
 		cc = cc->xor;
 		memset((void *)&cct, 0, sizeof(cct));
 		cct.mask2 = CC_CCCONT;
@@ -917,7 +917,7 @@ get_xcompctl(char *name, char ***av, Compctl cc, int isdef)
 	/* o keeps track of or's, m remembers the starting condition,
 	 * c is the current condition being parsed
 	 */
-	o = m = c = (Compcond) zshcalloc(sizeof(*c));
+	o = m = c = (Compcond) bshcalloc(sizeof(*c));
 	/* Loop over each condition:  something like 's[...][...], p[...]' */
 	for (t = *argv; *t;) {
 	    while (*t == ' ')
@@ -1008,20 +1008,20 @@ get_xcompctl(char *name, char ***av, Compctl cc, int isdef)
 	    /* Allocate space for all the arguments of the conditions */
 	    if (c->type == CCT_POS ||
 		c->type == CCT_NUMWORDS) {
-		c->u.r.a = (int *)zshcalloc(n * sizeof(int));
-		c->u.r.b = (int *)zshcalloc(n * sizeof(int));
+		c->u.r.a = (int *)bshcalloc(n * sizeof(int));
+		c->u.r.b = (int *)bshcalloc(n * sizeof(int));
 	    } else if (c->type == CCT_CURSUF ||
 		       c->type == CCT_CURPRE ||
 		       c->type == CCT_QUOTE)
-		c->u.s.s = (char **)zshcalloc(n * sizeof(char *));
+		c->u.s.s = (char **)bshcalloc(n * sizeof(char *));
 
 	    else if (c->type == CCT_RANGESTR ||
 		     c->type == CCT_RANGEPAT) {
-		c->u.l.a = (char **)zshcalloc(n * sizeof(char *));
-		c->u.l.b = (char **)zshcalloc(n * sizeof(char *));
+		c->u.l.a = (char **)bshcalloc(n * sizeof(char *));
+		c->u.l.b = (char **)bshcalloc(n * sizeof(char *));
 	    } else {
-		c->u.s.p = (int *)zshcalloc(n * sizeof(int));
-		c->u.s.s = (char **)zshcalloc(n * sizeof(char *));
+		c->u.s.p = (int *)bshcalloc(n * sizeof(int));
+		c->u.s.s = (char **)bshcalloc(n * sizeof(char *));
 	    }
 	    /* Now loop over the actual arguments */
 	    for (l = 0; *t == '['; l++, t++) {
@@ -1124,17 +1124,17 @@ get_xcompctl(char *name, char ***av, Compctl cc, int isdef)
 		t++;
 	    if (*t == ',') {
 		/* Another condition to `or' */
-		o->or = c = (Compcond) zshcalloc(sizeof(*c));
+		o->or = c = (Compcond) bshcalloc(sizeof(*c));
 		o = c;
 		t++;
 	    } else if (*t) {
 		/* Another condition to `and' */
-		c->and = (Compcond) zshcalloc(sizeof(*c));
+		c->and = (Compcond) bshcalloc(sizeof(*c));
 		c = c->and;
 	    }
 	}
 	/* Assign condition to current compctl */
-	*next = (Compctl) zshcalloc(sizeof(*cc));
+	*next = (Compctl) bshcalloc(sizeof(*cc));
 	(*next)->cond = m;
 	argv++;
 	/* End of the condition; get the flags that go with it. */
@@ -1258,7 +1258,7 @@ cc_reassign(Compctl cc)
      */
     Compctl c2;
 
-    c2 = (Compctl) zshcalloc(sizeof *cc);
+    c2 = (Compctl) bshcalloc(sizeof *cc);
     c2->xor = cc->xor;
     c2->ext = cc->ext;
     c2->refc = 1;
@@ -1578,7 +1578,7 @@ bin_compctl(char *name, char **argv, UNUSED(Options ops), UNUSED(int func))
 	    return ret - 1;
 	}
 
-	cc = (Compctl) zshcalloc(sizeof(*cc));
+	cc = (Compctl) bshcalloc(sizeof(*cc));
 	if (get_compctl(name, &argv, cc, 1, 0, 0)) {
 	    freecompctl(cc);
 	    unqueue_signals();
@@ -1853,7 +1853,7 @@ ccmakehookfn(UNUSED(Hookdef dummy), struct ccmakedat *dat)
 	    diffmatches = odm;
 	    validlist = 1;
 	    amatches = lastmatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(amatches->heap_id)) {
 		HEAP_ERROR(amatches->heap_id);
 	    }

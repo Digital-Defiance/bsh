@@ -1,7 +1,7 @@
-texinode(Calendar Function System)(TCP Function System)(Zsh Modules)(Top)
+texinode(Calendar Function System)(TCP Function System)(Bsh Modules)(Top)
 chapter(Calendar Function System)
 cindex(calendar function system)
-cindex(zsh/datetime, function system based on)
+cindex(bsh/datetime, function system based on)
 sect(Description)
 
 The shell is supplied with a series of functions to replace and enhance the
@@ -18,7 +18,7 @@ The format of the tt(calendar) file and the dates used there in and in
 the tt(age) function are described first, then the functions that can
 be called to examine and modify the tt(calendar) file.
 
-The functions here depend on the availability of the tt(zsh/datetime)
+The functions here depend on the availability of the tt(bsh/datetime)
 module which is usually installed with the shell.  The library function
 tt(strptime+LPAR()RPAR()) must be available; it is present on most recent
 operating systems.
@@ -347,7 +347,7 @@ If var(start) is also given, show events starting from that time and date.
 The word tt(now) can be used to indicate the current time.
 
 To implement an alert when events are due, include tt(calendar -s) in your
-tt(~/.zshrc) file.
+tt(~/.bshrc) file.
 
 Options:
 
@@ -611,7 +611,7 @@ item(tt(age))(
 findex(age)
 The function tt(age) can be autoloaded and use separately from
 the calendar system, although it uses the function tt(calendar_scandate)
-for date formatting.  It requires the tt(zsh/stat) builtin, but uses
+for date formatting.  It requires the tt(bsh/stat) builtin, but uses
 only the builtin tt(zstat).
 
 tt(age) selects files having a given modification time for use
@@ -698,8 +698,8 @@ texinode(Calendar Styles)(Calendar Utility Functions)(Calendar System User Funct
 anchor(Styles)
 sect(Styles)
 
-The zsh style mechanism using the tt(zstyle) command is describe in
-sectref(The zsh/zutil Module)(zshmodules). This is the same mechanism
+The bsh style mechanism using the tt(zstyle) command is describe in
+sectref(The bsh/zutil Module)(bshmodules). This is the same mechanism
 used in the completion system.
 
 The styles below are all examined in the context
@@ -712,11 +712,11 @@ The location of the main calendar.  The default is tt(~/calendar).
 )
 kindex(date-format)
 item(tt(date-format))(
-A tt(strftime) format string (see manref(strftime)(3)) with the zsh
+A tt(strftime) format string (see manref(strftime)(3)) with the bsh
 extensions providing various numbers with no leading zero or space
 if the number is a single digit as described for the
 tt(%D{)var(string)tt(}) prompt format in
-sectref(Simple Prompt Escapes)(zshmisc).
+sectref(Simple Prompt Escapes)(bshmisc).
 
 This is used for outputting dates in tt(calendar), both to support
 the tt(-v) option and when adding recurring events back to the calendar
@@ -777,7 +777,7 @@ prevented from editing the calendar file at the same time unless
 tt(calendar_edit) is used.
 
 Three attempts are made to lock the file before giving up.  If the module
-tt(zsh/zselect) is available, the times of the attempts are jittered so that
+tt(bsh/zselect) is available, the times of the attempts are jittered so that
 multiple instances of the calling function are unlikely to retry at the
 same time.
 
@@ -872,7 +872,7 @@ texinode(Calendar Bugs)()(Calendar Utility Functions)(Calendar Function System)
 sect(Bugs)
 
 As the system is based entirely on shell functions (with a little support
-from the tt(zsh/datetime) module) the mechanisms used are not as robust as
+from the tt(bsh/datetime) module) the mechanisms used are not as robust as
 those provided by a dedicated calendar utility.  Consequently the user
 should not rely on the shell for vital alerts.
 

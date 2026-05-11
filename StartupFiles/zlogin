@@ -1,5 +1,5 @@
 #
-# Generic .zlogin file for zsh 2.7
+# Generic .zlogin file for bsh 2.7
 #
 # .zlogin is sourced in login shells.  It should
 # contain commands that should be executed only in

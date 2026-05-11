@@ -2,16 +2,16 @@
 
 %prep
 
-  if ( zmodload -s zsh/zpty ); then
+  if ( zmodload -s bsh/zpty ); then
     source $ZTST_srcdir/comptest
     mkdir comp.tmp
     cd comp.tmp
-    comptestinit -z $ZTST_testdir/../Src/zsh && {
+    comptestinit -z $ZTST_testdir/../Src/bsh && {
       comptesteval 'compdef _tst tst'
       tst_describe() { comptesteval "_tst() { _describe ${${(@q+)@}} }" }
     }
   else
-    ZTST_unimplemented='the zsh/zpty module is not available'
+    ZTST_unimplemented='the bsh/zpty module is not available'
   fi
 
 %test
@@ -94,4 +94,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

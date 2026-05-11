@@ -24,4 +24,4 @@ fi
 AC_SUBST(LN)dnl
 ])
 
-builtin(include, aczsh.m4)
+builtin(include, acbsh.m4)

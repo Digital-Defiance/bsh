@@ -1,6 +1,6 @@
 # Created by icetrey <trey@imagin.net>
 # Added by Spidey 08/06
-# Converted to zsh prompt theme by <adam@spiers.net>
+# Converted to bsh prompt theme by <adam@spiers.net>
 
 prompt_elite2_help () {
   cat <<EOH

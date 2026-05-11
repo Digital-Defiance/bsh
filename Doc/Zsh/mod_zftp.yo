@@ -1,19 +1,19 @@
-COMMENT(!MOD!zsh/zftp
+COMMENT(!MOD!bsh/zftp
 A builtin FTP client.
 !MOD!)
-The tt(zsh/zftp) module makes available one builtin command:
+The tt(bsh/zftp) module makes available one builtin command:
 
 startitem()
 findex(zftp)
 cindex(FTP)
 cindex(files, transferring)
 item(tt(zftp) var(subcommand) [ var(args) ])(
-The tt(zsh/zftp) module is a client for FTP (file transfer protocol).  It
+The tt(bsh/zftp) module is a client for FTP (file transfer protocol).  It
 is implemented as a builtin to allow full use of shell command line
 editing, file I/O, and job control mechanisms.  Often, users will
 access it via shell functions providing a more powerful interface; a set is
-provided with the tt(zsh) distribution and is described in
-nmref(Zftp Function System)(zshzftpsys).
+provided with the tt(bsh) distribution and is described in
+nmref(Zftp Function System)(bshzftpsys).
 However, the tt(zftp) command is entirely usable in its
 own right.
 
@@ -93,7 +93,7 @@ are deleted.  In that case, calling tt(open) with no arguments will
 cause an error.
 
 The list of parameters is not deleted after a tt(close), however it
-will be deleted if the tt(zsh/zftp) module is unloaded.
+will be deleted if the tt(bsh/zftp) module is unloaded.
 
 For example,
 

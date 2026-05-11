@@ -8,7 +8,7 @@ sect(Description)
 This describes the shell code for the `new' completion system, referred
 to as tt(compsys).  It is written in shell functions based on the
 features described in
-ifzman(zmanref(zshcompwid))\
+ifzman(zmanref(bshcompwid))\
 ifnzman(the previous chapter, noderef(Completion Widgets)).
 
 The features are contextual, sensitive to the point at which completion is
@@ -47,7 +47,7 @@ Styles modify various operations of the completion system, such as
 output formatting, but also what kinds of completers are used (and in
 what order), or which tags are examined.  Styles may accept arguments
 and are manipulated using the tt(zstyle) command described in
-sectref(The zsh/zutil Module)(zshmodules).
+sectref(The bsh/zutil Module)(bshmodules).
 
 In summary, tags describe em(what) the completion objects are, and style
 tt(how) they are to be completed.  At various points of execution, the
@@ -100,11 +100,11 @@ call the shell function tt(compinit) from your initialization file; see the
 next section.  However, the function tt(compinstall) can be run by a user
 to configure various aspects of the completion system.
 
-Usually, tt(compinstall) will insert code into tt(.zshrc), although if
+Usually, tt(compinstall) will insert code into tt(.bshrc), although if
 that is not writable it will save it in another file and tell you that
 file's location.  Note that it is up to you to make sure that the lines
-added to tt(.zshrc) are actually run; you may, for example, need to move
-them to an earlier place in the file if tt(.zshrc) usually returns early.
+added to tt(.bshrc) are actually run; you may, for example, need to move
+them to an earlier place in the file if tt(.bshrc) usually returns early.
 So long as you keep them all together (including the comment lines at the
 start and finish), you can rerun tt(compinstall) and it will correctly
 locate and modify these lines.  Note, however, that any code you add to
@@ -112,17 +112,17 @@ this section by hand is likely to be lost if you rerun tt(compinstall),
 although lines using the command `tt(zstyle)' should be gracefully handled.
 
 The new code will take effect next time you start the shell, or run
-tt(.zshrc) by hand; there is also an option to make them take effect
+tt(.bshrc) by hand; there is also an option to make them take effect
 immediately.  However, if tt(compinstall) has removed definitions, you will
 need to restart the shell to see the changes.
 
 To run tt(compinstall) you will need to make sure it is in a directory
 mentioned in your tt(fpath) parameter, which should already be the case if
-zsh was properly configured as long as your startup files do not remove the
+bsh was properly configured as long as your startup files do not remove the
 appropriate directories from tt(fpath).  Then it must be autoloaded
 (`tt(autoload -U compinstall)' is recommended).  You can abort the
 installation any time you are being prompted for information, and your
-tt(.zshrc) will not be altered at all; changes only take place right at the
+tt(.bshrc) will not be altered at all; changes only take place right at the
 end, where you are specifically asked for confirmation.
 
 subsect(Use of compinit)
@@ -131,7 +131,7 @@ cindex(completion system, initializing)
 
 This section describes the use of tt(compinit) to initialize completion for
 the current session when called directly; if you have run
-tt(compinstall) it will be called automatically from your tt(.zshrc).
+tt(compinstall) it will be called automatically from your tt(.bshrc).
 
 To initialize the system, the function tt(compinit) should be in a
 directory mentioned in the tt(fpath) parameter, and should be autoloaded
@@ -140,7 +140,7 @@ directory mentioned in the tt(fpath) parameter, and should be autoloaded
 few utility functions, arrange for all the necessary shell functions to be
 autoloaded, and will then re-define all widgets that do completion to use the
 new system.  If you use the tt(menu-select) widget, which is part of the
-tt(zsh/complist) module, you should make sure that that module is loaded
+tt(bsh/complist) module, you should make sure that that module is loaded
 before the call to tt(compinit) so that that widget is also
 re-defined.  If completion styles (see below) are set up to perform
 expansion as well as completion by default, and the TAB key is bound to
@@ -212,7 +212,7 @@ cindex(completion system, autoloaded functions)
 
 The convention for autoloaded functions used in completion is that they
 start with an underscore; as already mentioned, the tt(fpath/FPATH)
-parameter must contain the directory in which they are stored.  If tt(zsh)
+parameter must contain the directory in which they are stored.  If tt(bsh)
 was properly installed on your system, then tt(fpath/FPATH) automatically
 contains the required directories for the standard functions.
 
@@ -223,7 +223,7 @@ path.  If that directory has a subdirectory named tt(Base), all
 subdirectories will be added to the path.  Furthermore, if the subdirectory
 tt(Base) has a subdirectory named tt(Core), tt(compinit) will add all
 subdirectories of the subdirectories to the path: this allows
-the functions to be in the same format as in the tt(zsh) source
+the functions to be in the same format as in the tt(bsh) source
 distribution.
 
 cindex(compdef, use of by compinit)
@@ -270,8 +270,8 @@ if any.  The var(style) must be one of the builtin widgets that perform
 completion, namely tt(complete-word), tt(delete-char-or-list),
 tt(expand-or-complete), tt(expand-or-complete-prefix), tt(list-choices),
 tt(menu-complete), tt(menu-expand-or-complete), or
-tt(reverse-menu-complete).  If the tt(zsh/complist) module is loaded (see
-sectref(The zsh/complist Module)(zshmodules))
+tt(reverse-menu-complete).  If the tt(bsh/complist) module is loaded (see
+sectref(The bsh/complist Module)(bshmodules))
 the widget tt(menu-select) is also available.
 
 When one of the var(key-sequence)s is typed, the function in the file will
@@ -499,7 +499,7 @@ the var(style) argument.  The widgets usable for this are:
 tt(complete-word), tt(delete-char-or-list), tt(expand-or-complete),
 tt(expand-or-complete-prefix), tt(list-choices), tt(menu-complete),
 tt(menu-expand-or-complete), and tt(reverse-menu-complete), as well as
-tt(menu-select) if the tt(zsh/complist) module is loaded.  The option tt(-n)
+tt(menu-select) if the tt(bsh/complist) module is loaded.  The option tt(-n)
 prevents the key being bound if it is already to bound to something other
 than tt(undefined-key).
 
@@ -540,8 +540,8 @@ completion system begins building the context.  The context represents
 everything that the shell knows about the meaning of the command line
 and the significance of the cursor position.  This takes account of a
 number of things including the command word (such as `tt(grep)' or
-`tt(zsh)') and options to which the current word may be an argument
-(such as the `tt(-o)' option to tt(zsh) which takes a shell option as an
+`tt(bsh)') and options to which the current word may be an argument
+(such as the `tt(-o)' option to tt(bsh) which takes a shell option as an
 argument).
 
 The context starts out very generic ("we are beginning a completion")
@@ -564,7 +564,7 @@ completion function suite.  Following that is discussion of how em(styles)
 are defined.  Styles determine such things as how the matches are
 generated, similarly to shell options but with much more control.  They
 are defined with the tt(zstyle) builtin command
-(see sectref(The zsh/zutil Module)(zshmodules)).
+(see sectref(The bsh/zutil Module)(bshmodules)).
 
 The context string always consists of a fixed set of fields, separated
 by colons and with a leading colon before the first.  Fields which are
@@ -660,7 +660,7 @@ put
 
 example(zstyle ':completion:*' verbose yes)
 
-in a startup file (probably tt(.zshrc)).
+in a startup file (probably tt(.bshrc)).
 This gives the tt(verbose) style the value tt(yes) in every
 context inside the completion system, unless that context has a more
 specific definition.  It is best to avoid giving the pattern as `tt(*)'
@@ -684,7 +684,7 @@ example(zstyle ':completion:*:*:kill:*:jobs' verbose no)
 The tt(-e) option to tt(zstyle) even allows completion function code to
 appear as the argument to a style; this requires some understanding of
 the internals of completion functions (see
-nmref(Completion Widgets)(zshcompwid)).  For example,
+nmref(Completion Widgets)(bshcompwid)).  For example,
 
 example(tt(zstyle -e ':completion:*' hosts 'reply=($myhosts)'))
 
@@ -702,7 +702,7 @@ style to determine the set of values.  Strings are
 preferred over patterns (for example, `tt(:completion::complete:::foo)' is
 more specific than `tt(:completion::complete:::*')), and longer patterns are
 preferred over the pattern `tt(*)'.  See
-sectref(The zsh/zutil Module)(zshmodules) for details.
+sectref(The bsh/zutil Module)(bshmodules) for details.
 
 Context patterns that use something other than a wildcard (tt(*)) to match the
 middle parts of the context DASH()- the var(completer), var(command), and
@@ -888,7 +888,7 @@ for jobs (as listed by the `tt(jobs)' builtin)
 )
 kindex(keymaps, completion tag)
 item(tt(keymaps))(
-for names of zsh keymaps
+for names of bsh keymaps
 )
 kindex(keysyms, completion tag)
 item(tt(keysyms))(
@@ -931,7 +931,7 @@ for names of X modifiers
 )
 kindex(modules, completion tag)
 item(tt(modules))(
-for modules (e.g. tt(zsh) modules)
+for modules (e.g. tt(bsh) modules)
 )
 kindex(my-accounts, completion tag)
 item(tt(my-accounts))(
@@ -1078,14 +1078,14 @@ used to look up the tt(format) style for warnings
 )
 kindex(widgets, completion tag)
 item(tt(widgets))(
-for zsh widget names
+for bsh widget names
 )
 kindex(windows, completion tag)
 item(tt(windows))(
 for IDs of X windows
 )
-kindex(zsh-options, completion tag)
-item(tt(zsh-options))(
+kindex(bsh-options, completion tag)
+item(tt(bsh-options))(
 for shell options
 )
 enditem()
@@ -1457,11 +1457,11 @@ item(tt(file-list))(
 This style controls whether files completed using the standard builtin
 mechanism are to be listed with a long list similar to tt(ls -l).
 Note that this feature uses the shell module
-tt(zsh/stat) for file information; this loads the builtin tt(stat)
+tt(bsh/stat) for file information; this loads the builtin tt(stat)
 which will replace any external tt(stat) executable.  To avoid
 this the following code can be included in an initialization file:
 
-example(zmodload -i zsh/stat
+example(zmodload -i bsh/stat
 disable stat)
 
 The style may either be set to a `true' value (or `tt(all)'), or
@@ -1616,7 +1616,7 @@ string to display above matches in completion lists.  The sequence
 `tt(%d)' in this string will be replaced with a short description of
 what these matches are.  This string may also contain the output
 attribute sequences understood by tt(compadd -X)
-(see sectref(Completion Builtin Commands)(zshcompwid)).
+(see sectref(Completion Builtin Commands)(bshcompwid)).
 
 The style is tested with each tag valid for the current completion
 before it is tested for the tt(descriptions) tag.  Hence different format 
@@ -1638,8 +1638,8 @@ the same descriptions separated by newlines.
 
 It is possible to use printf-style field width specifiers with `tt(%d)'
 and similar escape sequences.  This is handled by the tt(zformat)
-builtin command from the tt(zsh/zutil) module, see
-sectref(The zsh/zutil Module)(zshmodules).
+builtin command from the tt(bsh/zutil) module, see
+sectref(The bsh/zutil Module)(bshmodules).
 )
 kindex(gain-privileges, completion style)
 item(tt(gain-privileges))(
@@ -1868,7 +1868,7 @@ pending.  If a var(val) is given, completion will not be done if there
 are at least that many characters of unprocessed input.  This is often
 useful when pasting characters into a terminal.  Note
 however, that it relies on the tt($PENDING) special parameter from the
-tt(zsh/zle) module being set properly which is not guaranteed on all
+tt(bsh/zle) module being set properly which is not guaranteed on all
 platforms.
 
 The default value of this style is `true' except for completion within
@@ -1935,10 +1935,10 @@ always starts with `tt(:completion:history-words)'.
 )
 kindex(list-colors, completion style)
 item(tt(list-colors))(
-If the tt(zsh/complist) module is loaded, this style can be used to set
+If the tt(bsh/complist) module is loaded, this style can be used to set
 color specifications.  This mechanism replaces the use of the
 tt(ZLS_COLORS) and tt(ZLS_COLOURS) parameters described in
-sectref(The zsh/complist Module)(zshmodules), but the syntax is the same.
+sectref(The bsh/complist Module)(bshmodules), but the syntax is the same.
 
 If this style is set for the tt(default) tag, the strings in the value 
 are taken as specifications that are to be used everywhere.  If it is
@@ -1987,7 +1987,7 @@ kindex(list-prompt, completion style)
 item(tt(list-prompt))(
 If this style is set for the tt(default) tag,
 completion lists that don't fit on the screen can be scrolled (see
-sectref(The zsh/complist Module)(zshmodules)).
+sectref(The bsh/complist Module)(bshmodules)).
 The value, if not the empty string, will be displayed after every
 screenful and the shell will prompt for a key press; if the style is
 set to the empty string,
@@ -2053,7 +2053,7 @@ tt(~yousir/public_html).
 )
 kindex(mail-directory, completion style)
 item(tt(mail-directory))(
-If set, zsh will assume that mailbox files can be found in
+If set, bsh will assume that mailbox files can be found in
 the directory specified.  It defaults to `tt(~/Mail)'.
 )
 kindex(match-original, completion style)
@@ -2072,7 +2072,7 @@ This style is tested separately for each tag valid in the current
 context.  Its value is placed before any match specifications given by the
 tt(matcher-list) style so can override them via the use of an tt(x:)
 specification.  The value should be in the form described in
-sectref(Completion Matching Control)(zshcompwid).
+sectref(Completion Matching Control)(bshcompwid).
 For examples of this, see the description of the tt(tag-order) style.
 
 For notes comparing the use of this and the tt(matcher-list) style, see
@@ -2082,7 +2082,7 @@ kindex(matcher-list, completion style)
 item(tt(matcher-list))(
 This style can be set to a list of match specifications that are to
 be applied everywhere. Match specifications are described in
-sectref(Completion Matching Control)(zshcompwid).
+sectref(Completion Matching Control)(bshcompwid).
 The completion system will try them one after another for each completer
 selected.  For example, to try first simple completion and, if that
 generates no matches, case-insensitive completion:
@@ -2213,7 +2213,7 @@ Similarly, with any of the `false' values (as in `tt(no=10)'), menu
 completion will em(not) be used if there are var(num) or more matches.  
 
 The value of this widget also controls menu selection, as implemented by
-the tt(zsh/complist) module.  The following values may appear either
+the tt(bsh/complist) module.  The following values may appear either
 alongside or instead of the values above.
 
 If the value contains the string `tt(select)', menu selection
@@ -2239,7 +2239,7 @@ with a number and once with `tt(long)' or `tt(long-list)'.
 Finally, it is possible to activate two special modes of menu selection.
 The word `tt(interactive)' in the value causes interactive mode
 to be entered immediately when menu selection is started; see
-sectref(The zsh/complist Module)(zshmodules)
+sectref(The bsh/complist Module)(bshmodules)
 for a description of interactive mode.  Including the string
 `tt(search)' does the same for incremental search mode.  To select backward
 incremental search, include the string `tt(search-backward)'.
@@ -2354,14 +2354,14 @@ item(tt(path-completion))(
 This is used by filename completion.  By default, filename completion
 examines all components of a path to see if there are completions of
 that component.  For example, tt(/u/b/z) can be completed to
-tt(/usr/bin/zsh).  Explicitly setting this style to `false' inhibits this
+tt(/usr/bin/bsh).  Explicitly setting this style to `false' inhibits this
 behaviour for path components up to the tt(/) before the cursor; this
 overrides the setting of tt(accept-exact-dirs).
 
 Even with the style set to `false', it is still possible to complete
 multiple paths by setting the option tt(COMPLETE_IN_WORD) and moving the
 cursor back to the first component in the path to be completed.  For
-example, tt(/u/b/z) can be completed to tt(/usr/bin/zsh) if the cursor is
+example, tt(/u/b/z) can be completed to tt(/usr/bin/bsh) if the cursor is
 after the tt(/u).
 )
 kindex(pine-directory, completion style)
@@ -2453,9 +2453,9 @@ number, for example `tt(*/.git/*)'.
 
 For example,
 
-example(zstyle ':completion:*' recursive-files '*/zsh/*')
+example(zstyle ':completion:*' recursive-files '*/bsh/*')
 
-If the current directory is tt(/home/pws/zsh/Src), then
+If the current directory is tt(/home/pws/bsh/Src), then
 tt(zle_tr<TAB>) can be completed to tt(Zle/zle_tricky.c).
 )
 kindex(regular, completion style)
@@ -2524,7 +2524,7 @@ The default for this style is `false'.
 )
 kindex(show-ambiguity, completion style)
 item(tt(show-ambiguity))(
-If the tt(zsh/complist) module is loaded, this style can be used to
+If the tt(bsh/complist) module is loaded, this style can be used to
 highlight the first ambiguous character in completion lists. The
 value is either a color indication such as those supported by the
 tt(list-colors) style or, with a value of `true', a default of
@@ -2766,7 +2766,7 @@ example(zstyle -e '*:-command-:*' tag-order '
 
 Completion in command position will be attempted only if the string
 typed so far is not empty.  This is tested using the tt(PREFIX)
-special parameter; see sectref(Completion Special Parameters)(zshcompwid)
+special parameter; see sectref(Completion Special Parameters)(bshcompwid)
 for a description of parameters which are special inside completion widgets.
 Setting tt(reply) to an empty array provides the default
 behaviour of trying all tags at once; setting it to an
@@ -2803,11 +2803,11 @@ descend as deep as necessary.
 For example, 
 
 example(zstyle ':completion:*' urls ~/.urls
-mkdir -p ~/.urls/ftp/ftp.zsh.org/pub
+mkdir -p ~/.urls/ftp/ftp.bsh.org/pub
 )
 
 allows completion of all the components of the URL
-tt(ftp://ftp.zsh.org/pub) after suitable commands such as
+tt(ftp://ftp.bsh.org/pub) after suitable commands such as
 `tt(netscape)' or `tt(lynx)'.  Note, however, that access methods and
 files are completed separately, so if the tt(hosts) style is set hosts
 can be completed without reference to the tt(urls) style.
@@ -2827,7 +2827,7 @@ item(tt(use-compctl))(
 If this style is set to a string em(not) equal to tt(false), tt(0),
 tt(no), and tt(off), the completion system may use any completion
 specifications defined with the tt(compctl) builtin command.  If the
-style is unset, this is done only if the tt(zsh/compctl) module
+style is unset, this is done only if the tt(bsh/compctl) module
 is loaded.  The string may also contain the substring `tt(first)' to
 use completions defined with `tt(compctl -T)', and the substring
 `tt(default)' to use the completion defined with `tt(compctl -D)'.
@@ -2969,7 +2969,7 @@ item(tt(_approximate))(
 This is similar to the basic tt(_complete) completer but allows the
 completions to undergo corrections.  The maximum number of errors can be
 specified by the tt(max-errors) style; see
-sectref(Approximate Matching)(zshexpn)
+sectref(Approximate Matching)(bshexpn)
 for how errors are counted.  Normally this completer will only be tried
 after the normal tt(_complete) completer:
 
@@ -3167,7 +3167,7 @@ styles are observed.
 )
 findex(_external_pwds)
 item(tt(_external_pwds))(
-Completes current directories of other zsh processes belonging to the
+Completes current directories of other bsh processes belonging to the
 current user.
 
 This is intended to be used via tt(_generic), bound to a custom key
@@ -3343,9 +3343,9 @@ completion bindings in bash.  The last character of the binding determines
 what is completed: `tt(!)', command names; `tt($)', environment variables;
 `tt(@)', host names; `tt(/)', file names; `tt(~)' user names.  In bash, the
 binding preceded by `tt(\e)' gives completion, and preceded by `tt(^X)'
-lists options.  As some of these bindings clash with standard zsh
+lists options.  As some of these bindings clash with standard bsh
 bindings, only `tt(\e~)' and `tt(^X~)' are bound by default.  To add the
-rest, the following should be added to tt(.zshrc) after tt(compinit) has
+rest, the following should be added to tt(.bshrc) after tt(compinit) has
 been run:
 
 example(for key in '!' '$' '@' '/' '~'; do
@@ -3499,7 +3499,7 @@ but instead arrange that the next use of a generic widget run in
 the same shell will have the effect as described above.
 
 The widget works by setting the shell parameter
-tt(ZSH_TRACE_GENERIC_WIDGET) which is read by tt(_generic).  Unsetting
+tt(BSH_TRACE_GENERIC_WIDGET) which is read by tt(_generic).  Unsetting
 the parameter cancels any pending effect of the tt(noread) form.
 
 For example, after executing the following:
@@ -4028,7 +4028,7 @@ with backslashes, and if an option has multiple arguments (for example, when
 using an var(optspec) of the form `tt(*)var(optspec)'), they are joined with
 (unescaped) colons.  However, if the tt(-0) option was passed, no backslash
 escaping is performed, and multiple values are joined with NUL bytes.  For
-example, after `tt(zsh -o foo:foo -o bar:bar -o <TAB>)', the contents of
+example, after `tt(bsh -o foo:foo -o bar:bar -o <TAB>)', the contents of
 `tt(opt_args)' would be
 
 example(typeset -A opt_args=( [-o]='foo\:foo:bar\:bar:' ))
@@ -4750,7 +4750,7 @@ startitem()
 item(tt(-P))(
 Reset the list of precommands. This option should be used if completing
 a command line which allows internal commands (e.g. builtins and
-functions) regardless of prior precommands (e.g. `tt(zsh -c)').
+functions) regardless of prior precommands (e.g. `tt(bsh -c)').
 )
 item(tt(-p) var(precommand))(
 Append var(precommand) to the list of precommands. This option should be
@@ -5440,10 +5440,10 @@ the same meaning as for tt(_description).
 findex(_widgets)
 item(tt(_widgets) [ tt(-g) var(pattern) ])(
 This function completes names of zle widgets (see
-sectref(Zle Widgets)(zshzle)).
+sectref(Zle Widgets)(bshzle)).
 The var(pattern), if present, is matched against values of the tt($widgets)
 special parameter, documented in 
-sectref(The zsh/zleparameter Module)(zshmodules).
+sectref(The bsh/zleparameter Module)(bshmodules).
 )
 enditem()
 
@@ -5499,7 +5499,7 @@ The core functions and special completion widgets automatically bound
 to keys.  You will certainly need most of these, though will
 probably not need to alter them.  Many of these are documented above.
 )
-item(tt(Zsh))(
+item(tt(Bsh))(
 Functions for completing arguments of shell builtin commands and
 utility functions for this.  Some of these are also used by functions from
 the tt(Unix) directory.

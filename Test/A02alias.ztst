@@ -58,7 +58,7 @@
 >And this too
 >And aliases are expanded
 
-  $ZTST_testdir/../Src/zsh -fis <<<'
+  $ZTST_testdir/../Src/bsh -fis <<<'
   unsetopt PROMPT_SP
   PROMPT="" PS2="" PS3="" PS4="" RPS1="" RPS2=""
   exec 2>&1
@@ -72,7 +72,7 @@
 *>*5*{ begin
 *>*6*{end
 
-  $ZTST_testdir/../Src/zsh -fis <<<'
+  $ZTST_testdir/../Src/bsh -fis <<<'
   unsetopt PROMPT_SP
   PROMPT="" PS2="" PS3="" PS4="" RPS1="" RPS2=""
   exec 2>&1

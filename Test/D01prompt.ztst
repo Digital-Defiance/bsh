@@ -128,8 +128,8 @@
   mkdir foo
   mkdir foo/bar
   mkdir foo/bar/rod
-  (zsh_directory_name() {
-    emulate -L zsh
+  (bsh_directory_name() {
+    emulate -L bsh
     setopt extendedglob
     local -a match mbegin mend
     if [[ $1 = d ]]; then
@@ -167,8 +167,8 @@
 ?(eval):33: no directory expansion: ~[scuzzy]
 
   (
-  zsh_directory_name() {
-  emulate -L zsh
+  bsh_directory_name() {
+  emulate -L bsh
   setopt extendedglob
   local -a match mbegin mend
   if [[ $1 = n ]]; then
@@ -195,7 +195,7 @@
      PS4='+%N:%i> '
      setopt localoptions xtrace
      # The following is the key to the test.
-     # It invokes zsh_directory_name which does PS4 output stuff
+     # It invokes bsh_directory_name which does PS4 output stuff
      # while we're doing prompt handling for the parameter
      # substitution.  This checks recursion works OK.
      local d=${(%):-%~}
@@ -211,12 +211,12 @@
   )
 0:Recursive use of prompts
 >~[<parent>:l]
-?+zsh_directory_name:1> emulate -L zsh
-?+zsh_directory_name:2> setopt extendedglob
-?+zsh_directory_name:3> local -a match mbegin mend
-?+zsh_directory_name:4> [[ d = n ]]
-?+zsh_directory_name:12> [[ <parent>/very_long_directory_name = (#b)(*)/very_long_directory_name ]]
-?+zsh_directory_name:14> return 0
+?+bsh_directory_name:1> emulate -L bsh
+?+bsh_directory_name:2> setopt extendedglob
+?+bsh_directory_name:3> local -a match mbegin mend
+?+bsh_directory_name:4> [[ d = n ]]
+?+bsh_directory_name:12> [[ <parent>/very_long_directory_name = (#b)(*)/very_long_directory_name ]]
+?+bsh_directory_name:14> return 0
 ?+fn:7> local d='~[<parent>:l]'
 ?+fn:8> print '~[<parent>:l]'
 
@@ -238,7 +238,7 @@
 0:Regression test for workers/44029
 
   if
-    zmodload zsh/terminfo >& /dev/null &&
+    zmodload bsh/terminfo >& /dev/null &&
       (( terminfo[colors] >= 8 ))
   then
     F1=$(echoti setaf 2)
@@ -252,7 +252,7 @@
 0:Equivalence of terminal colour settings (foreground colour)
 
   if
-    zmodload zsh/terminfo >& /dev/null &&
+    zmodload bsh/terminfo >& /dev/null &&
       (( terminfo[colors] >= 8 ))
   then
     K1=$(echoti setab 2)

@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/example
+COMMENT(!MOD!bsh/example
 An example of how to write a module.
 !MOD!)
-The tt(zsh/example) module makes available one builtin command:
+The tt(bsh/example) module makes available one builtin command:
 
 startitem()
 findex(example)

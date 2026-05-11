@@ -1,9 +1,9 @@
-zmodload -i zsh/parameter || return 1
+zmodload -i bsh/parameter || return 1
 
 prompt_bart_help () {
     setopt localoptions nocshnullcmd noshnullcmd
-    [[ $ZSH_VERSION < 4.2.2 ]] &&
-	print 'Requires ZSH_VERSION 4.2.2'$'\n'
+    [[ $BSH_VERSION < 4.2.2 ]] &&
+	print 'Requires BSH_VERSION 4.2.2'$'\n'
     <<-\EOF
 	This prompt gives the effect of left and right prompts on the upper
 	line of a two-line prompt.  It also illustrates including history
@@ -183,8 +183,8 @@ prompt_bart_setup () {
     # A few extra niceties ...
     repeat 1; do case "$1:l" in
       (off|disable)
-	add-zsh-hook -D precmd "prompt_*_precmd"
-	add-zsh-hook -D preexec "prompt_*_preexec"
+	add-bsh-hook -D precmd "prompt_*_precmd"
+	add-bsh-hook -D preexec "prompt_*_preexec"
 	functions[TRAPWINCH]="${functions[TRAPWINCH]//prompt_bart_winch}"
 	[[ $prompt_theme[1] = bart ]] && PS1=${${(f)PS1}[-1]}
 	return 1	# Prevent change of $prompt_theme
@@ -226,8 +226,8 @@ prompt_bart_setup () {
     fi
     # Paste our special commands into precmd and TRAPWINCH
     
-    add-zsh-hook precmd prompt_bart_precmd
-    add-zsh-hook preexec prompt_bart_preexec
+    add-bsh-hook precmd prompt_bart_precmd
+    add-bsh-hook preexec prompt_bart_preexec
     prompt_cleanup \
         'functions[TRAPWINCH]="${functions[TRAPWINCH]//prompt_bart_winch}"'
     functions[TRAPWINCH]="${functions[TRAPWINCH]//prompt_bart_winch}

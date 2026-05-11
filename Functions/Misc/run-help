@@ -1,21 +1,21 @@
-#!/bin/zsh
+#!/bin/bsh
 #
 # Figure out where to get the best help, and get it.
 #
 # Install this function by placing it in your FPATH and then
-# adding to your .zshrc the lines:
+# adding to your .bshrc the lines:
 #	unalias run-help
 #	autoload -Uz run-help
 #
 
-emulate -RL zsh
+emulate -RL bsh
 
 local HELPDIR="${HELPDIR:-@runhelpdir@}"
 
 [[ $1 == "." ]] && 1="dot"
 [[ $1 == ":" ]] && 1="colon"
 
-# Check whether Util/helpfiles has been used to generate zsh help
+# Check whether Util/helpfiles has been used to generate bsh help
 if [[ $# == 0 || $1 == "-l" ]]
 then
     if [[ -d $HELPDIR ]]
@@ -33,7 +33,7 @@ then
     return $?
 fi
 
-# No zsh help; use "whence" to figure out where else we might look
+# No bsh help; use "whence" to figure out where else we might look
 local what places noalias newline='
 '
 integer i=0 didman=0
@@ -66,31 +66,31 @@ do
 	;;
     (*( is a * function))
 	case ${what[(w)1]} in
-	(comp*) man zshcompsys;;
-	(zf*) man zshftpsys;;
-	(run-help) man zshcontrib;;
+	(comp*) man bshcompsys;;
+	(zf*) man bshftpsys;;
+	(run-help) man bshcontrib;;
 	(*) builtin functions ${what[(w)1]} | ${=PAGER:-more};;
 	esac;;
     (*( is a * builtin))
 	case ${what[(w)1]} in
-	(compctl) man zshcompctl;;
-	(comp*) man zshcompwid;;
-	(bindkey|vared|zle) man zshzle;;
-	(*setopt) man zshoptions;;
+	(compctl) man bshcompctl;;
+	(comp*) man bshcompwid;;
+	(bindkey|vared|zle) man bshzle;;
+	(*setopt) man bshoptions;;
 	(cap|getcap|setcap) ;&
 	(clone) ;&
 	(ln|mkdir|mv|rm|rmdir|sync) ;&
 	(sched) ;&
-	(echotc|echoti|sched|stat|zprof|zpty|zsocket|zstyle|ztcp) man zshmodules;;
-	(zftp) man zshftpsys;;
-	(*) man zshbuiltins;;
+	(echotc|echoti|sched|stat|zprof|zpty|zsocket|zstyle|ztcp) man bshmodules;;
+	(zftp) man bshftpsys;;
+	(*) man bshbuiltins;;
 	esac
 	;;
     (*( is hashed to *))
 	man ${what[(w)-1]:t}
 	;;
     (*( is a reserved word))
-	man zshmisc
+	man bshmisc
 	;;
     (*)
 	if ((! didman++))

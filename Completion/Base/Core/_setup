@@ -5,7 +5,7 @@ local val nm="$compstate[nmatches]"
 [[ $# -eq 1 ]] && 2="$1"
 
 if zstyle -a ":completion:${curcontext}:$1" list-colors val; then
-  zmodload -i zsh/complist
+  zmodload -i bsh/complist
   if [[ "$1" = default ]]; then
     _comp_colors=( "$val[@]" )
   else
@@ -15,7 +15,7 @@ if zstyle -a ":completion:${curcontext}:$1" list-colors val; then
 # Here is the problem mentioned in _main_complete.
 
 # elif [[ "$1" = default && -n "$ZLS_COLORS$ZLS_COLOURS" ]]; then
-#   zmodload -i zsh/complist
+#   zmodload -i bsh/complist
 #   ZLS_COLORS="$ZLS_COLORS$ZLS_COLOURS"
 
 elif [[ "$1" = default ]]; then
@@ -25,7 +25,7 @@ fi
 # What we'd like is to test that the show-ambiguity style pattern is more
 # specific than the list-colors style pattern, but that's not possible yet
 if zstyle -s ":completion:${curcontext}:$1" show-ambiguity val; then
-  zmodload -i zsh/complist
+  zmodload -i bsh/complist
   [[ $val = (yes|true|on) ]] && _ambiguous_color=4 || _ambiguous_color=$val
 fi
 

@@ -1,7 +1,7 @@
-## vim:ft=zsh
+## vim:ft=bsh
 ## mercurial support by: Frank Terbeck <ft@bewatermyfriend.org>
 ## with large contributions by Seth House <seth@eseth.com>
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 setopt localoptions extendedglob NO_shwordsplit
 

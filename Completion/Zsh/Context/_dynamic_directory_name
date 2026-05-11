@@ -1,7 +1,7 @@
 #autoload
 local -a dirfuncs=(
-    ${(k)functions[zsh_directory_name]}
-    $zsh_directory_name_functions
+    ${(k)functions[bsh_directory_name]}
+    $bsh_directory_name_functions
 )
 local descr='dynamically named directory'
 
@@ -25,5 +25,5 @@ if (( $#dirfuncs )); then
   return ret
 
 else
-  _message "${descr}: implement as zsh_directory_name c"
+  _message "${descr}: implement as bsh_directory_name c"
 fi

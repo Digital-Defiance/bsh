@@ -1,8 +1,8 @@
-COMMENT(!MOD!zsh/files
+COMMENT(!MOD!bsh/files
 Some basic file manipulation commands as builtins.
 !MOD!)
 cindex(files, manipulating)
-The tt(zsh/files) module makes available some common commands for file
+The tt(bsh/files) module makes available some common commands for file
 manipulation as builtins; these commands are probably not needed for
 many normal situations but can be useful in emergency recovery
 situations with constrained resources.  The commands do not implement
@@ -11,9 +11,9 @@ all features now required by relevant standards committees.
 For all commands, a variant beginning tt(zf_) is also available and loaded
 automatically.  Using the features capability of zmodload will let you load
 only those names you want.  Note that it's possible to load only the
-builtins with zsh-specific names using the following command:
+builtins with bsh-specific names using the following command:
 
-example(zmodload -m -F zsh/files b:zf_\*)
+example(zmodload -m -F bsh/files b:zf_\*)
 
 The commands loaded by default are:
 
@@ -33,7 +33,7 @@ The tt(-R) option causes tt(chmod) to recursively descend into directories,
 changing the mode of all files in the directory after
 changing the mode of the directory itself.
 
-The tt(-s) option is a zsh extension to tt(chmod) functionality.  It enables
+The tt(-s) option is a bsh extension to tt(chmod) functionality.  It enables
 paranoid behaviour, intended to avoid security problems involving
 a tt(chmod) being tricked into affecting files other than the ones
 intended.  It will refuse to follow symbolic links, so that (for example)
@@ -73,7 +73,7 @@ The tt(-R) option causes tt(chown) to recursively descend into directories,
 changing the ownership of all files in the directory after
 changing the ownership of the directory itself.
 
-The tt(-s) option is a zsh extension to tt(chown) functionality.  It enables
+The tt(-s) option is a bsh extension to tt(chown) functionality.  It enables
 paranoid behaviour, intended to avoid security problems involving
 a tt(chown) being tricked into affecting files other than the ones
 intended.  It will refuse to follow symbolic links, so that (for example)
@@ -166,7 +166,7 @@ The tt(-R) and tt(-r) options cause tt(rm) to recursively descend into
 directories, deleting all files in the directory before removing the directory
 with the tt(rmdir) system call (see manref(rmdir)(2)).
 
-The tt(-s) option is a zsh extension to tt(rm) functionality.  It enables
+The tt(-s) option is a bsh extension to tt(rm) functionality.  It enables
 paranoid behaviour, intended to avoid common security problems involving
 a root-run tt(rm) being tricked into removing files other than the ones
 intended.  It will refuse to follow symbolic links, so that (for example)

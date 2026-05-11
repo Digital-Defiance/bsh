@@ -1,6 +1,6 @@
-#compdef add-zsh-hook
+#compdef add-bsh-hook
 
-_add-zsh-hook_hooks() {
+_add-bsh-hook_hooks() {
   local expl
   if (( $+opt_args[-d] )); then
     _wanted functions expl "installed hook" compadd -a - "$line[1]_functions" && return 0
@@ -10,7 +10,7 @@ _add-zsh-hook_hooks() {
   return 1
 }
 
-_add-zsh-hook() {
+_add-bsh-hook() {
   local context state state_descr line
   typeset -A opt_args
   _arguments -s -w -S : \
@@ -18,10 +18,10 @@ _add-zsh-hook() {
     '(-L -D -U -z -k)-d[remove HOOK from the array]' \
     '(-L -d -U -z -k)-D[interpret HOOK as pattern to remove from the array]' \
     '(-L -d -D)-U[suppress alias expansion for functions]' \
-    '(-L -d -D -k)-z[mark function for zsh-style autoloading]' \
+    '(-L -d -D -k)-z[mark function for bsh-style autoloading]' \
     '(-L -d -D -z)-k[mark function for ksh-style autoloading]' \
-    ':hook class:(chpwd precmd preexec periodic zshaddhistory zshexit zsh_directory_name)' \
-    ':hook function:_add-zsh-hook_hooks'
+    ':hook class:(chpwd precmd preexec periodic bshaddhistory bshexit bsh_directory_name)' \
+    ':hook function:_add-bsh-hook_hooks'
 }
 
-_add-zsh-hook "$@"
+_add-bsh-hook "$@"

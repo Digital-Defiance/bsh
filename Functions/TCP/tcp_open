@@ -25,7 +25,7 @@
 #         a named pipe.  It should not be a regular file, however.
 #         Note that it is not a good idea for two different sessions
 #         to be attempting to read from the same named pipe, so if
-#         both ends of the pipe are to be handled by zsh, at least
+#         both ends of the pipe are to be handled by bsh, at least
 #         one should use the `-z' option.
 #
 # -l sesslist
@@ -50,13 +50,13 @@
 # If a session is successfully opened, and if the function `tcp_on_open'
 # exists, it is run with the arguments session_name, session_fd.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases
 
 # Global set up for TCP function suite.
 
-zmodload -i zsh/net/tcp || return 1
-zmodload -i zsh/zutil
+zmodload -i bsh/net/tcp || return 1
+zmodload -i bsh/zutil
 autoload -Uz tcp_alias tcp_close tcp_command tcp_expect tcp_fd_handler
 autoload -Uz tcp_log tcp_output tcp_proxy tcp_read tcp_rename tcp_send
 autoload -Uz tcp_sess tcp_spam tcp_talk tcp_wait tcp_point tcp_shoot
@@ -183,7 +183,7 @@ for sess in $sessnames; do
 
   # needed for new completion system, so I'm not too sanguine
   # about requiring this here...
-  if zmodload -i zsh/parameter; then
+  if zmodload -i bsh/parameter; then
     if (( ${+functions[tcp_on_open]} )); then
       if ! tcp_on_open $sess $fd; then
 	if [[ -z $quiet ]]; then

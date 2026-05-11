@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 #
-# exceedingly ugly hack to convert bashprompt themes to zshprompt themes
+# exceedingly ugly hack to convert bashprompt themes to bshprompt themes
 #
 # Adam Spiers <adam@spiers.net>
 
@@ -12,7 +12,7 @@ my @codes = ();
 my %boldp;
 my $out = '';
 
-print "# Converted to zsh prompt theme by bash2zshprompt, written by <adam\@spiers.net>\n";
+print "# Converted to bsh prompt theme by bash2bshprompt, written by <adam\@spiers.net>\n";
 
 my $seen_fn = 0;
 my $seen_fn_end = 0;
@@ -43,8 +43,8 @@ while (<>) {
   s/(?<!\\)\\#/%!/g; # hmmm
   s/(?<!\\)\\n/\$prompt_newline/g;
   s/(?<!\\)\\s/\$SHELL/g;
-  s/(?<!\\)\\v/\$ZSH_VERSION[1]/g;
-  s/(?<!\\)\\V/\${ZSH_VERSION%%-*}/g;
+  s/(?<!\\)\\v/\$BSH_VERSION[1]/g;
+  s/(?<!\\)\\V/\${BSH_VERSION%%-*}/g;
   s/(?<!\\)\\w/%~/g;
   s/(?<!\\)\\W/%1~/g;
   s/(?<!\\)\\\$(?!\()/%\#/g;

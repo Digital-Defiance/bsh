@@ -1,7 +1,7 @@
 /*
  * exec.c - command execution
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,22 +12,22 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "exec.pro"
 
 /* Flags for last argument of addvars */
@@ -186,7 +186,7 @@ int fdtable_size;
 /* The highest fd that marked with nonzero in fdtable */
 
 /**/
-mod_export int max_zsh_fd;
+mod_export int max_bsh_fd;
 
 /* input fd from the coprocess */
 
@@ -233,7 +233,7 @@ int cmdoutval;
 /**/
 int use_cmdoutval;
 
-/* The context in which a shell function is called, see SFC_* in zsh.h. */
+/* The context in which a shell function is called, see SFC_* in bsh.h. */
 
 /**/
 mod_export int sfcontext;
@@ -391,13 +391,13 @@ zfork(struct timespec *ts)
  *   cat foo | while read a; do grep $a bar; done
  *
  * the shell forks and executes the loop in the sub-shell thus created.
- * In zsh this traditionally executes the loop in the current shell, which
+ * In bsh this traditionally executes the loop in the current shell, which
  * is nice to have if the loop does something to change the shell, like
  * setting parameters or calling builtins.
  * Putting the loop in a sub-shell makes life easy, because the shell only
  * has to put it into the job-structure and then treats it as a normal
  * process. Suspending and interrupting is no problem then.
- * Some years ago, zsh either couldn't suspend such things at all, or
+ * Some years ago, bsh either couldn't suspend such things at all, or
  * it got really messed up when users tried to do it. As a solution, we
  * implemented the list_pipe-stuff, which has since then become a reason
  * for many nightmares.
@@ -408,12 +408,12 @@ zfork(struct timespec *ts)
  *  execlist->execpline->execcmd->execwhile->execlist->execpline
  *
  * (when waiting for the grep, ignoring execpline2 for now). At this time,
- * zsh has built two job-table entries for it: one for the cat and one for
+ * bsh has built two job-table entries for it: one for the cat and one for
  * the grep. If the user hits ^Z at this point (and jobbing is used), the
  * shell is notified that the grep was suspended. The list_pipe flag is
  * used to tell the execpline where it was waiting that it was in a pipeline
  * with a shell construct at the end (which may also be a shell function or
- * several other things). When zsh sees the suspended grep, it forks to let
+ * several other things). When bsh sees the suspended grep, it forks to let
  * the sub-shell execute the rest of the while loop. The parent shell walks
  * up in the function call stack to the first execpline. There it has to find
  * out that it has just forked and then has to add information about the sub-
@@ -1030,7 +1030,7 @@ hashcmd(char *arg0, char **pp)
     if (!*pp)
 	return NULL;
 
-    cn = (Cmdnam) zshcalloc(sizeof *cn);
+    cn = (Cmdnam) bshcalloc(sizeof *cn);
     cn->node.flags = 0;
     cn->u.name = pp;
     cmdnamtab->addnode(cmdnamtab, ztrdup(arg0), cn);
@@ -1153,12 +1153,12 @@ entersubsh(int flags, struct entersubsh_ret *retp)
     if (!(flags & ESUB_FAKE))
 	subsh = 1;
     /*
-     * Increment the visible parameter ZSH_SUBSHELL even if this
+     * Increment the visible parameter BSH_SUBSHELL even if this
      * is a fake subshell because we are exec'ing at the end.
      * Logically this should be equivalent to a real subshell so
      * we don't hang out the dirty washing.
      */
-    zsh_subshell++;
+    bsh_subshell++;
     if ((flags & ESUB_REVERTPGRP) && getpid() == mypgrp)
 	release_pgrp();
     shout = NULL;
@@ -1211,7 +1211,7 @@ entersubsh(int flags, struct entersubsh_ret *retp)
      * If we've saved fd's for later restoring, we're never going
      * to restore them now, so just close them.
      */
-    for (i = 10; i <= max_zsh_fd; i++) {
+    for (i = 10; i <= max_bsh_fd; i++) {
 	if (fdtable[i] & FDT_SAVED_MASK)
 	    zclose(i);
     }
@@ -1245,25 +1245,25 @@ mod_export void
 execode(Eprog p, int dont_change_job, int exiting, char *context)
 {
     struct estate s;
-    static int zsh_eval_context_len;
+    static int bsh_eval_context_len;
     int alen;
 
-    if (!zsh_eval_context_len) {
-	zsh_eval_context_len = 16;
+    if (!bsh_eval_context_len) {
+	bsh_eval_context_len = 16;
 	alen = 0;
-	zsh_eval_context = (char **)zalloc(zsh_eval_context_len *
-					   sizeof(*zsh_eval_context));
+	bsh_eval_context = (char **)zalloc(bsh_eval_context_len *
+					   sizeof(*bsh_eval_context));
     } else {
-	alen = arrlen(zsh_eval_context);
-	if (zsh_eval_context_len == alen + 1) {
-	    zsh_eval_context_len *= 2;
-	    zsh_eval_context = zrealloc(zsh_eval_context,
-					zsh_eval_context_len *
-					sizeof(*zsh_eval_context));
+	alen = arrlen(bsh_eval_context);
+	if (bsh_eval_context_len == alen + 1) {
+	    bsh_eval_context_len *= 2;
+	    bsh_eval_context = zrealloc(bsh_eval_context,
+					bsh_eval_context_len *
+					sizeof(*bsh_eval_context));
 	}
     }
-    zsh_eval_context[alen] = context;
-    zsh_eval_context[alen+1] = NULL;
+    bsh_eval_context[alen] = context;
+    bsh_eval_context[alen+1] = NULL;
 
     s.prog = p;
     s.pc = p->prog;
@@ -1275,10 +1275,10 @@ execode(Eprog p, int dont_change_job, int exiting, char *context)
     freeeprog(p);		/* Free if now unused */
 
     /*
-     * zsh_eval_context may have been altered by a recursive
+     * bsh_eval_context may have been altered by a recursive
      * call, but that's OK since we're using the global value.
      */
-    zsh_eval_context[alen] = NULL;
+    bsh_eval_context[alen] = NULL;
 }
 
 /* Execute a simplified command. This is used to execute things that
@@ -1428,7 +1428,7 @@ execlist(Estate state, int dont_change_job, int exiting)
 	    noerrexit |= NOERREXIT_EXIT | NOERREXIT_RETURN;
 	    if (ltype & Z_SIMPLE) /* skip the line number */
 		pc2++;
-	    pm = assignsparam("ZSH_DEBUG_CMD",
+	    pm = assignsparam("BSH_DEBUG_CMD",
 			      getpermtext(state->prog, pc2, 0),
 			      0);
 
@@ -1874,7 +1874,7 @@ execpline(Estate state, wordcode slcode, int how, int last1)
 			} else
 			    zerr("pipe failed: %e", errno);
 			zleentry(ZLE_CMD_TRASH);
-			fprintf(stderr, "zsh: job can't be suspended\n");
+			fprintf(stderr, "bsh: job can't be suspended\n");
 			fflush(stderr);
 			makerunning(jn);
 			killjb(jn, SIGCONT);
@@ -1911,7 +1911,7 @@ execpline(Estate state, wordcode slcode, int how, int last1)
 			    jobtab[list_pipe_job].other = newjob;
 			    jobtab[list_pipe_job].stat |= STAT_SUPERJOB;
 			    jn->stat |= STAT_SUBJOB | STAT_NOPRINT;
-			    jn->other = list_pipe_pid;	/* see zsh.h */
+			    jn->other = list_pipe_pid;	/* see bsh.h */
 			    if (hasprocs(list_pipe_job))
 				jn->gleader = jobtab[list_pipe_job].gleader;
 			}
@@ -2109,7 +2109,7 @@ untokenize(char *s)
  * Hence Star becomes an unquoted "*", while a "*" becomes "\*".
  *
  * The code here is a kind of amalgamation of the tests in
- * zshtokenize() and untokenize() with some outputting.
+ * bshtokenize() and untokenize() with some outputting.
  */
 
 /**/
@@ -2207,7 +2207,7 @@ checkclobberparam(struct redir *f)
      */
     if (!isset(CLOBBER) && (s = getstrvalue(v)) &&
 	(fd = (int)zstrtol(s, &s, 10)) >= 0 && !*s &&
-	fd <= max_zsh_fd && fdtable[fd] == FDT_EXTERNAL) {
+	fd <= max_bsh_fd && fdtable[fd] == FDT_EXTERNAL) {
 	zwarn("can't clobber parameter %s containing file descriptor %d",
 	     f->varid, fd);
 	/* don't flag a system error for this */
@@ -3191,10 +3191,10 @@ execcmd_exec(Estate state, Execcmd_params eparams,
 		/*
 		 * Careful here: we want to make sure a final dash
 		 * is passed through in order that it still behaves
-		 * as a precommand modifier (zsh equivalent of -l).
+		 * as a precommand modifier (bsh equivalent of -l).
 		 * It has to be last, but I think that's OK since
 		 * people aren't likely to mix the option style
-		 * with the zsh style.
+		 * with the bsh style.
 		 */
 		while (argdata && IS_DASH(*argdata) && strlen(argdata) >= 2) {
 		    oldnode = argnode;
@@ -3417,7 +3417,7 @@ execcmd_exec(Estate state, Execcmd_params eparams,
 	     *   - we loaded a builtin from a module, or
 	     *   - we have determined there are options which would
 	     *     require us to use the "command" builtin); or
-	     * - we aren't using POSIX and so BINF_COMMAND indicates a zsh
+	     * - we aren't using POSIX and so BINF_COMMAND indicates a bsh
 	     *   precommand modifier is being used in place of the
 	     *   builtin
 	     * - we are using POSIX and this is an EXEC, so we can't
@@ -3830,7 +3830,7 @@ execcmd_exec(Estate state, Execcmd_params eparams,
 				if (s == t || *t)
 				    bad = 1;
 			    }
-			    if (!bad && fn->fd1 <= max_zsh_fd) {
+			    if (!bad && fn->fd1 <= max_bsh_fd) {
 				if (fn->fd1 >= 10 &&
 				    (fdtable[fn->fd1] & FDT_TYPE_MASK) ==
 				    FDT_INTERNAL)
@@ -3852,7 +3852,7 @@ execcmd_exec(Estate state, Execcmd_params eparams,
 		    }
 		}
 		/*
-		 * Note we may attempt to close an fd beyond max_zsh_fd:
+		 * Note we may attempt to close an fd beyond max_bsh_fd:
 		 * OK as long as we never look in fdtable for it.
  		 */
 		closed = 0;
@@ -3886,12 +3886,12 @@ execcmd_exec(Estate state, Execcmd_params eparams,
 		    fil = -1;
 		else if (fn->fd2 > 9 &&
 			 /*
-			  * If the requested fd is > max_zsh_fd,
+			  * If the requested fd is > max_bsh_fd,
 			  * the shell doesn't know about it.
 			  * Just assume the user knows what they're
 			  * doing.
 			  */
-			 (fn->fd2 <= max_zsh_fd &&
+			 (fn->fd2 <= max_bsh_fd &&
 			  ((fdtable[fn->fd2] != FDT_UNUSED &&
 			    fdtable[fn->fd2] != FDT_EXTERNAL) ||
 			   fn->fd2 == coprocin ||
@@ -4256,9 +4256,9 @@ execcmd_exec(Estate state, Execcmd_params eparams,
 	    if (isset(PRINTEXITVALUE) && isset(SHINSTDIN) &&
 		lastval && !subsh) {
 #if defined(ZLONG_IS_LONG_LONG) && defined(PRINTF_HAS_LLD)
-		fprintf(stderr, "zsh: exit %lld\n", lastval);
+		fprintf(stderr, "bsh: exit %lld\n", lastval);
 #else
-		fprintf(stderr, "zsh: exit %ld\n", (long)lastval);
+		fprintf(stderr, "bsh: exit %ld\n", (long)lastval);
 #endif
 		fflush(stderr);
 	    }
@@ -4376,7 +4376,7 @@ execcmd_exec(Estate state, Execcmd_params eparams,
 	 * classify as a builtin) we treat all errors as fatal.
 	 * The "command" builtin is not special so resets this behaviour.
 	 */
-	forked |= zsh_subshell;
+	forked |= bsh_subshell;
     fatal:
 	if (redir_err || errflag) {
 	    if (!isset(INTERACTIVE)) {
@@ -4436,7 +4436,7 @@ save_params(Estate state, Wordcode pc, LinkList *restore_p, LinkList *remove_p)
 		 * table so we want to be sure everything is
 		 * properly set up and in permanent memory.
 		 */
-		tpm = (Param) zshcalloc(sizeof *tpm);
+		tpm = (Param) bshcalloc(sizeof *tpm);
 		tpm->node.nam = ztrdup(pm->node.nam);
 		copyparam(tpm, pm, 0);
 	    } else if (!(pm->node.flags & PM_READONLY)) {
@@ -4550,7 +4550,7 @@ closem(int how, int all)
 {
     int i;
 
-    for (i = 10; i <= max_zsh_fd; i++)
+    for (i = 10; i <= max_bsh_fd; i++)
 	if (fdtable[i] != FDT_UNUSED &&
 	    /*
 	     * Process substitution needs to be visible to user;
@@ -5445,9 +5445,9 @@ execfuncdef(Estate state, Eprog redir_prog)
 	    if (isset(PRINTEXITVALUE) && isset(SHINSTDIN) &&
 		lastval) {
 #if defined(ZLONG_IS_LONG_LONG) && defined(PRINTF_HAS_LLD)
-		fprintf(stderr, "zsh: exit %lld\n", lastval);
+		fprintf(stderr, "bsh: exit %lld\n", lastval);
 #else
-		fprintf(stderr, "zsh: exit %ld\n", (long)lastval);
+		fprintf(stderr, "bsh: exit %ld\n", (long)lastval);
 #endif
 		fflush(stderr);
 	    }
@@ -5504,7 +5504,7 @@ mod_export Emulation_options
 sticky_emulation_dup(Emulation_options src, int useheap)
 {
     Emulation_options newsticky = useheap ?
-	hcalloc(sizeof(*src)) : zshcalloc(sizeof(*src));
+	hcalloc(sizeof(*src)) : bshcalloc(sizeof(*src));
     newsticky->emulation = src->emulation;
     if (src->n_on_opts) {
 	size_t sz = src->n_on_opts * sizeof(*src->on_opts);
@@ -5710,7 +5710,7 @@ loadautofn(Shfunc shf, int fksh, int autol, int current_fpath)
 	ksh = fksh;
 	if (ksh == 1)
 	    ksh = (shf->node.flags & PM_KSHSTORED) ? 2 :
-		  (shf->node.flags & PM_ZSHSTORED) ? 0 : 1;
+		  (shf->node.flags & PM_BSHSTORED) ? 0 : 1;
     }
 
     if (prog == &dummy_eprog) {
@@ -5982,7 +5982,7 @@ doshfunc(Shfunc shfunc, LinkList doshargs, int noreturnval)
 	    LinkNode node;
 
 	    node = firstnode(doshargs);
-	    pparams = x = (char **) zshcalloc(((sizeof *x) *
+	    pparams = x = (char **) bshcalloc(((sizeof *x) *
 					       (1 + countlinknodes(doshargs))));
 	    if (isset(FUNCTIONARGZERO)) {
 		funcsave->argv0 = argzero;
@@ -5993,14 +5993,14 @@ doshfunc(Shfunc shfunc, LinkList doshargs, int noreturnval)
 	    for (; node; node = node->next, x++)
 		*x = ztrdup(getdata(node));
 	} else {
-	    pparams = (char **) zshcalloc(sizeof *pparams);
+	    pparams = (char **) bshcalloc(sizeof *pparams);
 	    if (isset(FUNCTIONARGZERO)) {
 		funcsave->argv0 = argzero;
 		argzero = ztrdup(argzero);
 	    }
 	}
 	++funcdepth;
-	if (zsh_funcnest >= 0 && funcdepth > zsh_funcnest) {
+	if (bsh_funcnest >= 0 && funcdepth > bsh_funcnest) {
 	    zerr("maximum nested function level reached; increase FUNCNEST?");
 	    lastval = 1;
 	    goto undoshfunc;
@@ -6285,7 +6285,7 @@ getfpfunc(char *s, int *ksh, char **fdir, char **alt_path, int test_only)
 }
 
 /* Handle the most common type of ksh-style autoloading, when doing a      *
- * zsh-style autoload.  Given the list read from an autoload file, and the *
+ * bsh-style autoload.  Given the list read from an autoload file, and the *
  * name of the function being defined, check to see if the file consists   *
  * entirely of a single definition for that function.  If so, use the      *
  * contents of that definition.  Otherwise, use the entire file.           */

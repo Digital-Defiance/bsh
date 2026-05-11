@@ -1,7 +1,7 @@
 /*
  * terminfo.c - parameter interface to terminfo via curses
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2000 Sven Wishnowsky, Clint Adams
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Sven Wishnowsky, Clint Adams or the Zsh Development Group
+ * In no event shall Sven Wishnowsky, Clint Adams or the Bsh Development Group
  * be liable to any party for direct, indirect, special, incidental, or
  * consequential damages arising out of the use of this software and its
- * documentation, even if Sven Wishnowsky, Clint Adams and the Zsh
+ * documentation, even if Sven Wishnowsky, Clint Adams and the Bsh
  * Development Group have been advised of the possibility of such damage.
  *
- * Sven Wishnowsky, Clint Adams and the Zsh Development Group specifically
+ * Sven Wishnowsky, Clint Adams and the Bsh Development Group specifically
  * disclaim any warranties, including, but not limited to, the implied
  * warranties of merchantability and fitness for a particular purpose.
  * The software provided hereunder is on an "as is" basis, and Sven
- * Wishnowsky, Clint Adams and the Zsh Development Group have no obligation
+ * Wishnowsky, Clint Adams and the Bsh Development Group have no obligation
  * to provide maintenance, support, updates, enhancements, or modifications.
  *
  */
@@ -30,7 +30,7 @@
 #define USES_TERM_H 1
 #include "terminfo.mdh"
 
-#if defined(HAVE_TIGETFLAG) && defined(ZSH_HAVE_CURSES_H)
+#if defined(HAVE_TIGETFLAG) && defined(BSH_HAVE_CURSES_H)
 # define USE_TERMINFO_MODULE 1
 #else
 # undef USE_TERMINFO_MODULE
@@ -49,12 +49,12 @@
 #  undef offsetof
 # endif
 
-#ifdef ZSH_HAVE_CURSES_H
-# include "../zshcurses.h"
+#ifdef BSH_HAVE_CURSES_H
+# include "../bshcurses.h"
 #endif
 
-# ifdef ZSH_HAVE_TERM_H
-#  include "../zshterm.h"
+# ifdef BSH_HAVE_TERM_H
+#  include "../bshterm.h"
 # endif
 
 /* echoti: output a terminfo capability */
