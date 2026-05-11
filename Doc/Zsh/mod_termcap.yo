@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/termcap
+COMMENT(!MOD!bsh/termcap
 Interface to the termcap database.
 !MOD!)
-The tt(zsh/termcap) module makes available one builtin command:
+The tt(bsh/termcap) module makes available one builtin command:
 
 startitem()
 findex(echotc)
@@ -12,7 +12,7 @@ var(cap), with optional arguments.
 )
 enditem()
 
-The tt(zsh/termcap) module makes available one parameter:
+The tt(bsh/termcap) module makes available one parameter:
 
 startitem()
 vindex(termcap)

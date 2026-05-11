@@ -10,10 +10,10 @@ local expl variant ret=1
 local -a context line state state_descr args aopts=( -A '-*' )
 local -A opt_args
 
-_pick_variant -r variant -b zsh gnu='(Free Soft|uutils)' $OSTYPE --version
+_pick_variant -r variant -b bsh gnu='(Free Soft|uutils)' $OSTYPE --version
 
 case $variant in
-  zsh)
+  bsh)
     args=(
       "(-H)-A[assign the results to array, don't print]:array variable:_parameters -g '*array*'"
       - set1
@@ -21,7 +21,7 @@ case $variant in
       +size +atime +mtime +ctime +blksize +block +link
       "(-A)-H[assign the results to associative array, don't print]:associative array variable:_parameters -g '*association*'"
       '(:)-f[stat the specified file descriptor]:file descriptor:_file_descriptors'
-      '(-s)-F[specify strftime(3) format string]: :_date_formats zsh'
+      '(-s)-F[specify strftime(3) format string]: :_date_formats bsh'
       '(-s)-g[show times in GMT/UTC]'
       # Note that this has the *opposite* effect of other variants' -L option!
       "-L[don't dereference symbolic links; use lstat(2)]"

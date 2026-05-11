@@ -1,9 +1,9 @@
-# Test the use of zformat, if the zsh/zutil module is available.
+# Test the use of zformat, if the bsh/zutil module is available.
 
 %prep
 
-  if ! zmodload zsh/zutil 2>/dev/null; then
-    ZTST_unimplemented="can't load the zsh/zutil module for testing"
+  if ! zmodload bsh/zutil 2>/dev/null; then
+    ZTST_unimplemented="can't load the bsh/zutil module for testing"
   fi
 
   # Helper function.  Expects a single format using %s and a value for it.

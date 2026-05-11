@@ -1,7 +1,7 @@
 /*
  * zpty.c - sub-processes with pseudo terminals
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2000 Sven Wischnowsky
  * All rights reserved.

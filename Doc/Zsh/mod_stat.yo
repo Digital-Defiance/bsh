@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/stat
+COMMENT(!MOD!bsh/stat
 A builtin command interface to the tt(stat) system call.
 !MOD!)
-The tt(zsh/stat) module makes available one builtin command under
+The tt(bsh/stat) module makes available one builtin command under
 two possible names:
 
 startitem()
@@ -19,7 +19,7 @@ The command acts as a front end to the tt(stat) system call (see
 manref(stat)(2)).  The same command is provided with two names; as
 the name tt(stat) is often used by an external command it is recommended
 that only the tt(zstat) form of the command is used.  This can be
-arranged by loading the module with the command `tt(zmodload -F zsh/stat
+arranged by loading the module with the command `tt(zmodload -F bsh/stat
 b:zstat)'.
 
 If the tt(stat) call fails, the appropriate system error message
@@ -115,8 +115,8 @@ named files; no list of file names is allowed in this case.
 item(tt(-F) var(fmt))(
 Supplies a tt(strftime) (see manref(strftime)(3)) string for the
 formatting of the time elements.  The format string supports all of the
-zsh extensions (see the description of tt(%D{)var(string)tt(})
-prompt escape in sectref(Simple Prompt Escapes)(zshmisc)).
+bsh extensions (see the description of tt(%D{)var(string)tt(})
+prompt escape in sectref(Simple Prompt Escapes)(bshmisc)).
 In particular, tt(-F %s.%N) can be used to show timestamps with nanosecond
 precision if supported by the system.
 The tt(-s) option is implied.

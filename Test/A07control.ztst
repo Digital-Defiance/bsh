@@ -23,7 +23,7 @@
 >start 255
 >255
 
-  $ZTST_testdir/../Src/zsh -fc 'fn() {
+  $ZTST_testdir/../Src/bsh -fc 'fn() {
     continue
   }
   fn'

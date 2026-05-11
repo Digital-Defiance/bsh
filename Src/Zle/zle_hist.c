@@ -1,7 +1,7 @@
 /*
  * zle_hist.c - history editing
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -1167,7 +1167,7 @@ doisearch(char **args, int dir, int pattern)
      * savekeys records the unget buffer, so that if we have arguments
      * they don't pollute the input.
      * feep indicates we should feep.  This is a well-known word
-     * meaning "to indicate an error in the zsh line editor".
+     * meaning "to indicate an error in the bsh line editor".
      */
     int savekeys = -1, feep = 0;
     /* Flag that we are at an old position, no need to search again */

@@ -1,7 +1,7 @@
 /*
  * socket.c - Unix domain socket module
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2002 Peter Stephenson
  * All rights reserved.
@@ -34,7 +34,7 @@
 #include <sys/un.h>
 
 /*
- * We need to include the zsh headers later to avoid clashes with
+ * We need to include the bsh headers later to avoid clashes with
  * the definitions on some systems, however we need the configuration
  * file to decide whether we can include netinet/in_systm.h, which
  * doesn't exist on cygwin.
@@ -74,7 +74,7 @@ bin_zsocket(char *nam, char **args, Options ops, UNUSED(int func))
 		     OPT_ARG(ops, 'd'));
 	    return 1;
 	}
-	if (targetfd <= max_zsh_fd && fdtable[targetfd] != FDT_UNUSED) {
+	if (targetfd <= max_bsh_fd && fdtable[targetfd] != FDT_UNUSED) {
 	    zwarnnam(nam, "file descriptor %d is in use by the shell",
 		     targetfd);
 	    return 1;
@@ -284,7 +284,7 @@ static struct features module_features = {
     0
 };
 
-/* The load/unload routines required by the zsh library interface */
+/* The load/unload routines required by the bsh library interface */
 
 /**/
 int

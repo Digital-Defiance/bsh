@@ -1,7 +1,7 @@
 /*
  * tcp.c - TCP module
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1998-2001 Peter Stephenson
  * All rights reserved.
@@ -28,7 +28,7 @@
  */
 
 /*
- * We need to include the zsh headers later to avoid clashes with
+ * We need to include the bsh headers later to avoid clashes with
  * the definitions on some systems, however we need the configuration
  * file to decide whether we can include netinet/in_systm.h, which
  * doesn't exist on cygwin.
@@ -69,7 +69,7 @@ int h_errno;
 
 /**/
 mod_export char const *
-zsh_inet_ntop(int af, void const *cp, char *buf, size_t len)
+bsh_inet_ntop(int af, void const *cp, char *buf, size_t len)
 {       
     if (af != AF_INET) {
 	errno = EAFNOSUPPORT;
@@ -87,7 +87,7 @@ zsh_inet_ntop(int af, void const *cp, char *buf, size_t len)
 #else /* !HAVE_INET_NTOP */
 
 /**/
-# define zsh_inet_ntop inet_ntop
+# define bsh_inet_ntop inet_ntop
 
 /**/
 #endif /* !HAVE_INET_NTOP */
@@ -100,7 +100,7 @@ zsh_inet_ntop(int af, void const *cp, char *buf, size_t len)
 # endif
 
 /**/
-mod_export int zsh_inet_aton(char const *src, struct in_addr *dst)
+mod_export int bsh_inet_aton(char const *src, struct in_addr *dst)
 {
     return (dst->s_addr = inet_addr(src)) != INADDR_NONE;
 }
@@ -109,7 +109,7 @@ mod_export int zsh_inet_aton(char const *src, struct in_addr *dst)
 #else /* !HAVE_INET_ATON */
 
 /**/
-# define zsh_inet_aton inet_aton
+# define bsh_inet_aton inet_aton
 
 /**/
 #endif /* !HAVE_INET_ATON */
@@ -119,18 +119,18 @@ mod_export int zsh_inet_aton(char const *src, struct in_addr *dst)
 
 /**/
 mod_export int
-zsh_inet_pton(int af, char const *src, void *dst)
+bsh_inet_pton(int af, char const *src, void *dst)
 {
     if (af != AF_INET) {
 	errno = EAFNOSUPPORT;
 	return -1;
     }
-    return !!zsh_inet_aton(src, dst);
+    return !!bsh_inet_aton(src, dst);
 }
 
 #else /* !HAVE_INET_PTON */
 
-# define zsh_inet_pton inet_pton
+# define bsh_inet_pton inet_pton
 
 /**/
 #endif /* !HAVE_INET_PTON */
@@ -143,7 +143,7 @@ zsh_inet_pton(int af, char const *src, void *dst)
 
 /**/
 mod_export struct hostent *
-zsh_gethostbyname2(char const *name, int af)
+bsh_gethostbyname2(char const *name, int af)
 {
     if (af != AF_INET) {
 	h_errno = NO_RECOVERY;
@@ -156,7 +156,7 @@ zsh_gethostbyname2(char const *name, int af)
 #else /* !HAVE_GETHOSTBYNAME2 */
 
 /**/
-# define zsh_gethostbyname2 gethostbyname2
+# define bsh_gethostbyname2 gethostbyname2
 
 /**/
 # endif /* !HAVE_GETHOSTBYNAME2 */
@@ -167,7 +167,7 @@ zsh_gethostbyname2(char const *name, int af)
 
 /**/
 mod_export struct hostent *
-zsh_getipnodebyname(char const *name, int af, UNUSED(int flags), int *errorp)
+bsh_getipnodebyname(char const *name, int af, UNUSED(int flags), int *errorp)
 {
     static struct hostent ahe;
     static char nbuf[16];
@@ -178,8 +178,8 @@ zsh_getipnodebyname(char const *name, int af, UNUSED(int flags), int *errorp)
     static char pbuf[INET_ADDRSTRLEN];
 # endif
     struct hostent *he;
-    if (zsh_inet_pton(af, name, nbuf) == 1) {
-	zsh_inet_ntop(af, nbuf, pbuf, sizeof(pbuf));
+    if (bsh_inet_pton(af, name, nbuf) == 1) {
+	bsh_inet_ntop(af, nbuf, pbuf, sizeof(pbuf));
 	ahe.h_name = pbuf;
 	ahe.h_aliases = addrlist+1;
 	ahe.h_addrtype = af;
@@ -187,7 +187,7 @@ zsh_getipnodebyname(char const *name, int af, UNUSED(int flags), int *errorp)
 	ahe.h_addr_list = addrlist;
 	return &ahe;
     }
-    he = zsh_gethostbyname2(name, af);
+    he = bsh_gethostbyname2(name, af);
     if (!he)
 	*errorp = h_errno;
     return he;
@@ -203,7 +203,7 @@ freehostent(UNUSED(struct hostent *ptr))
 #else /* !HAVE_GETIPNODEBYNAME */
 
 /**/
-# define zsh_getipnodebyname getipnodebyname
+# define bsh_getipnodebyname getipnodebyname
 
 /**/
 #endif /* !HAVE_GETIPNODEBYNAME */
@@ -216,7 +216,7 @@ zts_alloc(int ztflags)
 {
     Tcp_session sess;
 
-    sess = (Tcp_session)zshcalloc(sizeof(struct tcp_session));
+    sess = (Tcp_session)bshcalloc(sizeof(struct tcp_session));
     if (!sess) return NULL;
     sess->fd=-1;
     sess->flags=ztflags;
@@ -422,7 +422,7 @@ bin_ztcp(char *nam, char **args, Options ops, UNUSED(int func))
 	len = 1;
 	setsockopt(sess->fd, SOL_SOCKET, SO_OOBINLINE, (char *)&len, sizeof(len));
 #endif
-	if (!zsh_inet_aton("0.0.0.0", &(sess->sock.in.sin_addr)))
+	if (!bsh_inet_aton("0.0.0.0", &(sess->sock.in.sin_addr)))
 	{
 	    zwarnnam(nam, "bad address: %s", "0.0.0.0");
 	    return 1;
@@ -629,7 +629,7 @@ bin_ztcp(char *nam, char **args, Options ops, UNUSED(int func))
 	
 	desthost = ztrdup(args[0]);
 	
-	zthost = zsh_getipnodebyname(desthost, AF_INET, 0, &herrno);
+	zthost = bsh_getipnodebyname(desthost, AF_INET, 0, &herrno);
 	if (!zthost || errflag) {
 	    zwarnnam(nam, "host resolution failure: %s", desthost);
 	    zsfree(desthost);
@@ -707,7 +707,7 @@ static struct features module_features = {
     0
 };
 
-/* The load/unload routines required by the zsh library interface */
+/* The load/unload routines required by the bsh library interface */
 
 /**/
 int

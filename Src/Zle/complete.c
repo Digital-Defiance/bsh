@@ -1,7 +1,7 @@
 /*
  * complete.c - the complete module, interface part
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -920,7 +920,7 @@ restrict_range(int b, int e)
 	    e = wl;
 
 	i = e - b + 1;
-	p = (char **) zshcalloc((i + 1) * sizeof(char *));
+	p = (char **) bshcalloc((i + 1) * sizeof(char *));
 
 	for (q = p, pp = compwords + b; i; i--, q++, pp++)
 	    *q = ztrdup(*pp);
@@ -1495,7 +1495,7 @@ compunsetfn(Param pm, int exp)
 		*((char **) pm->u.data) = ztrdup("");
 	    } else if (PM_TYPE(pm->node.flags) == PM_ARRAY) {
 		freearray(*((char ***) pm->u.data));
-		*((char ***) pm->u.data) = zshcalloc(sizeof(char *));
+		*((char ***) pm->u.data) = bshcalloc(sizeof(char *));
 	    } else if (PM_TYPE(pm->node.flags) == PM_HASHED) {
 		deleteparamtable(pm->u.hash);
 		pm->u.hash = NULL;

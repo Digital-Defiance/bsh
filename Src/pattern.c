@@ -1,7 +1,7 @@
 /*
  * pattern.c - pattern matching
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Peter Stephenson
  * All rights reserved.
@@ -69,7 +69,7 @@
  *                                 bk I, "The Walk by Bourne's Place".
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 
 /*
  * The following union is used mostly for alignment purposes.
@@ -217,7 +217,7 @@ typedef union upat *Upat;
 #define P_HSTART        0x02	/* Starts with # or ##'d pattern. */
 #define P_PURESTR	0x04	/* Can be matched with a strcmp */
 
-#if defined(ZSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
+#if defined(BSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
 typedef zlong zrange_t;
 #define ZRANGE_T_IS_SIGNED	(1)
 #define ZRANGE_MAX ZLONG_MAX
@@ -2575,9 +2575,9 @@ pattryrefs(Patprog prog, char *string, int stringlen, int unmetalenin,
 		char **matcharr, **mbeginarr, **mendarr;
 		char numbuf[DIGBUFSIZE];
 
-		matcharr = zshcalloc(palen*sizeof(char *));
-		mbeginarr = zshcalloc(palen*sizeof(char *));
-		mendarr = zshcalloc(palen*sizeof(char *));
+		matcharr = bshcalloc(palen*sizeof(char *));
+		mbeginarr = bshcalloc(palen*sizeof(char *));
+		mendarr = bshcalloc(palen*sizeof(char *));
 
 		sp = patbeginp;
 		ep = patendp;
@@ -2822,7 +2822,7 @@ patmatch(Upat prog)
 	    start = (char *)P_OPERAND(scan);
 	    from = to = 0;
 	    if (op != P_NUMTO) {
-#ifdef ZSH_64_BIT_TYPE
+#ifdef BSH_64_BIT_TYPE
 		/* We can't rely on pointer alignment being good enough. */
 		memcpy((char *)&from, start, sizeof(zrange_t));
 #else
@@ -2831,7 +2831,7 @@ patmatch(Upat prog)
 		start += sizeof(zrange_t);
 	    }
 	    if (op != P_NUMFROM) {
-#ifdef ZSH_64_BIT_TYPE
+#ifdef BSH_64_BIT_TYPE
 		memcpy((char *)&to, start, sizeof(zrange_t));
 #else
 		to = *((zrange_t *) start);
@@ -3097,7 +3097,7 @@ patmatch(Upat prog)
 			 */
 			oldsyncstr = syncstrp->p;
 			syncstrp->p = (unsigned char *)
-			    zshcalloc((patinend - patinstart) + 1);
+			    bshcalloc((patinend - patinstart) + 1);
 			origpatinend = patinend;
 			while ((ret = patmatch(P_OPERAND(scan)))) {
 			    unsigned char *syncpt;
@@ -3227,7 +3227,7 @@ patmatch(Upat prog)
 			    ptrp = opnd++;
 			    if (!ptrp->p) {
 				ptrp->p = (unsigned char *)
-				    zshcalloc((patinend - patinstart) + 1);
+				    bshcalloc((patinend - patinstart) + 1);
 				pfree = 1;
 			    }
 			    ptr = ptrp->p + (patinput - patinstart);

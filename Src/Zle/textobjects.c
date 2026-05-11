@@ -1,7 +1,7 @@
 /*
  * textobjects.c - ZLE widgets implementing Vim style text objects
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2014 Oliver Kiddle
  * All rights reserved.

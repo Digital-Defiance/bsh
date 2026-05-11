@@ -1,7 +1,7 @@
-#!/bin/zsh -f
-emulate -L zsh -o extendedglob
+#!/bin/bsh -f
+emulate -L bsh -o extendedglob
 
-zmodload zsh/param/private
+zmodload bsh/param/private
 
 local -AHPrt jobstats=(
  mapbase 16
@@ -73,7 +73,7 @@ local -AHPrt paramflags=(
  $((1<<19))	PM_LOCAL	# this parameter will be made local
 # $((1<<19))	PM_KSHSTORED	# (function) stored in ksh form
  $((1<<20))	PM_SPECIAL	# special builtin parameter
-# $((1<<20))	PM_ZSHSTORED	# (function) stored in zsh form
+# $((1<<20))	PM_BSHSTORED	# (function) stored in bsh form
  $((1<<21))	PM_RO_BY_DESIGN	# specials that can be made read-only by user
 ##$(((1<<20)|(1<<10)|(1<<21))) PM_READONLY_SPECIAL
 # $((1<<22))	PM_DONTIMPORT	# do not import this variable
@@ -436,7 +436,7 @@ local -AHPrt emulations=(
  $((1<<1))	EMULATE_CSH	# C shell
  $((1<<2))	EMULATE_KSH	# Korn shell
  $((1<<3))	EMULATE_SH	# Bourne shell
- $((1<<4))	EMULATE_ZSH	# `native' mode
+ $((1<<4))	EMULATE_BSH	# `native' mode
 )
 local -AHPrt terminaltypes=(
  mapbase 16
@@ -523,7 +523,7 @@ local -AHPrt cmdstackstates=(
  $((32))	CS_COUNT
 )
 
-zmodload zsh/parameter
+zmodload bsh/parameter
 local seek=${parameters[paramflags]}
 
 if [[ $1 = (|-)-h(|elp) ]]

@@ -10,7 +10,7 @@
   print 'print In sourced file
   print $LINENO + $functrace + ${funcsourcetrace}
   ' >sourcedfile
-  print -r -- 'print Started functrace.zsh
+  print -r -- 'print Started functrace.bsh
   module_path=(./Modules)
   print $LINENO + $functrace + ${funcsourcetrace}
   :
@@ -31,19 +31,19 @@
   :
   autofn
   autofn
-  . ./sourcedfile' >functrace.zsh
-  $ZTST_testdir/../Src/zsh +Z -f ./functrace.zsh
+  . ./sourcedfile' >functrace.bsh
+  $ZTST_testdir/../Src/bsh +Z -f ./functrace.bsh
 0q:Function tracing
->Started functrace.zsh
+>Started functrace.bsh
 >3 + +
 >Inside function fn
->2 + ./functrace.zsh:10 + ./functrace.zsh:5
+>2 + ./functrace.bsh:10 + ./functrace.bsh:5
 >Inside autofn
->2 + ./functrace.zsh:20 + $mydir/autofn:0
+>2 + ./functrace.bsh:20 + $mydir/autofn:0
 >Inside autofn
->2 + ./functrace.zsh:21 + $mydir/autofn:0
+>2 + ./functrace.bsh:21 + $mydir/autofn:0
 >In sourced file
->2 + ./functrace.zsh:22 + ./sourcedfile:0
+>2 + ./functrace.bsh:22 + ./sourcedfile:0
 
   print -r -- 'module_path=(./Modules)
   debug_hook() { print $funcfiletrace[1] $functrace[1]; }
@@ -58,20 +58,20 @@
   w=5
   eval "x=6
   y=7"
-  z=8' >rocky3.zsh
-  $ZTST_testdir/../Src/zsh +Z -f ./rocky3.zsh
+  z=8' >rocky3.bsh
+  $ZTST_testdir/../Src/bsh +Z -f ./rocky3.bsh
 0:Eval tracing
->./rocky3.zsh:5 ./rocky3.zsh:5
->./rocky3.zsh:10 ./rocky3.zsh:10
->./rocky3.zsh:6 fn:1
->./rocky3.zsh:7 fn:2
->./rocky3.zsh:7 (eval):1
->./rocky3.zsh:8 fn:3
->./rocky3.zsh:11 ./rocky3.zsh:11
->./rocky3.zsh:12 ./rocky3.zsh:12
->./rocky3.zsh:12 (eval):1
->./rocky3.zsh:13 (eval):2
->./rocky3.zsh:14 ./rocky3.zsh:14
+>./rocky3.bsh:5 ./rocky3.bsh:5
+>./rocky3.bsh:10 ./rocky3.bsh:10
+>./rocky3.bsh:6 fn:1
+>./rocky3.bsh:7 fn:2
+>./rocky3.bsh:7 (eval):1
+>./rocky3.bsh:8 fn:3
+>./rocky3.bsh:11 ./rocky3.bsh:11
+>./rocky3.bsh:12 ./rocky3.bsh:12
+>./rocky3.bsh:12 (eval):1
+>./rocky3.bsh:13 (eval):2
+>./rocky3.bsh:14 ./rocky3.bsh:14
 
   (
     fpath=($PWD)
@@ -94,4 +94,4 @@
 
 %clean
 
- rm -f autofn functrace.zsh rocky3.zsh sourcedfile myfunc
+ rm -f autofn functrace.bsh rocky3.bsh sourcedfile myfunc

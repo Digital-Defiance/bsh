@@ -125,35 +125,35 @@
 F:POSIX requires a solitary "-" to be a plain argument
 >-
 
-  ARGV0=sh $ZTST_testdir/../Src/zsh -c 'foreach() { true; }'
+  ARGV0=sh $ZTST_testdir/../Src/bsh -c 'foreach() { true; }'
 -f:"foreach" is not a reserved word
 
-  ARGV0=sh $ZTST_testdir/../Src/zsh -c 'end() { true; }
+  ARGV0=sh $ZTST_testdir/../Src/bsh -c 'end() { true; }
 -f:"end" is not a reserved word
 
-  a='a:b:' ARGV0=sh $ZTST_testdir/../Src/zsh -c 'IFS=:; printf "<%s>\n" $a'
+  a='a:b:' ARGV0=sh $ZTST_testdir/../Src/bsh -c 'IFS=:; printf "<%s>\n" $a'
 0f:IFS is a separator, not a delimiter
 ><a>
 ><b>
 
-  a=$'\ra\r\rb' ARGV0=sh $ZTST_testdir/../Src/zsh -c 'IFS=:; printf "<%s>\n" $a'
+  a=$'\ra\r\rb' ARGV0=sh $ZTST_testdir/../Src/bsh -c 'IFS=:; printf "<%s>\n" $a'
 0f:All whitespace characters are "IFS whitespace"
 F:isspace('\r') is true so \r should behave like space, \t, \n
 F:This may also need to apply to multibyte whitespace
 ><a>
 ><b>
 
-  ARGV0=sh $ZTST_testdir/../Src/zsh -c 'IFS=2; printf "<%s>\n" $((11*11))'
+  ARGV0=sh $ZTST_testdir/../Src/bsh -c 'IFS=2; printf "<%s>\n" $((11*11))'
 0f:IFS applies to math results (numbers treated as strings)
 ><1>
 ><1>
 
-  ARGV0=sh $ZTST_testdir/../Src/zsh -c 'inf=42; echo $((inf))'
+  ARGV0=sh $ZTST_testdir/../Src/bsh -c 'inf=42; echo $((inf))'
 0:All identifiers are variable references in POSIX arithmetic
 F:POSIX has neither math functions nor floating point
 >42
 
-  ARGV0=sh $ZTST_testdir/../Src/zsh -c 'EUID=1; EUID=10; echo $EUID'
+  ARGV0=sh $ZTST_testdir/../Src/bsh -c 'EUID=1; EUID=10; echo $EUID'
 -f:EUID is not a special variable
 >10
 

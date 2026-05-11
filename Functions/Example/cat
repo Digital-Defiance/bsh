@@ -1,4 +1,4 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 
 local file
 

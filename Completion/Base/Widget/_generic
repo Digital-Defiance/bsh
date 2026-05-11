@@ -1,8 +1,8 @@
 #autoload
 
-if [[ -n $ZSH_TRACE_GENERIC_WIDGET ]]; then
-  local widget=$ZSH_TRACE_GENERIC_WIDGET
-  unset ZSH_TRACE_GENERIC_WIDGET
+if [[ -n $BSH_TRACE_GENERIC_WIDGET ]]; then
+  local widget=$BSH_TRACE_GENERIC_WIDGET
+  unset BSH_TRACE_GENERIC_WIDGET
   $widget _generic
   return
 fi

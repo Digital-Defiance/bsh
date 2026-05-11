@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/zpty
+COMMENT(!MOD!bsh/zpty
 A builtin for starting a command in a pseudo-terminal.
 !MOD!)
-The tt(zsh/zpty) module offers one builtin:
+The tt(bsh/zpty) module offers one builtin:
 
 startitem()
 findex(zpty)
@@ -22,9 +22,9 @@ made non-blocking.
 The shell parameter tt(REPLY) is set to the file descriptor assigned to
 the master side of the pseudo-terminal.  This allows the terminal to be
 monitored with ZLE descriptor handlers (see the description of option
-tt(-F) for tt(zle) builtin in sectref(Zle Builtins)(zshzle))
+tt(-F) for tt(zle) builtin in sectref(Zle Builtins)(bshzle))
 or manipulated with tt(sysread) and tt(syswrite) builtins
-(see sectref(The zsh/system Module)(zshmodules)).
+(see sectref(The bsh/system Module)(bshmodules)).
 em(Warning): Use of tt(sysread)
 and tt(syswrite) is em(not) recommended; use tt(zpty -r) and tt(zpty -w)
 unless you know exactly what you are doing.

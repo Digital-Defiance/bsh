@@ -1,7 +1,7 @@
 /*
  * zle_params.c - ZLE special parameters
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -684,7 +684,7 @@ set_killring(UNUSED(Param pm), char **x)
 	int kpos = 0;
 	kringsize = arrlen(x);
 	if (kringsize != 0) {
-	    kring = (Cutbuffer)zshcalloc(kringsize * sizeof(struct cutbuffer));
+	    kring = (Cutbuffer)bshcalloc(kringsize * sizeof(struct cutbuffer));
 	    for (p = x; *p; p++) {
 		int n, len = strlen(*p);
 		kptr = kring + kpos;
@@ -715,7 +715,7 @@ get_killring(UNUSED(Param pm))
     /* Supposed to work even if kring is NULL */
     if (!kring) {
 	kringsize = KRINGCTDEF;
-	kring = (Cutbuffer)zshcalloc(kringsize * sizeof(struct cutbuffer));
+	kring = (Cutbuffer)bshcalloc(kringsize * sizeof(struct cutbuffer));
     }
 
     p = ret = (char **)zhalloc((kringsize+1) * sizeof(char *));

@@ -10,14 +10,14 @@ simply be omitted.
 
 --
 
-The Z Shell is copyright (c) 1992-2017 Paul Falstad, Richard Coleman,
-Zoltán Hidvégi, Andrew Main, Peter Stephenson, Sven Wischnowsky, and
-others.  All rights reserved.  Individual authors, whether or not
-specifically named, retain copyright in all changes; in what follows, they
-are referred to as `the Zsh Development Group'.  This is for convenience
-only and this body has no legal status.  The Z shell is distributed under
-the following licence; any provisions made in individual files take
-precedence.
+The BrightShell is copyright (c) 1992-2026 Paul Falstad, Richard Coleman,
+Zoltán Hidvégi, Andrew Main, Peter Stephenson, Sven Wischnowsky,
+Digital Defiancem Jessica Mulein and others.  All rights reserved.
+Individual authors, whether or not specifically named, retain copyright
+in all changes; in what follows, they are referred to as `the Zsh
+Development Group'.  This is for convenience only and this body has
+no legal status.  The BrightShell is distributed under the following
+licence; any provisions made in individual files take precedence.
 
 Permission is hereby granted, without written agreement and without
 licence or royalty fees, to use, copy, modify, and distribute this

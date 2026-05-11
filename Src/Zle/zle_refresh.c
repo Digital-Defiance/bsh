@@ -1,7 +1,7 @@
 /*
  * zle_refresh.c - screen update
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -333,7 +333,7 @@ zle_set_highlight(void)
     special_attr = default_attr = special_mask = default_mask = 0;
     if (!region_highlights) {
 	region_highlights = (struct region_highlight *)
-	    zshcalloc(N_SPECIAL_HIGHLIGHTS*sizeof(struct region_highlight));
+	    bshcalloc(N_SPECIAL_HIGHLIGHTS*sizeof(struct region_highlight));
 	n_region_highlights = N_SPECIAL_HIGHLIGHTS;
     } else {
 	for (rhp = region_highlights;
@@ -736,8 +736,8 @@ resetvideo(void)
     winpos = -1;
     if (winw_alloc != winw || winh_alloc != winh) {
 	freevideo();
-	nbuf = (REFRESH_STRING *)zshcalloc((winh + 1) * sizeof(*nbuf));
-	obuf = (REFRESH_STRING *)zshcalloc((winh + 1) * sizeof(*obuf));
+	nbuf = (REFRESH_STRING *)bshcalloc((winh + 1) * sizeof(*nbuf));
+	obuf = (REFRESH_STRING *)bshcalloc((winh + 1) * sizeof(*obuf));
 	nbuf[0] = (REFRESH_STRING)zalloc((winw + 2) * sizeof(**nbuf));
 	obuf[0] = (REFRESH_STRING)zalloc((winw + 2) * sizeof(**obuf));
 
@@ -1267,7 +1267,7 @@ zrefresh(void)
 #ifdef MULTIBYTE_SUPPORT
 	else if (
 #ifdef __STDC_ISO_10646__
-		 !ZSH_INVALID_WCHAR_TEST(*t) &&
+		 !BSH_INVALID_WCHAR_TEST(*t) &&
 #endif
 		 WC_ISPRINT(*t) && (width = WCWIDTH(*t)) > 0) {
 	    int ichars;
@@ -1366,8 +1366,8 @@ zrefresh(void)
 	    wchar_t wc;
 
 #ifdef __STDC_ISO_10646__
-	    if (ZSH_INVALID_WCHAR_TEST(*t)) {
-		int c = ZSH_INVALID_WCHAR_TO_INT(*t);
+	    if (BSH_INVALID_WCHAR_TEST(*t)) {
+		int c = BSH_INVALID_WCHAR_TO_INT(*t);
 		sprintf(dispchars, "<%.02x>", c);
 	    } else
 #endif

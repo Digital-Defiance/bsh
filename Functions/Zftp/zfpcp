@@ -12,7 +12,7 @@
 # when we try to copy to a directory, zfpcp will then try to do the correct
 # thing.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfpcp
 local rem loc

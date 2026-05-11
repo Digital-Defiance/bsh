@@ -1,7 +1,7 @@
 /*
  * init.c - main loop and initialization routines
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,10 +27,10 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 
-#include "zshpaths.h"
-#include "zshxmods.h"
+#include "bshpaths.h"
+#include "bshxmods.h"
 
 #include "init.pro"
 
@@ -99,7 +99,7 @@ mod_export int tccolours;
 mod_export sigset_t sigchld_mask;
 
 /**/
-struct hookdef zshhooks[] = {
+struct hookdef bshhooks[] = {
     HOOKDEF("exit", NULL, HOOKF_ALL),
     HOOKDEF("before_trap", NULL, HOOKF_ALL),
     HOOKDEF("after_trap", NULL, HOOKF_ALL),
@@ -260,7 +260,7 @@ static char *argv0;
 
 /**/
 static void
-parseargs(char *zsh_name, char **argv, char **runscript, char **cmdptr)
+parseargs(char *bsh_name, char **argv, char **runscript, char **cmdptr)
 {
     char **x;
     LinkList paramlist;
@@ -277,7 +277,7 @@ parseargs(char *zsh_name, char **argv, char **runscript, char **cmdptr)
      * matched by code at the end of the present function.
      */
 
-    if (parseopts(zsh_name, &argv, opts, cmdptr, NULL, flags))
+    if (parseopts(bsh_name, &argv, opts, cmdptr, NULL, flags))
 	exit(1);
 
     /*
@@ -313,7 +313,7 @@ parseargs(char *zsh_name, char **argv, char **runscript, char **cmdptr)
 	opts[MONITOR] = opts[INTERACTIVE];
     if (opts[HASHDIRS] == 2)
 	opts[HASHDIRS] = opts[INTERACTIVE];
-    pparams = x = (char **) zshcalloc((countlinknodes(paramlist) + 1) * sizeof(char *));
+    pparams = x = (char **) bshcalloc((countlinknodes(paramlist) + 1) * sizeof(char *));
 
     while ((*x++ = (char *)getlinknode(paramlist)));
     free(paramlist);
@@ -432,8 +432,8 @@ parseopts(char *nam, char ***argvp, char *new_opts, char **cmdp,
 		/* GNU-style long options */
 		++*argv;
 		if (!strcmp(*argv, "version")) {
-		    printf("zsh %s (%s-%s-%s)\n",
-			    ZSH_VERSION, MACHTYPE, VENDOR, OSTYPE);
+		    printf("bsh %s (%s-%s-%s)\n",
+			    BSH_VERSION, MACHTYPE, VENDOR, OSTYPE);
 		    LAST_OPTION(0);
 		}
 		if (!strcmp(*argv, "help")) {
@@ -476,7 +476,7 @@ parseopts(char *nam, char ***argvp, char *new_opts, char **cmdp,
 		*cmdp = *argv;
 		new_opts[INTERACTIVE] &= 1;
 		if (toplevel)
-		    scriptname = scriptfilename = ztrdup("zsh");
+		    scriptname = scriptfilename = ztrdup("bsh");
 	    } else if (**argv == 'o') {
 		if (!*++*argv)
 		    argv++;
@@ -504,7 +504,7 @@ parseopts(char *nam, char ***argvp, char *new_opts, char **cmdp,
 		}
               break;
 	    } else if (isspace((unsigned char) **argv)) {
-		/* zsh's typtab not yet set, have to use ctype */
+		/* bsh's typtab not yet set, have to use ctype */
 		while (*++*argv)
 		    if (!isspace((unsigned char) **argv)) {
 		     badoptionstring:
@@ -559,7 +559,7 @@ printhelp(void)
     printf("Usage: %s [<options>] [<argument> ...]\n", argzero);
     printf("\nSpecial options:\n");
     printf("  --help     show this message, then exit\n");
-    printf("  --version  show zsh version number, then exit\n");
+    printf("  --version  show bsh version number, then exit\n");
     if(unset(SHOPTIONLETTERS))
 	printf("  -b         end option processing, like --\n");
     printf("  -c         take first argument as a command to execute\n");
@@ -779,7 +779,7 @@ init_term(void)
 	return 0;
     }
 
-    /* unset zle if using zsh under emacs */
+    /* unset zle if using bsh under emacs */
     if (!strcmp(term, "emacs"))
 	opts[USEZLE] = 0;
 
@@ -894,7 +894,7 @@ init_term(void)
 }
 
 /*
- * Get (or guess) the absolute pathname of the current zsh exeutable.
+ * Get (or guess) the absolute pathname of the current bsh exeutable.
  * Try OS-specific method, and if it fails, guess the absolute pathname
  * from argv0, pwd, and PATH. 'name' and 'cwd' are unmetefied versions of
  * argv0 and pwd.
@@ -1011,7 +1011,7 @@ getmypath(const char *name, const char *cwd)
 
 /**/
 void
-setupvals(char *cmd, char *runscript, char *zsh_name)
+setupvals(char *cmd, char *runscript, char *bsh_name)
 {
 #ifdef USE_GETPWUID
     struct passwd *pswd;
@@ -1082,7 +1082,7 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
 	    close(tmppipe[1]);
     }
 
-    (void)addhookdefs(NULL, zshhooks, sizeof(zshhooks)/sizeof(*zshhooks));
+    (void)addhookdefs(NULL, bshhooks, sizeof(bshhooks)/sizeof(*bshhooks));
 
     init_eprog();
 
@@ -1131,14 +1131,14 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
 # endif /* ADDITONAL_FPATH */
     fpath = fpathptr = (char **)zalloc((fpathlen+1)*sizeof(char *));
 # ifdef FIXED_FPATH_DIR
-    /* Zeroth: /usr/local/share/zsh/site-functions */
+    /* Zeroth: /usr/local/share/bsh/site-functions */
     *fpathptr++ = ztrdup(FIXED_FPATH_DIR);
     fpathlen--;
 # endif
 # ifdef SITEFPATH_DIR
     /* First: the directory from --enable-site-fndir
      *
-     * default: /usr/local/share/zsh/site-functions
+     * default: /usr/local/share/bsh/site-functions
      * (but changeable by passing --prefix or --datadir to configure) */
     *fpathptr++ = ztrdup(SITEFPATH_DIR);
     fpathlen--;
@@ -1153,7 +1153,7 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
 # ifdef FPATH_DIR
     /* Third: The directory from --enable-fndir
      *
-     * default: /usr/local/share/zsh/${ZSH_VERSION}/functions */
+     * default: /usr/local/share/bsh/${BSH_VERSION}/functions */
 #  ifdef FPATH_SUBDIRS
 #   ifdef ADDITIONAL_FPATH
     for (j = more_fndirs_len; j < fpathlen; j++)
@@ -1191,7 +1191,7 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
     prompt3 = ztrdup("?# ");
     prompt4 = EMULATION(EMULATE_KSH|EMULATE_SH)
 	? ztrdup("+ ") : ztrdup("+%N:%i> ");
-    sprompt = ztrdup("zsh: correct '%R' to '%r' [nyae]? ");
+    sprompt = ztrdup("bsh: correct '%R' to '%r' [nyae]? ");
 
     ifs         = EMULATION(EMULATE_KSH|EMULATE_SH) ?
 	ztrdup(DEFAULT_IFS_SH) : ztrdup(DEFAULT_IFS);
@@ -1221,14 +1221,14 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
     /* Get password entry and set info for `USERNAME' */
 #ifdef USE_GETPWUID
     if ((pswd = getpwuid(cached_uid))) {
-	if (EMULATION(EMULATE_ZSH))
+	if (EMULATION(EMULATE_BSH))
 	    home = ztrdup_metafy(pswd->pw_dir);
 	cached_username = ztrdup_metafy(pswd->pw_name);
     }
     else
 #endif /* USE_GETPWUID */
     {
-	if (EMULATION(EMULATE_ZSH))
+	if (EMULATION(EMULATE_BSH))
 	    home = ztrdup("/");
 	cached_username = ztrdup("");
     }
@@ -1238,7 +1238,7 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
      * In non-native emulations HOME must come from the environment;
      * we're not allowed to set it locally.
      */
-    if (EMULATION(EMULATE_ZSH))
+    if (EMULATION(EMULATE_BSH))
 	ptr = home;
     else
 	ptr = zgetenv("HOME");
@@ -1312,7 +1312,7 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
     /* Colour sequences for outputting colours in prompts and zle */
     set_default_colour_sequences();
 
-    /* ZSH_EXEPATH */
+    /* BSH_EXEPATH */
     {
 	char *mypath, *exename, *cwd;
 	exename = unmetafy(ztrdup(argv0), NULL);
@@ -1321,14 +1321,14 @@ setupvals(char *cmd, char *runscript, char *zsh_name)
 	free(exename);
 	free(cwd);
 	if (mypath) {
-	    setsparam("ZSH_EXEPATH", metafy(mypath, -1, META_REALLOC));
+	    setsparam("BSH_EXEPATH", metafy(mypath, -1, META_REALLOC));
 	}
     }
     if (cmd)
-	setsparam("ZSH_EXECUTION_STRING", ztrdup(cmd));
+	setsparam("BSH_EXECUTION_STRING", ztrdup(cmd));
     if (runscript)
-        setsparam("ZSH_SCRIPT", ztrdup(runscript));
-    setsparam("ZSH_NAME", ztrdup(zsh_name)); /* NOTE: already metafied early in zsh_main() */
+        setsparam("BSH_SCRIPT", ztrdup(runscript));
+    setsparam("BSH_NAME", ztrdup(bsh_name)); /* NOTE: already metafied early in bsh_main() */
 }
 
 /*
@@ -1438,7 +1438,7 @@ init_signals(void)
 
 /* Source the init scripts.  If called as "ksh" or "sh"  *
  * then we source the standard sh/ksh scripts instead of *
- * the standard zsh scripts                              */
+ * the standard bsh scripts                              */
 
 /**/
 void
@@ -1469,8 +1469,8 @@ run_init_scripts(void)
 	} else
 	    source("/etc/suid_profile");
     } else {
-#ifdef GLOBAL_ZSHENV
-	source(GLOBAL_ZSHENV);
+#ifdef GLOBAL_BSHENV
+	source(GLOBAL_BSHENV);
 #endif
 
 	if (isset(RCS) && unset(PRIVILEGED))
@@ -1478,15 +1478,15 @@ run_init_scripts(void)
 	    if (interact) {
 		/*
 		 * Always attempt to load the newuser module to perform
-		 * checks for new zsh users.  Don't care if we can't load it.
+		 * checks for new bsh users.  Don't care if we can't load it.
 		 */
-		if (!load_module("zsh/newuser", NULL, 1)) {
+		if (!load_module("bsh/newuser", NULL, 1)) {
 		    /* Unload it immediately. */
-		    unload_named_module("zsh/newuser", "zsh", 1);
+		    unload_named_module("bsh/newuser", "bsh", 1);
 		}
 	    }
 
-	    sourcehome(".zshenv");
+	    sourcehome(".bshenv");
 	}
 	if (islogin) {
 #ifdef GLOBAL_ZPROFILE
@@ -1497,12 +1497,12 @@ run_init_scripts(void)
 		sourcehome(".zprofile");
 	}
 	if (interact) {
-#ifdef GLOBAL_ZSHRC
+#ifdef GLOBAL_BSHRC
 	    if (isset(RCS) && isset(GLOBALRCS))
-		source(GLOBAL_ZSHRC);
+		source(GLOBAL_BSHRC);
 #endif
 	    if (isset(RCS) && unset(PRIVILEGED))
-		sourcehome(".zshrc");
+		sourcehome(".bshrc");
 	}
 	if (islogin) {
 #ifdef GLOBAL_ZLOGIN
@@ -1521,10 +1521,10 @@ run_init_scripts(void)
 
 /**/
 void
-init_misc(char *cmd, char *zsh_name)
+init_misc(char *cmd, char *bsh_name)
 {
-    if (*zsh_name == 'r') {
-	zerrnam(zsh_name, "no support for restricted mode");
+    if (*bsh_name == 'r') {
+	zerrnam(bsh_name, "no support for restricted mode");
 	exit(1);
     }
     if (cmd) {
@@ -1607,7 +1607,7 @@ source(char *s)
 
     fstack.name = scriptfilename;
     fstack.caller = funcstack ? funcstack->name :
-	dupstring(old_scriptfilename ? old_scriptfilename : "zsh");
+	dupstring(old_scriptfilename ? old_scriptfilename : "bsh");
     fstack.flineno = 0;
     fstack.lineno = oldlineno;
     fstack.filename = scriptfilename;
@@ -1705,7 +1705,7 @@ init_bltinmods(void)
 
 #include "bltinmods.list"
 
-    (void)load_module("zsh/main", NULL, 0);
+    (void)load_module("bsh/main", NULL, 0);
 }
 
 /**/
@@ -1750,7 +1750,7 @@ VA_DCL
     VA_START(ap, cmd);
     VA_GET_ARG(ap, cmd, int);
 
-#if defined(LINKED_XMOD_zshQszle) || defined(UNLINKED_XMOD_zshQszle)
+#if defined(LINKED_XMOD_bshQszle) || defined(UNLINKED_XMOD_bshQszle)
     /* autoload */
     switch (zle_load_state) {
     case 0:
@@ -1761,8 +1761,8 @@ VA_DCL
 	if (cmd != ZLE_CMD_TRASH && cmd != ZLE_CMD_RESET_PROMPT &&
 	    cmd != ZLE_CMD_REFRESH)
 	{
-	    if (load_module("zsh/zle", NULL, 0) != 1) {
-		(void)load_module("zsh/compctl", NULL, 0);
+	    if (load_module("bsh/zle", NULL, 0) != 1) {
+		(void)load_module("bsh/compctl", NULL, 0);
 		ret = zle_entry_ptr(cmd, ap);
 		/* Don't execute fallback code */
 		cmd = -1;
@@ -1847,14 +1847,14 @@ mod_export int use_exit_printed;
 
 /*
  * This is real main entry point. This has to be mod_export'ed
- * so zsh.exe can found it on Cygwin
+ * so bsh.exe can found it on Cygwin
  */
 
 /**/
 mod_export int
-zsh_main(UNUSED(int argc), char **argv)
+bsh_main(UNUSED(int argc), char **argv)
 {
-    char **t, *runscript = NULL, *zsh_name;
+    char **t, *runscript = NULL, *bsh_name;
     char *cmd;			/* argument to -c */
     int t0;
 #ifdef USE_LOCALE
@@ -1876,44 +1876,44 @@ zsh_main(UNUSED(int argc), char **argv)
 
     for (t = argv; *t; *t = metafy(*t, -1, META_ALLOC), t++);
 
-    zsh_name = argv[0];
+    bsh_name = argv[0];
     do {
-      char *arg0 = zsh_name;
-      if (!(zsh_name = strrchr(arg0, '/')))
-	  zsh_name = arg0;
+      char *arg0 = bsh_name;
+      if (!(bsh_name = strrchr(arg0, '/')))
+	  bsh_name = arg0;
       else
-	  zsh_name++;
-      if (*zsh_name == '-')
-	  zsh_name++;
-      if (strcmp(zsh_name, "su") == 0) {
+	  bsh_name++;
+      if (*bsh_name == '-')
+	  bsh_name++;
+      if (strcmp(bsh_name, "su") == 0) {
 	  char *sh = zgetenv("SHELL");
 	  if (sh && *sh && arg0 != sh)
-	      zsh_name = sh;
+	      bsh_name = sh;
 	  else
 	      break;
       } else
 	  break;
-    } while (zsh_name);
+    } while (bsh_name);
 
     fdtable_size = zopenmax();
-    fdtable = zshcalloc(fdtable_size*sizeof(*fdtable));
+    fdtable = bshcalloc(fdtable_size*sizeof(*fdtable));
     fdtable[0] = fdtable[1] = fdtable[2] = FDT_EXTERNAL;
 
     createoptiontable();
     /* sets emulation, LOGINSHELL, PRIVILEGED, ZLE, INTERACTIVE,
      * SHINSTDIN and SINGLECOMMAND */ 
-    parseargs(zsh_name, argv, &runscript, &cmd);
+    parseargs(bsh_name, argv, &runscript, &cmd);
 
     SHTTY = -1;
     init_io(cmd);
-    setupvals(cmd, runscript, zsh_name);
+    setupvals(cmd, runscript, bsh_name);
 
     init_signals();
     init_bltinmods();
     init_builtins();
     run_init_scripts();
     setupshin(runscript);
-    init_misc(cmd, zsh_name);
+    init_misc(cmd, bsh_name);
 
     for (;;) {
 	/*
@@ -1959,7 +1959,7 @@ zsh_main(UNUSED(int argc), char **argv)
 	 * the display tidy.
 	 */
 	if (!use_exit_printed)
-	    zerrnam("zsh", (!islogin) ? "use 'exit' to exit."
+	    zerrnam("bsh", (!islogin) ? "use 'exit' to exit."
 		    : "use 'logout' to logout.");
     }
 }

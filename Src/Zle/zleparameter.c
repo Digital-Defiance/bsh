@@ -1,7 +1,7 @@
 /*
  * zleparameter.c - parameter interface to zle internals
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.

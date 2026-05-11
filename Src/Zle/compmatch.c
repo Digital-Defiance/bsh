@@ -1,7 +1,7 @@
 /*
  * compmatch.c - the complete module, completion matching code
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -657,7 +657,7 @@ match_str(char *l, char *w, Brinfo *bpp, int bc, int *rwlp,
 		    /*
 		     * LOST: Documentation comment.  Last seen 10 years ago in
 		     * the temporal lobe.  Reward promised for its safe return.
-		     * Contact zsh-workers@zsh.org.
+		     * Contact bsh-workers@bsh.org.
 		     */
 		    char *tp;
 		    /* 

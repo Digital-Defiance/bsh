@@ -30,18 +30,18 @@ SHELL = /bin/sh
 EXEEXT = @EXEEXT@
 
 # headers
-ZSH_CURSES_H = @ZSH_CURSES_H@
-ZSH_TERM_H = @ZSH_TERM_H@
+BSH_CURSES_H = @BSH_CURSES_H@
+BSH_TERM_H = @BSH_TERM_H@
 
 # install basename
-tzsh            = @tzsh@
+tbsh            = @tbsh@
 
 # installation directories
 prefix          = @prefix@
 exec_prefix     = @exec_prefix@
 bindir          = @bindir@
 libdir          = @libdir@
-MODDIR          = $(libdir)/$(tzsh)/$(VERSION)
+MODDIR          = $(libdir)/$(tbsh)/$(VERSION)
 infodir         = @infodir@
 mandir          = @mandir@
 datarootdir     = @datarootdir@
@@ -75,6 +75,7 @@ IMPOPT          = @IMPOPT@
 
 # utilities
 AWK             = @AWK@
+CARGO           = @CARGO@
 YODL            = @YODL@ @YODL_OPTIONS@
 YODL2TXT        = @YODL@2txt
 YODL2HTML       = @YODL@2html
@@ -101,7 +102,7 @@ LIBLDFLAGS='$(LIBLDFLAGS)' EXELDFLAGS='$(EXELDFLAGS)' \
 LIBS='$(LIBS)' DL_EXT='$(DL_EXT)' DLLD='$(DLLD)' \
 AWK='$(AWK)' \
 YODL='$(YODL)' YODL2TXT='$(YODL2TXT)' YODL2HTML='$(YODL2HTML)' \
-FUNCTIONS_INSTALL='$(FUNCTIONS_INSTALL)' tzsh='$(tzsh)'
+FUNCTIONS_INSTALL='$(FUNCTIONS_INSTALL)' tbsh='$(tbsh)'
 
 # override built-in suffix list
 .SUFFIXES:

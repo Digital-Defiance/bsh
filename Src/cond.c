@@ -1,7 +1,7 @@
 /*
  * cond.c - evaluate conditional expressions
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "cond.pro"
 
 /**/
@@ -112,7 +112,7 @@ evalcond(Estate state, char *fromtest)
 	}
     case COND_REGEX:
 	{
-	    char *modname = isset(REMATCHPCRE) ? "zsh/pcre" : "zsh/regex";
+	    char *modname = isset(REMATCHPCRE) ? "bsh/pcre" : "bsh/regex";
 	    sprintf(overridename = overridebuf, "-%s-match", modname+4);
 	    (void)ensurefeature(modname, "C:", overridename+1);
 	    ctype = COND_MODI;

@@ -1,6 +1,6 @@
 texiifnottex(\
-texinode(Top)(The Z Shell Manual)((dir))((dir))
-texitop(The Z Shell Manual)
+texinode(Top)(The BrightShell Manual)((dir))((dir))
+texitop(The BrightShell Manual)
 )\
 texiifinfo(\
 This Info file documents Zsh, a freely available UNIX command interpreter
@@ -13,7 +13,7 @@ Version version(), last updated date().
 )\
 
 startmenu()
-menu(The Z Shell Manual)
+menu(The BrightShell Manual)
 menu(Introduction)
 menu(Roadmap)
 menu(Invocation)
@@ -177,37 +177,37 @@ menu(User Configuration Functions)
 menu(Other Functions)
 
 endmenu()
-texinode(The Z Shell Manual)(Introduction)(Top)(Top)
-chapter(The Z Shell Manual)
-This document has been produced from the texinfo file tt(zsh.texi),
+texinode(The BrightShell Manual)(Introduction)(Top)(Top)
+chapter(The BrightShell Manual)
+This document has been produced from the texinfo file tt(bsh.texi),
 included in the tt(Doc) sub-directory of the Zsh distribution.
-sect(Producing documentation from zsh.texi)
+sect(Producing documentation from bsh.texi)
 The texinfo source may be converted into several formats:
 
 startitem()
 item(The Info manual)(
 The Info format allows searching for topics, commands, functions, etc.
-from the many Indices. The command `tt(makeinfo zsh.texi)' is used to
+from the many Indices. The command `tt(makeinfo bsh.texi)' is used to
 produce the Info documentation.
 )
 item(The printed manual)(
-The command `tt(texi2dvi zsh.texi)' will output tt(zsh.dvi) which can
+The command `tt(texi2dvi bsh.texi)' will output tt(bsh.dvi) which can
 then be processed with bf(dvips) and optionally bf(gs) (Ghostscript) to
 produce a nicely formatted printed manual.
 )
 item(The HTML manual)(
 An HTML version of this manual is available at the Zsh web site via:
 
-uref(https://zsh.sourceforge.io/Doc/).
+uref(https://bsh.sourceforge.io/Doc/).
 
 (The HTML version is produced with bf(texi2html), which may be obtained
 from uref(http://www.nongnu.org/texi2html/). The command is
-`tt(texi2html --output .  --ifinfo --split=chapter --node-files zsh.texi)'.
+`tt(texi2html --output .  --ifinfo --split=chapter --node-files bsh.texi)'.
 If necessary, upgrade to version 1.78 of texi2html.)
 )
 enditem()
 
 For those who do not have the necessary tools to process texinfo,
 precompiled documentation (PostScript, dvi, PDF, info and HTML formats)
-is available from the zsh archive site or its mirrors, in the file
-tt(zsh-doc.tar.gz). (See noderef(Availability) for a list of sites.)
+is available from the bsh archive site or its mirrors, in the file
+tt(bsh-doc.tar.gz). (See noderef(Availability) for a list of sites.)

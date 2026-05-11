@@ -1,7 +1,7 @@
 /*
  * sched.c - execute commands at scheduled times
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -379,7 +379,7 @@ static const struct gsu_array sched_gsu =
 { schedgetfn, arrsetfn, stdunsetfn };
 
 static struct paramdef partab[] = {
-    SPECIALPMDEF("zsh_scheduled_events", PM_ARRAY|PM_READONLY,
+    SPECIALPMDEF("bsh_scheduled_events", PM_ARRAY|PM_READONLY,
 		 &sched_gsu, NULL, NULL)
 };
 

@@ -8,16 +8,16 @@ The shell's programmable completion mechanism can be manipulated in two
 ways; here the low-level features supporting the newer, function-based
 mechanism are defined.  A complete set of shell functions based on these
 features is described in
-ifzman(zmanref(zshcompsys))\
+ifzman(zmanref(bshcompsys))\
 ifnzman(the next chapter, noderef(Completion System)),
 and users with no interest in adding to that system (or, potentially,
 writing their own DASH()- see dictionary entry for `hubris') should skip
 the current section.  The older system based on the tt(compctl) builtin
-command is described in nmref(Completion Using compctl)(zshcompctl).
+command is described in nmref(Completion Using compctl)(bshcompctl).
 
 Completion widgets are defined by the tt(-C) option to the tt(zle)
-builtin command provided by the tt(zsh/zle) module (see
-sectref(Zle Builtins)(zshzle)). For example,
+builtin command provided by the tt(bsh/zle) module (see
+sectref(Zle Builtins)(bshzle)). For example,
 
 example(zle -C complete expand-or-complete completer)
 
@@ -30,8 +30,8 @@ tt(list-choices), or tt(delete-char-or-list).  Note that this will still
 work even if the widget in question has been re-bound.
 
 When this newly defined widget is bound to a key
-using the tt(bindkey) builtin command defined in the tt(zsh/zle) module
-(see sectref(Zle Builtins)(zshzle)),
+using the tt(bindkey) builtin command defined in the tt(bsh/zle) module
+(see sectref(Zle Builtins)(bshzle)),
 typing that key will call the shell function `tt(completer)'. This
 function is responsible for generating completion matches using the
 builtins described below.  As with other ZLE widgets, the function is
@@ -54,7 +54,7 @@ sect(Completion Special Parameters)
 
 The parameters tt(ZLE_REMOVE_SUFFIX_CHARS) and tt(ZLE_SPACE_SUFFIX_CHARS)
 are used by the completion mechanism, but are not special. See
-sectref(Parameters Used by the Shell)(zshparam).
+sectref(Parameters Used by the Shell)(bshparam).
 
 Inside completion widgets, and any functions called from them, some
 parameters have special meaning; outside these functions they are not
@@ -588,7 +588,7 @@ above the group currently selected.
 
 Within the var(explanation), the following sequences may be used to
 specify output attributes as described in
-sectref(Expansion of Prompt Sequences)(zshmisc):
+sectref(Expansion of Prompt Sequences)(bshmisc):
 `tt(%B)', `tt(%S)', `tt(%U)', `tt(%F)', `tt(%K)' and their lower case
 counterparts, as well as `tt(%H)' and `tt(%{)...tt(%})'.  `tt(%F)',
 `tt(%K)', `tt(%H)' and
@@ -598,7 +598,7 @@ argument to `tt(%{)' should be used instead.)  The sequence `tt(%%)'
 produces a literal `tt(%)'.
 
 These sequences are most often employed by users when customising the
-tt(format) style (see subref(Standard Styles)(zshcompsys)),
+tt(format) style (see subref(Standard Styles)(bshcompsys)),
 but they must also be taken into account when writing completion
 functions, as passing descriptions with unescaped `tt(%)' characters
 to utility functions such as tt(_arguments) and tt(_message) may
@@ -639,7 +639,7 @@ has been accepted and a suffix has been inserted, the function
 var(remove-func) will be called after the next character typed.  It is
 passed the length of the suffix as an argument and can use the special
 parameters available in ordinary (non-completion) zle widgets (see
-sectref(User-Defined Widgets)(zshzle)
+sectref(User-Defined Widgets)(bshzle)
 ) to analyse and modify the command line.
 )
 item(tt(-f))(
@@ -854,7 +854,7 @@ The return status can be used to test if a matching tt(compctl)
 definition was found. It is non-zero if a tt(compctl) was found and
 zero otherwise.
 
-Note that this builtin is defined by the tt(zsh/compctl) module.
+Note that this builtin is defined by the tt(bsh/compctl) module.
 )
 enditem()
 
@@ -922,11 +922,11 @@ a non-empty value (see sectref(Completion Special Parameters)(above)).
 )
 itemiz(\
 Users of the \
-ifzman(completion system (see zmanref(zshcompsys))) \
+ifzman(completion system (see zmanref(bshcompsys))) \
 ifnzman(noderef(Completion System)) \
 should generally not use the tt(-M) option directly, but rather use the
 tt(matcher-list) and tt(matcher) styles (see
-subref(Standard Styles)(zshcompsys)).
+subref(Standard Styles)(bshcompsys)).
 )
 enditemize()
 
@@ -954,7 +954,7 @@ startitemize()
 itemiz(literal characters (which may be quoted with a `tt(\)'),)
 itemiz(question marks (`tt(?)'),)
 itemiz(\
-bracket expressions (`tt([...])'; see subref(Glob Operators)(zshexpn)),
+bracket expressions (`tt([...])'; see subref(Glob Operators)(bshexpn)),
 and/or)
 itemiz(brace expressions (see below).)
 enditemize()
@@ -1150,7 +1150,7 @@ Ignore this matcher and all matchers to its right.
 This matcher is used to mark the end of a match specification.  In a single
 standalone list of matchers, this has no use, but where match specifications
 are concatenated, as is often the case when using the
-ifzman(completion system (see zmanref(zshcompsys)))\
+ifzman(completion system (see zmanref(bshcompsys)))\
 ifnzman(noderef(Completion System))\
 , it can allow one match specification to override another.
 )

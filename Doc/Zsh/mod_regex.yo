@@ -1,9 +1,9 @@
-COMMENT(!MOD!zsh/regex
+COMMENT(!MOD!bsh/regex
 Interface to the POSIX regex library.
 !MOD!)
 cindex(regular expressions)
 cindex(regex)
-The tt(zsh/regex) module makes available the following test condition:
+The tt(bsh/regex) module makes available the following test condition:
 
 startitem()
 findex(regex-match)
@@ -27,7 +27,7 @@ tt(-regex-match) operator.
 If tt(BASH_REMATCH) is set, then the array tt(BASH_REMATCH) will be set
 instead of tt(MATCH) and tt(match).
 
-Note that the tt(zsh/regex) module logic relies on the host system. The 
+Note that the tt(bsh/regex) module logic relies on the host system. The 
 same var(expr) and var(regex) pair could produce different results on different
 platforms if a var(regex) with non-standard syntax is given.
 

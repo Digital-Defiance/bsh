@@ -1,5 +1,5 @@
 # Handler for MIME types using associative arrays
-# zsh_mime_handlers and zsh_mime_flags set up by zsh-mime-setup.
+# bsh_mime_handlers and bsh_mime_flags set up by bsh-mime-setup.
 #
 # The only flags it handles are copiousoutput and needsterminal.
 # copiousoutput is assumed to imply needsterminal.  Apart from
@@ -28,13 +28,13 @@
 local autocd
 [[ -o autocd ]] && autocd=autocd
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases nullglob $autocd
 
-# We need zformat from zsh/zutil for %s replacement.
-zmodload -i zsh/zutil
+# We need zformat from bsh/zutil for %s replacement.
+zmodload -i bsh/zutil
 
-autoload -Uz zsh-mime-contexts
+autoload -Uz bsh-mime-contexts
 
 # Look for options.  Because of the way this is usually invoked,
 # (there is always a command to be handled), only handle options
@@ -82,16 +82,16 @@ local -a exec_asis hand_nonex exec_never
 # despite being called for interpretation by the mime handler.
 # Defaults to executable files, which ensures that they are executed as
 # they are, even if they have a suffix.
-zsh-mime-contexts -a $suffix execute-as-is exec_asis || exec_asis=('*(*)' '*(/)')
-zsh-mime-contexts -a $suffix execute-never exec_never
+bsh-mime-contexts -a $suffix execute-as-is exec_asis || exec_asis=('*(*)' '*(/)')
+bsh-mime-contexts -a $suffix execute-never exec_never
 
 # Set to a list of patterns for which the handler will be used even
 # if the file doesn't exist on the disk.
-zsh-mime-contexts -a $suffix handle-nonexistent hand_nonex ||
+bsh-mime-contexts -a $suffix handle-nonexistent hand_nonex ||
   hand_nonex=('[[:alpha:]]#:/*')
 
 # Set to true if the job should be disowned.
-zsh-mime-contexts -t $suffix disown && bg_flag="&!"
+bsh-mime-contexts -t $suffix disown && bg_flag="&!"
 
 local pattern
 local -a files
@@ -101,9 +101,9 @@ local -a files
 # actual file or its directory.
 local dir
 local -a filepath
-if zsh-mime-contexts -t $suffix find-file-in-path && [[ $1 != /* ]] &&
+if bsh-mime-contexts -t $suffix find-file-in-path && [[ $1 != /* ]] &&
   [[ $1 != */* || -o pathdirs ]]; then
-  zsh-mime-contexts -a $suffix file-path filepath || filepath=($path)
+  bsh-mime-contexts -a $suffix file-path filepath || filepath=($path)
   for dir in $filepath; do
     if [[ -e $dir/$1 ]]; then
       1=$dir/$1
@@ -165,12 +165,12 @@ if [[ ! -e $1 ]]; then
   fi
 fi
 
-if ! zsh-mime-contexts -s $suffix handler handler; then
+if ! bsh-mime-contexts -s $suffix handler handler; then
   # Look for handler starting with longest suffix match.
   # Typically we'd only get a match for the shortest, but don't assume so.
   s=$suffix
   while true; do
-    handler="${zsh_mime_handlers[$s]}"
+    handler="${bsh_mime_handlers[$s]}"
     if [[ -n $handler ]]; then
       break
     fi
@@ -189,11 +189,11 @@ if ! zsh-mime-contexts -s $suffix handler handler; then
     return 1
   fi
 fi
-if ! zsh-mime-contexts -s $suffix flags flags; then
+if ! bsh-mime-contexts -s $suffix flags flags; then
   # Same again for flags.
   s=$suffix
   while true; do
-    flags="${zsh_mime_flags[$s]}"
+    flags="${bsh_mime_flags[$s]}"
     if [[ -n $flags ]]; then
       break
     fi
@@ -208,11 +208,11 @@ fi
 # Set to yes if we use eval instead of sh -c for complicated mailcap lines
 # Can possibly break some mailcap entries which expect sh compatibility,
 # but is faster, as a new process is not spawned.
-zsh-mime-contexts -t $suffix current-shell && no_sh=yes
+bsh-mime-contexts -t $suffix current-shell && no_sh=yes
 
 # Set to yes if the process shouldn't be backgrounded even if it doesn't need a
 # terminal and display is set.
-zsh-mime-contexts -t $suffix never-background && no_bg=yes
+bsh-mime-contexts -t $suffix never-background && no_bg=yes
 
 local hasmeta stdin
 
@@ -288,7 +288,7 @@ if [[ $flags = *copiousoutput* ]]; then
   # We need to page the output.
   # Careful in case PAGER is a set of commands and arguments.
   local -a pager
-  zsh-mime-contexts -a $suffix pager pager || pager=(${=PAGER:-more})
+  bsh-mime-contexts -a $suffix pager pager || pager=(${=PAGER:-more})
   if [[ -n $stdin ]]; then
     cat $argv | $execargs | $pager
   else

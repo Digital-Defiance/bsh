@@ -1,6 +1,6 @@
 # Created by KrON from windowmaker on IRC
 # Changed by Spidey 08/06
-# Converted to zsh prompt theme by <adam@spiers.net>
+# Converted to bsh prompt theme by <adam@spiers.net>
 
 prompt_elite_help () {
   cat <<EOH

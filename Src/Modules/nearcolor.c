@@ -1,7 +1,7 @@
 /*
  * nearcolor.c - map colours to nearest match in 88 or 256 colour palette
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2018 Oliver Kiddle
  * All rights reserved.

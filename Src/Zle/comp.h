@@ -1,7 +1,7 @@
 /*
  * comp.h - header file for completion
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -76,7 +76,7 @@ struct cmgroup {
     int totl;			/* total length */
     int shortest;		/* length of shortest match */
     Cmgroup perm;		/* perm. alloced version of this group */
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     Heapid heap_id;
 #endif
 };

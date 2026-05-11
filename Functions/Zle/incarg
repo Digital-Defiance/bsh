@@ -1,4 +1,4 @@
-emulate -L zsh
+emulate -L bsh
 
 # A ZLE widget to increment an integer.
 #

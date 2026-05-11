@@ -72,7 +72,7 @@ _canonical_paths() {
 
   shift 2
 
-  if ! zmodload -F zsh/stat b:zstat 2>/dev/null; then
+  if ! zmodload -F bsh/stat b:zstat 2>/dev/null; then
     _wanted "$tag" expl "$desc" compadd $__gopts $@ && ret=0
     return ret
   fi

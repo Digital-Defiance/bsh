@@ -1,18 +1,18 @@
-## zsh_directory_name_generic
+## bsh_directory_name_generic
 #
-# This function is useful as a hook function for the zsh_directory_name
+# This function is useful as a hook function for the bsh_directory_name
 # facility.
 #
-# See the zsh-contrib manual page for more.
+# See the bsh-contrib manual page for more.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 local -a match mbegin mend
 
 # The variable containing the top level mapping.
 local _zdn_topvar
 
-zmodload -i zsh/parameter
+zmodload -i bsh/parameter
 zstyle -s ":zdn:${funcstack[2]}:" mapping _zdn_topvar || _zdn_topvar=zdn_top
 
 if (( ! ${(P)#_zdn_topvar} )); then

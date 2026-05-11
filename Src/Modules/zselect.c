@@ -1,7 +1,7 @@
 /*
  * zselect.c - builtin support for select system call
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1998-2001 Peter Stephenson
  * All rights reserved.
@@ -281,7 +281,7 @@ static struct features module_features = {
 };
 
 
-/* The load/unload routines required by the zsh library interface */
+/* The load/unload routines required by the bsh library interface */
 
 /**/
 int

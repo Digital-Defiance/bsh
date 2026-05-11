@@ -1,7 +1,7 @@
 /*
  * jobs.c - job control
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,14 +27,14 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "jobs.pro"
 
 /*
- * Job control in zsh
+ * Job control in bsh
  * ==================
  *
- * A 'job' represents a pipeline; see the section JOBS in zshmisc(1)) for an
+ * A 'job' represents a pipeline; see the section JOBS in bshmisc(1)) for an
  * introduction.  The 'struct job's are allocated in the array 'jobtab' which
  * has 'jobtabsize' elements.  The job whose processes we are currently
  * preparing to execute is identified by the global variable 'thisjob'.
@@ -822,6 +822,24 @@ printtime(struct timespec *real, child_times_t *ti, char *desc)
 	    case 'S':
 		fprintf(stderr, "%4.2fs", system_time);
 		break;
+	    case 'd':
+		/* BrightDate millidays: %dE=elapsed %dU=user %dS=sys */
+		switch (*++s) {
+		case 'E':
+		    fprintf(stderr, "%.6f md", elapsed_time / 86.4);
+		    break;
+		case 'U':
+		    fprintf(stderr, "%.6f md", user_time / 86.4);
+		    break;
+		case 'S':
+		    fprintf(stderr, "%.6f md", system_time / 86.4);
+		    break;
+		default:
+		    fprintf(stderr, "%%d");
+		    s--;
+		    break;
+		}
+		break;
 	    case 'm':
 		switch (*++s) {
 		case 'E':
@@ -1276,7 +1294,7 @@ printjob(Job jn, int lng, int synch)
 		    else
 			fprintf(fout, (job > 9) ? "        " : "       ");
 		} else
-		    fprintf(fout, "zsh: ");
+		    fprintf(fout, "bsh: ");
 		if (lng & 1)
 		    fprintf(fout, "%ld ", (long) pn->pid);
 		else if (lng & 2) {
@@ -1541,7 +1559,7 @@ addproc(pid_t pid, char *text, int aux, struct timespec *bgtime,
     Process pn, *pnlist;
 
     DPUTS(thisjob == -1, "No valid job in addproc.");
-    pn = (Process) zshcalloc(sizeof *pn);
+    pn = (Process) bshcalloc(sizeof *pn);
     pn->pid = pid;
     if (text)
 	strcpy(pn->text, text);

@@ -68,7 +68,7 @@ tty option, then background jobs will suspend when they try to produce
 output like they do when they try to read input.
 
 When a command is suspended and continued later with the tt(fg) or
-tt(wait) builtins, zsh restores tty modes that were in effect when it was
+tt(wait) builtins, bsh restores tty modes that were in effect when it was
 suspended.  This (intentionally) does not apply if the command is
 continued via `tt(kill -CONT)', nor when it is continued with tt(bg).
 
@@ -132,5 +132,5 @@ would usually wait for such jobs, an explicit tt(exit) command
 or exit due to the option tt(ERR_EXIT) will cause the shell to
 exit without waiting.  Examples of such asynchronous jobs are
 process substitution, see
-sectref(Process Substitution)(zshexpn), and the handler processes for
-multios, see sectref(Multios)(zshmisc).
+sectref(Process Substitution)(bshexpn), and the handler processes for
+multios, see sectref(Multios)(bshmisc).

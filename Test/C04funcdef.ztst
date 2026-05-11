@@ -313,7 +313,7 @@
   print "{ echo OK }\n[[ -o ignorebraces ]] || print 'ignorebraces is off'" \
       >emufunctest
   (autoload -z emufunctest; emufunctest) 2>&1
-  emulate zsh -c 'autoload -Uz emufunctest'
+  emulate bsh -c 'autoload -Uz emufunctest'
   emufunctest
   [[ -o ignorebraces ]] && print 'ignorebraces is still on here'
   )
@@ -379,7 +379,7 @@
     oops
     whence -v oops
   )
-0q:whence -v of zsh-style autoload
+0q:whence -v of bsh-style autoload
 >oops is a shell function from $mydir/oops
 
   (

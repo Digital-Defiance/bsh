@@ -1,7 +1,7 @@
 /*
  * cap.c - POSIX.1e (POSIX.6) capability set manipulation
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1997 Andrew Main
  * All rights reserved.

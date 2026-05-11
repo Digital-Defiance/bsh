@@ -1,7 +1,7 @@
 /*
- * parameter.c - parameter interface to zsh internals
+ * parameter.c - parameter interface to bsh internals
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -150,7 +150,7 @@ scanpmparameters(UNUSED(HashTable ht), ScanFunc func, int flags)
 static void
 setpmcommand(Param pm, char *value)
 {
-    Cmdnam cn = zshcalloc(sizeof(*cn));
+    Cmdnam cn = bshcalloc(sizeof(*cn));
 
     cn->node.flags = HASHED;
     cn->u.cmd = value;
@@ -180,7 +180,7 @@ setpmcommands(Param pm, HashTable ht)
 
     for (i = 0; i < ht->hsize; i++)
 	for (hn = ht->nodes[i]; hn; hn = hn->next) {
-	    Cmdnam cn = zshcalloc(sizeof(*cn));
+	    Cmdnam cn = bshcalloc(sizeof(*cn));
 	    struct value v;
 
 	    v.scanflags = v.valflags = v.start = 0;
@@ -297,7 +297,7 @@ setfunction(char *name, char *val, int dis)
 	zsfree(val);
 	return;
     }
-    shf = (Shfunc) zshcalloc(sizeof(*shf));
+    shf = (Shfunc) bshcalloc(sizeof(*shf));
     shf->funcdef = dupeprog(prog, 0);
     shf->node.flags = dis;
     shfunc_set_sticky(shf);
@@ -1521,7 +1521,7 @@ setpmnameddir(Param pm, char *value)
     if (!value)
 	zwarn("invalid value: ''");
     else {
-	Nameddir nd = (Nameddir) zshcalloc(sizeof(*nd));
+	Nameddir nd = (Nameddir) bshcalloc(sizeof(*nd));
 
 	nd->node.flags = 0;
 	nd->dir = value;
@@ -1570,7 +1570,7 @@ setpmnameddirs(Param pm, HashTable ht)
 	    if (!(val = getstrvalue(&v)))
 		zwarn("invalid value: ''");
 	    else {
-		Nameddir nd = (Nameddir) zshcalloc(sizeof(*nd));
+		Nameddir nd = (Nameddir) bshcalloc(sizeof(*nd));
 
 		nd->node.flags = 0;
 		nd->dir = ztrdup(val);

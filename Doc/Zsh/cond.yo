@@ -44,7 +44,7 @@ true if length of var(string) is non-zero.
 item(tt(-o) var(option))(
 true if option named var(option) is on.  var(option)
 may be a single character, in which case it is a single letter option name.
-(See sectref(Specifying Options)(zshoptions).)
+(See sectref(Specifying Options)(bshoptions).)
 
 When no option named var(option) exists, and the tt(POSIX_BUILTINS) option
 hasn't been set, return 3 with a warning.  If that option is set, return 1
@@ -122,8 +122,8 @@ item(var(string) tt(=~) var(regexp))(
 true if var(string) matches the regular expression
 var(regexp).  If the option tt(RE_MATCH_PCRE) is set
 var(regexp) is tested as a PCRE regular expression using
-the tt(zsh/pcre) module, else it is tested as a POSIX
-extended regular expression using the tt(zsh/regex) module.
+the tt(bsh/pcre) module, else it is tested as a POSIX
+extended regular expression using the tt(bsh/regex) module.
 Upon successful match, some variables will be updated; no variables
 are changed if the matching fails.
 
@@ -233,7 +233,7 @@ no matching file.
 
 Pattern metacharacters are active for the var(pattern) arguments;
 the patterns are the same as those used for filename generation, see
-sectref(Filename Generation)(zshexpn), but there is no special behaviour
+sectref(Filename Generation)(bshexpn), but there is no special behaviour
 of `tt(/)' nor initial dot, and the patterns `tt(**/)' and `tt(***/)' behave
 the same as `tt(*/)', in which the `tt(*)' has its standard behaviour
 but may also match further `tt(/)' characters.  Also, no bare glob

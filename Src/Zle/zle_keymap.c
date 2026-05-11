@@ -1,7 +1,7 @@
 /*
  * zle_keymap.c - keymaps and key bindings
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -172,7 +172,7 @@ createkeymapnamtab(void)
 static KeymapName
 makekeymapnamnode(Keymap keymap)
 {
-    KeymapName kmn = (KeymapName) zshcalloc(sizeof(*kmn));
+    KeymapName kmn = (KeymapName) bshcalloc(sizeof(*kmn));
 
     kmn->keymap = keymap;
     return kmn;
@@ -300,7 +300,7 @@ newkeytab(char *kmname)
 static Key
 makekeynode(Thingy t, char *str)
 {
-    Key k = (Key) zshcalloc(sizeof(*k));
+    Key k = (Key) bshcalloc(sizeof(*k));
 
     k->bind = t;
     k->str = str;
@@ -329,7 +329,7 @@ static HashTable copyto;
 mod_export Keymap
 newkeymap(Keymap tocopy, char *kmname)
 {
-    Keymap km = zshcalloc(sizeof(*km));
+    Keymap km = bshcalloc(sizeof(*km));
     int i;
 
     km->rc = 0;
@@ -1225,7 +1225,7 @@ init_keymaps(void)
 {
     createkeymapnamtab();
     default_bindings();
-    keybuf = (char *)zshcalloc(keybufsz);
+    keybuf = (char *)bshcalloc(keybufsz);
     lastnamed = refthingy(t_undefinedkey);
 }
 

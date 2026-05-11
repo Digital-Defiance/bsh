@@ -1,7 +1,7 @@
 /*
  * db_gdbm.c - bindings for gdbm
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2008 Clint Adams
  * All rights reserved.
@@ -428,7 +428,7 @@ getgdbmnode(HashTable ht, const char *name)
      * */
 
     if ( ! val_pm ) {
-        val_pm = (Param) zshcalloc( sizeof (*val_pm) );
+        val_pm = (Param) bshcalloc( sizeof (*val_pm) );
         val_pm->node.flags = PM_SCALAR | PM_HASHELEM; /* no PM_UPTODATE */
         val_pm->gsu.s = (GsuScalar) ht->tmpdata;
         ht->addnode( ht, ztrdup( name ), val_pm ); /* sets pm->node.nam */
@@ -634,7 +634,7 @@ enables_(Module m, int **enables)
 int
 boot_(UNUSED(Module m))
 {
-    zgdbm_tied = zshcalloc((1) * sizeof(char *));
+    zgdbm_tied = bshcalloc((1) * sizeof(char *));
     return 0;
 }
 
@@ -694,7 +694,7 @@ static Param createhash( char *name, int flags ) {
 
 static int append_tied_name( const char *name ) {
     int old_len = arrlen(zgdbm_tied);
-    char **new_zgdbm_tied = zshcalloc( (old_len+2) * sizeof(char *));
+    char **new_zgdbm_tied = bshcalloc( (old_len+2) * sizeof(char *));
 
     /* Copy */
     char **p = zgdbm_tied;
@@ -748,7 +748,7 @@ static int remove_tied_name( const char *name ) {
     new_len = arrlen(zgdbm_tied);
     if (new_len != old_len) {
         char **dst;
-        char **new_zgdbm_tied = zshcalloc((new_len+1) * sizeof(char *));
+        char **new_zgdbm_tied = bshcalloc((new_len+1) * sizeof(char *));
 
         /* Copy */
         p = zgdbm_tied;

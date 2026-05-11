@@ -1,4 +1,4 @@
-name=zsh/net/tcp
+name=bsh/net/tcp
 link=dynamic
 load=no
 functions='Functions/TCP/*'

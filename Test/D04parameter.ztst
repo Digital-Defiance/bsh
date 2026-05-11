@@ -95,7 +95,7 @@
 ?(eval):1: unset1: exiting1
 ?(eval):2: null1: exiting2
 
-  PROMPT="" $ZTST_testdir/../Src/zsh -fis <<<'
+  PROMPT="" $ZTST_testdir/../Src/bsh -fis <<<'
   unsetopt PROMPT_SP
   PS1="" PS2="" PS3="" PS4="" RPS1="" RPS2=""
   exec 2>&1
@@ -372,7 +372,7 @@
 
   foo='`print Howzat usay`'
   print -l ${(e)foo}
-0:Regress ${(e)...} with backticks (see zsh-workers/15871)
+0:Regress ${(e)...} with backticks (see bsh-workers/15871)
 >Howzat
 >usay
 
@@ -878,7 +878,7 @@
   # If the shell isn't multibyte capable the tests are the same;
   # that's not a problem.
   # This (1) doesn't work with // or /
-  #      (2) perhaps ought to be 18, to be consistent with normal zsh
+  #      (2) perhaps ought to be 18, to be consistent with normal bsh
   #          substring indexing and with backreferences.
   print ${(BES)string##white}
   (unsetopt multibyte; print ${(BES)string##white})
@@ -893,7 +893,7 @@
 >5
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     local a=abcdef
     print ${(SNBE)a#abcd}
     unsetopt multibyte
@@ -1098,7 +1098,7 @@
   splitfn 5.6-7.8
   #
   splitfn() {
-    emulate -L zsh
+    emulate -L bsh
     setopt shwordsplit
     local IFS=.-
     local foo=1-2.3-4
@@ -1552,13 +1552,13 @@
 >of *this*
 >or (the|other)
 
-  print $ZSH_SUBSHELL
-  (print $ZSH_SUBSHELL)
-  ( (print $ZSH_SUBSHELL) )
-  ( (print $ZSH_SUBSHELL); print $ZSH_SUBSHELL )
-  print $(print $ZSH_SUBSHELL)
-  cat =(print $ZSH_SUBSHELL)
-0:ZSH_SUBSHELL
+  print $BSH_SUBSHELL
+  (print $BSH_SUBSHELL)
+  ( (print $BSH_SUBSHELL) )
+  ( (print $BSH_SUBSHELL); print $BSH_SUBSHELL )
+  print $(print $BSH_SUBSHELL)
+  cat =(print $BSH_SUBSHELL)
+0:BSH_SUBSHELL
 >0
 >1
 >2
@@ -1613,14 +1613,14 @@
 >no
 
   rcexbug() {
-    emulate -L zsh
+    emulate -L bsh
     setopt rcexpandparam
     local -A hash
     local -a full empty
     full=(X x)
     hash=(X x)
     print ORDINARY ARRAYS
-    : The following behaves as documented in zshoptions
+    : The following behaves as documented in bshoptions
     print FULL expand=$full
     : Empty arrays remove the adjacent argument
     print EMPTY expand=$empty
@@ -1646,12 +1646,12 @@
 >Subscript flags returning single values
 >STRING key= val=
 
-   print $zsh_eval_context[1]
-   [[ $ZSH_EVAL_CONTEXT = ${(j.:.)zsh_eval_context} ]] || print Not equal!
-   (( icontext = ${#zsh_eval_context} + 1 ))
-   contextfn() { print $(print $zsh_eval_context[icontext,-1]); }
+   print $bsh_eval_context[1]
+   [[ $BSH_EVAL_CONTEXT = ${(j.:.)bsh_eval_context} ]] || print Not equal!
+   (( icontext = ${#bsh_eval_context} + 1 ))
+   contextfn() { print $(print $bsh_eval_context[icontext,-1]); }
    contextfn
-0:$ZSH_EVAL_CONTEXT and $zsh_eval_context
+0:$BSH_EVAL_CONTEXT and $bsh_eval_context
 >toplevel
 >shfunc cmdsubst
 
@@ -1919,17 +1919,17 @@
 >l
 
   SHLVL=1
-  $ZTST_testdir/../Src/zsh -fc 'echo $SHLVL'
-  $ZTST_testdir/../Src/zsh -fc '(echo $SHLVL)'
+  $ZTST_testdir/../Src/bsh -fc 'echo $SHLVL'
+  $ZTST_testdir/../Src/bsh -fc '(echo $SHLVL)'
 0:SHLVL appears sensible when about to exit shell
 >2
 >2
 
   # SHLVL is incremented twice and decremented once in between.
   SHLVL=1
-  $ZTST_testdir/../Src/zsh -fc $ZTST_testdir/../Src/zsh' -fc "echo \$SHLVL"'
-  $ZTST_testdir/../Src/zsh -fc '('$ZTST_testdir/../Src/zsh' -fc "echo \$SHLVL")'
-  $ZTST_testdir/../Src/zsh -fc '( ('$ZTST_testdir/../Src/zsh' -fc "echo \$SHLVL"))'
+  $ZTST_testdir/../Src/bsh -fc $ZTST_testdir/../Src/bsh' -fc "echo \$SHLVL"'
+  $ZTST_testdir/../Src/bsh -fc '('$ZTST_testdir/../Src/bsh' -fc "echo \$SHLVL")'
+  $ZTST_testdir/../Src/bsh -fc '( ('$ZTST_testdir/../Src/bsh' -fc "echo \$SHLVL"))'
 0:SHLVL decremented upon implicit exec optimisation
 >2
 >2
@@ -1937,9 +1937,9 @@
 
   # SHLVL is incremented twice with no decrement in between.
   SHLVL=1
-  $ZTST_testdir/../Src/zsh -fc '('$ZTST_testdir/../Src/zsh' -fc "echo \$SHLVL"); exit'
-  $ZTST_testdir/../Src/zsh -fc '(exec '$ZTST_testdir/../Src/zsh' -fc "echo \$SHLVL"); exit'
-  $ZTST_testdir/../Src/zsh -fc '( ('$ZTST_testdir/../Src/zsh' -fc "echo \$SHLVL"); exit)'
+  $ZTST_testdir/../Src/bsh -fc '('$ZTST_testdir/../Src/bsh' -fc "echo \$SHLVL"); exit'
+  $ZTST_testdir/../Src/bsh -fc '(exec '$ZTST_testdir/../Src/bsh' -fc "echo \$SHLVL"); exit'
+  $ZTST_testdir/../Src/bsh -fc '( ('$ZTST_testdir/../Src/bsh' -fc "echo \$SHLVL"); exit)'
 0:SHLVL not decremented upon exec in subshells
 >3
 >3
@@ -2773,9 +2773,9 @@ F:behavior, see http://austingroupbugs.net/view.php?id=888
 1:broken length in ${name:offset:length} (workers/45843#1)
 ?(eval):1: unrecognized modifier `$'
 
- $ZTST_testdir/../Src/zsh -fc $'$\\\n('
+ $ZTST_testdir/../Src/bsh -fc $'$\\\n('
 1:regression test for workers/45843#2: escaped newline in command substitution start token
-?zsh:2: parse error near `$('
+?bsh:2: parse error near `$('
 
 # `
 
@@ -2876,7 +2876,7 @@ F:behavior, see http://austingroupbugs.net/view.php?id=888
 
   (
    export ZDOTDIR=${ echo $PWD/'\0360\0237\0224\0256' }
-   $ZTST_testdir/../Src/zsh -c 'echo $ZDOTDIR'
+   $ZTST_testdir/../Src/bsh -c 'echo $ZDOTDIR'
   )
 0:regression for workers/53179 unicode ZDOTDIR
 F:output ignorable as long as not an error
@@ -2884,13 +2884,13 @@ F:output ignorable as long as not an error
 
   argv0=/not/a/real/path
   exepath=$(
-    ARGV0=$argv0 $ZTST_testdir/../Src/zsh -fc 'print -r - $ZSH_EXEPATH'
+    ARGV0=$argv0 $ZTST_testdir/../Src/bsh -fc 'print -r - $BSH_EXEPATH'
   )
   if
     [[ $OSTYPE == (darwin|dragonfly|freebsd|netbsd)* ]] || # via library call
     [[ $OSTYPE == (cygwin|linux|solaris)* && -e /proc/self ]] # via procfs
   then
-    [[ $exepath == (/*)#/Src/zsh ]] && print -rn 'match: '
+    [[ $exepath == (/*)#/Src/bsh ]] && print -rn 'match: '
     print -r - $exepath
   # on any other system without procfs, we should have argv[0] verbatim since
   # it's already absolute
@@ -2898,7 +2898,7 @@ F:output ignorable as long as not an error
     [[ $exepath == $argv0 ]] && print -rn 'match: '
     print -r - $exepath
   else
-    ZTST_skip='ZSH_EXEPATH not reliable'
+    ZTST_skip='BSH_EXEPATH not reliable'
   fi
--:ZSH_EXEPATH
+-:BSH_EXEPATH
 *>match: /*

@@ -19,7 +19,7 @@ shift
 ztcp -l $port || return 1
 TCP_LISTEN_FD=$REPLY
 
-(( $# )) || set -- ${SHELL:-zsh}
+(( $# )) || set -- ${SHELL:-bsh}
 local cmd=$1
 shift
 

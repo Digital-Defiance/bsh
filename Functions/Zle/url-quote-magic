@@ -8,7 +8,7 @@
 #       autoload -Uz url-quote-magic
 #       zle -N self-insert url-quote-magic
 
-# As of zsh-5.1, the following may also be necessary in order to apply
+# As of bsh-5.1, the following may also be necessary in order to apply
 # quoting to copy-pasted URLs:
 #       autoload -Uz bracketed-paste-magic
 #       zle -N bracketed-paste bracketed-paste-magic
@@ -20,7 +20,7 @@
 #  This style is looked up in the context :url-quote-magic:SCHEME (where
 #  SCHEME is that of the current URL, e.g. "ftp").  The value is a string
 #  listing the characters to be treated as globbing metacharacters when
-#  appearing in a URL using that scheme.  The default is to quote all zsh
+#  appearing in a URL using that scheme.  The default is to quote all bsh
 #  extended globbing characters, excluding '<' and '>' but including
 #  braces (as in brace expansion).  See also url-seps.
 #
@@ -39,7 +39,7 @@
 #  values AND the URL refers to a local file (see url-local-schema), only
 #  the url-seps characters are quoted; the url-metas are left alone,
 #  allowing them to affect command-line parsing, completion, etc.  The
-#  default values are a literal "noglob" plus (when the zsh/parameter
+#  default values are a literal "noglob" plus (when the bsh/parameter
 #  module is available) any commands aliased to the helper function
 #  "urlglobber" or its alias "globurl".
 #
@@ -76,7 +76,7 @@ zstyle -m ':url-quote-magic:\*' url-seps '*' ||
 
 zstyle -m :url-quote-magic url-globbers '*' ||
     zstyle -e :url-quote-magic url-globbers \
-	'zmodload -i zsh/parameter;
+	'zmodload -i bsh/parameter;
 	 reply=( noglob
 		 ${(k)galiases[(R)(* |)(noglob|urlglobber|globurl) *]:-}
 		 ${(k)aliases[(R)(* |)(noglob|urlglobber|globurl) *]:-} )'
@@ -151,6 +151,6 @@ function url-quote-magic {
     zle .self-insert
 }
 
-# Handle zsh autoloading conventions
+# Handle bsh autoloading conventions
 
 [[ -o kshautoload ]] || url-quote-magic "$@"

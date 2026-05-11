@@ -19,10 +19,10 @@
 #
 #   name            name of this module
 #   moddeps         modules on which this module depends (default none)
-#   nozshdep        non-empty indicates no dependence on the `zsh/main' pseudo-module
+#   nobshdep        non-empty indicates no dependence on the `bsh/main' pseudo-module
 #   alwayslink      if non-empty, always link the module into the executable
 #   autofeatures    features defined by the module, for autoloading
-#   autofeatures_emu As autofeatures, but for non-zsh emulation modes
+#   autofeatures_emu As autofeatures, but for non-bsh emulation modes
 #   objects         .o files making up this module (*must* be defined)
 #   proto           .syms files for this module (default generated from $objects)
 #   headers         extra headers for this module (default none)
@@ -184,13 +184,13 @@ if $first_stage; then
     remote_modules=
     for mddname in $here_mddnames; do
 
-	unset name moddeps nozshdep alwayslink hasexport
+	unset name moddeps nobshdep alwayslink hasexport
 	unset autofeatures autofeatures_emu
 	unset objects proto headers hdrdeps otherincs
 	. $top_srcdir/$the_subdir/${mddname}.mdd
 	q_name=`echo $name | sed 's,Q,Qq,g;s,_,Qu,g;s,/,Qs,g'`
 	test -n "${moddeps+set}" || moddeps=
-	test -n "$nozshdep" || moddeps="$moddeps zsh/main"
+	test -n "$nobshdep" || moddeps="$moddeps bsh/main"
 	test -n "${proto+set}" ||
 	    proto=`echo $objects '' | sed 's,\.o ,.syms ,g'`
 
@@ -208,7 +208,7 @@ if $first_stage; then
 	    eval `echo $depfile | sed 's,/\([^/]*\)\.mdd$,;depbase=\1,;s,^,loc=,'`
 	    case "$binmod" in
 		*" $dep "* )
-		    dep=zsh/main
+		    dep=bsh/main
 		;;
 	    esac
 
@@ -217,8 +217,8 @@ if $first_stage; then
 		    mdh="${depbase}.mdh"
 		    export="${depbase}.export"
 		    case "$dep" in
-			zsh/main )
-			    mdll="\$(dir_top)/Src/libzsh-\$(VERSION).\$(DL_EXT) "
+			bsh/main )
+			    mdll="\$(dir_top)/Src/libbsh-\$(VERSION).\$(DL_EXT) "
 			;;
 			* )
 			    mdll="${depbase}.\$(DL_EXT) "
@@ -237,8 +237,8 @@ if $first_stage; then
 			*) other_exports="$other_exports $export" ;;
 		    esac
 		    case "$dep" in
-			zsh/main )
-			    mdll="\$(dir_top)/Src/libzsh-\$(VERSION).\$(DL_EXT) "
+			bsh/main )
+			    mdll="\$(dir_top)/Src/libbsh-\$(VERSION).\$(DL_EXT) "
 			;;
 			* )
 			    mdll="\$(dir_top)/$loc/${depbase}.\$(DL_EXT) "
@@ -261,8 +261,8 @@ if $first_stage; then
 			*) remote_exports="$remote_exports $export" ;;
 		    esac
 		    case "$dep" in
-			zsh/main )
-			    mdll="\$(dir_top)/Src/libzsh-\$(VERSION).\$(DL_EXT) "
+			bsh/main )
+			    mdll="\$(dir_top)/Src/libbsh-\$(VERSION).\$(DL_EXT) "
 			;;
 			* )
 			    mdll="\$(dir_top)/$loc/${depbase}.\$(DL_EXT) "

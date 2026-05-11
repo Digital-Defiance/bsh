@@ -1,7 +1,7 @@
 /*
  * parse.c - parser
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "parse.pro"
 
 /* != 0 if we are about to read a command word */
@@ -560,7 +560,7 @@ bld_eprog(int heap)
     ret->npats = ecnpats;
     ret->nref = heap ? -1 : 1;
     ret->pats = heap ? (Patprog *) zhalloc(ret->len) :
-	(Patprog *) zshcalloc(ret->len);
+	(Patprog *) bshcalloc(ret->len);
     ret->prog = (Wordcode) (ret->pats + ecnpats);
     ret->strs = (char *) (ret->prog + ecused);
     ret->shf = NULL;
@@ -616,7 +616,7 @@ parse_event(int endtok)
     tok = ENDINPUT;
     incmdpos = 1;
     aliasspaceflag = 0;
-    zshlex();
+    bshlex();
     init_parse();
 
     if (!par_event(endtok)) {
@@ -639,7 +639,7 @@ par_event(int endtok)
     while (tok == SEPER) {
 	if (isnewlin > 0 && endtok == ENDINPUT)
 	    return 0;
-	zshlex();
+	bshlex();
     }
     if (tok == ENDINPUT)
 	return 0;
@@ -655,15 +655,15 @@ par_event(int endtok)
 	} else if (tok == SEPER) {
 	    set_list_code(p, Z_SYNC, c);
 	    if (isnewlin <= 0 || endtok != ENDINPUT)
-		zshlex();
+		bshlex();
 	    r = 1;
 	} else if (tok == AMPER) {
 	    set_list_code(p, Z_ASYNC, c);
-	    zshlex();
+	    bshlex();
 	    r = 1;
 	} else if (tok == AMPERBANG) {
 	    set_list_code(p, (Z_ASYNC | Z_DISOWN), c);
-	    zshlex();
+	    bshlex();
 	    r = 1;
 	}
     }
@@ -700,7 +700,7 @@ parse_list(void)
 
     tok = ENDINPUT;
     init_parse();
-    zshlex();
+    bshlex();
     par_list(&c);
     if (tok != ENDINPUT) {
         clear_hdocs();
@@ -775,7 +775,7 @@ par_list(int *cmplx)
  rec:
 
     while (tok == SEPER)
-	zshlex();
+	bshlex();
 
     p = ecadd(0);
     c = 0;
@@ -790,7 +790,7 @@ par_list(int *cmplx)
 			      (Z_ASYNC | Z_DISOWN)), c);
 	    incmdpos = 1;
 	    do {
-		zshlex();
+		bshlex();
 	    } while (tok == SEPER);
 	    lp = p;
 	    goto rec;
@@ -837,9 +837,9 @@ par_sublist(int *cmplx)
 	    int sl;
 
 	    cmdpush(tok == DBAR ? CS_CMDOR : CS_CMDAND);
-	    zshlex();
+	    bshlex();
 	    while (tok == SEPER)
-		zshlex();
+		bshlex();
 	    sl = par_sublist(cmplx);
 	    set_sublist_code(p, (sl ? (qtok == DBAR ?
 				       WC_SUBLIST_OR : WC_SUBLIST_AND) :
@@ -873,11 +873,11 @@ par_sublist2(int *cmplx)
     if (tok == COPROC) {
 	*cmplx = 1;
 	f |= WC_SUBLIST_COPROC;
-	zshlex();
+	bshlex();
     } else if (tok == BANG) {
 	*cmplx = 1;
 	f |= WC_SUBLIST_NOT;
-	zshlex();
+	bshlex();
     }
     if (!par_pline(cmplx) && !f)
 	return -1;
@@ -905,9 +905,9 @@ par_pline(int *cmplx)
     if (tok == BAR) {
 	*cmplx = 1;
 	cmdpush(CS_PIPE);
-	zshlex();
+	bshlex();
 	while (tok == SEPER)
-	    zshlex();
+	    bshlex();
 	ecbuf[p] = WCB_PIPE(WC_PIPE_MID, (line >= 0 ? line + 1 : 0));
 	ecispace(p + 1, 1);
 	ecbuf[p + 1] = ecused - 1 - p;
@@ -929,9 +929,9 @@ par_pline(int *cmplx)
 
 	*cmplx = 1;
 	cmdpush(CS_ERRPIPE);
-	zshlex();
+	bshlex();
 	while (tok == SEPER)
-	    zshlex();
+	    bshlex();
 	ecbuf[p] = WCB_PIPE(WC_PIPE_MID, (line >= 0 ? line + 1 : 0));
 	ecispace(p + 1, 1);
 	ecbuf[p + 1] = ecused - 1 - p;
@@ -950,12 +950,12 @@ par_pline(int *cmplx)
  * cmd	: { redir } ( for | case | if | while | repeat |
  *				subsh | funcdef | time | dinbrack | dinpar | simple ) { redir }
  *
- * zsh_construct is passed through to par_subsh(), q.v.
+ * bsh_construct is passed through to par_subsh(), q.v.
  */
 
 /**/
 static int
-par_cmd(int *cmplx, int zsh_construct)
+par_cmd(int *cmplx, int bsh_construct)
 {
     int r, nr = 0;
 
@@ -1010,12 +1010,12 @@ par_cmd(int *cmplx, int zsh_construct)
     case INPAR:
 	*cmplx = 1;
 	cmdpush(CS_SUBSH);
-	par_subsh(cmplx, zsh_construct);
+	par_subsh(cmplx, bsh_construct);
 	cmdpop();
 	break;
     case INBRACE:
 	cmdpush(CS_CURSH);
-	par_subsh(cmplx, zsh_construct);
+	par_subsh(cmplx, bsh_construct);
 	cmdpop();
 	break;
     case FUNC:
@@ -1031,7 +1031,7 @@ par_cmd(int *cmplx, int zsh_construct)
     case DINPAR:
 	ecadd(WCB_ARITH());
 	ecstr(tokstr);
-	zshlex();
+	bshlex();
 	break;
     case TIME:
 	{
@@ -1093,23 +1093,23 @@ par_for(int *cmplx)
 
     incmdpos = 0;
     infor = tok == FOR ? 2 : 0;
-    zshlex();
+    bshlex();
     if (tok == DINPAR) {
-	zshlex();
+	bshlex();
 	if (tok != DINPAR)
 	    YYERRORV(oecused);
 	ecstr(tokstr);
-	zshlex();
+	bshlex();
 	if (tok != DINPAR)
 	    YYERRORV(oecused);
 	ecstr(tokstr);
-	zshlex();
+	bshlex();
 	if (tok != DOUTPAR)
 	    YYERRORV(oecused);
 	ecstr(tokstr);
 	infor = 0;
 	incmdpos = 1;
-	zshlex();
+	bshlex();
 	type = WC_FOR_COND;
     } else {
 	int np = 0, n, posix_in, ona = noaliases, onc = nocorrect;
@@ -1124,7 +1124,7 @@ par_for(int *cmplx)
 	for (;;) {
 	    n++;
 	    ecstr(tokstr);
-	    zshlex();
+	    bshlex();
 	    if (tok != STRING || !strcmp(tokstr, "in") || sel)
 		break;
 	    if (!isident(tokstr) || errflag)
@@ -1140,10 +1140,10 @@ par_for(int *cmplx)
 	    ecbuf[np] = n;
 	posix_in = isnewlin;
 	while (isnewlin)
-	    zshlex();
+	    bshlex();
         if (tok == STRING && !strcmp(tokstr, "in")) {
 	    incmdpos = 0;
-	    zshlex();
+	    bshlex();
 	    np = ecadd(0);
 	    n = par_wordlist();
 	    if (tok != SEPER)
@@ -1152,41 +1152,41 @@ par_for(int *cmplx)
 	    type = (sel ? WC_SELECT_LIST : WC_FOR_LIST);
 	} else if (!posix_in && tok == INPAR) {
 	    incmdpos = 0;
-	    zshlex();
+	    bshlex();
 	    np = ecadd(0);
 	    n = par_nl_wordlist();
 	    if (tok != OUTPAR)
 		YYERRORV(oecused);
 	    ecbuf[np] = n;
 	    incmdpos = 1;
-	    zshlex();
+	    bshlex();
 	    type = (sel ? WC_SELECT_LIST : WC_FOR_LIST);
 	} else
 	    type = (sel ? WC_SELECT_PPARAM : WC_FOR_PPARAM);
     }
     incmdpos = 1;
     while (tok == SEPER)
-	zshlex();
+	bshlex();
     if (tok == DOLOOP) {
-	zshlex();
+	bshlex();
 	par_save_list(cmplx);
 	if (tok != DONE)
 	    YYERRORV(oecused);
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     } else if (tok == INBRACE) {
-	zshlex();
+	bshlex();
 	par_save_list(cmplx);
 	if (tok != OUTBRACE)
 	    YYERRORV(oecused);
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     } else if (csh || isset(CSHJUNKIELOOPS)) {
 	par_save_list(cmplx);
 	if (tok != ZEND)
 	    YYERRORV(oecused);
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     } else if (unset(SHORTLOOPS)) {
 	YYERRORV(oecused);
     } else
@@ -1214,7 +1214,7 @@ par_case(int *cmplx)
     p = ecadd(0);
 
     incmdpos = 0;
-    zshlex();
+    bshlex();
     if (tok != STRING)
 	YYERRORV(oecused);
     ecstr(tokstr);
@@ -1223,9 +1223,9 @@ par_case(int *cmplx)
     ona = noaliases;
     onc = nocorrect;
     noaliases = nocorrect = 1;
-    zshlex();
+    bshlex();
     while (tok == SEPER)
-	zshlex();
+	bshlex();
     if (!(tok == STRING && !strcmp(tokstr, "in")) && tok != INBRACE)
     {
 	noaliases = ona;
@@ -1237,28 +1237,28 @@ par_case(int *cmplx)
     incmdpos = 0;
     noaliases = ona;
     nocorrect = onc;
-    zshlex();
+    bshlex();
 
     for (;;) {
 	char *str;
-	int skip_zshlex;
+	int skip_bshlex;
 
 	while (tok == SEPER)
-	    zshlex();
+	    bshlex();
 	if (tok == OUTBRACE)
 	    break;
 	if (tok == INPAR)
-	    zshlex();
+	    bshlex();
 	if (tok == BAR) {
 	    str = dupstring("");
-	    skip_zshlex = 1;
+	    skip_bshlex = 1;
 	} else {
 	    if (tok != STRING)
 		YYERRORV(oecused);
 	    if (!strcmp(tokstr, "esac"))
 		break;
 	    str = dupstring(tokstr);
-	    skip_zshlex = 0;
+	    skip_bshlex = 0;
 	}
 	type = WC_CASE_OR;
 	pp = ecadd(0);
@@ -1277,7 +1277,7 @@ par_case(int *cmplx)
 	 *   of the case pattern.
 	 * - Something else --- we don't care what --- because
 	 *   we're parsing a complete "(...)" as a complete
-	 *   zsh pattern.  In that case, we treat this as a
+	 *   bsh pattern.  In that case, we treat this as a
 	 *   single instance of a case pattern but we pretend
 	 *   we're doing proper case parsing --- in which the
 	 *   parentheses and bar are in different words from
@@ -1285,7 +1285,7 @@ par_case(int *cmplx)
 	 *   So we quietly massage the whitespace and hope
 	 *   no one noticed.  This is horrible, but it's
 	 *   unfortunately too difficult to combine traditional
-	 *   zsh patterns with a properly parsed case pattern
+	 *   bsh patterns with a properly parsed case pattern
 	 *   without generating incompatibilities which aren't
 	 *   all that popular (I've discovered).
 	 * - We can also end up with something other than ")" or "|"
@@ -1299,8 +1299,8 @@ par_case(int *cmplx)
 	 */
 	incasepat = -1;
 	incmdpos = 1;
-	if (!skip_zshlex)
-	    zshlex();
+	if (!skip_bshlex)
+	    bshlex();
 	for (;;) {
 	    if (tok == OUTPAR) {
 		ecstr(str);
@@ -1309,7 +1309,7 @@ par_case(int *cmplx)
 
 		incasepat = 0;
 		incmdpos = 1;
-		zshlex();
+		bshlex();
 		break;
 	    } else if (tok == BAR) {
 		ecstr(str);
@@ -1356,12 +1356,12 @@ par_case(int *cmplx)
 		YYERRORV(oecused);
 	    }
 
-	    zshlex();
+	    bshlex();
 	    switch (tok) {
 	    case STRING:
 		/* Normal case */
 		str = dupstring(tokstr);
-		zshlex();
+		bshlex();
 		break;
 
 	    case OUTPAR:
@@ -1390,11 +1390,11 @@ par_case(int *cmplx)
 	    YYERRORV(oecused);
 	incasepat = 1;
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     }
     incmdpos = 1;
     incasepat = 0;
-    zshlex();
+    bshlex();
 
     ecbuf[p] = WCB_CASE(WC_CASE_HEAD, ecused - 1 - p);
 }
@@ -1421,14 +1421,14 @@ par_if(int *cmplx)
 	cmdpush(xtok == IF ? CS_IF : CS_ELIF);
 	if (xtok == FI) {
 	    incmdpos = 0;
-	    zshlex();
+	    bshlex();
 	    break;
 	}
-	zshlex();
+	bshlex();
 	if (xtok == ELSE)
 	    break;
 	while (tok == SEPER)
-	    zshlex();
+	    bshlex();
 	if (!(xtok == IF || xtok == ELIF)) {
 	    cmdpop();
 	    YYERRORV(oecused);
@@ -1442,14 +1442,14 @@ par_if(int *cmplx)
 	    YYERRORV(oecused);
 	}
 	while (tok == SEPER)
-	    zshlex();
+	    bshlex();
 	xtok = FI;
 	nc = cmdstack[cmdsp - 1] == CS_IF ? CS_IFTHEN : CS_ELIFTHEN;
 	if (tok == THEN) {
 	    usebrace = 0;
 	    cmdpop();
 	    cmdpush(nc);
-	    zshlex();
+	    bshlex();
 	    par_save_list(cmplx);
 	    ecbuf[pp] = WCB_IF(type, ecused - 1 - pp);
 	    incmdpos = 1;
@@ -1458,7 +1458,7 @@ par_if(int *cmplx)
 	    usebrace = 1;
 	    cmdpop();
 	    cmdpush(nc);
-	    zshlex();
+	    bshlex();
 	    par_save_list(cmplx);
 	    if (tok != OUTBRACE) {
 		cmdpop();
@@ -1466,7 +1466,7 @@ par_if(int *cmplx)
 	    }
 	    ecbuf[pp] = WCB_IF(type, ecused - 1 - pp);
 	    /* command word (else) allowed to follow immediately */
-	    zshlex();
+	    bshlex();
 	    incmdpos = 1;
 	    if (tok == SEPER)
 		break;
@@ -1488,9 +1488,9 @@ par_if(int *cmplx)
 	pp = ecadd(0);
 	cmdpush(CS_ELSE);
 	while (tok == SEPER)
-	    zshlex();
+	    bshlex();
 	if (tok == INBRACE && usebrace) {
-	    zshlex();
+	    bshlex();
 	    par_save_list(cmplx);
 	    if (tok != OUTBRACE) {
 		cmdpop();
@@ -1505,7 +1505,7 @@ par_if(int *cmplx)
 	}
 	incmdpos = 0;
 	ecbuf[pp] = WCB_IF(WC_IF_ELSE, ecused - 1 - pp);
-	zshlex();
+	bshlex();
 	cmdpop();
     }
     ecbuf[p] = WCB_IF(WC_IF_HEAD, ecused - 1 - p);
@@ -1524,30 +1524,30 @@ par_while(int *cmplx)
     int type = (tok == UNTIL ? WC_WHILE_UNTIL : WC_WHILE_WHILE);
 
     p = ecadd(0);
-    zshlex();
+    bshlex();
     par_save_list(cmplx);
     incmdpos = 1;
     while (tok == SEPER)
-	zshlex();
+	bshlex();
     if (tok == DOLOOP) {
-	zshlex();
+	bshlex();
 	par_save_list(cmplx);
 	if (tok != DONE)
 	    YYERRORV(oecused);
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     } else if (tok == INBRACE) {
-	zshlex();
+	bshlex();
 	par_save_list(cmplx);
 	if (tok != OUTBRACE)
 	    YYERRORV(oecused);
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     } else if (isset(CSHJUNKIELOOPS)) {
 	par_save_list(cmplx);
 	if (tok != ZEND)
 	    YYERRORV(oecused);
-	zshlex();
+	bshlex();
     } else if (unset(SHORTLOOPS)) {
 	YYERRORV(oecused);
     } else
@@ -1570,33 +1570,33 @@ par_repeat(int *cmplx)
     p = ecadd(0);
 
     incmdpos = 0;
-    zshlex();
+    bshlex();
     if (tok != STRING)
 	YYERRORV(oecused);
     ecstr(tokstr);
     incmdpos = 1;
-    zshlex();
+    bshlex();
     while (tok == SEPER)
-	zshlex();
+	bshlex();
     if (tok == DOLOOP) {
-	zshlex();
+	bshlex();
 	par_save_list(cmplx);
 	if (tok != DONE)
 	    YYERRORV(oecused);
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     } else if (tok == INBRACE) {
-	zshlex();
+	bshlex();
 	par_save_list(cmplx);
 	if (tok != OUTBRACE)
 	    YYERRORV(oecused);
 	incmdpos = 0;
-	zshlex();
+	bshlex();
     } else if (isset(CSHJUNKIELOOPS)) {
 	par_save_list(cmplx);
 	if (tok != ZEND)
 	    YYERRORV(oecused);
-	zshlex();
+	bshlex();
     } else if (unset(SHORTLOOPS) && unset(SHORTREPEAT)) {
 	YYERRORV(oecused);
     } else
@@ -1609,14 +1609,14 @@ par_repeat(int *cmplx)
  * subsh	: INPAR list OUTPAR |
  *                INBRACE list OUTBRACE [ "always" INBRACE list OUTBRACE ]
  *
- * With zsh_construct non-zero, we're doing a zsh special in which
+ * With bsh_construct non-zero, we're doing a bsh special in which
  * the following token is not considered in command position.  This
  * is used for arguments of anonymous functions.
  */
 
 /**/
 static void
-par_subsh(int *cmplx, int zsh_construct)
+par_subsh(int *cmplx, int bsh_construct)
 {
     enum lextok otok = tok;
     int oecused = ecused, p, pp;
@@ -1624,20 +1624,20 @@ par_subsh(int *cmplx, int zsh_construct)
     p = ecadd(0);
     /* Extra word only needed for always block */
     pp = ecadd(0);
-    zshlex();
+    bshlex();
     par_list(cmplx);
     ecadd(WCB_END());
     if (tok != ((otok == INPAR) ? OUTPAR : OUTBRACE))
 	YYERRORV(oecused);
-    incmdpos = !zsh_construct;
-    zshlex();
+    incmdpos = !bsh_construct;
+    bshlex();
 
     /* Optional always block.  No intervening SEPERs allowed. */
     if (otok == INBRACE && tok == STRING && !strcmp(tokstr, "always")) {
 	ecbuf[pp] = WCB_TRY(ecused - 1 - pp);
 	incmdpos = 1;
 	do {
-	    zshlex();
+	    bshlex();
 	} while (tok == SEPER);
 
 	if (tok != INBRACE)
@@ -1645,16 +1645,16 @@ par_subsh(int *cmplx, int zsh_construct)
 	cmdpop();
 	cmdpush(CS_ALWAYS);
 
-	zshlex();
+	bshlex();
 	par_save_list(cmplx);
 	while (tok == SEPER)
-	    zshlex();
+	    bshlex();
 
 	incmdpos = 1;
 
 	if (tok != OUTBRACE)
 	    YYERRORV(oecused);
-	zshlex();
+	bshlex();
 	ecbuf[p] = WCB_TRY(ecused - 1 - p);
     } else {
 	ecbuf[p] = (otok == INPAR ? WCB_SUBSH(ecused - 1 - p) :
@@ -1679,7 +1679,7 @@ par_funcdef(int *cmplx)
     lineno = 0;
     nocorrect = 1;
     incmdpos = 0;
-    zshlex();
+    bshlex();
 
     p = ecadd(0);
     ecadd(0); /* p + 1 */
@@ -1690,11 +1690,11 @@ par_funcdef(int *cmplx)
     if (tok == STRING && tokstr[0] == Dash) {
 	if (tokstr[1] == 'T' && !tokstr[2]) {
 	    ++do_tracing;
-	    zshlex();
+	    bshlex();
 	}
 	if (tok == STRING && tokstr[0] == Dash &&
 	    tokstr[1] == Dash && !tokstr[2]) {
-	    zshlex();
+	    bshlex();
 	}
     }
 
@@ -1706,7 +1706,7 @@ par_funcdef(int *cmplx)
 	}
 	ecstr(tokstr);
 	num++;
-	zshlex();
+	bshlex();
     }
     ecadd(0); /* p + num + 2 */
     ecadd(0); /* p + num + 3 */
@@ -1716,9 +1716,9 @@ par_funcdef(int *cmplx)
     nocorrect = 0;
     incmdpos = 1;
     if (tok == INOUTPAR)
-	zshlex();
+	bshlex();
     while (tok == SEPER)
-	zshlex();
+	bshlex();
 
     ecnfunc++;
     ecssub = so = ecsoffs;
@@ -1726,7 +1726,7 @@ par_funcdef(int *cmplx)
     ecnpats = 0;
 
     if (tok == INBRACE) {
-	zshlex();
+	bshlex();
 	par_list(&c);
 	if (tok != OUTBRACE) {
 	    lineno += oldlineno;
@@ -1738,7 +1738,7 @@ par_funcdef(int *cmplx)
 	    /* Anonymous function, possibly with arguments */
 	    incmdpos = 0;
 	}
-	zshlex();
+	bshlex();
     } else if (unset(SHORTLOOPS)) {
 	lineno += oldlineno;
 	ecnpats = onp;
@@ -1768,7 +1768,7 @@ par_funcdef(int *cmplx)
 	while (tok == STRING) {
 	    ecstr(tokstr);
 	    num++;
-	    zshlex();
+	    bshlex();
 	}
 	if (num > 0)
 	    *cmplx = 1;
@@ -1788,7 +1788,7 @@ par_time(void)
 {
     int p, f, c = 0;
 
-    zshlex();
+    bshlex();
 
     p = ecadd(0);
     ecadd(0);
@@ -1813,13 +1813,13 @@ par_dinbrack(void)
 
     incond = 1;
     incmdpos = 0;
-    zshlex();
+    bshlex();
     par_cond();
     if (tok != DOUTBRACK)
 	YYERRORV(oecused);
     incond = 0;
     incmdpos = 1;
-    zshlex();
+    bshlex();
 }
 
 /*
@@ -1897,7 +1897,7 @@ par_simple(int *cmplx, int nr)
 		type2 = WC_ASSIGN_NEW;
 	    ecstr(tokstr);
 	    cmdpush(CS_ARRAY);
-	    zshlex();
+	    bshlex();
 	    n = par_nl_wordlist();
 	    ecbuf[p] = WCB_ASSIGN(WC_ASSIGN_ARRAY, type2, n);
 	    cmdpop();
@@ -1912,7 +1912,7 @@ par_simple(int *cmplx, int nr)
 	    continue;
 	} else
 	    break;
-	zshlex();
+	bshlex();
 	if (!hasalias)
 	    hasalias = input_hasalias();
     }
@@ -1946,7 +1946,7 @@ par_simple(int *cmplx, int nr)
 			char *toksave = tokstr;
 			char *idstring = dupstrpfx(tokstr+1, eptr-tokstr-1);
 			redir_var = 1;
-			zshlex();
+			bshlex();
 			if (!hasalias)
 			    hasalias = input_hasalias();
 
@@ -1991,7 +1991,7 @@ par_simple(int *cmplx, int nr)
 		    ecstr(tokstr);
 		    argc++;
 		}
-		zshlex();
+		bshlex();
 		if (!hasalias)
 		    hasalias = input_hasalias();
 	    }
@@ -2021,7 +2021,7 @@ par_simple(int *cmplx, int nr)
 		equalsplit(tokstr, &str);
 	    ecstr(name);
 	    ecstr(str);
-	    zshlex();
+	    bshlex();
 	    if (!hasalias)
 		hasalias = input_hasalias();
 	} else if (tok == ENVARRAY) {
@@ -2040,14 +2040,14 @@ par_simple(int *cmplx, int nr)
 	     * present one.
 	     */
 	    intypeset = 0;
-	    zshlex();
+	    bshlex();
 	    n = par_nl_wordlist();
 	    ecbuf[parr] = WCB_ASSIGN(WC_ASSIGN_ARRAY, WC_ASSIGN_NEW, n);
 	    cmdpop();
 	    intypeset = 1;
 	    if (tok != OUTPAR)
 		YYERROR(oecused);
-	    zshlex();
+	    bshlex();
 	} else if (tok == INOUTPAR) {
 	    zlong oldlineno = lineno;
 	    int onp, so, oecssub = ecssub;
@@ -2071,9 +2071,9 @@ par_simple(int *cmplx, int nr)
 	    lineno = 0;
 	    incmdpos = 1;
 	    cmdpush(CS_FUNCDEF);
-	    zshlex();
+	    bshlex();
 	    while (tok == SEPER)
-		zshlex();
+		bshlex();
 
 	    ecispace(p + 1, 1);
 	    ecbuf[p + 1] = argc;
@@ -2090,7 +2090,7 @@ par_simple(int *cmplx, int nr)
 	    if (tok == INBRACE) {
 		int c = 0;
 
-		zshlex();
+		bshlex();
 		par_list(&c);
 		if (tok != OUTBRACE) {
 		    cmdpop();
@@ -2103,7 +2103,7 @@ par_simple(int *cmplx, int nr)
 		    /* Anonymous function, possibly with arguments */
 		    incmdpos = 0;
 		}
-		zshlex();
+		bshlex();
 	    } else {
 		int ll, sl, c = 0;
 
@@ -2154,7 +2154,7 @@ par_simple(int *cmplx, int nr)
 		    {
 			ecstr(tokstr);
 			argc++;
-			zshlex();
+			bshlex();
 		    } else {
 			*cmplx = c = 1;
 			nrediradd = par_redir(&r, NULL);
@@ -2238,7 +2238,7 @@ par_redir(int *rp, char *idstring)
 	nocorrect = 1;
     type = redirtab[tok - OUTANG];
     fd1 = tokfd;
-    zshlex();
+    bshlex();
     if (tok != STRING && tok != ENVSTRING)
 	YYERROR(ecused);
     incmdpos = oldcmdpos;
@@ -2295,7 +2295,7 @@ par_redir(int *rp, char *idstring)
 	(*hd)->pc = r;
 	(*hd)->str = tokstr;
 
-	zshlex();
+	bshlex();
 	return ncodes;
     }
     case REDIR_WRITE:
@@ -2319,7 +2319,7 @@ par_redir(int *rp, char *idstring)
 	    type = tokstr[0] == Inang ? REDIR_INPIPE : REDIR_OUTPIPE;
 	break;
     }
-    zshlex();
+    bshlex();
 
     /* If we ever to change the number of codes, we have to change
      * the definition of WC_REDIR_WORDS. */
@@ -2365,7 +2365,7 @@ par_wordlist(void)
     while (tok == STRING) {
 	ecstr(tokstr);
 	num++;
-	zshlex();
+	bshlex();
     }
     return num;
 }
@@ -2385,24 +2385,24 @@ par_nl_wordlist(void)
 	    ecstr(tokstr);
 	    num++;
 	}
-	zshlex();
+	bshlex();
     }
     return num;
 }
 
 /*
- * condlex is zshlex for normal parsing, but is altered to allow
+ * condlex is bshlex for normal parsing, but is altered to allow
  * the test builtin to use par_cond.
  */
 
 /**/
-void (*condlex) (void) = zshlex;
+void (*condlex) (void) = bshlex;
 
 /*
  * cond	: cond_1 { SEPER } [ DBAR { SEPER } cond ]
  */
 
-#define COND_SEP() (tok == SEPER && condlex != testlex && *zshlextext != ';')
+#define COND_SEP() (tok == SEPER && condlex != testlex && *bshlextext != ';')
 
 /**/
 static int
@@ -2735,7 +2735,7 @@ yyerror(int noerr)
     int t0;
     char *t;
 
-    if ((t = dupstring(zshlextext)))
+    if ((t = dupstring(bshlextext)))
 	untokenize(t);
 
     for (t0 = 0; t0 != 20; t0++)
@@ -2785,7 +2785,7 @@ dupeprog(Eprog p, int heap)
      */
     r->nref = heap ? -1 : 1;
     pp = r->pats = (heap ? (Patprog *) hcalloc(r->len) :
-		    (Patprog *) zshcalloc(r->len));
+		    (Patprog *) bshcalloc(r->len));
     r->prog = (Wordcode) (r->pats + r->npats);
     r->strs = ((char *) r->prog) + (p->strs - ((char *) p->prog));
     memcpy(r->prog, p->prog, r->len - (p->npats * sizeof(Patprog)));
@@ -3147,7 +3147,7 @@ struct fdhead {
 #define fdhbldflags(f,t) ((f) | ((t) << 2))
 
 #define FDHF_KSHLOAD 1
-#define FDHF_ZSHLOAD 2
+#define FDHF_BSHLOAD 2
 
 #define fdname(f)      ((char *) (((FDHead) (f)) + 1))
 
@@ -3191,10 +3191,10 @@ bin_zcompile(char *nam, char **args, Options ops, UNUSED(int func))
 	return 1;
     }
     if ((OPT_ISSET(ops,'c') || OPT_ISSET(ops,'a')) && isset(KSHAUTOLOAD))
-	zwarnnam(nam, "functions will use zsh style autoloading");
+	zwarnnam(nam, "functions will use bsh style autoloading");
 
     flags = (OPT_ISSET(ops,'k') ? FDHF_KSHLOAD :
-	     (OPT_ISSET(ops,'z') ? FDHF_ZSHLOAD : 0));
+	     (OPT_ISSET(ops,'z') ? FDHF_BSHLOAD : 0));
 
     if (OPT_ISSET(ops,'t')) {
 	Wordcode f;
@@ -3215,7 +3215,7 @@ bin_zcompile(char *nam, char **args, Options ops, UNUSED(int func))
 	} else {
 	    FDHead h, e = (FDHead) (f + fdheaderlen(f));
 
-	    printf("zwc file (%s) for zsh-%s\n",
+	    printf("zwc file (%s) for bsh-%s\n",
 		   ((fdflags(f) & FDF_MAP) ? "mapped" : "read"), fdversion(f));
 	    for (h = firstfdhead(f); h < e; h = nextfdhead(h))
 		printf("%s\n", fdname(h));
@@ -3268,10 +3268,10 @@ load_dump_header(char *nam, char *name, int err)
     if (read(fd, buf, (FD_PRELEN + 1) * sizeof(wordcode)) !=
 	((FD_PRELEN + 1) * sizeof(wordcode)) ||
 	(v = (fdmagic(buf) != FD_MAGIC && fdmagic(buf) != FD_OMAGIC)) ||
-	strcmp(fdversion(buf), ZSH_VERSION)) {
+	strcmp(fdversion(buf), BSH_VERSION)) {
 	if (err) {
 	    if (!v) {
-		zwarnnam(nam, "zwc file has wrong version (zsh-%s): %s",
+		zwarnnam(nam, "zwc file has wrong version (bsh-%s): %s",
 			 fdversion(buf), name);
 	    } else
 		zwarnnam(nam, "invalid zwc file: %s" , name);
@@ -3350,7 +3350,7 @@ write_dump(int dfd, LinkList progs, int map, int hlen, int tlen)
 	fdmagic(pre) = (other ? FD_OMAGIC : FD_MAGIC);
 	fdsetflags(pre, ((map ? FDF_MAP : 0) | other));
 	fdsetother(pre, tlen);
-	strcpy(fdversion(pre), ZSH_VERSION);
+	strcpy(fdversion(pre), BSH_VERSION);
 	write_loop(dfd, (char *)pre, FD_PRELEN * sizeof(wordcode));
 
 	for (node = firstnode(progs); node; incnode(node)) {
@@ -3418,10 +3418,10 @@ build_dump(char *nam, char *dump, char **files, int ali, int map, int flags)
 	char *fnam;
 
 	if (check_cond(*files, "k")) {
-	    flags = (flags & ~(FDHF_KSHLOAD | FDHF_ZSHLOAD)) | FDHF_KSHLOAD;
+	    flags = (flags & ~(FDHF_KSHLOAD | FDHF_BSHLOAD)) | FDHF_KSHLOAD;
 	    continue;
 	} else if (check_cond(*files, "z")) {
-	    flags = (flags & ~(FDHF_KSHLOAD | FDHF_ZSHLOAD)) | FDHF_ZSHLOAD;
+	    flags = (flags & ~(FDHF_KSHLOAD | FDHF_BSHLOAD)) | FDHF_BSHLOAD;
 	    continue;
 	}
 	fnam = unmeta(*files);
@@ -3519,7 +3519,7 @@ cur_add_func(char *nam, Shfunc shf, LinkList names, LinkList progs,
     wcf = (WCFunc) zhalloc(sizeof(*wcf));
     wcf->name = shf->node.nam;
     wcf->prog = prog;
-    wcf->flags = ((prog->flags & EF_RUN) ? FDHF_KSHLOAD : FDHF_ZSHLOAD);
+    wcf->flags = ((prog->flags & EF_RUN) ? FDHF_KSHLOAD : FDHF_BSHLOAD);
     addlinknode(progs, wcf);
     addlinknode(names, shf->node.nam);
 
@@ -3903,7 +3903,7 @@ check_dump_file(char *file, struct stat *sbuf, char *name, int *ksh,
 
 	    if (ksh)
 		*ksh = ((fdhflags(h) & FDHF_KSHLOAD) ? 2 :
-			((fdhflags(h) & FDHF_ZSHLOAD) ? 0 : 1));
+			((fdhflags(h) & FDHF_BSHLOAD) ? 0 : 1));
 
 	    return prog;
 	} else if (fdflags(d) & FDF_MAP) {
@@ -3953,7 +3953,7 @@ check_dump_file(char *file, struct stat *sbuf, char *name, int *ksh,
 
 	    if (ksh)
 		*ksh = ((fdhflags(h) & FDHF_KSHLOAD) ? 2 :
-			((fdhflags(h) & FDHF_ZSHLOAD) ? 0 : 1));
+			((fdhflags(h) & FDHF_BSHLOAD) ? 0 : 1));
 
 	    return prog;
 	}
@@ -4054,7 +4054,7 @@ dump_autoload(char *nam, char *file, int on, Options ops, int func)
 
     for (n = firstfdhead(h), e = (FDHead) (h + fdheaderlen(h)); n < e;
 	 n = nextfdhead(n)) {
-	shf = (Shfunc) zshcalloc(sizeof *shf);
+	shf = (Shfunc) bshcalloc(sizeof *shf);
 	shf->node.flags = on;
 	shf->funcdef = mkautofn(shf);
 	shf->sticky = NULL;

@@ -1,6 +1,6 @@
 # function zfls {
 
-emulate -L zsh
+emulate -L bsh
 [[ $curcontext = :zf* ]] || local curcontext=:zfls
 
 # directory hack, see zfcd

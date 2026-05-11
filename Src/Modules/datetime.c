@@ -1,7 +1,7 @@
 /*
  * datetime.c - parameter and command interface to date and time utilities
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2002 Peter Stephenson, Clint Adams
  * All rights reserved.

@@ -8,7 +8,7 @@
 #   bindkey -M viopp ic select-in-camel
 #   zstyle ':zle:*-camel' word-style normal-subword
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local curcontext=:zle:$WIDGET

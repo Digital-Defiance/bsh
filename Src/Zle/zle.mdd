@@ -1,4 +1,4 @@
-name=zsh/zle
+name=bsh/zle
 link=either
 load=yes
 functions='Functions/Zle/*'

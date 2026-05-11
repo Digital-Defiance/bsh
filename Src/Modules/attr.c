@@ -1,7 +1,7 @@
 /*
  * attr.c - extended attributes (xattr) manipulation
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2009 Mikael Magnusson
  * All rights reserved.
@@ -193,7 +193,7 @@ bin_listattr(char *nam, char **argv, Options ops, UNUSED(int func))
                     arrlen++;
                     p += strlen(p) + 1;
                 }
-                arrptr = array = (char **)zshcalloc((arrlen+1) * sizeof(char *));
+                arrptr = array = (char **)bshcalloc((arrlen+1) * sizeof(char *));
                 p = value;
                 while (p < &value[list_len]) {
                     *arrptr++ = metafy(p, -1, META_DUP);

@@ -30,7 +30,7 @@
 "   comment(foo)
 "   example(print *.c+LPAR()#q:s/#%+LPAR()#b+RPAR()s+LPAR()*+RPAR().c/'S${match[1]}.C'/+RPAR())
 "   example(zargs -- **/*(.) -- ls -l)
-"   ifzman(zmanref(zshmisc))ifnzman(noderef(Redirection))
+"   ifzman(zmanref(bshmisc))ifnzman(noderef(Redirection))
 "   LPAR()foo 42 foo+RPAR()
 "   chapter(foo (foo) foo)
 "   chapter(foo (foo (foo) foo) foo) bar

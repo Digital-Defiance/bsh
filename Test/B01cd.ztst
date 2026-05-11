@@ -19,8 +19,8 @@
 # where there are no such tags.  Also note that file descriptor 9
 # is reserved for input from the test script, and file descriptor 8
 # preserves the original stdout.  Option settings are preserved between the
-# execution of different code chunks; initially, all standard zsh options
-# (the effect of `emulate -R zsh') are set.
+# execution of different code chunks; initially, all standard bsh options
+# (the effect of `emulate -R bsh') are set.
 
 %prep
 # This optional section prepares the test, creating directories and files
@@ -141,11 +141,11 @@ F:something is broken.  But you already knew that.
 0:
 ?(eval):cd:3: not a directory: link_to_nonexistent
 
- (unset HOME; ARGV0=sh $ZTST_testdir/../Src/zsh -c cd)
+ (unset HOME; ARGV0=sh $ZTST_testdir/../Src/bsh -c cd)
 1:Implicit cd with unset HOME.
-?zsh:cd:1: HOME not set
+?bsh:cd:1: HOME not set
 
- $ZTST_testdir/../Src/zsh -fc 'cd -P ////dev && pwd'
+ $ZTST_testdir/../Src/bsh -fc 'cd -P ////dev && pwd'
 -f:(workers/45367) cd -P squashes multiple leading slashes
 >/dev  
 

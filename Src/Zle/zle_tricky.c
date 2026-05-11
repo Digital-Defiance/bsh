@@ -1,7 +1,7 @@
 /*
  * zle_tricky.c - expansion and completion
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -32,7 +32,7 @@
 
 /*
  * The main part of ZLE maintains the line being edited as binary data,
- * but here, where we interface with the lexer and other bits of zsh, we
+ * but here, where we interface with the lexer and other bits of bsh, we
  * need the line metafied and, if necessary, converted from wide
  * characters into multibyte strings.  On entry to the
  * expansion/completion system, we metafy the line from zleline into
@@ -410,7 +410,7 @@ mod_export int insubscr;
 mod_export Param keypm;
 
 /*
- * instring takes one of the QT_* values defined in zsh.h.
+ * instring takes one of the QT_* values defined in bsh.h.
  * It's never QT_TICK, instead we use inbackt.
  * TODO: can we combine the two?
  */
@@ -615,8 +615,8 @@ docomplete(int lst)
      * type of completion. Load it if it hasn't been loaded already and
      * no completion widgets are defined. */
 
-    if (!module_loaded("zsh/compctl") && !hascompwidgets)
-	(void)load_module("zsh/compctl", NULL, 0);
+    if (!module_loaded("bsh/compctl") && !hascompwidgets)
+	(void)load_module("bsh/compctl", NULL, 0);
 
     if (runhookdef(BEFORECOMPLETEHOOK, (void *) &lst)) {
 	active = 0;
@@ -1281,7 +1281,7 @@ get_comp_string(void)
 	     * Special case: we might reach a new command (incmdpos set)
 	     * if we've already found the string we're completing (tt set)
 	     * without hitting one of the above if we're using one of
-	     * the special zsh forms of delimiting for conditions and
+	     * the special bsh forms of delimiting for conditions and
 	     * loops that I really loathe having to support.
 	     */
 	    (tt && incmdpos)) {
@@ -2711,9 +2711,9 @@ listlist(LinkList l)
 
 	zsetterm();
 	l = (num > 0 ?
-	     fprintf(shout, "zsh: do you wish to see all %d possibilities (%d lines)? ",
+	     fprintf(shout, "bsh: do you wish to see all %d possibilities (%d lines)? ",
 		     num, nlines) :
-	     fprintf(shout, "zsh: do you wish to see all %d lines? ", nlines));
+	     fprintf(shout, "bsh: do you wish to see all %d lines? ", nlines));
 	qup = ((l + zterm_columns - 1) / zterm_columns) - 1;
 	fflush(shout);
 	if (!getzlequery()) {

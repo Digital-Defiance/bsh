@@ -1,7 +1,7 @@
 /*
  * params.c - parameters
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,20 +27,20 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "params.pro"
 
 #include "version.h"
 #ifdef CUSTOM_PATCHLEVEL
-#define ZSH_PATCHLEVEL	CUSTOM_PATCHLEVEL
+#define BSH_PATCHLEVEL	CUSTOM_PATCHLEVEL
 #else
 #include "patchlevel.h"
 
 #include <math.h>
 
 /* If removed from the ChangeLog for some reason */
-#ifndef ZSH_PATCHLEVEL
-#define ZSH_PATCHLEVEL "unknown"
+#ifndef BSH_PATCHLEVEL
+#define BSH_PATCHLEVEL "unknown"
 #endif
 #endif
 
@@ -62,7 +62,7 @@ char **pparams,		/* $argv        */
      **mailpath,	/* $mailpath    */
      **manpath,		/* $manpath     */
      **psvar,		/* $psvar       */
-     **zsh_eval_context; /* $zsh_eval_context */
+     **bsh_eval_context; /* $bsh_eval_context */
 /**/
 mod_export
 char **path,		/* $path        */
@@ -84,8 +84,8 @@ char *argzero,		/* $0           */
      *sprompt,		/* $SPROMPT     */
      *wordchars,	/* $WORDCHARS   */
      *zoptarg,		/* $OPTARG      */
-     *zsh_terminfo,     /* $TERMINFO    */
-     *zsh_terminfodirs; /* $TERMINFO_DIRS */
+     *bsh_terminfo,     /* $TERMINFO    */
+     *bsh_terminfodirs; /* $TERMINFO_DIRS */
 /**/
 mod_export
 char *home,		/* $HOME        */
@@ -105,12 +105,12 @@ mod_export zlong
      zterm_lines,	/* $LINES       */
      rprompt_indent,	/* $ZLE_RPROMPT_INDENT */
      ppid,		/* $PPID        */
-     zsh_subshell;	/* $ZSH_SUBSHELL */
+     bsh_subshell;	/* $BSH_SUBSHELL */
 
 /* $FUNCNEST    */
 /**/
 mod_export
-zlong zsh_funcnest =
+zlong bsh_funcnest =
 #ifdef MAX_FUNCTION_DEPTH
     MAX_FUNCTION_DEPTH
 #else
@@ -215,6 +215,10 @@ static const struct gsu_integer intseconds_gsu =
 { intsecondsgetfn, intsecondssetfn, stdunsetfn };
 static const struct gsu_float floatseconds_gsu =
 { floatsecondsgetfn, floatsecondssetfn, stdunsetfn };
+static const struct gsu_float millidays_gsu =
+{ millidaysgetfn, millidayssetfn, stdunsetfn };
+static const struct gsu_float brightdate_gsu =
+{ brightdategetfn, nullfloatsetfn, stdunsetfn };
 static const struct gsu_integer uid_gsu =
 { uidgetfn, uidsetfn, stdunsetfn };
 static const struct gsu_integer euid_gsu =
@@ -278,7 +282,7 @@ typedef struct param initparam;
 typedef struct iparam {
     struct hashnode *next;
     char *nam;			/* hash data                             */
-    int flags;			/* PM_* flags (defined in zsh.h)         */
+    int flags;			/* PM_* flags (defined in bsh.h)         */
     void *value;
     void *gsu;			/* get/set/unset methods */
     int base;			/* output base                           */
@@ -348,7 +352,7 @@ IPDEF4("?", &lastval),
 IPDEF4("HISTCMD", &curhist),
 IPDEF4("LINENO", &lineno),
 IPDEF4("PPID", &ppid),
-IPDEF4("ZSH_SUBSHELL", &zsh_subshell),
+IPDEF4("BSH_SUBSHELL", &bsh_subshell),
 
 #define IPDEF5(A,B,F) {{NULL,A,PM_INTEGER|PM_SPECIAL},BR((void *)B),GSU(F),10,0,NULL,NULL,NULL,0}
 #define IPDEF5U(A,B,F) {{NULL,A,PM_INTEGER|PM_SPECIAL|PM_UNSET},BR((void *)B),GSU(F),10,0,NULL,NULL,NULL,0}
@@ -356,7 +360,7 @@ IPDEF5("COLUMNS", &zterm_columns, zlevar_gsu),
 IPDEF5("LINES", &zterm_lines, zlevar_gsu),
 IPDEF5U("ZLE_RPROMPT_INDENT", &rprompt_indent, rprompt_indent_gsu),
 IPDEF5("SHLVL", &shlvl, varinteger_gsu),
-IPDEF5("FUNCNEST", &zsh_funcnest, varinteger_gsu),
+IPDEF5("FUNCNEST", &bsh_funcnest, varinteger_gsu),
 
 /* Don't import internal integer status variables. */
 #define IPDEF6(A,B,F) {{NULL,A,PM_INTEGER|PM_SPECIAL|PM_DONTIMPORT},BR((void *)B),GSU(F),10,0,NULL,NULL,NULL,0}
@@ -398,7 +402,7 @@ IPDEF8("FPATH", &fpath, "fpath", PM_TIED),
 IPDEF8("MAILPATH", &mailpath, "mailpath", PM_TIED),
 IPDEF8("PATH", &path, "path", PM_TIED),
 IPDEF8("PSVAR", &psvar, "psvar", PM_TIED),
-IPDEF8("ZSH_EVAL_CONTEXT", &zsh_eval_context, "zsh_eval_context", PM_READONLY_SPECIAL|PM_TIED),
+IPDEF8("BSH_EVAL_CONTEXT", &bsh_eval_context, "bsh_eval_context", PM_READONLY_SPECIAL|PM_TIED),
 
 /* MODULE_PATH is not imported for security reasons */
 IPDEF8("MODULE_PATH", &module_path, "module_path", PM_DONTIMPORT|PM_TIED),
@@ -428,14 +432,19 @@ IPDEF9("mailpath", &mailpath, "MAILPATH", PM_TIED),
 IPDEF9("manpath", &manpath, "MANPATH", PM_TIED),
 IPDEF9("psvar", &psvar, "PSVAR", PM_TIED),
 
-IPDEF9("zsh_eval_context", &zsh_eval_context, "ZSH_EVAL_CONTEXT", PM_TIED|PM_READONLY_SPECIAL),
+IPDEF9("bsh_eval_context", &bsh_eval_context, "BSH_EVAL_CONTEXT", PM_TIED|PM_READONLY_SPECIAL),
 
 IPDEF9("module_path", &module_path, "MODULE_PATH", PM_TIED),
 IPDEF9("path", &path, "PATH", PM_TIED),
 
-/* These are known to zsh alone. */
+/* These are known to bsh alone. */
 
 IPDEF10("pipestatus", pipestatus_gsu),
+
+/* BrightDate time parameters. */
+#define IPDEF_FLOAT(A,B,C) {{NULL,A,PM_FFLOAT|PM_SPECIAL|C},BR(NULL),GSU(B),0,0,NULL,NULL,NULL,0}
+IPDEF_FLOAT("MILLIDAYS", millidays_gsu, 0),
+IPDEF_FLOAT("BRIGHTDATE", brightdate_gsu, PM_READONLY_SPECIAL),
 
 {{NULL,NULL,0},BR(NULL),NULL_GSU,0,0,NULL,NULL,NULL,0},
 };
@@ -451,7 +460,7 @@ IPDEF8("FPATH", &fpath, NULL, 0),
 IPDEF8("MAILPATH", &mailpath, NULL, 0),
 IPDEF8("PATH", &path, NULL, 0),
 IPDEF8("PSVAR", &psvar, NULL, 0),
-IPDEF8("ZSH_EVAL_CONTEXT", &zsh_eval_context, NULL, PM_READONLY_SPECIAL),
+IPDEF8("BSH_EVAL_CONTEXT", &bsh_eval_context, NULL, PM_READONLY_SPECIAL),
 
 /* MODULE_PATH is not imported for security reasons */
 IPDEF8("MODULE_PATH", &module_path, NULL, PM_DONTIMPORT),
@@ -585,7 +594,7 @@ scancopyparams(HashNode hn, UNUSED(int flags))
 {
     /* Going into a real parameter, so always use permanent storage */
     Param pm = (Param)hn;
-    Param tpm = (Param) zshcalloc(sizeof *tpm);
+    Param tpm = (Param) bshcalloc(sizeof *tpm);
     tpm->node.nam = ztrdup(pm->node.nam);
     copyparam(tpm, pm, 0);
     addhashnode(outtable, tpm->node.nam, tpm);
@@ -868,7 +877,8 @@ createparamtable(void)
      * useful.
      */
     setsparam("TMPPREFIX", ztrdup_metafy(DEFAULT_TMPPREFIX));
-    setsparam("TIMEFMT", ztrdup_metafy(DEFAULT_TIMEFMT));
+    setsparam("TIMEFMT", ztrdup_metafy(
+	EMULATION(EMULATE_BSH) ? BSH_DEFAULT_TIMEFMT : DEFAULT_TIMEFMT));
 
     hostnam = (char *)zalloc(256);
     gethostname(hostnam, 256);
@@ -936,7 +946,7 @@ createparamtable(void)
      * (see setupvals()).
      */
     pm = (Param) paramtab->getnode(paramtab, "HOME");
-    if (EMULATION(EMULATE_ZSH))
+    if (EMULATION(EMULATE_BSH))
     {
 	pm->node.flags &= ~PM_UNSET;
 	if (!(pm->node.flags & PM_EXPORTED))
@@ -968,9 +978,9 @@ createparamtable(void)
     setsparam("OSTYPE", ztrdup_metafy(OSTYPE));
     setsparam("TTY", ztrdup_metafy(ttystrname));
     setsparam("VENDOR", ztrdup_metafy(VENDOR));
-    setsparam("ZSH_ARGZERO", ztrdup(posixzero));
-    setsparam("ZSH_VERSION", ztrdup_metafy(ZSH_VERSION));
-    setsparam("ZSH_PATCHLEVEL", ztrdup_metafy(ZSH_PATCHLEVEL));
+    setsparam("BSH_ARGZERO", ztrdup(posixzero));
+    setsparam("BSH_VERSION", ztrdup_metafy(BSH_VERSION));
+    setsparam("BSH_PATCHLEVEL", ztrdup_metafy(BSH_PATCHLEVEL));
     setaparam("signals", sigptr = zalloc((TRAPCOUNT + 1) * sizeof(char *)));
     t = sigs;
 #if defined(SIGRTMIN) && defined(SIGRTMAX)
@@ -1133,7 +1143,7 @@ createparam(char *name, int flags)
 	    pm->base = pm->width = 0;
 	    oldpm = pm->old;
 	} else {
-	    pm = (Param) zshcalloc(sizeof *pm);
+	    pm = (Param) bshcalloc(sizeof *pm);
 	    if ((pm->old = oldpm)) {
 		/*
 		 * needed to avoid freeing oldpm, but we do take it
@@ -1172,7 +1182,7 @@ shempty(void)
  *
  * This is for hashes added internally --- it's not possible to add
  * special hashes from shell commands.  It's currently used
- * - by addparamdef() for special parameters in the zsh/parameter
+ * - by addparamdef() for special parameters in the bsh/parameter
  *   module
  * - by ztie for special parameters tied to databases.
  */
@@ -3486,7 +3496,7 @@ assignaparam(char *s, char **val, int flags)
 		if (nextind > maxlen)
 		    maxlen = nextind;
 	    }
-	    fullval = zshcalloc((maxlen+1) * sizeof(char *));
+	    fullval = bshcalloc((maxlen+1) * sizeof(char *));
 	    if (!fullval) {
 		zerr("array too large");
 		freearray(val);
@@ -4612,6 +4622,49 @@ floatsecondssetfn(UNUSED(Param pm), double x)
     shtimer.tv_nsec = now.tv_nsec - (zlong)((x - (zlong)x) * 1000000000.0);
 }
 
+/* $MILLIDAYS: elapsed time since shell start in millidays (seconds / 86.4) */
+
+extern double bsh_brightdate_now(void);
+
+/**/
+double
+millidaysgetfn(UNUSED(Param pm))
+{
+    struct timespec now;
+    double secs;
+
+    zgettime_monotonic_if_available(&now);
+    secs = (double)(now.tv_sec - shtimer.tv_sec) +
+	(double)(now.tv_nsec - shtimer.tv_nsec) / 1000000000.0;
+    return secs / 86.4;
+}
+
+/**/
+void
+millidayssetfn(UNUSED(Param pm), double x)
+{
+    struct timespec now;
+    double secs = x * 86.4;
+
+    zgettime_monotonic_if_available(&now);
+    shtimer.tv_sec = now.tv_sec - (zlong)secs;
+    shtimer.tv_nsec = now.tv_nsec - (zlong)((secs - (zlong)secs) * 1000000000.0);
+}
+
+/* $BRIGHTDATE: current BrightDate decimal value (read-only) */
+
+/**/
+double
+brightdategetfn(UNUSED(Param pm))
+{
+    return bsh_brightdate_now();
+}
+
+/**/
+mod_export void
+nullfloatsetfn(UNUSED(Param pm), UNUSED(double x))
+{}
+
 /**/
 double
 getrawseconds(void)
@@ -5197,7 +5250,7 @@ termsetfn(UNUSED(Param pm), char *x)
 char *
 terminfogetfn(UNUSED(Param pm))
 {
-    return zsh_terminfo ? zsh_terminfo : dupstring("");
+    return bsh_terminfo ? bsh_terminfo : dupstring("");
 }
 
 /* Function to set value of special parameter `TERMINFO' */
@@ -5206,8 +5259,8 @@ terminfogetfn(UNUSED(Param pm))
 void
 terminfosetfn(Param pm, char *x)
 {
-    zsfree(zsh_terminfo);
-    zsh_terminfo = x;
+    zsfree(bsh_terminfo);
+    bsh_terminfo = x;
 
     /*
      * terminfo relies on the value being exported before
@@ -5225,7 +5278,7 @@ terminfosetfn(Param pm, char *x)
 char *
 terminfodirsgetfn(UNUSED(Param pm))
 {
-    return zsh_terminfodirs ? zsh_terminfodirs : dupstring("");
+    return bsh_terminfodirs ? bsh_terminfodirs : dupstring("");
 }
 
 /* Function to set value of special parameter `TERMINFO_DIRS' */
@@ -5234,8 +5287,8 @@ terminfodirsgetfn(UNUSED(Param pm))
 void
 terminfodirssetfn(Param pm, char *x)
 {
-    zsfree(zsh_terminfodirs);
-    zsh_terminfodirs = x;
+    zsfree(bsh_terminfodirs);
+    bsh_terminfodirs = x;
 
     /*
      * terminfo relies on the value being exported before
@@ -6052,7 +6105,7 @@ printparamvalue(Param p, int printflags)
 	break;
     case PM_INTEGER:
 	/* integer */
-#ifdef ZSH_64_BIT_TYPE
+#ifdef BSH_64_BIT_TYPE
 	fputs(output64(p->gsu.i->getfn(p)), stdout);
 #else
 	printf("%ld", p->gsu.i->getfn(p));
@@ -6165,7 +6218,7 @@ printparamnode(HashNode hn, int printflags)
 		return;
 	}
 	/*
-	 * The zsh variants of export -p/readonly -p also report other
+	 * The bsh variants of export -p/readonly -p also report other
 	 * flags to indicate other attributes or scope. The POSIX variants
 	 * don't.
 	 */

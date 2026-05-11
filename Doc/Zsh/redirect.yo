@@ -152,7 +152,7 @@ with the terminal (assuming file descriptor 1 had been)
 and then file descriptor 1 would be associated with file var(fname).
 
 The `tt(|&)' command separator described in
-sectref(Simple Commands & Pipelines)(zshmisc)
+sectref(Simple Commands & Pipelines)(bshmisc)
 is a shorthand for `tt(2>&1 |)'.
 
 The various forms of process substitution, `tt(<LPAR())var(list)tt(RPAR())',
@@ -160,7 +160,7 @@ and `tt(=LPAR())var(list)tt(RPAR())' for input and
 `tt(>LPAR())var(list)tt(RPAR())' for output, are often used together with
 redirection.  For example, if var(word) in an output redirection is of the
 form `tt(>LPAR())var(list)tt(RPAR())' then the output is piped to the
-command represented by var(list).  See sectref(Process Substitution)(zshexpn).
+command represented by var(list).  See sectref(Process Substitution)(bshexpn).
 sect(Opening file descriptors using parameters)
 cindex(file descriptors, use with parameters)
 cindex(parameters, for using file descriptors)
@@ -329,7 +329,7 @@ written.
 
 sect(Redirections with no command)
 When a simple command consists of one or more redirection operators
-and zero or more parameter assignments, but no command name, zsh can
+and zero or more parameter assignments, but no command name, bsh can
 behave in several ways.
 
 vindex(NULLCMD, use of)

@@ -1,7 +1,7 @@
 /*
  * mathfunc.c - basic mathematical functions for use in math evaluations
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Peter Stephenson
  * All rights reserved.

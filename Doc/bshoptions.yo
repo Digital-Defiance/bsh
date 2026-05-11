@@ -1,0 +1,3 @@
+manpage(BSHOPTIONS)(1)(date())(bsh version())
+manpagename(bshoptions)(bsh options)
+includefile(Zsh/options.yo)

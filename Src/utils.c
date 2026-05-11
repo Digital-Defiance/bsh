@@ -1,7 +1,7 @@
 /*
  * utils.c - miscellaneous utilities
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "utils.pro"
 
 /* name of script being sourced */
@@ -160,7 +160,7 @@ zwarning(const char *cmd, const char *fmt, va_list ap)
 	 * program/script is running.  It's also set in shell functions,
 	 * so test locallevel, too.
 	 */
-	nicezputs((isset(SHINSTDIN) && !locallevel) ? "zsh" : prefix, stderr);
+	nicezputs((isset(SHINSTDIN) && !locallevel) ? "bsh" : prefix, stderr);
 	fputc((unsigned char)':', stderr);
     }
 
@@ -260,7 +260,7 @@ VA_DCL
 
     VA_START(ap, message);
     VA_GET_ARG(ap, message, const char *);
-    if ((filename = getsparam_u("ZSH_DEBUG_LOG")) != NULL &&
+    if ((filename = getsparam_u("BSH_DEBUG_LOG")) != NULL &&
 	(file = fopen(filename, "a")) != NULL) {
 	zerrmsg(file, message, ap);
 	fclose(file);
@@ -449,7 +449,7 @@ putshout(int c)
  * literal characters.
  *
  * Note that the returned string is metafied, so that it must be
- * treated like any other zsh internal string (and not, for example,
+ * treated like any other bsh internal string (and not, for example,
  * output directly).
  *
  * This function is used even if MULTIBYTE_SUPPORT is defined: we
@@ -840,7 +840,7 @@ slashsplit(char *s)
     int t0;
 
     if (!*s)
-	return (char **) zshcalloc(sizeof(char *));
+	return (char **) bshcalloc(sizeof(char *));
 
     for (t = s, t0 = 0; *t; t++)
 	if (*t == '/')
@@ -1166,7 +1166,7 @@ finddir(char *s)
     finddir_scan(&homenode.node, 0);
     scanhashtable(nameddirtab, 0, 0, 0, finddir_scan, 0);
 
-    ares = subst_string_by_hook("zsh_directory_name", "d", finddir_full);
+    ares = subst_string_by_hook("bsh_directory_name", "d", finddir_full);
     if (ares && arrlen_ge(ares, 2) &&
 	(len = (int)zstrtol(ares[1], NULL, 10)) > finddir_best) {
 	/* better duplicate this string since it's come from REPLY */
@@ -1219,7 +1219,7 @@ adduserdir(char *s, char *t, int flags, int always)
     }
 
     /* add the name */
-    nd = (Nameddir) zshcalloc(sizeof *nd);
+    nd = (Nameddir) bshcalloc(sizeof *nd);
     nd->node.flags = flags;
     eptr = t + strlen(t);
     while (eptr > t && eptr[-1] == '/')
@@ -1968,7 +1968,7 @@ adjustwinsize(int from)
 static void
 check_fd_table(int fd)
 {
-    if (fd <= max_zsh_fd)
+    if (fd <= max_bsh_fd)
 	return;
 
     if (fd >= fdtable_size) {
@@ -1979,7 +1979,7 @@ check_fd_table(int fd)
 	memset(fdtable + old_size, 0,
 	       (fdtable_size - old_size) * sizeof(*fdtable));
     }
-    max_zsh_fd = fd;
+    max_bsh_fd = fd;
 }
 
 /* Move a fd to a place >= 10 and mark the new fd in fdtable.  If the fd *
@@ -2070,7 +2070,7 @@ redup(int x, int y)
 /*
  * Add an fd opened ithin a module.
  *
- * fdt is the type of the fd; see the FDT_ definitions in zsh.h.
+ * fdt is the type of the fd; see the FDT_ definitions in bsh.h.
  * The most likely failures are:
  *
  * FDT_EXTERNAL: the fd can be used within the shell for normal I/O but
@@ -2129,14 +2129,14 @@ zclose(int fd)
     if (fd >= 0) {
 	/*
 	 * Careful: we allow closing of arbitrary fd's, beyond
-	 * max_zsh_fd.  In that case we don't try anything clever.
+	 * max_bsh_fd.  In that case we don't try anything clever.
 	 */
-	if (fd <= max_zsh_fd) {
+	if (fd <= max_bsh_fd) {
 	    if (fdtable[fd] == FDT_FLOCK)
 		fdtable_flocks--;
 	    fdtable[fd] = FDT_UNUSED;
-	    while (max_zsh_fd > 0 && fdtable[max_zsh_fd] == FDT_UNUSED)
-		max_zsh_fd--;
+	    while (max_bsh_fd > 0 && fdtable[max_bsh_fd] == FDT_UNUSED)
+		max_bsh_fd--;
 	    if (fd == coprocin)
 		coprocin = -1;
 	    if (fd == coprocout)
@@ -2155,7 +2155,7 @@ zclose(int fd)
 mod_export int
 zcloselockfd(int fd)
 {
-    if (fd > max_zsh_fd)
+    if (fd > max_bsh_fd)
 	return -1;
     if (fdtable[fd] != FDT_FLOCK && fdtable[fd] != FDT_FLOCK_EXEC)
 	return -1;
@@ -2192,7 +2192,7 @@ gettempname(const char *prefix, int use_heap)
     ret = (char *) _mktemp(ret);
 #elif HAVE_MKSTEMP && defined(DEBUG)
     {
-	/* zsh uses mktemp() safely (all callers use O_EXCL, and one of them
+	/* bsh uses mktemp() safely (all callers use O_EXCL, and one of them
 	 * uses mkfifo()/mknod(), as opposed to open()), but some compilers
 	 * warn about this anyway and give no way to disable the warning. To
 	 * appease them, use mkstemp() and then close the fd and unlink the
@@ -2429,7 +2429,7 @@ zstrtol(const char *s, char **t, int base)
     return zstrtol_underscore(s, t, base, 0);
 }
 
-/* Convert string to zlong (see zsh.h).  This function (without the z) *
+/* Convert string to zlong (see bsh.h).  This function (without the z) *
  * is contained in the ANSI standard C library, but a lot of them seem *
  * to be broken.                                                       */
 
@@ -2891,16 +2891,16 @@ checkrmall(char *s)
 	closedir(rmd);
     }
     if (count > max_count)
-	fprintf(shout, "zsh: sure you want to delete more than %d files in ",
+	fprintf(shout, "bsh: sure you want to delete more than %d files in ",
 		max_count);
     else if (count == 1)
-	fprintf(shout, "zsh: sure you want to delete the only file in ");
+	fprintf(shout, "bsh: sure you want to delete the only file in ");
     else if (count > 0)
-	fprintf(shout, "zsh: sure you want to delete all %d files in ",
+	fprintf(shout, "bsh: sure you want to delete all %d files in ",
 		count);
     else {
 	/* We don't know how many files the glob will expand to; see 41707. */
-	fprintf(shout, "zsh: sure you want to delete all the files in ");
+	fprintf(shout, "bsh: sure you want to delete all the files in ");
     }
     nicezputs(s, shout);
     if(isset(RMSTARWAIT)) {
@@ -3715,7 +3715,7 @@ spacesplit(char *s, int allownull, int heap, int quote)
     char *(*dup)(const char *) = (heap ? dupstring : ztrdup);
 
     /* ### TODO: s/calloc/alloc/ */
-    ptr = ret = (char **) (heap ? hcalloc(l) : zshcalloc(l));
+    ptr = ret = (char **) (heap ? hcalloc(l) : bshcalloc(l));
 
     if (quote) {
 	/*
@@ -4921,7 +4921,7 @@ metafy(char *buf, int len, int heap)
  * Duplicate a string, metafying it as we go.
  *
  * Typically, this is used only for strings imported from outside
- * zsh, as strings internally are either already metafied or passed
+ * bsh, as strings internally are either already metafied or passed
  * around with an associated length.
  */
 /**/
@@ -4983,7 +4983,7 @@ metalen(const char *s, int len)
 }
 
 /*
- * This function converts a zsh internal string to a form which can be
+ * This function converts a bsh internal string to a form which can be
  * passed to a system call as a filename.  The result is stored in a
  * single static area, sized to fit.  If there is no Meta character
  * the original string is returned.
@@ -6126,7 +6126,7 @@ addunprintable(char *v, const char *u, const char *uend)
 /*
  * Quote the string s and return the result as a string from the heap.
  *
- * The last argument is a QT_ value defined in zsh.h other than QT_NONE.
+ * The last argument is a QT_ value defined in bsh.h other than QT_NONE.
  *
  * Most quote styles other than backslash assume the quotes are to
  * be added outside quotestring().  QT_SINGLE_OPTIONAL is different:
@@ -6194,7 +6194,7 @@ quotestring(const char *s, int instring)
     if (!*s && shownull)
 	alloclen += 2;	/* for '' */
 
-    quotestart = v = buf = zshcalloc(alloclen);
+    quotestart = v = buf = bshcalloc(alloclen);
 
     DPUTS(instring < QT_BACKSLASH || instring == QT_BACKTICK ||
 	  instring > QT_BACKSLASH_PATTERN,
@@ -6880,7 +6880,7 @@ ucs4tomb(unsigned int wval, char *buf)
  * in bytes (i.e. the same as given by a raw pointer difference), not
  * characters, which may occupy multiple bytes.
  *
- * how is a set of bits from the GETKEY_ values defined in zsh.h;
+ * how is a set of bits from the GETKEY_ values defined in bsh.h;
  * not all combinations of bits are useful.  Callers will typically
  * use one of the GETKEYS_ values which define sets of bits.
  * Note, for example that:

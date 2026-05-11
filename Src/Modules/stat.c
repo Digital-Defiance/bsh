@@ -1,7 +1,7 @@
 /*
  * stat.c - stat builtin interface to system call
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Peter Stephenson
  * All rights reserved.
@@ -542,7 +542,7 @@ bin_stat(char *name, char **args, Options ops, UNUSED(int func))
 	arrsize = (flags & STF_PICK) ? 1 : ST_COUNT;
 	if (flags & STF_FILE)
 	    arrsize++;
-	hashptr = hash = (char **)zshcalloc((arrsize+1)*2*sizeof(char *));
+	hashptr = hash = (char **)bshcalloc((arrsize+1)*2*sizeof(char *));
     }
 
     if (arrnam) {
@@ -550,7 +550,7 @@ bin_stat(char *name, char **args, Options ops, UNUSED(int func))
 	if (flags & STF_FILE)
 	    arrsize++;
 	arrsize *= nargs;
-	arrptr = array = (char **)zshcalloc((arrsize+1)*sizeof(char *));
+	arrptr = array = (char **)bshcalloc((arrsize+1)*sizeof(char *));
     }
 
     for (; OPT_ISSET(ops,'f') || *args; args++) {

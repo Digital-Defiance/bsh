@@ -1,7 +1,7 @@
 /*
- * zprof.c - a shell function profiling module for zsh
+ * zprof.c - a shell function profiling module for bsh
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Sven Wischnowsky
  * All rights reserved.

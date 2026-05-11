@@ -1,9 +1,9 @@
 %prep
 
-# Test the use of styles, if the zsh/zutil module is available.
+# Test the use of styles, if the bsh/zutil module is available.
 
-  if ! zmodload zsh/zutil 2>/dev/null; then
-    ZTST_unimplemented="can't load the zsh/zutil module for testing"
+  if ! zmodload bsh/zutil 2>/dev/null; then
+    ZTST_unimplemented="can't load the bsh/zutil module for testing"
   fi
 
 %test

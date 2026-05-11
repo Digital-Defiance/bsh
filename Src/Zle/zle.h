@@ -1,7 +1,7 @@
 /*
  * zle.h - header file for line editor
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -539,20 +539,20 @@ typedef REFRESH_ELEMENT *REFRESH_STRING;
  */
 
 /* The start of the private range we use, for 256 characters */
-#define ZSH_INVALID_WCHAR_BASE	(0xe000U)
+#define BSH_INVALID_WCHAR_BASE	(0xe000U)
 /* Detect a wide character within our range */
-#define ZSH_INVALID_WCHAR_TEST(x)			\
-    ((unsigned)(x) >= ZSH_INVALID_WCHAR_BASE &&		\
-     (unsigned)(x) <= (ZSH_INVALID_WCHAR_BASE + 255u))
+#define BSH_INVALID_WCHAR_TEST(x)			\
+    ((unsigned)(x) >= BSH_INVALID_WCHAR_BASE &&		\
+     (unsigned)(x) <= (BSH_INVALID_WCHAR_BASE + 255u))
 /* Turn a wide character in that range back to single byte */
-#define ZSH_INVALID_WCHAR_TO_CHAR(x)			\
-    ((char)((unsigned)(x) - ZSH_INVALID_WCHAR_BASE))
+#define BSH_INVALID_WCHAR_TO_CHAR(x)			\
+    ((char)((unsigned)(x) - BSH_INVALID_WCHAR_BASE))
 /* Turn a wide character in that range to an integer */
-#define ZSH_INVALID_WCHAR_TO_INT(x)			\
-    ((int)((unsigned)(x) - ZSH_INVALID_WCHAR_BASE))
+#define BSH_INVALID_WCHAR_TO_INT(x)			\
+    ((int)((unsigned)(x) - BSH_INVALID_WCHAR_BASE))
 /* Turn a single byte character into a private wide character */
-#define ZSH_CHAR_TO_INVALID_WCHAR(x)			\
-    ((wchar_t)((unsigned char) x + ZSH_INVALID_WCHAR_BASE))
+#define BSH_CHAR_TO_INVALID_WCHAR(x)			\
+    ((wchar_t)((unsigned char) x + BSH_INVALID_WCHAR_BASE))
 #endif
 
 

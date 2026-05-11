@@ -20,7 +20,7 @@ parameter, which extends dynamically to any other functions called by
 the declaring function.  In most cases, local parameters take the
 place of any other parameter having the same name that was assigned or
 declared in an earlier function scope.
-(See sectref(Local Parameters)(zshparam).)
+(See sectref(Local Parameters)(bshparam).)
 
 A named parameter declared with the `tt(-n)' option to any of the
 `tt(typeset)' acts as a reference to another parameter, which may
@@ -84,7 +84,7 @@ autoload myfunc1 myfunc2 ...)
 
 The usual alias expansion during reading will be suppressed if the
 tt(autoload) builtin or its equivalent is given the option tt(-U). This is
-recommended for the use of functions supplied with the zsh distribution.
+recommended for the use of functions supplied with the bsh distribution.
 findex(zcompile, use of)
 Note that for functions precompiled with the tt(zcompile) builtin command
 the flag tt(-U) must be provided when the tt(.zwc) file is created, as the
@@ -118,7 +118,7 @@ as well, but those are neither loaded nor executed; a file found in this
 way is searched em(only) for the definition of var(function).
 )
 item(var(element)tt(/)var(function))(
-A file of zsh command text, taken to be the definition for var(function).
+A file of bsh command text, taken to be the definition for var(function).
 )
 enditem()
 
@@ -297,9 +297,9 @@ size-limited version of the command (with things like function bodies
 elided); the third argument contains the full text that is being
 executed.
 )
-findex(zshaddhistory)
-vindex(zshaddhistory_functions)
-item(tt(zshaddhistory))(
+findex(bshaddhistory)
+vindex(bshaddhistory_functions)
+item(tt(bshaddhistory))(
 cindex(history, hook when line is saved)
 Executed when a history line has been read interactively, but
 before it is executed.  The sole argument is the complete history
@@ -330,14 +330,14 @@ which is usually the correct behaviour.  Then it switches the history
 context so that the line will be written to a history file in the
 current directory.
 
-example(zshaddhistory+LPAR()RPAR() {
+example(bshaddhistory+LPAR()RPAR() {
   print -sr -- ${1%%$'\n'}
-  fc -p .zsh_local_history
+  fc -p .bsh_local_history
 })
 )
-findex(zshexit)
-vindex(zshexit_functions)
-item(tt(zshexit))(
+findex(bshexit)
+vindex(bshexit_functions)
+item(tt(bshexit))(
 Executed at the point where the main shell is about to exit normally.
 This is not called by exiting subshells, nor when the tt(exec)
 precommand modifier is used before an external command.  Also, unlike
@@ -385,7 +385,7 @@ item(tt(TRAPDEBUG))(
 If the option tt(DEBUG_BEFORE_CMD) is set (as it is by default), executed
 before each command; otherwise executed after each command.  See
 the description of the tt(trap) builtin in
-nmref(Shell Builtin Commands)(zshbuiltins)
+nmref(Shell Builtin Commands)(bshbuiltins)
 for details of additional features provided
 in debug traps.
 )
@@ -436,6 +436,6 @@ itemiz(The return status from function traps is special, whereas a return
 from a list trap causes the surrounding context to return with the given
 status.)
 itemiz(Function traps are not reset within subshells, in accordance with
-zsh behaviour; list traps are reset, in accordance with POSIX
+bsh behaviour; list traps are reset, in accordance with POSIX
 behaviour.)
 enditemize()

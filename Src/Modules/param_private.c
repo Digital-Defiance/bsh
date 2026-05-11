@@ -1,7 +1,7 @@
 /*
  * param_private.c - bindings for private parameter scopes
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2015 Barton E. Schaefer
  * All rights reserved.

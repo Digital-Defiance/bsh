@@ -1,8 +1,8 @@
-COMMENT(!MOD!zsh/parameter
+COMMENT(!MOD!bsh/parameter
 Access to internal hash tables via special associative arrays.
 !MOD!)
 cindex(parameters, special)
-The tt(zsh/parameter) module gives access to some of the internal hash
+The tt(bsh/parameter) module gives access to some of the internal hash
 tables used by the shell by defining some special parameters.
 
 startitem()
@@ -119,7 +119,7 @@ item(tt(parameters))(
 The keys in this associative array are the names of the parameters
 currently defined. The values are strings describing the type of the
 parameter, in the same format used by the tt(t) parameter flag, see
-subref(Parameter Expansion Flags)(zshexpn).
+subref(Parameter Expansion Flags)(bshexpn).
 The value may also be `tt(undefined)' indicating a parameter that
 may be autoloaded from a module but has not yet been referenced.
 When the key is the name of a named reference, the value is
@@ -237,7 +237,7 @@ or `var(name) tt(LPAR()RPAR())' started.  In the case of an autoloaded
 function  the line number is reported as zero.
 The format of each element is var(filename)tt(:)var(lineno).
 
-For functions autoloaded from a file in native zsh format, where only the
+For functions autoloaded from a file in native bsh format, where only the
 body of the function occurs in the file, or for files that have been
 executed by the tt(source) or `tt(.)' builtins, the trace information is
 shown as var(filename)tt(:)var(0), since the entire file is the
@@ -254,7 +254,7 @@ and (if tt(EVAL_LINENO) is set) tt(eval) commands. currently being
 executed. The first element is the name of the function using the
 parameter.
 
-The standard shell array tt(zsh_eval_context) can be used to
+The standard shell array tt(bsh_eval_context) can be used to
 determine the type of shell construct being executed at each depth:
 note, however, that is in the opposite order, with the most recent
 item last, and it is more detailed, for example including an

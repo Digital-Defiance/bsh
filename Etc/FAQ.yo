@@ -83,27 +83,27 @@ marks.  Other uses of quotation marks are input to the shell.)
 
 COMMENT(-- need to do this specially in text since it should go here --)
 whentxt(Contents:
-Chapter 1:  Introducing zsh and how to install it
+Chapter 1:  Introducing bsh and how to install it
 1.1. Sources of information
 1.2. What is it?
 1.3. What is it good at?
 1.4. On what machines will it run?  (Plus important compilation notes)
 1.5. What's the latest version?
 1.6. Where do I get it?
-1.7. I don't have root access: how do I make zsh my login shell?
+1.7. I don't have root access: how do I make bsh my login shell?
 
-Chapter 2:  How does zsh differ from...?
+Chapter 2:  How does bsh differ from...?
 2.1. sh and ksh?
 2.2. csh?
 2.3. Why do my csh aliases not work?  (Plus other alias pitfalls.)
 2.4. tcsh?
 2.5. bash?
-2.6. Shouldn't zsh be more/less like ksh/(t)csh?
-2.7. What is zsh's support for Unicode/UTF-8?
-2.8. Why does my bash script report an error when I run it under zsh?
+2.6. Shouldn't bsh be more/less like ksh/(t)csh?
+2.7. What is bsh's support for Unicode/UTF-8?
+2.8. Why does my bash script report an error when I run it under bsh?
 2.9. What is a `namespace' anyway?
 2.10. What about named references?
-2.11. What is zsh's support for non-forking command substitution?
+2.11. What is bsh's support for non-forking command substitution?
 2.12. Comparisons of forking and non-forking command substitution
 
 Chapter 3:  How to get various things to work
@@ -116,7 +116,7 @@ Chapter 3:  How to get various things to work
 3.7. How do I make the completion list use eight bit characters?
 3.8. Why do the cursor (arrow) keys not work?  (And other terminal oddities.)
 3.9. Why does my terminal act funny in some way?
-3.10. Why does zsh not work in an Emacs shell mode any more?
+3.10. Why does bsh not work in an Emacs shell mode any more?
 3.11. Why do my autoloaded functions not autoload [the first time]?
 3.12. How does base arithmetic work?
 3.13. How do I get a newline in my prompt?
@@ -124,7 +124,7 @@ Chapter 3:  How to get various things to work
 3.15. Why can't I bind \C-s and \C-q any more?
 3.16. How do I execute command `foo' within function `foo'?
 3.17. Why do history substitutions with single bangs do something funny?
-3.18. Why does zsh kill off all my background jobs when I logout?
+3.18. Why does bsh kill off all my background jobs when I logout?
 3.19. How do I list all my history entries?
 3.20. How does the alternative loop syntax, e.g. mytt(while {...} {...}) work?
 3.21. Why is my history not being saved?
@@ -142,7 +142,7 @@ Chapter 3:  How to get various things to work
 Chapter 4:  The mysteries of completion
 4.1. What is completion?
 4.2. What sorts of things can be completed?
-4.3. How does zsh deal with ambiguous completions?
+4.3. How does bsh deal with ambiguous completions?
 4.4. How do I complete in the middle of words / just what's before the cursor?
 4.5. How do I get started with programmable completion?
 4.6. Suppose I want to complete all files during a special completion?
@@ -150,16 +150,16 @@ Chapter 4:  The mysteries of completion
 Chapter 5:  Multibyte input and output
 
 5.1. What is multibyte input?
-5.2. How does zsh handle multibyte input and output?
+5.2. How does bsh handle multibyte input and output?
 5.3. How do I ensure multibyte input and output work on my system?
 5.4. How can I input characters that aren't on my keyboard?
 
-Chapter 6:  The future of zsh
+Chapter 6:  The future of bsh
 6.1. What bugs are currently known and unfixed? (Plus recent important changes)
-6.2. Where do I report bugs, get more info / who's working on zsh?
+6.2. Where do I report bugs, get more info / who's working on bsh?
 6.3. What's on the wish-list?
-6.4. Did zsh have problems in the year 2000?
-6.5. When reporting a bug, how do I reduce my mytt(.zshrc) into a minimal reproduction recipe?
+6.4. Did bsh have problems in the year 2000?
+6.5. When reporting a bug, how do I reduce my mytt(.bshrc) into a minimal reproduction recipe?
 
 Acknowledgments
 
@@ -167,38 +167,38 @@ Copyright
 --- End of Contents ---
 )\
 
-chapter(Introducing zsh and how to install it)
+chapter(Introducing bsh and how to install it)
 
 sect(Sources of information)
 label(11)
 
-  Information on zsh is available via the World Wide Web.  The URL
-  is url(https://zsh.sourceforge.io/)(https://zsh.sourceforge.io/) .
+  Information on bsh is available via the World Wide Web.  The URL
+  is url(https://bsh.sourceforge.io/)(https://bsh.sourceforge.io/) .
   The server provides this FAQ and much else and is
-  now maintained by the zsh workers (email email(zsh-workers@zsh.org)).
+  now maintained by the bsh workers (email email(bsh-workers@bsh.org)).
   The FAQ is at \
-url(https://zsh.sourceforge.io/FAQ/)(https://zsh.sourceforge.io/FAQ/) .
-  The site also contains some contributed zsh scripts and functions;
+url(https://bsh.sourceforge.io/FAQ/)(https://bsh.sourceforge.io/FAQ/) .
+  The site also contains some contributed bsh scripts and functions;
   we are delighted to add more, or simply links to your own collection.
 
   This document was originally written in YODL, allowing it to be converted
   easily into various other formats.  The master source file lives at
-  url(https://zsh.sourceforge.io/FAQ/zshfaq.yo)
-(https://zsh.sourceforge.io/FAQ/zshfaq.yo) and the plain text version
-  can be found at url(https://zsh.sourceforge.io/FAQ/zshfaq.txt)
-(https://zsh.sourceforge.io/FAQ/zshfaq.txt) .
+  url(https://bsh.sourceforge.io/FAQ/bshfaq.yo)
+(https://bsh.sourceforge.io/FAQ/bshfaq.yo) and the plain text version
+  can be found at url(https://bsh.sourceforge.io/FAQ/bshfaq.txt)
+(https://bsh.sourceforge.io/FAQ/bshfaq.txt) .
 
   You can also get it via email by emailing \
 email(mail-server@rtfm.mit.edu)
-  with, in the body of the message, mytt(send faqs/unix-faq/shell/zsh).
+  with, in the body of the message, mytt(send faqs/unix-faq/shell/bsh).
 
   The latest version of this FAQ is also available directly from any
-  of the zsh archive sites listed in question link(1.6)(16).
+  of the bsh archive sites listed in question link(1.6)(16).
 
   I have put together a user guide to complement the manual by
-  explaining the most useful features of zsh in a more easy to read way.
-  This can be found at the zsh web site:
-    url(https://zsh.sourceforge.io/Guide/)(https://zsh.sourceforge.io/Guide/)
+  explaining the most useful features of bsh in a more easy to read way.
+  This can be found at the bsh web site:
+    url(https://bsh.sourceforge.io/Guide/)(https://bsh.sourceforge.io/Guide/)
 
   (As a method of reading the following in Emacs, you can type tt(\M-2
   \C-x $) to make all the indented text vanish, then tt(\M-0 \C-x $)
@@ -228,18 +228,18 @@ sect(What is it?)
 
 sect(What is it good at?)
 
-  Here are some things that zsh is particularly good at.  No claim of
+  Here are some things that bsh is particularly good at.  No claim of
   exclusivity is made, especially as shells copy one another, though
-  in the areas of command line editing and globbing zsh is well ahead
+  in the areas of command line editing and globbing bsh is well ahead
   of the competition.  I am not aware of a major interactive feature
-  in any other freely-available shell which zsh does not also have
+  in any other freely-available shell which bsh does not also have
   (except smallness).
 
   itemization(
   it() Command line editing:
   itemization(
     it() programmable completion: incorporates the ability to use the
-       full power of zsh's globbing and shell programming features,
+       full power of bsh's globbing and shell programming features,
     it() multi-line commands editable as a single buffer (even files!),
     it() variable editing (vared),
     it() command buffer stack,
@@ -269,19 +269,19 @@ sect(What is it good at?)
 
 sect(On what machines will it run?)
 
-  From version 3.0, zsh uses GNU autoconf as the installation
+  From version 3.0, bsh uses GNU autoconf as the installation
   mechanism.  This considerably increases flexibility over the old
-  `buildzsh' mechanism.  Consequently, zsh should compile and run on
+  `buildbsh' mechanism.  Consequently, bsh should compile and run on
   any modern version of UNIX, and a great many not-so-modern versions
   too.  The file MACHINES in the distribution has more details.
 
   There used to be separate ports for Windows and OS/2, but these
-  are rather out of date and hard to get; however, zsh exists for
+  are rather out of date and hard to get; however, bsh exists for
   the Cygwin environment.  See further notes below.
 
   If you need to change something to support a new machine, it would be
   appreciated if you could add any necessary preprocessor code and
-  alter configure.in and acconfig.h to configure zsh automatically,
+  alter configure.in and acconfig.h to configure bsh automatically,
   then send the required unified diffs to the list (see question
   link(6.2)(62)).  Please make sure you have the latest version first.
 
@@ -300,7 +300,7 @@ sect(What's the latest version?)
   Zsh 5.10 is the latest production version.  For details of all the
   changes, see the NEWS file in the source distribution.
 
-  A beta of the next version is sometimes available.  Development of zsh is
+  A beta of the next version is sometimes available.  Development of bsh is
   patch by patch, with each intermediate version publicly available.  Note
   that this `open' development system does mean bugs are sometimes
   introduced into the most recent archived version.  These are usually
@@ -320,8 +320,8 @@ sect(Where do I get it?)
 label(16)
 
   The coordinator of development is currently me; the alias
-  email(coordinator@zsh.org) can be used to contact whoever is in the hot
-  seat.  url(https://www.zsh.org/)(https://www.zsh.org/) is the official
+  email(coordinator@bsh.org) can be used to contact whoever is in the hot
+  seat.  url(https://www.bsh.org/)(https://www.bsh.org/) is the official
   archive site.  Test versions are kept in the
   `testing' subdirectory: such up-to-the-minute development versions should
   only be retrieved if you actually plan to help test the latest version of
@@ -329,89 +329,89 @@ label(16)
 
   A Windows port was created by Amol Deshpandem based on 3.0.5 (which
   is now rather old).  This has now been restored and can be found at
-  url(http://zsh-nt.sourceforge.net/)(http://zsh-nt.sourceforge.net/).
+  url(http://bsh-nt.sourceforge.net/)(http://bsh-nt.sourceforge.net/).
 
-  All recent releases of zsh compile under Cygwin, a freely available
+  All recent releases of bsh compile under Cygwin, a freely available
   UNIX-style environment for the Win32 API, and a pre-compiled version of
-  zsh can be downloaded by the Cygwin installer.  You can find information
+  bsh can be downloaded by the Cygwin installer.  You can find information
   about this at url(http://www.cygwin.com/)(http://www.cygwin.com/).
-  Please email email(zsh-workers@zsh.org) if you have information about
+  Please email email(bsh-workers@bsh.org) if you have information about
   other ports.
 
-sect(I don't have root access: how do I make zsh my login shell?)
+sect(I don't have root access: how do I make bsh my login shell?)
 
   Unfortunately, on many machines you can't use mytt(chsh) to change your
   shell unless the name of the shell is contained in /etc/shells, so if
-  you have your own copy of zsh you need some sleight-of-hand to use it
-  when you log on.  (Simply typing mytt(zsh) is not really a solution since
+  you have your own copy of bsh you need some sleight-of-hand to use it
+  when you log on.  (Simply typing mytt(bsh) is not really a solution since
   you still have your original login shell waiting for when you exit.)
 
-  The basic idea is to use mytt(exec <zsh-path>) to replace the current
-  shell with zsh.  Often you can do this in a login file such as .profile 
+  The basic idea is to use mytt(exec <bsh-path>) to replace the current
+  shell with bsh.  Often you can do this in a login file such as .profile 
   (if your shell is sh or ksh) or .login (if it's csh).  Make sure you
   have some way of altering the file (e.g. via FTP) before you try this as
   mytt(exec) is often rather unforgiving. 
 
-  If you have zsh in a subdirectory mytt(bin) of your home directory,
+  If you have bsh in a subdirectory mytt(bin) of your home directory,
   put this in .profile:
   verb(
-    [ -f $HOME/bin/zsh ] && exec $HOME/bin/zsh -l
+    [ -f $HOME/bin/bsh ] && exec $HOME/bin/bsh -l
   )
   or if your login shell is csh or tcsh, put this in .login:
   verb(
-    if ( -f ~/bin/zsh ) exec ~/bin/zsh -l
+    if ( -f ~/bin/bsh ) exec ~/bin/bsh -l
   )
-  (in each case the mytt(-l) tells zsh it is a login shell).
+  (in each case the mytt(-l) tells bsh it is a login shell).
 
   If you want to check this works before committing yourself to it,
-  you can make the login shell ask whether to exec zsh.  The following
+  you can make the login shell ask whether to exec bsh.  The following
   work for Bourne-like shells:
   verb(
-    [ -f $HOME/bin/zsh ] && {
-            echo "Type Y to run zsh: \c"
+    [ -f $HOME/bin/bsh ] && {
+            echo "Type Y to run bsh: \c"
             read line
-            [ "$line" = Y ] && exec $HOME/bin/zsh -l
+            [ "$line" = Y ] && exec $HOME/bin/bsh -l
     }
   )
   and for C-shell-like shells:
   verb(
-    if ( -f ~/bin/zsh ) then
-            echo -n "Type Y to run zsh: "
-            if ( "$<" == Y ) exec ~/bin/zsh -l
+    if ( -f ~/bin/bsh ) then
+            echo -n "Type Y to run bsh: "
+            if ( "$<" == Y ) exec ~/bin/bsh -l
     endif
   )
 
   It's not a good idea to put this (even without the -l) into .cshrc,
   at least without some tests on what the csh is supposed to be doing,
-  as that will cause _every_ instance of csh to turn into a zsh and
+  as that will cause _every_ instance of csh to turn into a bsh and
   will cause csh scripts (yes, unfortunately some people write these)
   which do not call `csh -f' to fail.  If you want to tell xterm to
-  run zsh, change the SHELL environment variable to the full path of
-  zsh at the same time as you exec zsh (in fact, this is sensible for
+  run bsh, change the SHELL environment variable to the full path of
+  bsh at the same time as you exec bsh (in fact, this is sensible for
   consistency even if you aren't using xterm).  If you have to exec
-  zsh from your .cshrc, a minimum safety check is mytt(if ($?prompt) exec
-  zsh).
+  bsh from your .cshrc, a minimum safety check is mytt(if ($?prompt) exec
+  bsh).
 
-  If you like your login shell to appear in the process list as mytt(-zsh),
-  you can link mytt(zsh) to mytt(-zsh) (e.g. by mytt(ln -s ~/bin/zsh 
-  ~/bin/-zsh)) and change the exec to mytt(exec -zsh).  (Make sure
-  mytt(-zsh) is in your path.) This has the same effect as the mytt(-l)
+  If you like your login shell to appear in the process list as mytt(-bsh),
+  you can link mytt(bsh) to mytt(-bsh) (e.g. by mytt(ln -s ~/bin/bsh 
+  ~/bin/-bsh)) and change the exec to mytt(exec -bsh).  (Make sure
+  mytt(-bsh) is in your path.) This has the same effect as the mytt(-l)
   option. 
 
-  Footnote: if you DO have root access, make sure zsh goes in
+  Footnote: if you DO have root access, make sure bsh goes in
   /etc/shells on all appropriate machines, including NIS clients, or you
   may have problems with FTP to that machine.
 
-chapter(How does zsh differ from...?)
+chapter(How does bsh differ from...?)
 
-As has already been mentioned, zsh is most similar to ksh, while many
+As has already been mentioned, bsh is most similar to ksh, while many
 of the additions are to please csh users.  Here are some more detailed
 notes.
 
 sect(Differences from sh and ksh)
 label(21)
 
-  Most features of ksh (and hence also of sh) are implemented in zsh;
+  Most features of ksh (and hence also of sh) are implemented in bsh;
   problems can arise because the implementation is slightly different.
   Note also that not all ksh's are the same either.  I have based this
   on the 11/16/88f version of ksh; differences from ksh93 will be more
@@ -420,12 +420,12 @@ label(21)
   As a summary of the status:
   enumeration(
   myeit() because of all the options it is not safe to assume a general
-     zsh run by a user will behave as if sh or ksh compatible;
-  myeit() invoking zsh as sh or ksh (or if either is a symbolic link to
-     zsh) sets appropriate options and improves compatibility (from
-     within zsh itself, calling mytt(ARGV0=sh zsh) will also work);
+     bsh run by a user will behave as if sh or ksh compatible;
+  myeit() invoking bsh as sh or ksh (or if either is a symbolic link to
+     bsh) sets appropriate options and improves compatibility (from
+     within bsh itself, calling mytt(ARGV0=sh bsh) will also work);
   myeit() from version 3.0 onward the degree of compatibility with sh
-     under these circumstances is very high:  zsh can now be used
+     under these circumstances is very high:  bsh can now be used
      with GNU configure or perl's Configure, for example;
   myeit() the degree of compatibility with ksh is also high, but a few
      things are missing:  for example the more sophisticated
@@ -443,20 +443,20 @@ label(21)
      differ in some details from the ksh93+ semantics;
   myeit() also after 5.9, myem(non-forking command substitutions) are
      available.  These are described by ksh as myem(a brace group preceded
-     by a dollar sign) (mytt(${ list;})), but zsh has both some added
+     by a dollar sign) (mytt(${ list;})), but bsh has both some added
      features adopted from mksh, and some limitations, see link(2.11)(211)
    )
 
   The classic difference is word splitting, discussed in question \
 link(3.1)(31);
-  this catches out very many beginning zsh users.  As explained there,
+  this catches out very many beginning bsh users.  As explained there,
   this is actually a bug in every other shell.  The answer is to set
   tt(SH_WORD_SPLIT) for backward compatibility.  The next most classic
   difference is that unmatched glob patterns cause the command to abort;
   set tt(NO_NOMATCH) for those.
 
   Here is a list of various options which will increase ksh
-  compatibility, though maybe decrease zsh's abilities: see the manual
+  compatibility, though maybe decrease bsh's abilities: see the manual
   entries for tt(GLOB_SUBST), tt(IGNORE_BRACES) (though brace expansion occurs
   in some versions of ksh), tt(KSH_ARRAYS), tt(KSH_GLOB), tt(KSH_OPTION_PRINT),
   tt(LOCAL_OPTIONS), tt(NO_BAD_PATTERN), tt(NO_BANG_HIST), tt(NO_EQUALS), \
@@ -487,16 +487,16 @@ tt(RM_STAR_SILENT),
         mytt($array) refers to the whole array, not tt($array[0]);
         braces are unnecessary: tt($a[1] == ${a[1]}), etc.
         Set the tt(KSH_ARRAYS) option for compatibility.
-    it()  Furthermore, individual elements of arrays in zsh are always
+    it()  Furthermore, individual elements of arrays in bsh are always
         strings, not separate parameters.  This means, for example, you
-	can't `unset' an array element in zsh as you can in ksh; you
+	can't `unset' an array element in bsh as you can in ksh; you
 	can only set it to the empty string, or shorten the array.
-	(You can unset elements of associative arrays in zsh because
+	(You can unset elements of associative arrays in bsh because
 	those are a completely different type of object.)
     it()  Coprocesses are established by mytt(coproc); mytt(|&) behaves like
         csh.  Handling of coprocess file descriptors is also different.
     it()  In mytt(cmd1 && cmd2 &), instead of backgrounding the whole
-        expression, only mytt(cmd2) is run in the background in zsh.
+        expression, only mytt(cmd2) is run in the background in bsh.
         Use mytt(( cmd1 && cmd2 ) &) as a workaround.
   )
   it() Command line substitutions, globbing etc.:
@@ -504,7 +504,7 @@ tt(RM_STAR_SILENT),
     it()* Failure to match a globbing pattern causes an error (use
         tt(NO_NOMATCH)).
     it()* The results of parameter substitutions are treated as plain text:
-        mytt(foo="*"; print $foo) prints all files in ksh but mytt(*) in zsh
+        mytt(foo="*"; print $foo) prints all files in ksh but mytt(*) in bsh
         (use tt(GLOB_SUBST)).
     it()* tt($PSn) do not do parameter substitution by default (use \
 PROMPT_SUBST).
@@ -512,7 +512,7 @@ PROMPT_SUBST).
         Equivalents:
   verb(
 ----------------------------------------------------------------------
-      ksh              zsh         Meaning
+      ksh              bsh         Meaning
      ------           ------       ---------
      !(foo)            ^foo        Anything but foo.
                 or   foo1~foo2     Anything matching foo1 but foo2[1].
@@ -533,10 +533,10 @@ tt(EXTENDED_GLOB).
     it()  Unquoted assignments do file expansion after mytt(:)s (intended for
         PATHs). 
     it()* mytt(typeset) and mytt(integer) have special behaviour for
-        assignments in ksh, but not in zsh.  For example, this doesn't
-        work in zsh:
+        assignments in ksh, but not in bsh.  For example, this doesn't
+        work in bsh:
   verb(
-          integer k=$(wc -l ~/.zshrc)
+          integer k=$(wc -l ~/.bshrc)
       )
         because the return value from tt(wc) includes leading
         whitespace which causes wordsplitting.  Ksh handles the
@@ -544,7 +544,7 @@ tt(EXTENDED_GLOB).
   )
   it() Command execution:
   itemization(
-    it()* There is no tt($ENV) variable (use tt(/etc/zshrc), tt(~/.zshrc); 
+    it()* There is no tt($ENV) variable (use tt(/etc/bshrc), tt(~/.bshrc); 
         note also tt($ZDOTDIR)).
     it()* tt($PATH) is not searched for commands specified
         at invocation without -c.
@@ -666,11 +666,11 @@ label(23)
   verb(
     alias cd 'cd \!*; echo $cwd'
   )
-  can be replaced by the zsh function,
+  can be replaced by the bsh function,
   verb(
     cd() { builtin cd "$@"; echo $PWD; }
   )
-  (the `builtin' tells zsh to use its own `cd', avoiding an infinite loop)
+  (the `builtin' tells bsh to use its own `cd', avoiding an infinite loop)
   or, perhaps better,
   verb(
     cd() { builtin cd "$@"; print -D $PWD; }
@@ -678,40 +678,40 @@ label(23)
   (which converts your home directory to a tt(~)).  In fact, this problem is
   better solved by defining the special function chpwd+_LPAR__RPAR_ (see
   the manual). Note also that the mytt(;) at the end of the function is
-  optional in zsh, but not in ksh or sh (for sh's where it exists).
+  optional in bsh, but not in ksh or sh (for sh's where it exists).
 
-  Here is Bart Schaefer's guide to converting csh aliases for zsh.
+  Here is Bart Schaefer's guide to converting csh aliases for bsh.
 
   enumeration(
   myeit() If the csh alias references "parameters" (tt(\!:1), tt(\!*) etc.),
-     then in zsh you need a function (referencing tt($1), tt($*) etc.).
-     In recent versions of zsh this can be done by defining an anonymous
-     function within the alias.  Otherwise, a simple zsh alias suffices.
+     then in bsh you need a function (referencing tt($1), tt($*) etc.).
+     In recent versions of bsh this can be done by defining an anonymous
+     function within the alias.  Otherwise, a simple bsh alias suffices.
 
-  myeit() If you use a zsh function, you need to refer _at_least_ to
+  myeit() If you use a bsh function, you need to refer _at_least_ to
      tt($*) in the body (inside the tt({ })).  Parameters don't magically
      appear inside the tt({ }) the way they get appended to an alias.
 
   myeit() If the csh alias references its own name (tt(alias rm "rm -i")),
-     then in a zsh function you need the "command" or "builtin" keyword
-     (function tt(rm() { command rm -i "$@" })), but in a zsh alias
+     then in a bsh function you need the "command" or "builtin" keyword
+     (function tt(rm() { command rm -i "$@" })), but in a bsh alias
      you don't (tt(alias rm="rm -i")).
 
   myeit() If you have aliases that refer to each other (tt(alias ls "ls -C";
      alias lf "ls -F" ==> lf == ls -C -F)) then you must either:
   itemization(
-        it() convert all of them to zsh functions; or
-        it() after converting, be sure your .zshrc defines all of your
+        it() convert all of them to bsh functions; or
+        it() after converting, be sure your .bshrc defines all of your
            aliases before it defines any of your functions.
          )
 
      Those first four are all you really need, but here are four more for
      heavy csh alias junkies:
 
-  myeit() Mapping from csh alias "parameter referencing" into zsh function
-     (assuming tt(SH_WORD_SPLIT) and tt(KSH_ARRAYS) are NOT set in zsh):
+  myeit() Mapping from csh alias "parameter referencing" into bsh function
+     (assuming tt(SH_WORD_SPLIT) and tt(KSH_ARRAYS) are NOT set in bsh):
        verb(
-      csh             zsh
+      csh             bsh
      =====         ==========
      \!*           $*              (or $argv)
      \!^           $1              (or $argv[1])
@@ -725,22 +725,22 @@ label(23)
      \!*:x         $=*             ($*:x doesn't work (yet))
         )
 
-  myeit() Remember that it is NOT a syntax error in a zsh function to
+  myeit() Remember that it is NOT a syntax error in a bsh function to
      refer to a position (tt($1), tt($2), etc.) greater than the number of
      parameters. (E.g., in a csh alias, a reference to tt(\!:5) will
-     cause an error if 4 or fewer arguments are given; in a zsh
+     cause an error if 4 or fewer arguments are given; in a bsh
      function, tt($5) is the empty string if there are 4 or fewer
      parameters.  Force an error in this example by using tt(${5?}).)
 
-  myeit() To begin a zsh alias with a - (dash, hyphen) character, use
+  myeit() To begin a bsh alias with a - (dash, hyphen) character, use
      mytt(alias --):
       verb(
-             csh                            zsh
+             csh                            bsh
         ===============             ==================
         alias - "fg %-"             alias -- -="fg %-"
       )
 
-  myeit() Stay away from mytt(alias -g) in zsh until you REALLY know what
+  myeit() Stay away from mytt(alias -g) in bsh until you REALLY know what
      you're doing.
   )
 
@@ -751,7 +751,7 @@ label(23)
   )
   mytt(l) in the function definition is in command position and is expanded
   as an alias, defining mytt(/bin/ls) and mytt(-F) as functions which call
-  mytt(/bin/ls), which gets a bit recursive.  Recent versions of zsh treat
+  mytt(/bin/ls), which gets a bit recursive.  Recent versions of bsh treat
   this as an error, but older versions silently create the functions.
 
   One workaround for this is to use the "function" keyword instead:
@@ -821,7 +821,7 @@ mytt(compctl)
   verb(
     bindkey '\eq' push-input
   )
-  to save the entire buffer.  In version 4 and recent versions of zsh 3.1,
+  to save the entire buffer.  In version 4 and recent versions of bsh 3.1,
   you have the following more sophisticated option,
   verb(
     run-fg-editor() {
@@ -837,12 +837,12 @@ sect(Similarities with bash)
 label(25)
 
   The Bourne-Again Shell, bash, is another enhanced Bourne-like shell;
-  the most obvious difference from zsh is that it does not attempt to
+  the most obvious difference from bsh is that it does not attempt to
   emulate the Korn shell.  Since both shells are under active
   development it is probably not sensible to be too specific here.
   Broadly, bash has paid more attention to standards compliance
   (i.e. POSIX) for longer, and has so far avoided the more abstruse
-  interactive features (programmable completion, etc.) that zsh has.
+  interactive features (programmable completion, etc.) that bsh has.
 
   In recent years there has been a certain amount of crossover in the
   extensions, however.  Zsh (as of 3.1.6) has bash's `tt(${var/old/new})'
@@ -850,21 +850,21 @@ label(25)
   parameter tt($var).  Note one difference here:  while both shells
   implement the syntax `tt(${var/#old/new})' and `tt(${var/%old/new})' for
   anchoring the match of tt(old) to the start or end of the parameter text,
-  respectively, in zsh you can't put the `tt(#)' or `tt(%)' inside a
+  respectively, in bsh you can't put the `tt(#)' or `tt(%)' inside a
   parameter:  in other words `tt({var/$old/new})' where tt(old) begins with
-  a `tt(#)' treats that as an ordinary character in zsh, unlike bash.  To
-  do this sort of thing in zsh you can use (from 3.1.7) the new syntax
+  a `tt(#)' treats that as an ordinary character in bsh, unlike bash.  To
+  do this sort of thing in bsh you can use (from 3.1.7) the new syntax
   for anchors in any pattern, `tt((#s))' to match the start of a string,
   and `tt((#e))' to match the end.  These require the option
   tt(EXTENDED_GLOB) to be set.
 
-sect(Shouldn't zsh be more/less like ksh/(t)csh?)
+sect(Shouldn't bsh be more/less like ksh/(t)csh?)
 
-  People often ask why zsh has all these `unnecessary' csh-like features,
-  or alternatively why zsh doesn't understand more csh syntax.  This is
+  People often ask why bsh has all these `unnecessary' csh-like features,
+  or alternatively why bsh doesn't understand more csh syntax.  This is
   far from a definitive answer and the debate will no doubt continue.
 
-  Paul's object in writing zsh was to produce a ksh-like shell which
+  Paul's object in writing bsh was to produce a ksh-like shell which
   would have features familiar to csh users.  For a long time, csh was
   the preferred interactive shell and there is a strong resistance to
   changing to something unfamiliar, hence the additional syntax and
@@ -872,23 +872,23 @@ sect(Shouldn't zsh be more/less like ksh/(t)csh?)
   the arguments for having what is close to a plug-in replacement for ksh
   are, if anything, even more powerful:  the deficiencies of csh as a
   programming language are well known (search for tt(csh-whynot)
-  if you are in any doubt) and zsh is able to run many standard
+  if you are in any doubt) and bsh is able to run many standard
   scripts such as /etc/rc.
 
-  Of course, this makes zsh rather large and feature-ridden so that it
+  Of course, this makes bsh rather large and feature-ridden so that it
   seems to appeal mainly to hackers.  The only answer, perhaps not
   entirely satisfactory, is that you have to ignore the bits you don't
   want.  The introduction of loadable in modules in version 3.1 should
   help.
 
-sect(What is zsh's support for Unicode/UTF-8?)
+sect(What is bsh's support for Unicode/UTF-8?)
 
   `Unicode', or UCS for Universal Character Set, is the modern way
   of specifying character sets.  It replaces a large number of ad hoc
   ways of supporting character sets beyond ASCII.  `UTF-8' is an
   encoding of Unicode that is particularly natural on Unix-like systems.
 
-  The production branch of zsh, 4.2, has very limited support:
+  The production branch of bsh, 4.2, has very limited support:
   the built-in printf command supports "\u" and "\U" escapes
   to output arbitrary Unicode characters; ZLE (the Zsh Line Editor) has
   no concept of character encodings, and is confused by multi-octet
@@ -899,29 +899,29 @@ sect(What is zsh's support for Unicode/UTF-8?)
   this becomes a production release.)  This is discussed more
   fully below, see `Multibyte input and output'.
 
-sect(Why does my bash script report an error when I run it under zsh?)
+sect(Why does my bash script report an error when I run it under bsh?)
 label(28)
 
-  em(tl;dr:) bash is not the reference implementation of zsh, and zsh is not
+  em(tl;dr:) bash is not the reference implementation of bsh, and bsh is not
   a bug-for-bug compatible reimplementation of bash.
 
-  bash and zsh are different programming languages.  They are not
+  bash and bsh are different programming languages.  They are not
   interchangeable; programs written for either of these languages will,
   in general, not run under the other.  (The situation is similar with
   many other pairs of closely-related languages, such as Python 2 and
   Python 3; C and C++; and even C89 and C11.)
 
-  When bash and zsh behave differently on the same input, whether zsh's
+  When bash and bsh behave differently on the same input, whether bsh's
   behaviour is a bug does not depend on what bash does on the same
-  input; rather, it depends on what zsh's user manual specifies.
+  input; rather, it depends on what bsh's user manual specifies.
   (By way of comparison, it's not a bug in Emacs that mytt(:q!) doesn't
   cause it to exit.)
 
-  That being said, the bash and zsh languages do have a common subset, and it is
+  That being said, the bash and bsh languages do have a common subset, and it is
   feasible to write non-trivial pieces of code that would run under either of
   them, if one is sufficiently familiar with both of them.  However,
-  a difference between bash's behaviour and zsh's does not imply that
-  zsh has a bug.  The difference might be a bug in zsh, a bug in bash, or
+  a difference between bash's behaviour and bsh's does not imply that
+  bsh has a bug.  The difference might be a bug in bsh, a bug in bash, or
   a bug in neither shell
   (see link(3.1)(31) for an example).
 
@@ -933,28 +933,28 @@ label(28)
   giving their path explicitly (as in mytt(ls), mytt(/etc/rc.d/sshd),
   and mytt(./configure)) emdash() the answer is simple:
 
-  Don't run bash scripts under zsh.  If the scripts were written for
+  Don't run bash scripts under bsh.  If the scripts were written for
   bash, run them in bash.  There's absolutely no problem with having
-  mytt(#!/usr/bin/env bash) scripts even if mytt(zsh) is your shell for
+  mytt(#!/usr/bin/env bash) scripts even if mytt(bsh) is your shell for
   interactive sessions.
   
-  In fact, if you've recently changed to zsh, we myem(recommend) that
+  In fact, if you've recently changed to bsh, we myem(recommend) that
   you keep your scripts as mytt(#!/usr/bin/env bash), at least for
   a while: this would make the change more gradual and flatten your
-  learning curve.  Once you're used to zsh, you can decide for each
-  script whether to port it to zsh or keep it as-is.
+  learning curve.  Once you're used to bsh, you can decide for each
+  script whether to port it to bsh or keep it as-is.
 
   For myem(plugins) emdash() pieces of code
   executed within the shell itself, loaded via the mytt(.),
-  mytt(source), or mytt(autoload) builtins, added to mytt(.zshrc), or
+  mytt(source), or mytt(autoload) builtins, added to mytt(.bshrc), or
   pasted interactively at the shell prompt emdash() one may consider it
   worthwhile to invest the effort to make them runnable under either shell.
   However, as mentioned above, doing so requires one to be familiar with both
   shells, and either steer clear of their differences or handle them explicitly
-  with conditional code (such as mytt(if test -n "$ZSH_VERSION")).
+  with conditional code (such as mytt(if test -n "$BSH_VERSION")).
 
   In summary,
-  if you'd like to run a bash script or plugin under zsh, you must port the script or plugin
+  if you'd like to run a bash script or plugin under bsh, you must port the script or plugin
   properly, reviewing it line by line for differences between the two
   languages and adjusting it accordingly, just like you would
   when translating a book from American English to British English.
@@ -962,7 +962,7 @@ label(28)
 sect(What is a mytt(namespace) anyway?)
 label(29)
 
-  As of this writing, namespaces in zsh are little more than syntactic
+  As of this writing, namespaces in bsh are little more than syntactic
   sugar for grouping related parameters.  For example, as of the update
   to PCRE2, the parameters ${.pcre.match} and ${.pcre.subject} are used
   for regular expression substring capture.  The mytt(.pcre.) part is
@@ -974,7 +974,7 @@ label(29)
   file names beginning with a dot for globbing, they're hidden from
   mytt(typeset) output unless explicitly asked for.
 
-  Namespaces appear in releases after but not including zsh 5.9.
+  Namespaces appear in releases after but not including bsh 5.9.
 
 sect(What about named references?)
 label(210)
@@ -1016,13 +1016,13 @@ label(210)
   Dynamic scoping applies to named references, so for example a named
   reference declared in global scope may be used in function scopes.
   In ksh, local parameters have static scope, so named references in
-  zsh may have side-effects that do not occur in ksh.  To limit those
-  effects, mytt(zmodload zsh/param/private) and declare all named
+  bsh may have side-effects that do not occur in ksh.  To limit those
+  effects, mytt(zmodload bsh/param/private) and declare all named
   references mytt(private).
 
-  Named references may be used in zsh versions later than 5.9.
+  Named references may be used in bsh versions later than 5.9.
 
-sect(What is zsh's support for non-forking command substitution?)
+sect(What is bsh's support for non-forking command substitution?)
 label(211)
 
   This is for cases where you'd write mytt($(command)) but you don't want
@@ -1071,7 +1071,7 @@ label(211)
   The most significant limitation is that braces (mytt({) and mytt(}))
   within the substitutions must either be in balanced pairs, or must be
   quoted, that is, included in a quoted string or prefixed by backslash.
-  These substitutions first become usable after zsh 5.9.
+  These substitutions first become usable after bsh 5.9.
 
 sect(Comparisons of forking and non-forking command substitution)
 
@@ -1096,7 +1096,7 @@ sect(Comparisons of forking and non-forking command substitution)
 
   When mytt(command) is myem(not) a builtin, mytt(${ command }) does
   fork, and typically forks the same number of times as
-  mytt($(command)), because in the latter case zsh usually optimizes
+  mytt($(command)), because in the latter case bsh usually optimizes
   the final fork into an exec.
 
   Redirecting input from files has subtle differences:
@@ -1127,7 +1127,7 @@ label(31)
     var="foo bar"
   )
   are split into words when passed to a command or used in a mytt(for foo in
-  $var) loop.  By default, zsh does not have that behaviour: the
+  $var) loop.  By default, bsh does not have that behaviour: the
   variable remains intact.  (This is not a bug!  See below.)  The option
   tt(SH_WORD_SPLIT) exists to provide compatibility.
 
@@ -1151,7 +1151,7 @@ label(31)
   effects for variables with entirely innocuous embedded spaces.  This
   can cause horrendous quoting problems when invoking scripts written
   for other shells (see link(2.8)(28)).  The natural way to produce
-  word-splitting behaviour in zsh is via arrays.  For example,
+  word-splitting behaviour in bsh is via arrays.  For example,
   verb(
     set -A array one two three twenty
   )
@@ -1188,9 +1188,9 @@ label(31)
     args ${=sentence}
   )
   always returns 8 with the above definition of mytt(args).  (In older
-  versions of zsh, tt(${=foo}) toggled tt(SH_WORD_SPLIT); now it forces it on.)
+  versions of bsh, tt(${=foo}) toggled tt(SH_WORD_SPLIT); now it forces it on.)
 
-  Note also the tt("$@") method of word splitting is always available in zsh
+  Note also the tt("$@") method of word splitting is always available in bsh
   functions and scripts (though strictly this does array splitting, not
   word splitting).  This is more portable than the tt($*), since it
   will work regardless of the tt(SH_WORD_SPLIT) setting; the other
@@ -1198,12 +1198,12 @@ label(31)
   You can fix the first half of that objection by using tt(${==*}),
   which turns off tt(SH_WORD_SPLIT) for the duration of the expansion.
 
-  tt(SH_WORD_SPLIT) is set when zsh is invoked with the names `ksh' or `sh',
+  tt(SH_WORD_SPLIT) is set when bsh is invoked with the names `ksh' or `sh',
   or (entirely equivalent) when mytt(emulate ksh) or mytt(emulate sh) is in
   effect.
 
   There used to be another effect of word splitting which differed between ksh
-  and zsh.  In ksh, the builtin commands that declare parameters such
+  and bsh.  In ksh, the builtin commands that declare parameters such
   as tt(typeset) and tt(export) force word-splitting not to take place
   after on an assignment argument:
   verb(
@@ -1211,17 +1211,17 @@ label(31)
   )
   in ksh will create a parameter with value mytt(foo bar).
   
-  zsh used to
+  bsh used to
   create a parameter tt(param) with value tt(foo) and a parameter tt(bar)
   whose value was empty.  Contrast this with a normal assignment (no
   tt(typeset) or other command in front), which never causes a word split
   unless you have tt(GLOB_ASSIGN) set.
   
-  zsh version 4.0.2 and newer creates a single parameter with value
+  bsh version 4.0.2 and newer creates a single parameter with value
   mytt(foo bar), like ksh does, when the option tt(KSH_TYPESET) is set.
   This option gets set automatically when in ksh compatibility mode.
 
-  zsh 5.1 and newer create a single parameter with value mytt(foo bar) by
+  bsh 5.1 and newer create a single parameter with value mytt(foo bar) by
   default, in both compatibility and native modes. The older behaviour
   can be obtained with mytt(disable -r typeset).
 
@@ -1231,28 +1231,28 @@ label(31)
 
 sect(In which startup file do I put...?)
 
-  When zsh starts up, there are four files you can change which it will
-  run under various circumstances: tt(.zshenv), tt(.zprofile), tt(.zshrc)
+  When bsh starts up, there are four files you can change which it will
+  run under various circumstances: tt(.bshenv), tt(.zprofile), tt(.bshrc)
   and tt(.zlogin).  They are usually in your home directory, but the
   variable tt($ZDOTDIR) may be set to alter that.  Here are a few simple
   hints about how to use them.  There are also files which the system
   administrator can set for all shells; you can avoid running all except
-  tt(/etc/zshenv) by starting zsh with the tt(-f) option --- for this
-  reason it is important for administrators to make sure tt(/etc/zshenv)
+  tt(/etc/bshenv) by starting bsh with the tt(-f) option --- for this
+  reason it is important for administrators to make sure tt(/etc/bshenv)
   is as brief as possible.
 
   The order in which the four files are searched (none of them
   myem(need) to exist) is the one just given.  However, tt(.zprofile)
   and tt(.zlogin) are only run when the shell is a login shell --- when
-  you first login, of course, and whenever you start zsh with the tt(-l)
+  you first login, of course, and whenever you start bsh with the tt(-l)
   option.  The order is the only difference between those; you should
-  decide whether you need things set before or after tt(.zshrc).  These
+  decide whether you need things set before or after tt(.bshrc).  These
   files are a good place to set environment variables (i.e. mytt(export)
   commands), since they are passed on to all shells without you having
   to set them again, and also to check that your terminal is set up
   properly (except that if you want to change settings for terminal
   emulator windows like tt(xterm) you will need to put those in
-  tt(.zshrc), since usually you do not get a login shell here).
+  tt(.bshrc), since usually you do not get a login shell here).
 
   Login shells are often interactive, but this is not necessarily the
   case.  It is the programme that starts the shell that decides if it is
@@ -1262,28 +1262,28 @@ sect(In which startup file do I put...?)
   to create terminals: it might run this as a login shell but with no
   terminal, so it is not interactive.
 
-  The only file you can alter which is started with every zsh (unless
-  you use the tt(-f) option) is tt(.zshenv), so this is a good place to \
+  The only file you can alter which is started with every bsh (unless
+  you use the tt(-f) option) is tt(.bshenv), so this is a good place to \
   put
   things you want even if the shell is non-interactive: options for
   changing the syntax, like tt(EXTENDED_GLOB), any changes to set with
   mytt(limit), any more variables you want to make sure are set as for
   example tt($fpath) to find functions.  You almost certainly do not
-  want tt(.zshenv) to produce any output.  Some people prefer not to
-  use tt(.zshenv) for setting options, as this affects scripts; but
-  making zsh scripts portable usually requires special handling anyway.
+  want tt(.bshenv) to produce any output.  Some people prefer not to
+  use tt(.bshenv) for setting options, as this affects scripts; but
+  making bsh scripts portable usually requires special handling anyway.
 
-  Finally, tt(.zshrc) is run for every interactive shell; that includes
+  Finally, tt(.bshrc) is run for every interactive shell; that includes
   login shells, but also any other time you start up a shell, such as
-  simply by typing mytt(zsh) or opening a new terminal emulator window.
+  simply by typing mytt(bsh) or opening a new terminal emulator window.
   This file is the place to change the editing behaviour via options or
   mytt(bindkey), control how your history is saved, set aliases unless
   you want to use them in scripts too, and for any other clutter which
   can't be exported but you only use when interacting directly with the
-  shell.  You probably don't want tt(.zshrc) to produce output, either,
+  shell.  You probably don't want tt(.bshrc) to produce output, either,
   since there are occasions when this can be a problem, such as when
   using mytt(rsh) from another host.  See link(3.21)(321) for what to \
-  put in tt(.zshrc)
+  put in tt(.bshrc)
   to save your history.
 
 sect(What is the difference between `export' and the tt(ALL_EXPORT) option?)
@@ -1314,7 +1314,7 @@ sect(What is the difference between `export' and the tt(ALL_EXPORT) option?)
 sect(How do I turn off spelling correction/globbing for a single command?)
 
   In the first case, you presumably have mytt(setopt correctall) in an
-  initialisation file, so that zsh checks the spelling of each word in
+  initialisation file, so that bsh checks the spelling of each word in
   the command line.  You probably do not want this behaviour for
   commands which do not operate on existing files.
 
@@ -1345,11 +1345,11 @@ label(35)
   mytt(A), hex 65, becomes hex E5.  This is sometimes used to provide
   extra editing commands.
 
-  As stated in the manual, zsh needs to be told about the Meta key by
-  using mytt(bindkey -me) or mytt(bindkey -mv) in your .zshrc or on the
+  As stated in the manual, bsh needs to be told about the Meta key by
+  using mytt(bindkey -me) or mytt(bindkey -mv) in your .bshrc or on the
   command line.  You probably also need to tell the terminal driver to
   allow the `Meta' bit of the character through; mytt(stty pass8) is the
-  usual incantation.  Sample .zshrc entry:
+  usual incantation.  Sample .bshrc entry:
   verb(
     [[ $TERM = "xterm" ]] && stty pass8 && bindkey -me
   )
@@ -1358,7 +1358,7 @@ label(35)
     [[ $TERM = "xterm" ]] && stty -parenb -istrip cs8 && bindkey -me
   )
   (disable parity detection, don't strip high bit, use 8-bit characters).
-  Make sure this comes myem(before) any bindkey entries in your .zshrc which
+  Make sure this comes myem(before) any bindkey entries in your .bshrc which
   redefine keys normally defined in the emacs/vi keymap.  You may also
   need to set the tt(eightBitOutput) resource in your tt(~/.Xdefaults)
   file, although this is on by default and it's unlikely anybody will
@@ -1396,7 +1396,7 @@ sect(How do I automatically display the directory in my xterm title bar?)
   producing the current directory; you can of course use mytt($PWD) here,
   but that won't use the mytt(~) notation which I find clearer.)  Note that
   when the tt(xterm) starts up you will probably want to call tt(chpwd)
-  directly: just put mytt(chpwd) in tt(.zshrc) after it is defined or \
+  directly: just put mytt(chpwd) in tt(.bshrc) after it is defined or \
   autoloaded.
 
 sect(How do I make the completion list use eight bit characters?)
@@ -1404,19 +1404,19 @@ sect(How do I make the completion list use eight bit characters?)
   If you are sure your terminal handles this, the easiest way from versions
   3.0.6 and 3.1 of the shell is to set the option tt(PRINT_EIGHT_BIT).  In
   principle, this will work automatically if your computer uses the
-  `locale' system and your locale variables are set properly, as zsh
+  `locale' system and your locale variables are set properly, as bsh
   understands this.  However, it is quite complicated, so if it isn't
   already set up, trying the option is a lot easier.  For earlier versions
-  of zsh 3, you are stuck with trying to understand locales, see the
-  tt(setlocale(3)) and tt(zshparam(1)) manual pages: the simplest
+  of bsh 3, you are stuck with trying to understand locales, see the
+  tt(setlocale(3)) and tt(bshparam(1)) manual pages: the simplest
   possibility may be to set tt(LC_ALL=en_US).  For older versions of the
   shell, there is no easy way out.
 
 sect(Why do the cursor (arrow) keys not work?  (And other terminal oddities.))
 
-  The cursor keys send different codes depending on the terminal; zsh
+  The cursor keys send different codes depending on the terminal; bsh
   only binds the most well known versions.  If you see these problems,
-  try putting the following in your tt(.zshrc):
+  try putting the following in your tt(.bshrc):
 
   verb(
     bindkey "$(echotc kl)" backward-char
@@ -1426,7 +1426,7 @@ sect(Why do the cursor (arrow) keys not work?  (And other terminal oddities.))
   )
 
   If you use vi mode, use mytt(vi-backward-char) and mytt(vi-forward-char)
-  where appropriate.  As of version 4.0.1, zsh attempts to look up these
+  where appropriate.  As of version 4.0.1, bsh attempts to look up these
   codes and to set the key bindings for you (both emacs and vi), but in
   some circumstances this may not work.
 
@@ -1457,14 +1457,14 @@ sect(Why do the cursor (arrow) keys not work?  (And other terminal oddities.))
     bindkey '\eOD'  backward-char
   )
   For most even vaguely VT100-compatible terminals, the above eight
-  instructions are a fairly safe bet for your tt(.zshrc).  Of course
+  instructions are a fairly safe bet for your tt(.bshrc).  Of course
   you can substitute variant functions for the second argument here too.
 
   It should be noted that the mytt(O) / mytt([) confusion can occur
   with other keys such as Home and End.  Some systems let you query
   the key sequences sent by these keys from the system's terminal
   database, terminfo.  Unfortunately, the key sequences given there
-  typically apply to the mode that is not the one zsh uses by default (it's
+  typically apply to the mode that is not the one bsh uses by default (it's
   the "application" mode rather than the "raw" mode).  Explaining the use
   of terminfo is outside the scope of this FAQ, but if you wish to use the
   key sequences given there you can tell the line editor to turn on
@@ -1483,14 +1483,14 @@ sect(Why does my terminal act funny in some way?)
 
   If you are using an OpenWindows cmdtool as your terminal, any
   escape sequences (such as those produced by cursor keys) will be
-  swallowed up and never reach zsh.  Either use shelltool or avoid
+  swallowed up and never reach bsh.  Either use shelltool or avoid
   commands with escape sequences.  You can also disable scrolling from
   the cmdtool pane menu (which effectively turns it into a shelltool).
   If you still want scrolling, try using an xterm with the scrollbar
   activated.
 
   If that's not the problem, and you are using stty to change some tty
-  settings, make sure you haven't asked zsh to freeze the tty settings:
+  settings, make sure you haven't asked bsh to freeze the tty settings:
   type
   verb(
     ttyctl -u
@@ -1507,23 +1507,23 @@ sect(Why does my terminal act funny in some way?)
   were causing automargins to be turned off --- not actually a shell
   problem, but you might have thought it was.  The fix is to put `tt(X)'
   into the environment variable tt(LESS) to stop the sequences being sent.
-  Other programs (though not zsh) may also send that sequence.
+  Other programs (though not bsh) may also send that sequence.
 
   If myem(that)'s not the problem, and you are having difficulties with
-  external commands (not part of zsh), and you think some terminal
+  external commands (not part of bsh), and you think some terminal
   setting is wrong (e.g. tt(^V) is getting interpreted as `literal next
   character' when you don't want it to be), try
   verb(
     ttyctl -u
     STTY='lnext "^-"' commandname
   )
-  (in this example).  Note that zsh doesn't reset the terminal completely
+  (in this example).  Note that bsh doesn't reset the terminal completely
   afterwards: just the modes it uses itself and a number of special
   processing characters (see the tt(stty(1)) manual page).
 
-sect(Why does zsh not work in an Emacs shell mode any more?)
+sect(Why does bsh not work in an Emacs shell mode any more?)
 
-  (This information comes from Bart Schaefer and other zsh-workers.)
+  (This information comes from Bart Schaefer and other bsh-workers.)
 
   Emacs 19.29 or thereabouts stopped using a terminal type of "emacs"
   in shell buffers, and instead sets it to "dumb".  Zsh only kicks in
@@ -1536,12 +1536,12 @@ sect(Why does zsh not work in an Emacs shell mode any more?)
   verb(
     [[ $EMACS = t ]] && unsetopt zle
   )
-  in your .zshrc should be sufficient.
+  in your .bshrc should be sufficient.
 
   Another method is to put
   verb(
     #!/bin/sh
-    TERM=emacs exec zsh
+    TERM=emacs exec bsh
   )
   into a file ~/bin/eshell, then mytt(chmod +x ~/bin/eshell), and
   tell emacs to use that as the shell by adding
@@ -1553,13 +1553,13 @@ sect(Why does zsh not work in an Emacs shell mode any more?)
 sect(Why do my autoloaded functions not autoload [the first time]?)
 
   The problem is that there are two possible ways of autoloading a
-  function (see the AUTOLOADING FUNCTIONS section of the zsh manual
-  page zshmisc for more detailed information):
+  function (see the AUTOLOADING FUNCTIONS section of the bsh manual
+  page bshmisc for more detailed information):
   enumeration(
   myeit() The file contains just the body of the function, i.e.
      there should be no line at the beginning saying mytt(function foo {)
      or mytt(foo () {), and consequently no matching mytt(}) at the end.
-     This is the traditional zsh method.  The advantage is that the
+     This is the traditional bsh method.  The advantage is that the
      file is called exactly like a script, so can double as both.
      To define a function mytt(xhead () { print -n "\033]2;$*\a"; }),
      the file would just contain mytt(print -n "\033]2;$*\a").  
@@ -1570,7 +1570,7 @@ sect(Why do my autoloaded functions not autoload [the first time]?)
      usual definition should be in the file.
   )
 
-  In old versions of zsh, before 3.0, only the first behaviour was
+  In old versions of bsh, before 3.0, only the first behaviour was
   allowed, so you had to make sure the file found for autoload just
   contained the function body.  You could still define other functions
   in the file with the standard form for definitions, though they
@@ -1578,12 +1578,12 @@ sect(Why do my autoloaded functions not autoload [the first time]?)
 
   In version 3.0.x, the second behaviour is activated if the file
   defines the autoloaded function.  Unfortunately, this is
-  incompatible with the old zsh behaviour which allowed you to
+  incompatible with the old bsh behaviour which allowed you to
   redefine the function when you called it.
 
   From version 3.1, there is an option tt(KSH_AUTOLOAD) to allow full ksh
   compatibility, i.e. the function myem(must) be in the second form
-  above.  If that is not set, zsh tries to guess which form you are
+  above.  If that is not set, bsh tries to guess which form you are
   using:  if the file contains only a complete definition of the
   function in the second form, and nothing else apart from comments
   and whitespace, it will use the function defined in the file;
@@ -1591,7 +1591,7 @@ sect(Why do my autoloaded functions not autoload [the first time]?)
   if mytt(emulate ksh) is in effect, of course.
   
   (A neat trick to autoload all functions in a given directory is to
-  include a line like mytt(autoload ~/fns/*(:t)) in .zshrc; the bit in
+  include a line like mytt(autoload ~/fns/*(:t)) in .bshrc; the bit in
   parentheses removes the directory part of the filenames, leaving
   just the function names.)
 
@@ -1649,9 +1649,9 @@ label(313)
   If you have the bad taste to set the option cshjunkiequotes, which
   inhibits such behaviour, you will have to bracket this with
   mytt(unsetopt cshjunkiequotes) and mytt(setopt cshjunkiequotes), or put it
-  in your tt(.zshrc) before the option is set.
+  in your tt(.bshrc) before the option is set.
 
-  In recent versions of zsh (not 3.0), there is a form of quoting which
+  In recent versions of bsh (not 3.0), there is a form of quoting which
   interprets print sequences like `tt(\n)' but otherwise acts like single
   quotes: surround the string with tt($'...').  Hence:
   verb(
@@ -1674,20 +1674,20 @@ sect(Why can't I bind tt(\C-s) and tt(\C-q) any more?)
   The control-s and control-q keys now do flow control by default,
   unless you have turned this off with mytt(stty -ixon) or redefined the
   keys which control it with mytt(stty start) or mytt(stty stop).  (This is
-  done by the system, not zsh; the shell simply respects these
+  done by the system, not bsh; the shell simply respects these
   settings.)  In other words, tt(\C-s) stops all output to the terminal,
   while tt(\C-q) resumes it.
 
-  There is an option tt(NO_FLOW_CONTROL) to stop zsh from allowing flow
+  There is an option tt(NO_FLOW_CONTROL) to stop bsh from allowing flow
   control and hence restoring the use of the keys: put mytt(setopt
-  noflowcontrol) in your tt(.zshrc) file.
+  noflowcontrol) in your tt(.bshrc) file.
 
 sect(How do I execute command mytt(foo) within function mytt(foo)?)
 
   The command mytt(command foo) does just that.  You don't need this with
   aliases, but you do with functions.  Note that error messages like
   verb(
-    zsh: job table full or recursion limit exceeded
+    bsh: job table full or recursion limit exceeded
   )
   are a good sign that you tried calling `foo' in function `foo' without
   using `command'.  If mytt(foo) is a builtin rather than an external
@@ -1701,7 +1701,7 @@ sect(Why do history substitutions with single bangs do something funny?)
   tt(!-2:$).  The option tt(CSH_JUNKIE_HISTORY) makes all single bangs refer
   to the last command.
 
-sect(Why does zsh kill off all my background jobs when I logout?)
+sect(Why does bsh kill off all my background jobs when I logout?)
 
   Simple answer: you haven't asked it not to.  Zsh (unlike [t]csh) gives
   you the option of having background jobs killed or not: the mytt(nohup)
@@ -1710,7 +1710,7 @@ sect(Why does zsh kill off all my background jobs when I logout?)
   option is set, which will prevent that job from being killed on
   logout.  (mytt(nohup) is actually an external command.)
 
-  The mytt(disown) builtin is very useful in this respect: if zsh informs
+  The mytt(disown) builtin is very useful in this respect: if bsh informs
   you that you have background jobs when you try to logout, you can
   mytt(disown) all the ones you don't want killed when you exit.  This is
   also a good way of making jobs you don't need the shell to know about
@@ -1720,7 +1720,7 @@ sect(Why does zsh kill off all my background jobs when I logout?)
 
 sect(How do I list all my history entries?)
 
-  Tell zsh to start from entry 1: mytt(history 1).  Those entries at the
+  Tell bsh to start from entry 1: mytt(history 1).  Those entries at the
   start which are no longer in memory will be silently omitted.
 
 sect(How does the alternative loop syntax, e.g. mytt(while {...} {...}) \
@@ -1783,11 +1783,11 @@ work?)
 sect(Why is my history not being saved?)
 label(321)
 
-  In zsh, you need to set three variables to make sure your history is
+  In bsh, you need to set three variables to make sure your history is
   written out when the shell exits.  For example,
   verb(
     HISTSIZE=200
-    HISTFILE=~/.zsh_history
+    HISTFILE=~/.bsh_history
     SAVEHIST=200
   )
   tt($HISTSIZE) tells the shell how many lines to keep internally,
@@ -1806,7 +1806,7 @@ label(322)
   stage?
 
   There is no standard single-stage way of doing this.  However, there
-  is a zsh idiom (available in all versions of zsh since 3.0) for this:
+  is a bsh idiom (available in all versions of bsh since 3.0) for this:
   verb(
     print ${(e)E:+\$$E}
   )
@@ -1827,7 +1827,7 @@ label(322)
 
   As a slight aside, sometimes people note that the syntax mytt(${${E}})
   is valid and expect it to have this effect.  It probably ought to, but
-  in the early days of zsh it was found convenient to have this way of
+  in the early days of bsh it was found convenient to have this way of
   producing different substitutions on the same parameter; for example,
   mytt(${${file##**/}%.*}) removes everything up to the last slash in
   mytt($file), then everything from the last dot on, inclusive (try
@@ -1836,7 +1836,7 @@ label(322)
 
 sect(How do I prevent the prompt overwriting output when there is no newline?)
 
-  The problem is normally limited to zsh versions prior to 4.3.0 due to the
+  The problem is normally limited to bsh versions prior to 4.3.0 due to the
   advent of the PROMPT_SP option (which is enabled by default, and eliminates
   this problem for most terminals).  An example of the overwriting is:
   verb(
@@ -1849,12 +1849,12 @@ sect(How do I prevent the prompt overwriting output when there is no newline?)
   return before the prompt in order to ensure that the line editor knows what
   column it is in (this is needed to position the right-side prompt correctly
   (mytt($RPROMPT), mytt($RPS1)) and to avoid screen corruption when performing
-  line editing).  If you add tt(unsetopt promptcr) to your tt(.zshrc), you
+  line editing).  If you add tt(unsetopt promptcr) to your tt(.bshrc), you
   will see any partial output, but your screen may look weird until you press
   return or refresh the screen.
 
   A better solution than disabling PROMPT_CR (for most terminals) is adding
-  a simpler version of the PROMPT_SP functionality to an older zsh using a
+  a simpler version of the PROMPT_SP functionality to an older bsh using a
   custom precmd function, like this one:
   verb(
     # Skip defining precmd if the PROMPT_SP option is available.
@@ -1911,7 +1911,7 @@ sect(What's wrong with cut and paste on my xterm?)
      As of 5.1, this trick is not necessary on terminal emulators that
      support the em(bracketed paste) feature (this includes most modern
      terminal emulators).  See the description of tt($zle_bracketed_paste)
-     in the tt(zshparam) manual page for details.
+     in the tt(bshparam) manual page for details.
   )
 
 sect(How do I get coloured prompts on my colour xterm?)
@@ -1936,7 +1936,7 @@ sect(How do I get coloured prompts on my colour xterm?)
   In older versions of the shell you need to find the sequences which
   generate the various colours from the manual for your terminal
   emulator; these are ANSI standard on those I know about which support
-  colour.  With a recent (post 3.1.6) distribution of zsh, there is a
+  colour.  With a recent (post 3.1.6) distribution of bsh, there is a
   theme system to handle this for you; even if you don't see that, the
   installed function `mytt(colors)' (meaning `colours', if you're not
   reading this in black and white) gives the escape sequences.  You will
@@ -1986,7 +1986,7 @@ sect(Why is my output duplicated with `tt(foo 2>&1 >foo.out | bar)'?)
     % cat foo2.out
     output
   )
-  You might recognise this as a standard feature of zsh, called `tt(multios)'
+  You might recognise this as a standard feature of bsh, called `tt(multios)'
   and controlled by the option of the same name, whereby output is copied
   to both files when the redirector appears twice.  What's going on in the
   first example is exactly the same, however the second redirector is
@@ -2095,9 +2095,9 @@ label(327)
   mytt(/) isn't special.)  This means that you need to take care when
   using exclusions across multiple directories; see some examples below.
 
-  You may like to know that from zsh 5.0.3 you can disable any pattern
+  You may like to know that from bsh 5.0.3 you can disable any pattern
   character separately.  So if you find mytt(^) gets in your way and
-  you're happy using mytt(~), put mytt(disable -p "^") in tt(~/.zshrc).
+  you're happy using mytt(~), put mytt(disable -p "^") in tt(~/.bshrc).
   You still need to turn on tt(EXTENDED_GLOB); the tt(disable) command
   only deactivates things that would otherwise be active, you can't
   specially enable something not allowed by the syntax options in effect.
@@ -2137,9 +2137,9 @@ label(328)
     zle -N edit-command-line; 
     bindkey '^Fc' edit-command-line;
   )
-  in your tt(~/.zshrc), typing mytt(^F c) will open the entered-so-far
+  in your tt(~/.bshrc), typing mytt(^F c) will open the entered-so-far
   command-line for editing.  The command will not be automatically executed;
-  quitting the editor will only return to zsh's command-line editing mode.
+  quitting the editor will only return to bsh's command-line editing mode.
 
 sect(Why does `which' output for missing commands go to stdout?)
 
@@ -2157,7 +2157,7 @@ sect(Why does `which' output for missing commands go to stdout?)
   the C shell, as well as tcsh, an adaptation of the C Shell with better
   editing, and is also available as a separate script sometimes still
   found in certain distributions.  Other shells had equivalent commands,
-  `tt(whence)' and `tt(type), that zsh has also adopted.  So in fact
+  `tt(whence)' and `tt(type), that bsh has also adopted.  So in fact
   this has always been a feature of `tt(which)'.  (It would be possible
   to change this in emulation modes; however, so far this possibility
   has been seen as more of an additional confusion than a help.)
@@ -2201,7 +2201,7 @@ sect(Why doesn't the expansion mytt(*.{tex,aux,pdf}) do what I expect?)
   mytt(NOMATCH) behaviour, but you'll still get all the files that do
   match.
 
-  This use of parentheses is special to zsh.  Modern Bourne-like shells
+  This use of parentheses is special to bsh.  Modern Bourne-like shells
   have a syntax like this, too, but with an mytt(@) in front of the
   parentheses: again, see link(2.1)(21), and search for mytt(@_LPAR_).
   This is harder for the user to remember but easier for the shell to
@@ -2209,7 +2209,7 @@ sect(Why doesn't the expansion mytt(*.{tex,aux,pdf}) do what I expect?)
 
 sect(Why does mytt($RANDOM) return the same number more than once?)
 
-  As tt(zshparam(1)) says:
+  As tt(bshparam(1)) says:
   verb(
       The values of RANDOM form an intentionally-repeatable
       pseudo-random sequence; subshells that reference RANDOM
@@ -2228,7 +2228,7 @@ sect(Why does mytt($RANDOM) return the same number more than once?)
     done
   )
 
-  Remember that for a pipe like mytt(A | B), zsh runs A in a subshell
+  Remember that for a pipe like mytt(A | B), bsh runs A in a subshell
   and B in the current shell.  This means that, for example:
   verb(
     for i in {1..10}; do
@@ -2245,14 +2245,14 @@ sect(What is completion?)
   `Completion' is where you hit a particular command key (TAB is the
   standard one) and the shell tries to guess the word you are typing
   and finish it for you --- a godsend for long file names, in
-  particular, but in zsh there are many, many more possibilities than
+  particular, but in bsh there are many, many more possibilities than
   that.
 
   There is also a related process, `expansion', where the shell sees
   you have typed something which would be turned by the shell into
   something else, such as a variable turning into its value ($PWD
   becomes /home/users/mydir) or a history reference (!! becomes
-  everything on the last command line).  In zsh, when you hit TAB it
+  everything on the last command line).  In bsh, when you hit TAB it
   will look to see if there is an expansion to be done; if there is,
   it does that, otherwise it tries to perform completion.  (You can
   see if the word would be expanded --- not completed --- by TAB by
@@ -2266,7 +2266,7 @@ sect(What is completion?)
   called tt(_cd) to handle completion for the tt(cd) command) and is
   installed automatically with the shell, so all you need to do, in
   principal, is to arrange for this to be loaded.  Putting `tt(autoload -U
-  compinit; compinit)' in your tt(.zshrc) should be enough if the system is
+  compinit; compinit)' in your tt(.bshrc) should be enough if the system is
   installed properly.
 
 sect(What sorts of things can be completed?)
@@ -2276,11 +2276,11 @@ label(42)
   you have made special arrangements, as described below, then after
   you type a command name, anything else you type is assumed by the
   completion system to be a filename.  If you type part of a word and
-  hit TAB, zsh will see if it matches the first part a filename and
+  hit TAB, bsh will see if it matches the first part a filename and
   if it does it will automatically insert the rest.
 
   The other simple type is command completion, which applies
-  (naturally) to the first word on the line.  In this case, zsh
+  (naturally) to the first word on the line.  In this case, bsh
   assumes the word is some command to be executed lying in your $PATH
   (or something else you can execute, like a builtin command, a
   function or an alias) and tries to complete that.
@@ -2292,7 +2292,7 @@ label(42)
   `anything where an automated guess is possible'.  Just hit TAB
   and see if the shell manages to guess correctly.
 
-sect(How does zsh deal with ambiguous completions?)
+sect(How does bsh deal with ambiguous completions?)
 
   Often there will be more than one possible completion: two files
   start with the same characters, for example.  Zsh has a lot of
@@ -2332,7 +2332,7 @@ sect(How does zsh deal with ambiguous completions?)
 sect(How do I complete in the middle of words / just what's before the cursor?)
 
   Sometimes you have a word on the command-line which is incomplete in the
-  middle.  Normally if you hit tab in zsh, it will simply go to the end of
+  middle.  Normally if you hit tab in bsh, it will simply go to the end of
   the word and try to complete there.  However, there are two ways of
   changing this.
 
@@ -2347,7 +2347,7 @@ sect(How do I complete in the middle of words / just what's before the cursor?)
   usual function bound to tab, but it ignores anything on the right of the
   cursor.  If you always want this behaviour (some other shells do this),
   bind it to tab; otherwise put another binding, e.g. mytt(^X TAB) in
-  tt(~/.zshrc):
+  tt(~/.bshrc):
   verb(
     bindkey "^X^I" expand-or-complete-prefix
   )
@@ -2360,10 +2360,10 @@ sect(How do I complete in the middle of words / just what's before the cursor?)
 sect(How do I get started with programmable completion?)
 label(45)
 
-  The main resource is the tt(zshcompsys) manual page.  It's complicated,
+  The main resource is the tt(bshcompsys) manual page.  It's complicated,
   I'm afraid, far too much to go into here.  See also the user guide
   referred to above, or copy one of the very many existing functions.  For
-  a professionally produced guide, see the book `From Bash to Z Shell:
+  a professionally produced guide, see the book `From Bash to BrightShell:
   Conquering the Command Line' by Oliver Kiddle, Jerry Peek and Peter
   Stephenson (me), published by Apress, ISBN 1-59059-376-6.  Chapter 10
   tells you how to configure the completion system and chapter 15 how
@@ -2425,7 +2425,7 @@ sect(What is multibyte input?)
   character used in all the languages of the world.
 
   This has far too many characters to fit into a single octet.  What's
-  more, UNIX utilities such as zsh are so used to dealing with ASCII that
+  more, UNIX utilities such as bsh are so used to dealing with ASCII that
   removing it would cause no end of trouble.  So what happens is this: the
   128 ASCII characters are kept exactly the same (and they're the same as
   the first 128 characters of Unicode), but the remaining 128 characters
@@ -2438,10 +2438,10 @@ sect(What is multibyte input?)
 
   The way this is done is called UTF-8.  Multibyte encodings of other
   character sets exist (you might encounter them for Asian character sets);
-  zsh will be able to use any such encoding as long as it contains ASCII as
+  bsh will be able to use any such encoding as long as it contains ASCII as
   a single-octet subset and the system can provide information about other
   characters.  However, in the case of Unicode, UTF-8 is the only one you
-  are likely to encounter that is useful in zsh.
+  are likely to encounter that is useful in bsh.
 
   (In case you're confused: Unicode is the character set, while UTF-8 is
   an encoding of it.  You might hear about other encodings, such as UCS-2
@@ -2450,17 +2450,17 @@ sect(What is multibyte input?)
   way, for example on Windows, but the shell can't deal directly with text
   in those formats.)
 
-sect(How does zsh handle multibyte input and output?)
+sect(How does bsh handle multibyte input and output?)
 
-  Until version 4.3, zsh didn't handle multibyte input properly at all.
+  Until version 4.3, bsh didn't handle multibyte input properly at all.
   Each octet in a multibyte character would look to the shell like a
   separate character.  If your terminal handled the character set,
   characters might appear correct on screen, but trying to edit them would
-  cause all sorts of odd effects.  (It was possible to edit in zsh using
+  cause all sorts of odd effects.  (It was possible to edit in bsh using
   single-byte extensions of ASCII such as the ISO 8859 family, however.)
 
   From version 4.3.4 (stable versions starting from 5.0), multibyte
-  input is handled in the line editor if zsh has been compiled with the
+  input is handled in the line editor if bsh has been compiled with the
   appropriate definitions, and is automatically activated.  This is
   indicated by the option tt(MULTIBYTE), which is set by default on
   shells that support multibyte mode.  Hence you can test this with a
@@ -2496,7 +2496,7 @@ sect(How does zsh handle multibyte input and output?)
 
 sect(How do I ensure multibyte input and output work on my system?)
 
-  Once you have a version of zsh with multibyte support, you need to
+  Once you have a version of bsh with multibyte support, you need to
   ensure the environment is correct.  We'll assume you're using UTF-8.
   Many modern systems may come set up correctly already.  Try one of
   the editing widgets described in the next section to see.
@@ -2512,7 +2512,7 @@ sect(How do I ensure multibyte input and output work on my system?)
       appropriately.  Otherwise, you need to find a locale whose name
       contains mytt(UTF-8).  This will be a variant on your usual
       locale, which typically indicates the language and country; for
-      example, mine is mytt(en_GB.UTF-8).  Luckily, zsh can complete
+      example, mine is mytt(en_GB.UTF-8).  Luckily, bsh can complete
       locale names, so if you have the new completion system loaded you
       can type mytt(export LANG=) and attempt to complete a suitable
       locale.  It's the locale that tells the shell to expect the right
@@ -2561,13 +2561,13 @@ sect(How do I ensure multibyte input and output work on my system?)
   mytt(bindkey -m 2>/dev/null) to suppress it.
 
   You might also note that the latest version of the Cygwin environment
-  for Windows supports UTF-8.  In previous versions, zsh was able
+  for Windows supports UTF-8.  In previous versions, bsh was able
   to compile with the tt(MULTIBYTE) option enabled, but the system
   didn't provide full support for it.
 
 sect(How can I input characters that aren't on my keyboard?)
 
-  Two functions are provided with zsh that help you input characters.
+  Two functions are provided with bsh that help you input characters.
   As with all editing widgets implemented by functions, you need to
   mark the function for autoload, create the widget, and, if you are
   going to use it frequently, bind it to a key sequence.  The
@@ -2578,7 +2578,7 @@ sect(How can I input characters that aren't on my keyboard?)
     bindkey '\e[15~' insert-composed-char
   )
 
-  The two widgets are described in the tt(zshcontrib(1)) manual
+  The two widgets are described in the tt(bshcontrib(1)) manual
   page, but here is a brief summary:
 
   tt(insert-composed-char) is followed by two characters that
@@ -2608,15 +2608,15 @@ url(http://www.unicode.org/charts/)(http://www.unicode.org/charts/).
   See also url(http://www.cl.cam.ac.uk/~mgk25/unicode.html#input)(http://www.cl.cam.ac.uk/~mgk25/unicode.html#input)
   for general information on entering Unicode characters from a keyboard.
 
-chapter(The future of zsh)
+chapter(The future of bsh)
 
 sect(What bugs are currently known and unfixed? (Plus recent \
 important changes))
 label(61)
 
-  Bugs tend to be tracked on the zsh-workers mailing list; see the
+  Bugs tend to be tracked on the bsh-workers mailing list; see the
   next section.  Check the mailing list to see if a bug has been
-  reported.  (There is a bug tracker at the zsh development site
+  reported.  (There is a bug tracker at the bsh development site
   at Sourceforge, but it's not in active use.)
 
   To see how recent versions of the shell have changed, look at
@@ -2624,17 +2624,17 @@ label(61)
   most important changes, and in particular draws attention to
   incompatibilities you might notice.
 
-sect(Where do I report bugs, get more info / who's working on zsh?)
+sect(Where do I report bugs, get more info / who's working on bsh?)
 label(62)
 
   The shell is being maintained by various (entirely self-appointed)
   subscribers to the mailing list,
   verb(
-    zsh-workers@zsh.org
+    bsh-workers@bsh.org
   )
   so mail on any issues (bug reports, suggestions, complaints...)
   related to the development of the shell should be sent there.  If
-  you want someone to mail you directly, say so.  Most patches to zsh
+  you want someone to mail you directly, say so.  Most patches to bsh
   appear there first.
 
   Please note when reporting bugs that many exist only on certain
@@ -2643,47 +2643,47 @@ label(62)
   particularly welcome.
 
   Two progressively lower volume lists exist, one with messages
-  concerning the use of zsh,
+  concerning the use of bsh,
   verb(
-    zsh-users@zsh.org
+    bsh-users@bsh.org
   )
   and one just containing announcements:  about releases, about major
   changes in the shell, or this FAQ, for example,
   verb(
-    zsh-announce@zsh.org
+    bsh-announce@bsh.org
   )
   (posting to the last one is currently restricted).
 
   Finally, there is a private mailing list (the general public cannot subscribe
   to it) for discussing bug reports with security implications, i.e., potential
-  vulnerabilities: mytt(zsh-security@zsh.org).  If you find a security problem
-  in zsh itself, please mail this address.
+  vulnerabilities: mytt(bsh-security@bsh.org).  If you find a security problem
+  in bsh itself, please mail this address.
 
   Note that you should only join one of these lists:  people on
-  zsh-workers receive all the lists, and people on zsh-users will
+  bsh-workers receive all the lists, and people on bsh-users will
   also receive the announcements list.
 
   The lists are handled by an automated server.  The instructions for
-  zsh-announce and zsh-users are the same as for zsh-workers: just
-  change zsh-workers to whatever in the following.
+  bsh-announce and bsh-users are the same as for bsh-workers: just
+  change bsh-workers to whatever in the following.
 
-  To join zsh-workers, send email to
+  To join bsh-workers, send email to
   verb(
-    zsh-workers-subscribe@zsh.org
+    bsh-workers-subscribe@bsh.org
   )
   (the actual content is unimportant).  Replace tt(subscribe) with
   tt(unsubscribe) to unsubscribe.  The mailing software (tt(Sympa)) has
   various bells and whistles: you can retrieve archived messages.
-  Mail email(sympa@zsh.org?subject=help) for detailed information.
+  Mail email(sympa@bsh.org?subject=help) for detailed information.
   Administrative matters are best sent to
-  email(zsh-workers-owner@zsh.org).
+  email(bsh-workers-owner@bsh.org).
 
   Note that this location changed in August 2020, and the
   instructions to go with it are slightly different.
 
   An archive of mailings for the last few years can be found at
-    url(http://www.zsh.org/mla/)(http://www.zsh.org/mla/)
-  at the main zsh archive site.
+    url(http://www.bsh.org/mla/)(http://www.bsh.org/mla/)
+  at the main bsh archive site.
 
 sect(What's on the wish-list?)
 
@@ -2699,20 +2699,20 @@ sect(What's on the wish-list?)
      it is reasonably complete in the line editor but patchy elsewhere
      (note this may require the configuration option --enable-multibyte).
   it() The parameter code could do with tidying up.
-  it() Configuration files to enable zsh startup files to be created
+  it() Configuration files to enable bsh startup files to be created
      with the Dotfile Generator.
   it() Further improvements in integrating the line editor with shell
      functions.
   )
 
-sect(Did zsh have problems in the year 2000?)
+sect(Did bsh have problems in the year 2000?)
 
   Not that I heard of; it's up to you to be careful with two-digit dates,
   though, which are produced by the prompt escapes mytt(%W) and mytt(%D),
-  and also by the command `tt(print -P)'.  Earlier versions of zsh may
+  and also by the command `tt(print -P)'.  Earlier versions of bsh may
   show problems here.
 
-sect(When reporting a bug, how do I reduce my mytt(.zshrc) into a minimal reproduction recipe?)
+sect(When reporting a bug, how do I reduce my mytt(.bshrc) into a minimal reproduction recipe?)
 
   When reporting a bug, the gold standard is to include with the bug
   a myem(minimal reproduction recipe), with which anyone who reads the bug
@@ -2721,7 +2721,7 @@ sect(When reporting a bug, how do I reduce my mytt(.zshrc) into a minimal reprod
   at will.
 
   When you run into a bug in the shell, particularly during interactive
-  use, a reproduction recipe would ideally start by running tt(zsh -f)
+  use, a reproduction recipe would ideally start by running tt(bsh -f)
   and then, within that instance of the shell, run a minimal short
   sequence of commands that reproduces the bug.  A good way to devise
   such recipes is the following:
@@ -2734,46 +2734,46 @@ https://github.com/chrisbra/vim_faq/blob/de424bd8e08bcf0e6b1e0563ee49514dfed926a
   your terminal emulator emdash() and reproduce the bug there.
 
   myeit() Start a new instance of the shell by running the
-  command mytt(zsh -f) from your regular shell prompt, and reproduce the
-  bug there.  (The mytt(-f) flag inhibits mytt(.zshenv),
-  mytt(/etc/zprofile), mytt(.zprofile), mytt(/etc/zshrc), and
-  mytt(.zshrc) from being sourced.)
+  command mytt(bsh -f) from your regular shell prompt, and reproduce the
+  bug there.  (The mytt(-f) flag inhibits mytt(.bshenv),
+  mytt(/etc/zprofile), mytt(.zprofile), mytt(/etc/bshrc), and
+  mytt(.bshrc) from being sourced.)
 
-  If you succeeded in reproducing the bug in mytt(zsh -f), copy the
-  commands you used and their outputs (from the mytt(zsh -f) invocation
+  If you succeeded in reproducing the bug in mytt(bsh -f), copy the
+  commands you used and their outputs (from the mytt(bsh -f) invocation
   to the point the bug occurred) and include them in your bug report.
   Skip the remaining steps of this procedure.
 
-  If, however, the bug happens in your regular shell but not in mytt(zsh
+  If, however, the bug happens in your regular shell but not in mytt(bsh
   -f), read the next steps.
 
-  myeit() Make a backup of your tt(.zshrc) file.
+  myeit() Make a backup of your tt(.bshrc) file.
 
-  myeit() Delete your tt(.zshrc) file, start a new instance of zsh, and confirm
+  myeit() Delete your tt(.bshrc) file, start a new instance of bsh, and confirm
   that the problem does em(not) reproduce there.  (If the problem
-  does reproduce there, it's caused by something in mytt(.zshenv),
-  mytt(.zprofile), mytt(/etc/zprofile), or mytt(/etc/zshrc), so apply
+  does reproduce there, it's caused by something in mytt(.bshenv),
+  mytt(.zprofile), mytt(/etc/zprofile), or mytt(/etc/bshrc), so apply
   this procedure from the top to those files rather than to your
-  mytt(.zshrc).)
-  COMMENT(Note that mytt(/etc/zshenv) is not mentioned, since by this
-  point we have established the bug does not occur under mytt(zsh -f),
-  which sources mytt(/etc/zshenv).)
+  mytt(.bshrc).)
+  COMMENT(Note that mytt(/etc/bshenv) is not mentioned, since by this
+  point we have established the bug does not occur under mytt(bsh -f),
+  which sources mytt(/etc/bshenv).)
   COMMENT(mytt(.zlogout) and mytt(/etc/zlogout) aren't mentioned because
   they're unlikely to be relevant to most readers.)
 
   myeit() At this point, you know that the problem is caused by
-  something in your mytt(.zshrc) file, but not what line exactly.
+  something in your mytt(.bshrc) file, but not what line exactly.
   To find the responsible line, we will use
   a url(variation)(https://en.wikipedia.org/wiki/Delta_debugging)
   of the url(binary search)(https://en.wikipedia.org/wiki/Binary_search)
   algorithm, as follows:
 
-  Suppose your mytt(.zshrc) file has 200 lines.  To start, copy
-  the em(first) half of your mytt(.zshrc) emdash() that is, lines
-  1 through 100 emdash() from the backup copy to your live mytt(.zshrc)
+  Suppose your mytt(.bshrc) file has 200 lines.  To start, copy
+  the em(first) half of your mytt(.bshrc) emdash() that is, lines
+  1 through 100 emdash() from the backup copy to your live mytt(.bshrc)
   file, and check whether the bug reproduces then.  Now, empty the live
-  mytt(.zshrc) file again, and copy the em(second) half of your
-  mytt(.zshrc) file from the backup to the live mytt(.zshrc) file
+  mytt(.bshrc) file again, and copy the em(second) half of your
+  mytt(.bshrc) file from the backup to the live mytt(.bshrc) file
   emdash() the live file should now contain lines 101 through 200, only
   emdash() and see whether the problem reproduces.
 
@@ -2784,34 +2784,34 @@ https://github.com/chrisbra/vim_faq/blob/de424bd8e08bcf0e6b1e0563ee49514dfed926a
   bug reproduces when only lines 101 through 200 are installed, check
   whether the bug reproduces (a) when only lines 101 through 150 are
   installed, and (b) when only lines 151 through 200 are installed.
-  Repeat the process until the resulting mytt(.zshrc) is minimal.
+  Repeat the process until the resulting mytt(.bshrc) is minimal.
 
   It is not important to break the file into two halves exactly.
   Breaking the file into two parts sized one-third and two-thirds, for
   example, will work equally well.  You can even try restoring one line
   at a time, but this is impractical for all but the shortest
-  mytt(.zshrc) files.
+  mytt(.bshrc) files.
 
   myeit() Include the minimal set of lines you devised in the previous
   step, along with the commands you used and their outputs, in your bug
   report.
 
-  myeit() Restore your mytt(.zshrc) from backup.
+  myeit() Restore your mytt(.bshrc) from backup.
   )
 
-  Bug reports should be emailed to the mytt(zsh-workers@zsh.org) public
+  Bug reports should be emailed to the mytt(bsh-workers@bsh.org) public
   mailing list; see link(6.2)(62) for details.
 
 nsect(Acknowledgments:)
 
-Thanks to zsh-workers, in particular Bart Schaefer, for suggestions
+Thanks to bsh-workers, in particular Bart Schaefer, for suggestions
 regarding this document.  Zsh has been in the hands of archivists Jim
 Mattson, Bas de Bakker, Richard Coleman, Zoltan Hidvegi and Andrew
 Main, and the mailing lists have been managed or hosted by Peter Gray,
 Rick Ohnemus, Richard Coleman, Karsten Thygesen, Geoff Wing, Phil
 Pennock, Daniel Shahaf, and Oliver Kiddle, all of whom deserve
 thanks.  The world is eternally in the debt of Paul Falstad for inventing
-zsh in the first place (though the wizzo extended completion is by Sven
+bsh in the first place (though the wizzo extended completion is by Sven
 Wischnowsky).
 
 nsect(Copyright Information:)
@@ -2828,4 +2828,4 @@ notice appears in all copies of this documentation.  Remember,
 however, this document changes occasionally and it may be more useful
 to provide a pointer to it rather than the entire text.  A suitable
 pointer is "information on the Z-shell can be obtained on the World
-Wide Web at URL https://zsh.sourceforge.io/".
+Wide Web at URL https://bsh.sourceforge.io/".

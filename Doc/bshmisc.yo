@@ -1,5 +1,5 @@
-manpage(ZSHMISC)(1)(date())(zsh version())
-manpagename(zshmisc)(everything and then some)
+manpage(BSHMISC)(1)(date())(bsh version())
+manpagename(bshmisc)(everything and then some)
 includefile(Zsh/grammar.yo)
 includefile(Zsh/redirect.yo)
 includefile(Zsh/exec.yo)

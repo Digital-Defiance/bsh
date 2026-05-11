@@ -1,10 +1,10 @@
-COMMENT(!MOD!zsh/zleparameter
+COMMENT(!MOD!bsh/zleparameter
 Access to internals of the Zsh Line Editor via parameters.
 !MOD!)
 cindex(parameters, special)
-The tt(zsh/zleparameter) module defines two special parameters that can be 
+The tt(bsh/zleparameter) module defines two special parameters that can be 
 used to access internal information of the Zsh Line Editor (see
-nmref(Zsh Line Editor)(zshzle)).
+nmref(Zsh Line Editor)(bshzle)).
 
 startitem()
 vindex(keymaps)

@@ -1,7 +1,7 @@
 /*
  * pcre.c - interface to the PCRE library
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2001, 2002, 2003, 2004, 2007 Clint Adams
  * All rights reserved.
@@ -219,7 +219,7 @@ zpcre_get_substrings(pcre2_code *pat, char *arg, pcre2_match_data *mdata,
 	{
 	    char **hash, **hashptr;
 	    uint32_t nidx;
-	    hashptr = hash = (char **)zshcalloc((ncount+1)*2*sizeof(char *));
+	    hashptr = hash = (char **)bshcalloc((ncount+1)*2*sizeof(char *));
 	    for (nidx = 0; nidx < ncount; nidx++) {
 		vec_off = (ntable[nsize * nidx] << 9) + 2 * ntable[nsize * nidx + 1];
 		/* would metafy the key but pcre limits characters in the name */
@@ -468,7 +468,7 @@ cond_pcre_match(char **a, int id)
 		 * r > 0 => (r-1) substrings found; r==1 => no substrings
 		 */
     		if (r==0) {
-		    zwarn("reportable zsh problem: pcre2_match() returned 0");
+		    zwarn("reportable bsh problem: pcre2_match() returned 0");
 		    return_value = 1;
 		    break;
 		}

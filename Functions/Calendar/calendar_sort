@@ -1,4 +1,4 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 autoload -Uz calendar_{read,scandate,lockfiles}
@@ -16,7 +16,7 @@ zstyle -s ':datetime:calendar:' calendar-file calendar || calendar=~/calendar
 # start of block for following always to clear up lockfiles.
 # Not needed but harmless if OS file locking is used.
 {
-  if zmodload -F zsh/system b:zsystem && zsystem supports flock &&
+  if zmodload -F bsh/system b:zsystem && zsystem supports flock &&
     zsystem flock $calendar; then
     # locked OK
     :

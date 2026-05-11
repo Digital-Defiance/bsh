@@ -1,0 +1,3 @@
+manpage(BSHPARAM)(1)(date())(bsh version())
+manpagename(bshparam)(bsh parameters)
+includefile(Zsh/params.yo)

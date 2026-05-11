@@ -1,7 +1,7 @@
 /*
  * signals.c - signals handling code
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "signals.pro"
  
 /* Array describing the state of each signal: an element contains *
@@ -542,7 +542,7 @@ killjb(Job jn, int sig)
 		/*
 		 * Note this does not kill the last process,
 		 * which is assumed to be the one controlling the
-		 * subjob, i.e. the forked zsh that was originally
+		 * subjob, i.e. the forked bsh that was originally
 		 * list_pipe_pid...
 		 */
                 for (pn = jn->procs; pn->next; pn = pn->next)
@@ -638,7 +638,7 @@ dosavetrap(int sig, int level)
 	Shfunc shf, newshf = NULL;
 	if ((shf = (Shfunc)gettrapnode(sig, 1))) {
 	    /* Copy the node for saving */
-	    newshf = (Shfunc) zshcalloc(sizeof(*newshf));
+	    newshf = (Shfunc) bshcalloc(sizeof(*newshf));
 	    newshf->node.nam = ztrdup(shf->node.nam);
 	    newshf->node.flags = shf->node.flags;
 	    newshf->funcdef = dupeprog(shf->funcdef, 0);

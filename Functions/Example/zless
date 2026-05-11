@@ -1,7 +1,7 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 #
-# zsh function script to run less on various inputs, decompressing as required.
-# Author: Phil Pennock.  zsh-hacks@athenaeum.demon.co.uk
+# bsh function script to run less on various inputs, decompressing as required.
+# Author: Phil Pennock.  bsh-hacks@athenaeum.demon.co.uk
 # Modified by Bart Schaefer.
 # Thanks to zefram@fysh.org for a great deal of help in sorting this out,
 # ie wrt syntax for unsetting members of arrays and eval "$(...)" when I
@@ -11,12 +11,12 @@
 #  zless -zforce 'bzip2 -dc' foo-no-dotbz2
 #  zless -zforce 'od -hc' foo-binfile
 #
-# If you can understand all of this without reference to zshexpn(1)
-# and zshparam(1) then you either have a photographic memory or you
+# If you can understand all of this without reference to bshexpn(1)
+# and bshparam(1) then you either have a photographic memory or you
 # need to get out more.
 #
 
-emulate -R zsh
+emulate -R bsh
 setopt localoptions
 
 [[ $# -ge 1 ]] || return

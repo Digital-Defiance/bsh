@@ -1,7 +1,7 @@
 /*
- * zsh.h - standard header file
+ * bsh.h - standard header file
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -34,8 +34,8 @@
  * Our longest integer type:  will be a 64 bit either if long already is,
  * or if we found some alternative such as long long.
  */
-#ifdef ZSH_64_BIT_TYPE
-typedef ZSH_64_BIT_TYPE zlong;
+#ifdef BSH_64_BIT_TYPE
+typedef BSH_64_BIT_TYPE zlong;
 #if defined(ZLONG_IS_LONG_LONG) && defined(LLONG_MAX)
 #define ZLONG_MAX LLONG_MAX
 #else
@@ -46,8 +46,8 @@ typedef ZSH_64_BIT_TYPE zlong;
 #define  ZLONG_MAX ((zlong)9223372036854775807)
 #endif
 #endif
-#ifdef ZSH_64_BIT_UTYPE
-typedef ZSH_64_BIT_UTYPE zulong;
+#ifdef BSH_64_BIT_UTYPE
+typedef BSH_64_BIT_UTYPE zulong;
 #else
 typedef unsigned zlong zulong;
 #endif
@@ -61,7 +61,7 @@ typedef unsigned long zulong;
  * Work out how to define large integer constants that will fit
  * in a zlong.
  */
-#if defined(ZSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
+#if defined(BSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
 /* We have some 64-bit type */
 #ifdef LONG_IS_64_BIT
 /* It's long */
@@ -138,7 +138,7 @@ struct mathfunc {
 /* Meta together with the character following Meta denotes the character *
  * which is the exclusive or of 32 and the character following Meta.     *
  * This is used to represent characters which otherwise has special      *
- * meaning for zsh.  These are the characters for which the imeta() test *
+ * meaning for bsh.  These are the characters for which the imeta() test *
  * is true: the null character, and the characters from Meta to Marker.  */
 
 #define Meta		((char) 0x83)
@@ -504,7 +504,7 @@ struct entersubsh_ret {
 };
 
 /**************************/
-/* Abstract types for zsh */
+/* Abstract types for bsh */
 /**************************/
 
 typedef struct alias     *Alias;
@@ -653,7 +653,7 @@ struct timedfn {
  * Condition types.
  *
  * Careful when changing these: both cond_binary_ops in text.c and
- * condstr in cond.c depend on these.  (The zsh motto is "two instances
+ * condstr in cond.c depend on these.  (The bsh motto is "two instances
  * are better than one".  Or something.)
  */
 
@@ -1920,7 +1920,7 @@ struct tieddata {
 #define PM_LOCAL	(1<<19) /* this parameter will be made local        */
 #define PM_KSHSTORED	(1<<19) /* (function) stored in ksh form              */
 #define PM_SPECIAL	(1<<20) /* special builtin parameter                */
-#define PM_ZSHSTORED	(1<<20) /* (function) stored in zsh form              */
+#define PM_BSHSTORED	(1<<20) /* (function) stored in bsh form              */
 #define PM_RO_BY_DESIGN (1<<21) /* to distinguish from specials that can be
 				   made read-only by the user               */
 #define PM_READONLY_SPECIAL (PM_SPECIAL|PM_READONLY|PM_RO_BY_DESIGN)
@@ -2007,13 +2007,13 @@ struct repldata {
 typedef struct repldata *Repldata;
 
 /*
- * Flags to zshtokenize.
+ * Flags to bshtokenize.
  */
 enum {
     /* Do glob substitution */
-    ZSHTOK_SUBST = 0x0001,
+    BSHTOK_SUBST = 0x0001,
     /* Use sh-style globbing */
-    ZSHTOK_SHGLOB = 0x0002
+    BSHTOK_SHGLOB = 0x0002
 };
 
 /* Flags as the second argument to prefork */
@@ -2333,7 +2333,7 @@ struct histent {
 
 
 /******************************/
-/* Definition for zsh options */
+/* Definition for bsh options */
 /******************************/
 
 /* Possible values of emulation */
@@ -2341,7 +2341,7 @@ struct histent {
 #define EMULATE_CSH  (1<<1) /* C shell */
 #define EMULATE_KSH  (1<<2) /* Korn shell */
 #define EMULATE_SH   (1<<3) /* Bourne shell */
-#define EMULATE_ZSH  (1<<4) /* `native' mode */
+#define EMULATE_BSH  (1<<4) /* `native' mode */
 
 /* Test for a shell emulation.  Use this rather than emulation directly. */
 #define EMULATION(X)	(emulation & (X))
@@ -2825,7 +2825,7 @@ enum {
  */
 typedef unsigned int Heapid;
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 
 /* printf format specifier corresponding to Heapid */
 #define HEAPID_FMT	"%x"
@@ -2871,12 +2871,12 @@ enum heap_debug_verbosity {
 struct heapstack {
     struct heapstack *next;	/* next one in list for this heap */
     size_t used;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     Heapid heap_id;
 #endif
 };
 
-/* A zsh heap. */
+/* A bsh heap. */
 
 struct heap {
     struct heap *next;		/* next one                                  */
@@ -2884,7 +2884,7 @@ struct heap {
     size_t used;		/* bytes used from the heap                  */
     struct heapstack *sp;	/* used by pushheap() to save the value used */
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     unsigned int heap_id;
 #endif
 
@@ -3086,7 +3086,7 @@ struct lex_stack {
     int lexflags;
     enum lextok tok;
     char *tokstr;
-    char *zshlextext;
+    char *bshlextext;
     struct lexbufstate lexbuf;
     int lex_add_raw;
     char *tokstr_raw;
@@ -3256,10 +3256,10 @@ enum zexit_t {
     ZEXIT_DEFERRED = 2
 };
 
-#define EXITHOOK       (zshhooks + 0)
-#define BEFORETRAPHOOK (zshhooks + 1)
-#define AFTERTRAPHOOK  (zshhooks + 2)
-#define GETCOLORATTR   (zshhooks + 3)
+#define EXITHOOK       (bshhooks + 0)
+#define BEFORETRAPHOOK (bshhooks + 1)
+#define AFTERTRAPHOOK  (bshhooks + 2)
+#define GETCOLORATTR   (bshhooks + 3)
 
 /* Final argument to [ms]b_niceformat() */
 enum {

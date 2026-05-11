@@ -1,7 +1,7 @@
 /*
  * zle_thingy.c - thingies
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -107,7 +107,7 @@ scanemptythingies(HashNode hn, UNUSED(int flags))
 static Thingy
 makethingynode(void)
 {
-    Thingy t = (Thingy) zshcalloc(sizeof(*t));
+    Thingy t = (Thingy) bshcalloc(sizeof(*t));
 
     t->flags = DISABLED;
     return t;
@@ -602,7 +602,7 @@ bin_zle_complete(char *name, char **args, UNUSED(Options ops), UNUSED(char func)
     Thingy t;
     Widget w, cw;
 
-    if (require_module("zsh/complete", NULL, 0) == 1) {
+    if (require_module("bsh/complete", NULL, 0) == 1) {
 	zwarnnam(name, "can't load complete module");
 	return 1;
     }

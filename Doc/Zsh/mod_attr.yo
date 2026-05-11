@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/attr
+COMMENT(!MOD!bsh/attr
 Builtins for manipulating extended attributes (xattr).
 !MOD!)
-The tt(zsh/attr) module is used for manipulating extended attributes.
+The tt(bsh/attr) module is used for manipulating extended attributes.
 The tt(-h) option causes all commands to operate on symbolic links instead
 of their targets.
 The builtins in this module are:

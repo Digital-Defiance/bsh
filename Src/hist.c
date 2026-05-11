@@ -1,7 +1,7 @@
 /*
  * hist.c - history expansion
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "hist.pro"
 
 /* Functions to call for getting/ungetting a character and for history
@@ -388,7 +388,7 @@ ihwaddc(int c)
 }
 
 /* This function adds a character to the zle input line. It is used when *
- * zsh expands history (see doexpandhist() in zle_tricky.c). It also     *
+ * bsh expands history (see doexpandhist() in zle_tricky.c). It also     *
  * calculates the new cursor position after the expansion. It is called  *
  * from hgetc() and from gettok() in lex.c for characters in comments.   */
 
@@ -612,7 +612,7 @@ histsubchar(int c)
      *
      * Include the character we are attempting to substitute.
      */
-    lexraw_mark = zshlex_raw_mark(-1); 
+    lexraw_mark = bshlex_raw_mark(-1); 
 
     /* look, no goto's */
     if (isfirstch && c == hatchar) {
@@ -960,7 +960,7 @@ histsubchar(int c)
 	}
     }
 
-    zshlex_raw_back_to_mark(lexraw_mark);
+    bshlex_raw_back_to_mark(lexraw_mark);
 
     /*
      * Push the expanded value onto the input stack,
@@ -1144,7 +1144,7 @@ hbegin(int dohist)
 	hwend = nohwe;
 	addtoline = nohw;
     } else {
-	chline = hptr = zshcalloc(hlinesz = 64);
+	chline = hptr = bshcalloc(hlinesz = 64);
 	chwords = zalloc((chwordlen = 64) * sizeof(short));
 	hgetc = ihgetc;
 	hungetc = ihungetc;
@@ -1397,7 +1397,7 @@ prepnexthistent(void)
     }
 
     if (histlinect < histsiz || !hist_ring) {
-	he = (Histent)zshcalloc(sizeof *he);
+	he = (Histent)bshcalloc(sizeof *he);
 	if (!hist_ring)
 	    hist_ring = he->up = he->down = he;
 	else {
@@ -1517,9 +1517,9 @@ hend(Eprog prog)
 	int save_errflag = errflag;
 	errflag = 0;
 
-	addlinknode(hookargs, "zshaddhistory");
+	addlinknode(hookargs, "bshaddhistory");
 	addlinknode(hookargs, chline);
-	callhookfunc("zshaddhistory", hookargs, 1, &hookret);
+	callhookfunc("bshaddhistory", hookargs, 1, &hookret);
 
 	errflag &= ~ERRFLAG_ERROR;
 	errflag |= save_errflag;
@@ -2187,7 +2187,7 @@ remlpaths(char **junkptr, int count)
 
 /*
  * Return modified version of str from the heap with modification
- * according to one of the CASMOD_* types defined in zsh.h; CASMOD_NONE
+ * according to one of the CASMOD_* types defined in bsh.h; CASMOD_NONE
  * is not handled, for obvious reasons.
  */
 

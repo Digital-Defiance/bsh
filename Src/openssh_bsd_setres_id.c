@@ -16,10 +16,10 @@
 /*
  * openssh_bsd_setres_id.c - setresuid() and setresgid() wrappers
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * It is based on the file openbsd-compat/bsd-setres_id.c in OpenSSH 7.9p1,
- * which is subject to the copyright notice above.  The zsh modifications are
+ * which is subject to the copyright notice above.  The bsh modifications are
  * licensed as follows:
  *
  * Copyright (c) 2019 Daniel Shahaf
@@ -46,7 +46,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "openssh_bsd_setres_id.pro"
 
 #include <sys/types.h>
@@ -65,7 +65,7 @@
 #define BROKEN_SETREGID
 #endif
 
-#if defined(ZSH_IMPLEMENT_SETRESGID) || defined(BROKEN_SETRESGID)
+#if defined(BSH_IMPLEMENT_SETRESGID) || defined(BROKEN_SETRESGID)
 int
 setresgid(gid_t rgid, gid_t egid, gid_t sgid)
 {
@@ -75,7 +75,7 @@ setresgid(gid_t rgid, gid_t egid, gid_t sgid)
 		errno = ENOSYS;
 		return -1;
 	}
-#if defined(ZSH_HAVE_NATIVE_SETREGID) && !defined(BROKEN_SETREGID)
+#if defined(BSH_HAVE_NATIVE_SETREGID) && !defined(BROKEN_SETREGID)
 	if (setregid(rgid, egid) < 0) {
 		saved_errno = errno;
 		zwarnnam("setregid", "to gid %L: %e", (long)rgid, errno);
@@ -100,7 +100,7 @@ setresgid(gid_t rgid, gid_t egid, gid_t sgid)
 }
 #endif
 
-#if defined(ZSH_IMPLEMENT_SETRESUID) || defined(BROKEN_SETRESUID)
+#if defined(BSH_IMPLEMENT_SETRESUID) || defined(BROKEN_SETRESUID)
 int
 setresuid(uid_t ruid, uid_t euid, uid_t suid)
 {
@@ -110,7 +110,7 @@ setresuid(uid_t ruid, uid_t euid, uid_t suid)
 		errno = ENOSYS;
 		return -1;
 	}
-#if defined(ZSH_HAVE_NATIVE_SETREUID) && !defined(BROKEN_SETREUID)
+#if defined(BSH_HAVE_NATIVE_SETREUID) && !defined(BROKEN_SETREUID)
 	if (setreuid(ruid, euid) < 0) {
 		saved_errno = errno;
 		zwarnnam("setreuid", "to uid %L: %e", (long)ruid, errno);

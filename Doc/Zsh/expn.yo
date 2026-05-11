@@ -11,7 +11,7 @@ This is performed only in interactive shells.
 )
 item(em(Alias Expansion))(
 Aliases are expanded immediately before the command line is parsed as
-explained in sectref(Aliasing)(zshmisc).
+explained in sectref(Aliasing)(bshmisc).
 )
 xitem(em(Process Substitution))
 xitem(em(Parameter Expansion))
@@ -66,7 +66,7 @@ the history list is called a history em(event) and is assigned a number,
 beginning with 1 (one) when the shell starts up.  The history number that
 you may see in your prompt (see
 tt(%h) or tt(%!) prompt escape described in
-sectref(Simple Prompt Escapes)(zshmisc))
+sectref(Simple Prompt Escapes)(bshmisc))
 is the number that is to be assigned to the em(next) command.
 
 startmenu()
@@ -126,7 +126,7 @@ substitution.
 
 If the shell encounters the character sequence `tt(!")'
 in the input, the history mechanism is temporarily disabled until
-the current list (see nmref(Shell Grammar)(zshmisc))
+the current list (see nmref(Shell Grammar)(bshmisc))
 is fully parsed.  The `tt(!")' is removed from the input, and any
 subsequent `tt(!)' characters have no special significance.
 
@@ -522,7 +522,7 @@ There is an additional problem with tt(>LPAR())var(process)tt(RPAR()); when
 this is attached to an external command, the parent shell does not wait
 for var(process) to finish and hence an immediately following command
 cannot rely on the results being complete.  The problem and solution are
-the same as described in the section sectref(Multios)(zshmisc).
+the same as described in the section sectref(Multios)(bshmisc).
 Hence in a simplified
 version of the example above:
 
@@ -560,7 +560,7 @@ example(LPAR()RPAR() {
 
 outputs something resembling the following
 
-example(File /tmp/zsh6nU0kS:
+example(File /tmp/bsh6nU0kS:
 This be the verse)
 
 The temporary file created by the process substitution will be deleted
@@ -571,7 +571,7 @@ sect(Parameter Expansion)
 cindex(parameter expansion)
 cindex(expansion, parameter)
 The character `tt($)' is used to introduce parameter expansions.
-See nmref(Parameters)(zshparam)
+See nmref(Parameters)(bshparam)
 for a description of parameters, including arrays, associative arrays,
 and subscript notation to access individual array elements.
 
@@ -768,7 +768,7 @@ otherwise the entire rest of the scalar or array.
 
 A positive var(offset) is always treated as the offset of a character or
 element in var(name) from the first character or element of the array
-(this is different from native zsh subscript notation).  Hence 0
+(this is different from native bsh subscript notation).  Hence 0
 refers to the first character or element regardless of the setting of
 the option tt(KSH_ARRAYS).
 
@@ -950,7 +950,7 @@ deleted.  The form with tt($LPAR())...tt(RPAR()) is often useful in
 combination with the flags described next; see the examples below.
 Each var(name) or nested tt(${)...tt(}) in a parameter expansion may
 also be followed by a subscript expression as described in
-sectref(Array Parameters)(zshparam).
+sectref(Array Parameters)(bshparam).
 
 Note that double quotes may appear around nested expressions, in which
 case only the part inside is treated as quoted; for example,
@@ -991,7 +991,7 @@ If the tt(MULTIBYTE) option is set and the number is greater than 127
 item(tt(%))(
 Expand all tt(%) escapes in the resulting words in the same way as in
 prompts (see
-sectref(Expansion of Prompt Sequences)(zshmisc)). If this flag is given twice,
+sectref(Expansion of Prompt Sequences)(bshmisc)). If this flag is given twice,
 full prompt expansion is done on the resulting words, depending on the
 setting of the tt(PROMPT_PERCENT), tt(PROMPT_SUBST) and tt(PROMPT_BANG)
 options.
@@ -1439,7 +1439,7 @@ e.g. tt(LPAR()Z+PLUS()Cn+PLUS()RPAR()).
 )
 item(tt(_:)var(flags)tt(:))(
 The underscore (tt(_)) flag is reserved for future use.  As of this
-revision of zsh, there are no valid var(flags); anything following an
+revision of bsh, there are no valid var(flags); anything following an
 underscore, other than an empty pair of delimiters, is treated as an
 error, and the flag itself has no effect.
 )
@@ -1548,7 +1548,7 @@ initializes a parameter var(pname) as a reference to a second
 parameter var(rname).  The var(rname) may also be omitted, in which
 case var(pname) is a placeholder which, the first time it is assigned,
 is initialized to an active reference to the assigned var(rname). See
-sectref(Named References)(zshparam)ifnzman( under noderef(Parameters))
+sectref(Named References)(bshparam)ifnzman( under noderef(Parameters))
 for more about placeholders.
 
 With the few exceptions described here, when
@@ -1644,7 +1644,7 @@ the type information of var(rname), unless var(rname) is empty, in which
 case the expansion is `tt(nameref)', or when no variable var(rname)
 exists, in which case the expansion is empty.
 
-See also nmref(Parameters)(zshparam).
+See also nmref(Parameters)(bshparam).
 
 subsect(Rules)
 cindex(parameter expansion rules)
@@ -1971,7 +1971,7 @@ A string of the form `tt($[)var(exp)tt(])' or
 with the value of the arithmetic expression var(exp).  var(exp) is
 subjected to em(parameter expansion), em(command substitution)
 and em(arithmetic expansion) before it is evaluated.
-See sectref(Arithmetic Evaluation)(zshmisc).
+See sectref(Arithmetic Evaluation)(bshmisc).
 texinode(Brace Expansion)(Filename Expansion)(Arithmetic Expansion)(Expansion)
 sect(Brace Expansion)
 cindex(brace expansion)
@@ -2081,8 +2081,8 @@ subsect(Dynamic Named Directories)
 cindex(directories, named, dynamic)
 cindex(named directories, dynamic)
 cindex(dynamic named directories)
-If the function tt(zsh_directory_name) exists, or the shell variable
-tt(zsh_directory_name_functions) exists and contains an array of
+If the function tt(bsh_directory_name) exists, or the shell variable
+tt(bsh_directory_name_functions) exists and contains an array of
 function names, then the functions are used to implement dynamic
 directory naming.  The functions are tried in order until one returns
 status zero, so it is important that functions test whether they can
@@ -2109,7 +2109,7 @@ directory cannot be named by the function, or it should set the array reply
 to consist of two elements: the first is the dynamic name for the directory
 (as would appear within `tt(~[)var(...)tt(])'), and the second is the
 prefix length of the directory to be replaced.  For example, if the trial
-directory is tt(/home/myname/src/zsh) and the dynamic name for
+directory is tt(/home/myname/src/bsh) and the dynamic name for
 tt(/home/myname/src) (which has 16 characters) is tt(s), then the function
 sets
 
@@ -2126,9 +2126,9 @@ dynamic forms of expansion not to be contracted to names.  In that case
 any call with the first argument tt(d) should cause a non-zero status to
 be returned.
 
-The completion system calls `tt(zsh_directory_name c)' followed by
+The completion system calls `tt(bsh_directory_name c)' followed by
 equivalent calls to elements of the array
-tt(zsh_directory_name_functions), if it exists, in order to
+tt(bsh_directory_name_functions), if it exists, in order to
 complete dynamic names for directories.  The code for this should be
 as for any other completion function as described in
 nmref(Completion System)(zsycompsys).
@@ -2138,8 +2138,8 @@ beginning with the string tt(p:) to directories below
 tt(/home/pws/perforce).  In this simple case a static name for the
 directory would be just as effective.
 
-example(zsh_directory_name+LPAR()RPAR() {
-  emulate -L zsh -o extendedglob
+example(bsh_directory_name+LPAR()RPAR() {
+  emulate -L bsh -o extendedglob
   local -a match mbegin mend
   local base=/home/pws/perforce
   case $1 in
@@ -2325,7 +2325,7 @@ tt(IFS) parameter
 item(tt([:IFSSPACE:]))(
 The character is an IFS white space character; see the documentation
 for tt(IFS) in
-sectref(Parameters Used by the Shell)(zshparam).
+sectref(Parameters Used by the Shell)(bshparam).
 )
 item(tt([:INCOMPLETE:]))(
 Matches a byte that starts an incomplete multibyte character.
@@ -2951,7 +2951,7 @@ However, if an unquoted metacharacter is used as the separator, its
 quoted/expanded form is protected.
 
 var(string) is then executed as shell code.  The string tt(globqual)
-is appended to the array tt(zsh_eval_context) the duration of
+is appended to the array tt(bsh_eval_context) the duration of
 execution.
 
 vindex(REPLY, use of)
@@ -3119,7 +3119,7 @@ tt(oe) and tt(o+) are special cases; they are each followed by shell code,
 delimited as for the tt(e) glob qualifier and the tt(+) glob qualifier
 respectively (see above).  The code is executed for each matched file with
 the parameter tt(REPLY) set to the name of the file on entry and
-tt(globsort) appended to tt(zsh_eval_context).  The code
+tt(globsort) appended to tt(bsh_eval_context).  The code
 should modify the parameter tt(REPLY) in some fashion.  On return, the
 value of the parameter is used instead of the file name as the string on
 which to sort.  Unlike other sort operators, tt(oe) and tt(o+) may be

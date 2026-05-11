@@ -1,7 +1,7 @@
-## vim:ft=zsh et
+## vim:ft=bsh et
 ## bazaar support by: Frank Terbeck <ft@bewatermyfriend.org>
 ## mostly rewritten by: Jan Pobrislo <ccx@webprojekty.cz>
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 setopt localoptions noksharrays extendedglob NO_shwordsplit
 local bzrbase bzrbr bzr_changes bzr_type

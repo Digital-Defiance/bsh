@@ -1,7 +1,7 @@
-name=zsh/terminfo
+name=bsh/terminfo
 
-link='if test "x$ac_cv_func_tigetflag" = xyes -a x$zsh_cv_path_curses_header != xnone; then
-          if test "x$zsh_cv_shared_tigetstr" = xyes; then
+link='if test "x$ac_cv_func_tigetflag" = xyes -a x$bsh_cv_path_curses_header != xnone; then
+          if test "x$bsh_cv_shared_tigetstr" = xyes; then
 	      echo either
 	  else
 	      echo static

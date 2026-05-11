@@ -5,7 +5,7 @@ shift 2
 print -r "$*"
 
 local -a cmd
-zmodload -i zsh/parameter || return
+zmodload -i bsh/parameter || return
 
 # Use xmessage to display the message if the start and stop time
 # are the same, indicating we have been scheduled to display it.
@@ -20,7 +20,7 @@ if [[ -n $DISPLAY &&  $start -eq $stop ]]; then
     cmd=(kdialog --msgbox)
     # Alternative:
     #  calendar_knotify_show() {
-    #    dcop knotify default notify calendar zsh "$*" '' '' 2 0
+    #    dcop knotify default notify calendar bsh "$*" '' '' 2 0
     #  }
     #  cmd=(calendar_knotify_show)
   elif [[ -n ${commands[xmessage]} ]]; then

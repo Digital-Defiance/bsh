@@ -1,7 +1,7 @@
 /*
  * context.c - context save and restore
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2015 Peter Stephenson
  * All rights reserved.
@@ -32,7 +32,7 @@
  * individual modules.
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "context.pro"
 
 struct context_stack {

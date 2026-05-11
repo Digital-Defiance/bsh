@@ -5,7 +5,7 @@
 %prep
 
   unset TIMEFMT zselect_skip
-  zmodload -s zsh/zselect || zselect_skip='zsh/zselect module not available'
+  zmodload -s bsh/zselect || zselect_skip='bsh/zselect module not available'
 
 %test
 

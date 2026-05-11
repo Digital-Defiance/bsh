@@ -1,7 +1,7 @@
 /*
  * tcp.h - builtin FTP client
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1998-2001 Peter Stephenson
  * All rights reserved.
@@ -28,7 +28,7 @@
  */
 
 /*
- * We need to include the zsh headers later to avoid clashes with
+ * We need to include the bsh headers later to avoid clashes with
  * the definitions on some systems, however we need the configuration
  * file to decide whether we can include netinet/in_systm.h, which
  * doesn't exist on cygwin.

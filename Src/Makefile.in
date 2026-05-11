@@ -39,6 +39,15 @@ LN		= @LN@
 
 @DEFS_MK@
 
+BRIGHTDATE_WORKSPACE = $(sdir_top)/brightdate-rust
+BRIGHTDATE_FFI_LIB   = $(BRIGHTDATE_WORKSPACE)/target/release/libbrightdate_ffi.a
+
+.PHONY: brightdate-ffi-build
+brightdate-ffi-build:
+	cd $(BRIGHTDATE_WORKSPACE) && $(CARGO) build --release -p brightdate-ffi
+
+$(BRIGHTDATE_FFI_LIB): brightdate-ffi-build
+
 sdir_src      = $(sdir)
 dir_src       = .
 
@@ -50,7 +59,7 @@ DLLINK      = $(DLLD) $(LDFLAGS) $(LIBLDFLAGS) $(DLLDFLAGS) -o $@
 all: bin modules
 .PHONY: all
 
-bin: zsh$(EXEEXT)
+bin: bsh$(EXEEXT)
 .PHONY: bin
 
 modules: headers
@@ -65,31 +74,31 @@ LLIST =
 NSTMP = stamp-modobjs
 NLIST = `cat stamp-modobjs`
 
-LIBZSH = libzsh-$(VERSION).$(DL_EXT)
-NIBZSH =
+LIBBSH = libbsh-$(VERSION).$(DL_EXT)
+NIBBSH =
 INSTLIB = @INSTLIB@
 UNINSTLIB = @UNINSTLIB@
 
-ZSH_EXPORT = $(EXPOPT)zsh.export
-ZSH_NXPORT =
+BSH_EXPORT = $(EXPOPT)bsh.export
+BSH_NXPORT =
 ENTRYOBJ   = modentry..o
 NNTRYOBJ   =
 
-LDRUNPATH = LD_RUN_PATH=$(libdir)/$(tzsh)
+LDRUNPATH = LD_RUN_PATH=$(libdir)/$(tbsh)
 NDRUNPATH =
 
-EXTRAZSHOBJS = @EXTRAZSHOBJS@
+EXTRABSHOBJS = @EXTRABSHOBJS@
 
-zsh$(EXEEXT): $(@L@IBZSH) $(@L@STMP) $(MAIN_OBJS) zsh.export $(EXTRAZSHOBJS)
+bsh$(EXEEXT): $(@L@IBBSH) $(@L@STMP) $(MAIN_OBJS) bsh.export $(EXTRABSHOBJS) $(BRIGHTDATE_FFI_LIB)
 	rm -f $@
-	$(@L@DRUNPATH) $(LINK) $(MAIN_OBJS) $(EXTRAZSHOBJS) $(@L@LIST) $(ZSH_@E@XPORT) $(@L@IBZSH) $(LIBS)
+	$(@L@DRUNPATH) $(LINK) $(MAIN_OBJS) $(EXTRABSHOBJS) $(@L@LIST) $(BSH_@E@XPORT) $(@L@IBBSH) $(LIBS) $(BRIGHTDATE_FFI_LIB) -framework CoreFoundation
 
-$(LIBZSH): $(LIBOBJS) $(NSTMP)
+$(LIBBSH): $(LIBOBJS) $(NSTMP)
 	rm -f $@
 	$(DLLINK) $(LIBOBJS) $(NLIST) $(LIBS)
 
-zsh.res.o: $(sdir)/zsh.rc $(sdir)/zsh.ico
-	windres -O coff --include-dir $(sdir) -i $(sdir)/zsh.rc -o zsh.res.o
+bsh.res.o: $(sdir)/bsh.rc $(sdir)/bsh.ico
+	windres -O coff --include-dir $(sdir) -i $(sdir)/bsh.rc -o bsh.res.o
 
 stamp-modobjs: modobjs
 	@if cmp -s stamp-modobjs.tmp stamp-modobjs; then \
@@ -146,37 +155,37 @@ uninstall.bin: uninstall.bin-here
 .PHONY: install.bin uninstall.bin
 
 # install binary, creating install directory if necessary
-install.bin-here: zsh$(EXEEXT) $(INSTLIB)
+install.bin-here: bsh$(EXEEXT) $(INSTLIB)
 	${SHELL} $(sdir_top)/mkinstalldirs $(DESTDIR)$(bindir)
-	$(INSTALL_PROGRAM) $(STRIPFLAGS) zsh$(EXEEXT) $(DESTDIR)$(bindir)/$(tzsh)-$(VERSION)$(EXEEXT)
-	if test -f $(DESTDIR)$(bindir)/$(tzsh)$(EXEEXT); then \
-	    rm -f $(DESTDIR)$(bindir)/$(tzsh).old; \
-	    $(LN) $(DESTDIR)$(bindir)/$(tzsh)$(EXEEXT) $(DESTDIR)$(bindir)/$(tzsh).old; \
+	$(INSTALL_PROGRAM) $(STRIPFLAGS) bsh$(EXEEXT) $(DESTDIR)$(bindir)/$(tbsh)-$(VERSION)$(EXEEXT)
+	if test -f $(DESTDIR)$(bindir)/$(tbsh)$(EXEEXT); then \
+	    rm -f $(DESTDIR)$(bindir)/$(tbsh).old; \
+	    $(LN) $(DESTDIR)$(bindir)/$(tbsh)$(EXEEXT) $(DESTDIR)$(bindir)/$(tbsh).old; \
 	else :; fi
-	rm -f $(DESTDIR)$(bindir)/$(tzsh).new
-	$(LN) $(DESTDIR)$(bindir)/$(tzsh)-$(VERSION)$(EXEEXT) $(DESTDIR)$(bindir)/$(tzsh).new
-	mv $(DESTDIR)$(bindir)/$(tzsh).new $(DESTDIR)$(bindir)/$(tzsh)$(EXEEXT)
+	rm -f $(DESTDIR)$(bindir)/$(tbsh).new
+	$(LN) $(DESTDIR)$(bindir)/$(tbsh)-$(VERSION)$(EXEEXT) $(DESTDIR)$(bindir)/$(tbsh).new
+	mv $(DESTDIR)$(bindir)/$(tbsh).new $(DESTDIR)$(bindir)/$(tbsh)$(EXEEXT)
 .PHONY: install.bin-here
 
 install.bin-N:
-install.bin-L: $(LIBZSH)
-	${SHELL} $(sdir_top)/mkinstalldirs $(DESTDIR)$(libdir)/$(tzsh)
-	$(INSTALL_PROGRAM) $(LIBZSH) $(DESTDIR)$(libdir)/$(tzsh)/$(LIBZSH)
-install.cygwin-lib: $(LIBZSH)
+install.bin-L: $(LIBBSH)
+	${SHELL} $(sdir_top)/mkinstalldirs $(DESTDIR)$(libdir)/$(tbsh)
+	$(INSTALL_PROGRAM) $(LIBBSH) $(DESTDIR)$(libdir)/$(tbsh)/$(LIBBSH)
+install.cygwin-lib: $(LIBBSH)
 	${SHELL} $(sdir_top)/mkinstalldirs $(DESTDIR)$(bindir)
-	$(INSTALL_PROGRAM) $(LIBZSH) $(DESTDIR)$(bindir)/$(LIBZSH)
+	$(INSTALL_PROGRAM) $(LIBBSH) $(DESTDIR)$(bindir)/$(LIBBSH)
 .PHONY: install.bin-N install.bin-L install.cygwin-lib
 
 # uninstall binary
 uninstall.bin-here: $(UNINSTLIB)
-	rm -f $(DESTDIR)$(bindir)/$(tzsh)-$(VERSION) $(DESTDIR)$(bindir)/$(tzsh)$(EXEEXT)
+	rm -f $(DESTDIR)$(bindir)/$(tbsh)-$(VERSION) $(DESTDIR)$(bindir)/$(tbsh)$(EXEEXT)
 .PHONY: uninstall.bin-here uninstall.bin-@L@
 
 uninstall.bin-N:
 uninstall.bin-L:
-	rm -f $(DESTDIR)$(libdir)/$(tzsh)/$(LIBZSH)
+	rm -f $(DESTDIR)$(libdir)/$(tbsh)/$(LIBBSH)
 uninstall.cygwin-lib:
-	rm -f $(DESTDIR)$(bindir)/$(LIBZSH)
+	rm -f $(DESTDIR)$(bindir)/$(LIBBSH)
 .PHONY: uninstall.bin-N uninstall.bin-L uninstall.cygwin-lib
 
 # ========== DEPENDENCIES FOR CLEANUP ==========
@@ -190,8 +199,8 @@ mostlyclean-here:
 .PHONY: mostlyclean-here
 
 clean-here:
-	rm -f modules.stamp zsh$(EXEEXT)
-	rm -f libzsh-*.$(DL_EXT)
+	rm -f modules.stamp bsh$(EXEEXT)
+	rm -f libbsh-*.$(DL_EXT)
 .PHONY: clean-here
 
 distclean-here:
@@ -219,8 +228,8 @@ mostlyclean-modules clean-modules distclean-modules realclean-modules:
 # ========== RECURSIVE MAKES ==========
 
 install.modules uninstall.modules \
-modobjs modules headers proto $(MAIN_OBJS) zsh.export: Makemod
+modobjs modules headers proto $(MAIN_OBJS) bsh.export: Makemod
 	@$(MAKE) -f Makemod $(MAKEDEFS) $@
 .PHONY: install.modules uninstall.modules headers proto
 
-$(MAIN_OBJS): $(sdir)/zsh.h
+$(MAIN_OBJS): $(sdir)/bsh.h

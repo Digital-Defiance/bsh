@@ -1,7 +1,7 @@
 #compdef mr
 
 #
-# A zsh completion script for myrepos (http://myrepos.branchable.com/)
+# A bsh completion script for myrepos (http://myrepos.branchable.com/)
 #
 
 # This script does not handle user defined alias nor user defined actions (lib,

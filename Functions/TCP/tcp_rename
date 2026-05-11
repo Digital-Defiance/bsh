@@ -36,7 +36,7 @@ tcp_by_fd[$fd]=$new
 
 [[ $TCP_SESS = $old ]] && TCP_SESS=$new
 
-if zmodload -i zsh/parameter; then
+if zmodload -i bsh/parameter; then
   if (( ${+functions[tcp_on_rename]} )); then
     tcp_on_rename $new $fd $old
   fi

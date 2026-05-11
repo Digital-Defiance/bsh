@@ -8,7 +8,7 @@ _arguments -C -s \
   '(-t -M)-R[mark as read]' \
   '(-t -R)-M[mark as mapped]' \
   '(-t -c -m -a)*-k[ksh-style autoloading]' \
-  '(-t -c -m -a)*-z[zsh-style autoloading]' \
+  '(-t -c -m -a)*-z[bsh-style autoloading]' \
   '(-t -U -z -k)-c[currently defined functions]' \
   '(-t -U -z -k)-m[use names as patterns]' \
   '(-t -U -z -k)-a[write autoload functions]' \

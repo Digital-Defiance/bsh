@@ -1,7 +1,7 @@
 /*
  * mapfile.c - associative array interface to external files
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky, Peter Stephenson
  * All rights reserved.

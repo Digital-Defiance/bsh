@@ -1,7 +1,7 @@
 /*
  * deltochar.c - ZLE module implementing Emacs' zap-to-char
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Peter Stephenson
  * All rights reserved.

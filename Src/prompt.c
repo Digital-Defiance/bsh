@@ -1,7 +1,7 @@
 /*
- * prompt.c - construct zsh prompts
+ * prompt.c - construct bsh prompts
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "prompt.pro"
 
 /* current text attributes */
@@ -219,7 +219,7 @@ promptexpand(char *s, int ns, const char *marker, char *rs, char *Rs)
     new_vars.Rstring = Rs;
     new_vars.fm = s;
     new_vars.bufspc = 256;
-    new_vars.bp = new_vars.bufline = new_vars.buf = zshcalloc(new_vars.bufspc);
+    new_vars.bp = new_vars.bufline = new_vars.buf = bshcalloc(new_vars.bufspc);
     new_vars.bp1 = NULL;
     new_vars.truncwidth = 0;
 
@@ -264,7 +264,7 @@ zattrescape(zattr atr, int *len)
     new_vars.last = bv;
     bv = &new_vars;
     new_vars.bufspc = 256;
-    new_vars.bp = new_vars.bufline = new_vars.buf = zshcalloc(new_vars.bufspc);
+    new_vars.bp = new_vars.bufline = new_vars.buf = bshcalloc(new_vars.bufspc);
     new_vars.dontcount = 1;
 
     txtunknownattrs = 0;
@@ -1843,7 +1843,7 @@ mixattrs(zattr primary, zattr mask, zattr secondary)
 			<< (shift + i);
 		}
 		if (!truecolor_terminal() && (!empty(GETCOLORATTR->funcs) ||
-			!load_module("zsh/nearcolor", NULL, 1))) {
+			!load_module("bsh/nearcolor", NULL, 1))) {
 		    struct color_rgb color = {
 			(mix >> (shift + 16)) & 0xff,
 			(mix >> (shift + 8)) & 0xff,
@@ -1988,7 +1988,7 @@ match_colour(const char **teststrp, int is_fg, int colour)
 	    *teststrp = end;
 	    colour = runhookdef(GETCOLORATTR, &color) - 1;
 	    if (colour == -1 && !truecolor_terminal() &&
-		    !load_module("zsh/nearcolor", NULL, 1))
+		    !load_module("bsh/nearcolor", NULL, 1))
 		colour = runhookdef(GETCOLORATTR, &color) - 1;
 	    if (colour == -1) { /* use true color (24-bit) */
 		colour = (((color.red << 8) + color.green) << 8) + color.blue;

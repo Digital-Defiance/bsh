@@ -1,7 +1,7 @@
 %prep
 
-  if ! zmodload -s zsh/zutil; then
-    ZTST_unimplemented='the zsh/zutil module is not available'
+  if ! zmodload -s bsh/zutil; then
+    ZTST_unimplemented='the bsh/zutil module is not available'
   else
     autoload -Uz zgetopt
   fi

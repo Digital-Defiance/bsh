@@ -48,7 +48,7 @@ texinode(Description of Options)(Option Aliases)(Specifying Options)(Options)
 sect(Description of Options)
 cindex(options, description)
 In the following list, options set by default in all emulations are marked
-<D>; those set by default only in csh, ksh, sh, or zsh emulations are marked
+<D>; those set by default only in csh, ksh, sh, or bsh emulations are marked
 <C>, <K>, <S>, <Z> as appropriate.  When listing options (by `tt(setopt)',
 `tt(unsetopt)', `tt(set -o)' or `tt(set +o)'), those turned on by default
 appear in the list prefixed with `tt(no)'.  Hence (unless
@@ -89,7 +89,7 @@ item(tt(CDABLE_VARS) (tt(-T)))(
 If the argument to a tt(cd) command (or an implied tt(cd) with the
 tt(AUTO_CD) option set) is not a directory, and does not begin with a
 slash, try to expand the expression as if it were preceded by a `tt(~)' (see
-sectref(Filename Expansion)(zshexpn)).
+sectref(Filename Expansion)(bshexpn)).
 )
 pindex(CD_SILENT)
 pindex(NO_CD_SILENT)
@@ -146,7 +146,7 @@ item(tt(POSIX_CD) <K> <S>)(
 Modifies the behaviour of tt(cd), tt(chdir) and tt(pushd) commands
 to make them more compatible with the POSIX standard. The behaviour with
 the option unset is described in the documentation for the tt(cd)
-builtin in nmref(Shell Builtin Commands)(zshbuiltins).
+builtin in nmref(Shell Builtin Commands)(bshbuiltins).
 If the option is set, the shell does not test for directories beneath
 the local directory (`tt(.)') until after all directories in tt(cdpath)
 have been tested, and the tt(cd) and tt(chdir) commands do not recognise
@@ -439,7 +439,7 @@ cindex(enable globbing qualifiers)
 item(tt(BARE_GLOB_QUAL) <Z>)(
 In a glob pattern, treat a trailing set of parentheses as a qualifier
 list, if it contains no unquoted `tt(|)', `tt(LPAR())' or (if special) `tt(~)'
-characters.  See sectref(Filename Generation)(zshexpn).
+characters.  See sectref(Filename Generation)(bshexpn).
 )
 pindex(BRACE_CCL)
 pindex(NO_BRACE_CCL)
@@ -450,7 +450,7 @@ cindex(expansion, brace, extending)
 item(tt(BRACE_CCL))(
 Expand expressions in braces which would not otherwise undergo brace
 expansion to a lexically ordered list of all the characters.  See
-sectref(Brace Expansion)(zshexpn).
+sectref(Brace Expansion)(bshexpn).
 )
 pindex(CASE_GLOB)
 pindex(NO_CASE_GLOB)
@@ -472,7 +472,7 @@ pindex(NOCASEMATCH)
 cindex(case-insensitive regular expression matches, option)
 cindex(regular expressions, case-insensitive matching, option)
 item(tt(CASE_MATCH) <D>)(
-Make regular expressions using the tt(zsh/regex) module (including
+Make regular expressions using the tt(bsh/regex) module (including
 matches with tt(=~)) sensitive to case.
 )
 pindex(CASE_PATHS)
@@ -511,7 +511,7 @@ pindex(NOEQUALS)
 cindex(filename expansion, =)
 item(tt(EQUALS) <Z>)(
 Perform tt(=) filename expansion.
-(See sectref(Filename Expansion)(zshexpn).)
+(See sectref(Filename Expansion)(bshexpn).)
 )
 pindex(EXTENDED_GLOB)
 pindex(NO_EXTENDED_GLOB)
@@ -542,7 +542,7 @@ cindex(globbing, enabling)
 cindex(enabling globbing)
 item(tt(GLOB) (tt(PLUS()F), ksh: tt(PLUS()f)) <D>)(
 Perform filename generation (globbing).
-(See sectref(Filename Generation)(zshexpn).)
+(See sectref(Filename Generation)(bshexpn).)
 )
 pindex(GLOB_ASSIGN)
 pindex(NO_GLOB_ASSIGN)
@@ -575,7 +575,7 @@ pindex(NOGLOBSTARSHORT)
 cindex(globbing, short forms)
 cindex(globbing, ** special)
 item(tt(GLOB_STAR_SHORT))(
-When this option is set and the default zsh-style globbing is in
+When this option is set and the default bsh-style globbing is in
 effect, the pattern `tt(**/*)' can be abbreviated to `tt(**)' and the
 pattern `tt(***/*)' can be abbreviated to tt(***).  Hence `tt(**.c)'
 finds a file ending in tt(.c) in any subdirectory, and `tt(***.c)' does
@@ -602,7 +602,7 @@ item(tt(HIST_SUBST_PATTERN))(
 Substitutions using the tt(:s) and tt(:&) history modifiers are performed
 with pattern matching instead of string matching.  This occurs wherever
 history modifiers are valid, including glob qualifiers and parameters.
-See subref(Modifiers)(zshexpn).
+See subref(Modifiers)(bshexpn).
 )
 pindex(IGNORE_BRACES)
 pindex(NO_IGNORE_BRACES)
@@ -646,7 +646,7 @@ pindex(NOKSHGLOB)
 item(tt(KSH_GLOB) <K>)(
 In pattern matching, the interpretation of parentheses is affected by
 a preceding `tt(@)', `tt(*)', `tt(+)', `tt(?)' or `tt(!)'.
-See sectref(Filename Generation)(zshexpn).
+See sectref(Filename Generation)(bshexpn).
 )
 pindex(MAGIC_EQUAL_SUBST)
 pindex(NO_MAGIC_EQUAL_SUBST)
@@ -757,7 +757,7 @@ cindex(PCRE, regexp)
 item(tt(REMATCH_PCRE))(
 If set, regular expression matching with the tt(=~) operator will use
 Perl-Compatible Regular Expressions from the PCRE library.
-(The tt(zsh/pcre) module must be available.)
+(The tt(bsh/pcre) module must be available.)
 If not set, regular expressions will use the extended regexp syntax
 provided by the system libraries.
 )
@@ -776,7 +776,7 @@ not, the shell allows the interpretation of
 subshell expressions enclosed in parentheses in some cases where there
 is no space before the opening parenthesis, e.g. tt(!LPAR()true+RPAR())
 is interpreted as if there were a space after the tt(!).  This option is
-set by default if zsh is invoked as tt(sh) or tt(ksh).
+set by default if bsh is invoked as tt(sh) or tt(ksh).
 )
 pindex(UNSET)
 pindex(NO_UNSET)
@@ -844,9 +844,9 @@ pindex(APPENDHISTORY)
 pindex(NOAPPENDHISTORY)
 cindex(history, appending to a file)
 item(tt(APPEND_HISTORY) <D>)(
-If this is set, zsh sessions will append their history list to
+If this is set, bsh sessions will append their history list to
 the history file, rather than replace it. Thus, multiple parallel
-zsh sessions will all have the new entries from their history lists
+bsh sessions will all have the new entries from their history lists
 added to the history file, in the order that they exit.
 The file will still be periodically re-written to trim it when the
 number of lines grows 20% beyond the value specified by
@@ -911,7 +911,7 @@ pindex(NO_HIST_FCNTL_LOCK)
 pindex(HISTFCNTLLOCK)
 pindex(NOHISTFCNTLLOCK)
 item(tt(HIST_FCNTL_LOCK))(
-When writing out the history file, by default zsh uses ad-hoc file locking
+When writing out the history file, by default bsh uses ad-hoc file locking
 to avoid known problems with locking on some operating systems.  With this
 option locking is done by means of the system's tt(fcntl) call, where
 this method is available.  On recent operating systems this may
@@ -1018,10 +1018,10 @@ history file and write out the new version in-place.  If one of the
 history-appending options is enabled, this option only has an effect
 when the enlarged history file needs to be re-written to trim it
 down to size.  Disable this only if you have special needs, as doing
-so makes it possible to lose history entries if zsh gets interrupted
+so makes it possible to lose history entries if bsh gets interrupted
 during the save.
 
-When writing out a copy of the history file, zsh preserves the old
+When writing out a copy of the history file, bsh preserves the old
 file's permissions and group information, but will refuse to write
 out a new file if it would change the history file's owner.
 )
@@ -1141,20 +1141,20 @@ cindex(startup files, global, inhibiting)
 cindex(files, global startup, inhibiting)
 item(tt(GLOBAL_RCS) (tt(+d)) <D>)(
 If this option is unset, the startup files tt(zprofile()),
-tt(zshrc()), tt(zlogin()) and tt(zlogout()) will not be run.  It
+tt(bshrc()), tt(zlogin()) and tt(zlogout()) will not be run.  It
 can be disabled and re-enabled at any time, including inside local startup
-files (tt(.zshrc), etc.).
+files (tt(.bshrc), etc.).
 )
 pindex(RCS)
 pindex(NO_RCS)
 pindex(NORCS)
 cindex(startup files, sourcing)
 item(tt(RCS) (tt(PLUS()f)) <D>)(
-After tt(zshenv()) is sourced on startup, source the
-tt(.zshenv), tt(zprofile()), tt(.zprofile),
-tt(zshrc()), tt(.zshrc), tt(zlogin()), tt(.zlogin), and tt(.zlogout)
-files, as described in sectref(Startup/Shutdown Files)(zsh).
-If this option is unset, the tt(zshenv()) file is still sourced, but any
+After tt(bshenv()) is sourced on startup, source the
+tt(.bshenv), tt(zprofile()), tt(.zprofile),
+tt(bshrc()), tt(.bshrc), tt(zlogin()), tt(.zlogin), and tt(.zlogout)
+files, as described in sectref(Startup/Shutdown Files)(bsh).
+If this option is unset, the tt(bshenv()) file is still sourced, but any
 of the others will not be; it can be set at any time to prevent the
 remaining startup files after the currently executing one from
 being sourced.
@@ -1349,7 +1349,7 @@ If this option is not set, a script passed as the first non-option argument
 to the shell must contain the name of the file to open.  If this
 option is set, and the script does not specify a directory path,
 the script is looked for first in the current directory, then in the
-command path.  See sectref(Invocation)(zsh).
+command path.  See sectref(Invocation)(bsh).
 )
 pindex(PRINT_EIGHT_BIT)
 pindex(NO_PRINT_EIGHT_BIT)
@@ -1485,7 +1485,7 @@ such jobs will be killed automatically.
 The check is omitted if the commands run from the previous command line
 included a `tt(jobs)' command, since it is assumed the user is aware that
 there are background or suspended jobs.  A `tt(jobs)' command run from one
-of the hook functions defined in sectref(Special Functions)(zshmisc)
+of the hook functions defined in sectref(Special Functions)(bshmisc)
 is not counted for this purpose.
 )
 pindex(CHECK_RUNNING_JOBS)
@@ -1496,7 +1496,7 @@ cindex(exiting, checking running jobs when)
 cindex(logging out, checking running jobs when)
 item(tt(CHECK_RUNNING_JOBS) <Z>)(
 Check for both running and suspended jobs when tt(CHECK_JOBS) is enabled.
-When this option is disabled, zsh checks only for suspended jobs, which
+When this option is disabled, bsh checks only for suspended jobs, which
 matches the default behavior of bash.
 
 This option has no effect unless tt(CHECK_JOBS) is set.
@@ -1576,7 +1576,7 @@ pindex(NOPROMPTBANG)
 cindex(prompt, ! expansion)
 item(tt(PROMPT_BANG) <K>)(
 If set, `tt(!)' is treated specially in prompt expansion.
-See sectref(Expansion of Prompt Sequences)(zshmisc).
+See sectref(Expansion of Prompt Sequences)(bshmisc).
 )
 pindex(PROMPT_CR)
 pindex(NO_PROMPT_CR)
@@ -1616,7 +1616,7 @@ pindex(NOPROMPTPERCENT)
 cindex(prompt, % expansion)
 item(tt(PROMPT_PERCENT) <C> <Z>)(
 If set, `tt(%)' is treated specially in prompt expansion.
-See sectref(Expansion of Prompt Sequences)(zshmisc).
+See sectref(Expansion of Prompt Sequences)(bshmisc).
 )
 pindex(PROMPT_SUBST)
 pindex(NO_PROMPT_SUBST)
@@ -1647,7 +1647,7 @@ pindex(NOALIASFUNCDEF)
 cindex(functions, defining with expanded aliases)
 cindex(aliases, expanding in function definition)
 item(tt(ALIAS_FUNC_DEF) <S>)(
-By default, zsh does not allow the definition of functions using
+By default, bsh does not allow the definition of functions using
 the `var(name) tt(LPAR()RPAR())' syntax if var(name) was expanded as an
 alias: this causes an error.  This is usually the desired behaviour, as
 otherwise the combination of an alias and a function based on the same
@@ -1695,7 +1695,7 @@ cindex(operator precedence)
 item(tt(C_PRECEDENCES))(
 This alters the precedence of arithmetic operators to be more
 like C and other programming languages;
-sectref(Arithmetic Evaluation)(zshmisc)
+sectref(Arithmetic Evaluation)(bshmisc)
 has an explicit list.
 )
 pindex(DEBUG_BEFORE_CMD)
@@ -1742,7 +1742,7 @@ which the tt(DEBUG) trap is being executed is skipped.  The option is
 restored after the trap exits.
 
 Exiting due to tt(ERR_EXIT) has certain interactions with asynchronous
-jobs noted in sectref(Signals)(zshmisc).
+jobs noted in sectref(Signals)(bshmisc).
 
 Note this behaviour is not disabled in interactive shells ---
 a non-zero status on the command line causes the shell to exit.
@@ -1843,7 +1843,7 @@ and the tt(LOCAL_LOOPS), tt(XTRACE) and tt(PRINT_EXIT_VALUE) options are
 restored.  Hence if this is explicitly unset by a shell function the
 other options in force at the point of return will remain so.
 A shell function can also guarantee itself a known shell configuration
-with a formulation like `tt(emulate -L zsh)'; the tt(-L) activates
+with a formulation like `tt(emulate -L bsh)'; the tt(-L) activates
 tt(LOCAL_OPTIONS).
 )
 pindex(LOCAL_PATTERNS)
@@ -1899,7 +1899,7 @@ pindex(NO_MULTIOS)
 pindex(NOMULTIOS)
 item(tt(MULTIOS) <Z>)(
 Perform implicit bf(tee)s or bf(cat)s when multiple
-redirections are attempted (see sectref(Redirection)(zshmisc)).
+redirections are attempted (see sectref(Redirection)(bshmisc)).
 )
 pindex(OCTAL_ZEROES)
 pindex(NO_OCTAL_ZEROES)
@@ -1935,7 +1935,7 @@ pindex(NO_SOURCE_TRACE)
 pindex(SOURCETRACE)
 pindex(NOSOURCETRACE)
 item(tt(SOURCE_TRACE))(
-If set, zsh will print an informational message announcing the name of
+If set, bsh will print an informational message announcing the name of
 each file it loads.  The format of the output is similar to that
 for the tt(XTRACE) option, with the message tt(<sourcetrace>).
 A file may be loaded by the shell itself when it
@@ -1980,7 +1980,7 @@ cindex(commands, tracing)
 item(tt(XTRACE) (tt(-x), ksh: tt(-x)))(
 Print commands and their arguments as they are executed.  The
 output is preceded by the value of tt($PS4), formatted as described
-in sectref(Expansion of Prompt Sequences)(zshmisc).
+in sectref(Expansion of Prompt Sequences)(bshmisc).
 )
 enditem()
 
@@ -1998,7 +1998,7 @@ This option only applies when tt(NO_CLOBBER) (-tt(C)) is in effect.
 
 If this option is not set, the shell will report an error when a
 append redirection (tt(>>)) is used on a file that does not already
-exists (the traditional zsh behaviour of tt(NO_CLOBBER)).  If the option
+exists (the traditional bsh behaviour of tt(NO_CLOBBER)).  If the option
 is set, no error is reported (POSIX behaviour).
 )
 pindex(BASH_REMATCH)
@@ -2034,14 +2034,14 @@ pindex(CONTINUEONERROR)
 pindex(NOCONTINUEONERROR)
 cindex(error, option to continue script on)
 item(tt(CONTINUE_ON_ERROR))(
-If a fatal error is encountered (see sectref(Errors)(zshmisc)),
+If a fatal error is encountered (see sectref(Errors)(bshmisc)),
 and the code is running
 in a script, the shell will resume execution at the next statement
 in the script at the top level, in other words outside all functions
 or shell constructs such as loops and conditions.  This mimics the
 behaviour of interactive shells, where the shell returns to the
 line editor to read a new command; it was the normal behaviour in versions
-of zsh before 5.0.1.
+of bsh before 5.0.1.
 )
 pindex(CSH_JUNKIE_HISTORY)
 pindex(NO_CSH_JUNKIE_HISTORY)
@@ -2090,7 +2090,7 @@ cindex(csh, redirections with no command)
 item(tt(CSH_NULLCMD) <C>)(
 Do not use the values of tt(NULLCMD) and tt(READNULLCMD) 
 when running redirections with no command.  This make 
-such redirections fail (see sectref(Redirection)(zshmisc)).
+such redirections fail (see sectref(Redirection)(bshmisc)).
 )
 pindex(KSH_ARRAYS)
 pindex(NO_KSH_ARRAYS)
@@ -2146,7 +2146,7 @@ word interface is em(not) in use.
 
 Alters the way arguments to the tt(typeset) family of commands, including
 tt(declare), tt(export), tt(float), tt(integer), tt(local) and
-tt(readonly), are processed.  Without this option, zsh will perform normal
+tt(readonly), are processed.  Without this option, bsh will perform normal
 word splitting after command and parameter expansion in arguments of an
 assignment; with it, word splitting does not take place in those cases.
 )
@@ -2186,14 +2186,14 @@ item(tt(POSIX_ALIASES) <K> <S>)(
 When this option is set, reserved words are not candidates for
 alias expansion:  it is still possible to declare any of them as an alias,
 but the alias will never be expanded.  Reserved words are described in
-sectref(Reserved Words)(zshmisc).
+sectref(Reserved Words)(bshmisc).
 
 Alias expansion takes place while text is being read; hence when this
 option is set it does not take effect until the end of any function or
 other piece of shell code parsed as one unit.  Note this may
 cause differences from other shells even when the option is in
-effect.  For example, when running a command with `tt(zsh -c)',
-or even `tt(zsh -o posixaliases -c)', the entire command argument is parsed
+effect.  For example, when running a command with `tt(bsh -c)',
+or even `tt(bsh -o posixaliases -c)', the entire command argument is parsed
 as one unit, so aliases defined within the argument are not available even
 in later lines.  If in doubt, avoid use of aliases in non-interactive
 code.
@@ -2259,7 +2259,7 @@ Moreover, the warning and special exit code from
 tt([[ -o )var(non_existent_option)tt( ]]) are suppressed.
 
 Other builtins may be affected as described in
-ifzman(zmanref(zshbuiltins))\
+ifzman(zmanref(bshbuiltins))\
 ifnzman(noderef(Shell Builtin Commands)).
 )
 pindex(POSIX_IDENTIFIERS)
@@ -2276,7 +2276,7 @@ of shell parameters and modules).
 In addition, setting this option limits the effect of parameter
 substitution with no braces, so that the expression tt($#) is treated as
 the parameter tt($#) even if followed by a valid parameter name.
-When it is unset, zsh allows expressions of the form tt($#)var(name)
+When it is unset, bsh allows expressions of the form tt($#)var(name)
 to refer to the length of tt($)var(name), even for special variables,
 for example in expressions such as tt($#-) and tt($#*).
 
@@ -2297,7 +2297,7 @@ a command rather than an assignment.
 
 If multibyte character support is not compiled into the shell this option is
 ignored; all octets with the top bit set may be used in identifiers.
-This is non-standard but is the traditional zsh behaviour.
+This is non-standard but is the traditional bsh behaviour.
 )
 pindex(POSIX_STRINGS)
 pindex(NO_POSIX_STRINGS)
@@ -2333,7 +2333,7 @@ pindex(NOPOSIXTRAPS)
 cindex(traps, on function exit)
 cindex(traps, POSIX compatibility)
 item(tt(POSIX_TRAPS) <K> <S>)(
-When this option is set, the usual zsh behaviour of executing
+When this option is set, the usual bsh behaviour of executing
 traps for tt(EXIT) on exit from shell functions is suppressed.
 In that case, manipulating tt(EXIT) traps always alters the global
 trap for exiting the shell; the tt(LOCAL_TRAPS) option is
@@ -2373,7 +2373,7 @@ cindex(redirections with no command, sh)
 cindex(redirections with no command, ksh)
 item(tt(SH_NULLCMD) <K> <S>)(
 Do not use the values of tt(NULLCMD) and tt(READNULLCMD) 
-when doing redirections, use `tt(:)' instead (see sectref(Redirection)(zshmisc)).
+when doing redirections, use `tt(:)' instead (see sectref(Redirection)(bshmisc)).
 )
 pindex(SH_OPTION_LETTERS)
 pindex(NO_SH_OPTION_LETTERS)
@@ -2397,7 +2397,7 @@ cindex(sh, field splitting style)
 item(tt(SH_WORD_SPLIT) (tt(-y)) <K> <S>)(
 Causes field splitting to be performed on unquoted parameter expansions.
 Note that this option has nothing to do with word splitting.
-(See sectref(Parameter Expansion)(zshexpn).)
+(See sectref(Parameter Expansion)(bshexpn).)
 )
 pindex(TRAPS_ASYNC)
 pindex(NO_TRAPS_ASYNC)
@@ -2425,7 +2425,7 @@ This heuristic may be overridden by specifying a state for this option
 on the command line.
 The value of this option can only be changed via flags supplied at
 invocation of the shell.
-It cannot be changed once zsh is running.
+It cannot be changed once bsh is running.
 )
 pindex(LOGIN)
 pindex(NO_LOGIN)
@@ -2443,9 +2443,9 @@ cindex(mode, privileged)
 item(tt(PRIVILEGED) (tt(-p), ksh: tt(-p)))(
 Turn on privileged mode. Typically this is used when script is to be run
 with elevated privileges. This should be done as follows directly with
-the tt(-p) option to zsh so that it takes effect during startup.
+the tt(-p) option to bsh so that it takes effect during startup.
 
-example(#!/bin/zsh -p)
+example(#!/bin/bsh -p)
 
 The option is enabled automatically on startup if the effective user
 (group) ID is not equal to the real user (group) ID. In this case,
@@ -2457,7 +2457,7 @@ for failure and act accordingly, for example:
 example(unsetopt privileged || exit)
 
 The tt(PRIVILEGED) option disables sourcing user startup files.
-If zsh is invoked as `tt(sh)' or `tt(ksh)' with this option set,
+If bsh is invoked as `tt(sh)' or `tt(ksh)' with this option set,
 tt(/etc/suid_profile) is sourced (after tt(/etc/profile) on interactive
 shells). Sourcing tt(~/.profile) is disabled and the contents of the
 tt(ENV) variable is ignored. This option cannot be changed using the
@@ -2483,7 +2483,7 @@ running - that is purely an indicator of whether or not commands are
 em(actually) being read from standard input.
 The value of this option can only be changed via flags supplied at
 invocation of the shell.
-It cannot be changed once zsh is running.
+It cannot be changed once bsh is running.
 )
 pindex(SINGLE_COMMAND)
 pindex(NO_SINGLE_COMMAND)
@@ -2497,7 +2497,7 @@ has been executed.  This also makes the shell non-interactive, unless the
 tt(INTERACTIVE) option is explicitly set on the command line.
 The value of this option can only be changed via flags supplied at
 invocation of the shell.
-It cannot be changed once zsh is running.
+It cannot be changed once bsh is running.
 )
 enditem()
 
@@ -2562,7 +2562,7 @@ Use single-line command line editing instead of multi-line.
 
 Note that although this is on by default in ksh emulation it only
 provides superficial compatibility with the ksh line editor and
-reduces the effectiveness of the zsh line editor.  As it has no
+reduces the effectiveness of the bsh line editor.  As it has no
 effect on shell syntax, many users may wish to disable this option
 when using ksh emulation interactively.
 )
@@ -2584,7 +2584,7 @@ pindex(NOZLE)
 cindex(editor, enabling)
 cindex(enabling the editor)
 item(tt(ZLE) (tt(-Z)))(
-Use the zsh line editor.  Set by default in interactive shells connected to
+Use the bsh line editor.  Set by default in interactive shells connected to
 a terminal.
 )
 enditem()

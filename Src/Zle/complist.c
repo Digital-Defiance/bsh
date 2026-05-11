@@ -1,7 +1,7 @@
 /*
  * complist.c - completion listing enhancements
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -1404,7 +1404,7 @@ compprintlist(int showall)
     while (g && !errflag) {
 	char **pp = g->ylist;
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(g->heap_id)) {
 	    HEAP_ERROR(g->heap_id);
 	}
@@ -1995,7 +1995,7 @@ complistmatches(UNUSED(Hookdef dummy), Chdata dat)
     Cmgroup oamatches = amatches;
 
     amatches = dat->matches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     if (memory_validate(amatches->heap_id)) {
 	HEAP_ERROR(amatches->heap_id);
     }
@@ -2694,7 +2694,7 @@ domenuselect(Hookdef dummy, Chdata dat)
 	    s->mlbeg = mlbeg;
 	    memcpy(&(s->info), &minfo, sizeof(struct menuinfo));
 	    s->amatches = amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(amatches->heap_id)) {
 		HEAP_ERROR(amatches->heap_id);
 	    }
@@ -2897,7 +2897,7 @@ domenuselect(Hookdef dummy, Chdata dat)
 		if (lastmatches)
 		    freematches(lastmatches, 0);
 		amatches = u->amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 		if (memory_validate(amatches->heap_id)) {
 		    HEAP_ERROR(amatches->heap_id);
 		}
@@ -3441,7 +3441,7 @@ domenuselect(Hookdef dummy, Chdata dat)
 	 * I added the following because in certain cases the zrefresh()
 	 * here was screwing up the list.  Forcing it to redraw the
 	 * screen worked.  The case in question (courtesy of
-	 * "Matt Wozniski" <godlygeek@gmail.com>) is in zsh-workers/24756.
+	 * "Matt Wozniski" <godlygeek@gmail.com>) is in bsh-workers/24756.
 	 *
 	 * *** PLEASE DON'T ASK ME WHY THIS IS NECESSARY ***
 	 */

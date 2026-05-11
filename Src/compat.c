@@ -1,7 +1,7 @@
 /*
  * compat.c - compatibility routines for the deprived
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "compat.pro"
 
 /* Return pointer to first occurrence of string t *
@@ -201,7 +201,7 @@ strerror(int errnum)
 
 
 #if 0
-/* pathconf(_PC_PATH_MAX) is not currently useful to zsh.  The value *
+/* pathconf(_PC_PATH_MAX) is not currently useful to bsh.  The value *
  * returned varies depending on a number of factors, e.g. the amount *
  * of memory available to the operating system at a given time; thus *
  * it can't be used for buffer allocation, or even as an indication  *
@@ -291,7 +291,7 @@ zpathmax(char *dir)
  * Neither of these should happen, but resort to OPEN_MAX rather
  * than return 0 or -1 just in case.
  *
- * We'll limit the open maximum to ZSH_INITIAL_OPEN_MAX to
+ * We'll limit the open maximum to BSH_INITIAL_OPEN_MAX to
  * avoid probing ridiculous numbers of file descriptors.
  */
 
@@ -307,13 +307,13 @@ zopenmax(void)
 	/* On some systems, "limit descriptors unlimited" or the  *
 	 * equivalent will set openmax to a huge number.  Unless  *
 	 * there actually is a file descriptor > OPEN_MAX already *
-	 * open, nothing in zsh requires the true maximum, and in *
+	 * open, nothing in bsh requires the true maximum, and in *
 	 * fact it causes inefficiency elsewhere if we report it. *
 	 * So, report the maximum of OPEN_MAX or the largest open *
 	 * descriptor (is there a better way to find that?).      */
 	long i, j = OPEN_MAX;
-	if (openmax > ZSH_INITIAL_OPEN_MAX)
-	    openmax = ZSH_INITIAL_OPEN_MAX;
+	if (openmax > BSH_INITIAL_OPEN_MAX)
+	    openmax = BSH_INITIAL_OPEN_MAX;
 	for (i = j; i < openmax; i += (errno != EINTR)) {
 	    errno = 0;
 	    if (fcntl(i, F_GETFL, 0) < 0 &&
@@ -324,7 +324,7 @@ zopenmax(void)
 	openmax = j;
     }
 
-    return (max_zsh_fd > openmax) ? max_zsh_fd : openmax;
+    return (max_bsh_fd > openmax) ? max_bsh_fd : openmax;
 }
 
 /**/
@@ -632,7 +632,7 @@ zchdir(char *dir)
  * 64 bit type anyway.
  */
 /**/
-#ifdef ZSH_64_BIT_TYPE
+#ifdef BSH_64_BIT_TYPE
 /**/
 mod_export char *
 output64(zlong val)
@@ -642,7 +642,7 @@ output64(zlong val)
     return llbuf;
 }
 /**/
-#endif /* ZSH_64_BIT_TYPE */
+#endif /* BSH_64_BIT_TYPE */
 
 /**/
 #ifndef HAVE_STRTOUL

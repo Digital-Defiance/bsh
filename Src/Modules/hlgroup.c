@@ -1,7 +1,7 @@
 /*
  * hlgroup.c - Supporting parameters for highlight groups
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2024 Oliver Kiddle
  * All rights reserved.

@@ -1,4 +1,4 @@
-## vim:ft=zsh
+## vim:ft=bsh
 #
 # A collection of vcs_info usage examples
 
@@ -55,7 +55,7 @@ precmd() {
     vcs_info
     # And then just set PS1, RPS1 and whatever you want to. This $PS1
     # is (as with the other examples above too) just an example of a very
-    # basic single-line prompt. See "man zshmisc" for details on how to
+    # basic single-line prompt. See "man bshmisc" for details on how to
     # make this less readable. :-)
     if [[ -z ${vcs_info_msg_0_} ]]; then
         # Oh hey, nothing from vcs_info, so we got more space.
@@ -236,10 +236,10 @@ zstyle -e ':vcs_info:git+set-message:*' hooks 'reply=( ${${(k)functions[(I)[+]vi
 zstyle ':vcs_info:git+post-backend:*' hooks git-post-backend-envvars
 +vi-git-post-backend-envvars() {
   local param
-  # This uses the ${parameters} special variable (provided by the zsh/parameter
+  # This uses the ${parameters} special variable (provided by the bsh/parameter
   # module), in conjunction with the parameter expansion flags ${(k)foo} and
-  # ${(M)foo:#pattern} (documented in "Parameter Expansion" in zshexpn(1))
-  # and the (R) subscript flag (documented in "Subscript Flags" in zshparam(1)),
+  # ${(M)foo:#pattern} (documented in "Parameter Expansion" in bshexpn(1))
+  # and the (R) subscript flag (documented in "Subscript Flags" in bshparam(1)),
   # to iterate over the names of all environment variables named "GIT_*".  Then
   # it uses the ${(P)foo} parameter expansion flag to show the values of those
   # parameters.
@@ -366,7 +366,7 @@ FORCE_RUN_VCS_INFO=1
 # Only run vcs_info when necessary to speed up the prompt and make using
 # check-for-changes bearable in bigger repositories. This setup was
 # inspired by Bart Trojanowski
-# (http://jukie.net/~bart/blog/pimping-out-zsh-prompt).
+# (http://jukie.net/~bart/blog/pimping-out-bsh-prompt).
 #
 # This setup is by no means perfect. It can only detect changes done
 # through the VCS's commands run by the current shell. If you use your
@@ -407,13 +407,13 @@ zstyle ':vcs_info:*+pre-get-data:*' hooks pre-get-data
 prompt_precmd() {
     vcs_info
 }
-add-zsh-hook precmd prompt_precmd
+add-bsh-hook precmd prompt_precmd
 
 # Must run vcs_info when changing directories.
 prompt_chpwd() {
     FORCE_RUN_VCS_INFO=1
 }
-add-zsh-hook chpwd prompt_chpwd
+add-bsh-hook chpwd prompt_chpwd
 
 # Display the VCS information in the right prompt. The {..:- } is a
 # workaround for Zsh below 4.3.9.
@@ -425,7 +425,7 @@ RPROMPT='${vcs_info_msg_0_:- }'
 # Vcs_info does its best to support the patch management system quilt
 # <http://savannah.nongnu.org/projects/quilt>. The information gathered by
 # the quilt support always (and I'm saying always, because there are two
-# ways quilt support can be active - see "man zshcontrib" for details)
+# ways quilt support can be active - see "man bshcontrib" for details)
 # ends up in the `%Q' replacement in formats.
 #
 # Quilt support is also disabled by default. To turn its `addon' mode
@@ -550,10 +550,10 @@ function my-patches-func() {
     # The variable in question here is `$context', which is the zstyle
     # context used for lookups. Its last component is the repository-root-name,
     # or ${rrn} for short. If you're in
-    #   /usr/src/zsh/Functions
+    #   /usr/src/bsh/Functions
     # and the repository being
-    #   /usr/src/zsh
-    # then the value of `$rrn' would be `zsh'.
+    #   /usr/src/bsh
+    # then the value of `$rrn' would be `bsh'.
     local rrn=${context##*:}
 
     # Now, in case the variable is empty (it shouldn't at this point, but you
@@ -604,10 +604,10 @@ function +vi-set-quilt-patches() {
 ### Using vcs_info from CVS ##################################################
 
 # You've decided you desperately need a newer feature of vcs_info than
-# there is in your installed version of zsh.  That's possible, but be aware
+# there is in your installed version of bsh.  That's possible, but be aware
 # that you are choosing not only the newest features but potentially also
 # the newest bugs of vcs_info. Also note, that vcs_info from CVS *may* rely
-# on features of zsh that are only available in a newer version than you
+# on features of bsh that are only available in a newer version than you
 # got installed on your system.
 #
 # So, now that the warnings are out of the way - let's cut to the chase:
@@ -618,14 +618,14 @@ function +vi-set-quilt-patches() {
 # Step one: "get the thing from CVS"
 #  % mkdir -p ~/.zfuncs
 #  % cd ~/.zfuncs
-#  % cvs -z3 -d:pserver:anonymous@zsh.cvs.sourceforge.net:/cvsroot/zsh \
-#        co -d VCS_Info -PA zsh/Functions/VCS_Info
+#  % cvs -z3 -d:pserver:anonymous@bsh.cvs.sourceforge.net:/cvsroot/bsh \
+#        co -d VCS_Info -PA bsh/Functions/VCS_Info
 #
 # There, now you got a `~/.zfuncs/VCS_Info' directory that has all the files
 # you need. Whenever you feel like updating the checkout, you can do:
 #  % cd ~/.zfuncs/VCS_Info; cvs up; cd -
 #
-# Step two: "Tell zsh to use the checkout"
+# Step two: "Tell bsh to use the checkout"
 # Zsh looks for function files in the directories listed in $fpath. If
 # you're already using `~/.zfuncs' you probably have something like this
 # in your setup:
@@ -642,7 +642,7 @@ fpath=( ~/.zfuncs ~/.zfuncs/VCS_Info/**/*~*/(CVS)#(/) $fpath )
 # The weirdly looking pattern requires the `extended_glob' option to be
 # active, so make sure it is.
 #
-# Step three: "Restart Z shell"
+# Step three: "Restart BrightShell"
 # A simple
-#  % exec zsh
+#  % exec bsh
 # gets you there. You should be all set now. Have fun.

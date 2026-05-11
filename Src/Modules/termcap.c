@@ -1,7 +1,7 @@
 /*
  * termcap.c - termcap manipulation through curses
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -28,10 +28,10 @@
  */
 
 /*
- * We need to include the zsh headers later to avoid clashes with
+ * We need to include the bsh headers later to avoid clashes with
  * the definitions on some systems, however we need the configuration
  * file to decide whether we should avoid curses.h, which clashes
- * with several zsh constants on some systems (e.g. SunOS 4).
+ * with several bsh constants on some systems (e.g. SunOS 4).
  */
 #include "../../config.h"
 

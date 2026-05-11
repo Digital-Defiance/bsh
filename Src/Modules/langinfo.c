@@ -1,7 +1,7 @@
 /*
  * langinfo.c - parameter interface to langinfo via curses
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2002 Peter Stephenson, Clint Adams
  * All rights reserved.

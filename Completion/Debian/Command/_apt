@@ -784,7 +784,7 @@ _apt-mark () {
 _apt_snapshot_dates() {
   local -a expl dates
   # Get last 6 months of dates
-  zmodload -i zsh/datetime && {
+  zmodload -i bsh/datetime && {
     local i date last=$EPOCHSECONDS
     for (( i = 0; i < 180; i++ )); do
       strftime -s date %Y%m%d $last

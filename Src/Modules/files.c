@@ -1,7 +1,7 @@
 /*
  * files.c - file operation builtins
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Andrew Main
  * All rights reserved.
@@ -812,7 +812,7 @@ static struct builtin bintab[] = {
     BUILTIN("rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),
     BUILTIN("rmdir", 0, bin_rmdir, 1, -1, 0,         NULL,    NULL),
     BUILTIN("sync",  0, bin_sync,  0,  0, 0,         NULL,    NULL),
-    /* The "safe" zsh-only names */
+    /* The "safe" bsh-only names */
     BUILTIN("zf_chgrp", 0, bin_chown, 2, -1, BIN_CHGRP, "hRs",    NULL),
     BUILTIN("zf_chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("zf_chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),

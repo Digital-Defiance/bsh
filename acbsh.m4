@@ -1,5 +1,5 @@
 dnl
-dnl  Autconf tests for zsh.
+dnl  Autconf tests for bsh.
 dnl
 dnl  Copyright (c) 1995-1997 Richard Coleman
 dnl  All rights reserved.
@@ -25,7 +25,7 @@ dnl  support, updates, enhancements, or modifications.
 dnl
 
 dnl
-dnl zsh_64_BIT_TYPE
+dnl bsh_64_BIT_TYPE
 dnl   Check whether the first argument works as a 64-bit type.
 dnl   If there is a non-zero third argument, we just assume it works
 dnl   when we're cross compiling.  This is to allow a type to be
@@ -38,7 +38,7 @@ dnl   This macro does not produce messages as it may be run several times
 dnl   before finding the right type.
 dnl
 
-AC_DEFUN(zsh_64_BIT_TYPE,
+AC_DEFUN(bsh_64_BIT_TYPE,
 [AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -61,29 +61,29 @@ main()
 
 
 dnl
-dnl zsh_SHARED_FUNCTION
+dnl bsh_SHARED_FUNCTION
 dnl
-dnl This is just a frontend to zsh_SHARED_SYMBOL
+dnl This is just a frontend to bsh_SHARED_SYMBOL
 dnl
-dnl Usage: zsh_SHARED_FUNCTION(name[,rettype[,paramtype]])
-dnl
-
-AC_DEFUN(zsh_SHARED_FUNCTION,
-[zsh_SHARED_SYMBOL($1, ifelse([$2], ,[int ],[$2]) $1 [(]ifelse([$3], ,[ ],[$3])[)], $1)])
-
-dnl
-dnl zsh_SHARED_VARIABLE
-dnl
-dnl This is just a frontend to zsh_SHARED_SYMBOL
-dnl
-dnl Usage: zsh_SHARED_VARIABLE(name[,type])
+dnl Usage: bsh_SHARED_FUNCTION(name[,rettype[,paramtype]])
 dnl
 
-AC_DEFUN(zsh_SHARED_VARIABLE,
-[zsh_SHARED_SYMBOL($1, ifelse([$2], ,[int ],[$2]) $1, [&$1])])
+AC_DEFUN(bsh_SHARED_FUNCTION,
+[bsh_SHARED_SYMBOL($1, ifelse([$2], ,[int ],[$2]) $1 [(]ifelse([$3], ,[ ],[$3])[)], $1)])
 
 dnl
-dnl zsh_SHARED_SYMBOL
+dnl bsh_SHARED_VARIABLE
+dnl
+dnl This is just a frontend to bsh_SHARED_SYMBOL
+dnl
+dnl Usage: bsh_SHARED_VARIABLE(name[,type])
+dnl
+
+AC_DEFUN(bsh_SHARED_VARIABLE,
+[bsh_SHARED_SYMBOL($1, ifelse([$2], ,[int ],[$2]) $1, [&$1])])
+
+dnl
+dnl bsh_SHARED_SYMBOL
 dnl   Check whether symbol is available in static or shared library
 dnl
 dnl   On some systems, static modifiable library symbols (such as environ)
@@ -91,20 +91,20 @@ dnl   may appear only in statically linked libraries.  If this is the case,
 dnl   then two shared libraries that reference the same symbol, each linked
 dnl   with the static library, could be given distinct copies of the symbol.
 dnl
-dnl Usage: zsh_SHARED_SYMBOL(name,declaration,address)
-dnl Sets zsh_cv_shared_$1 cache variable to yes/no
+dnl Usage: bsh_SHARED_SYMBOL(name,declaration,address)
+dnl Sets bsh_cv_shared_$1 cache variable to yes/no
 dnl
 
-AC_DEFUN(zsh_SHARED_SYMBOL,
+AC_DEFUN(bsh_SHARED_SYMBOL,
 [AC_CACHE_CHECK([if $1 is available in shared libraries],
-zsh_cv_shared_$1,
-[if test "$zsh_cv_func_dlsym_needs_underscore" = yes; then
+bsh_cv_shared_$1,
+[if test "$bsh_cv_func_dlsym_needs_underscore" = yes; then
     us=_
 else
     us=
 fi
 echo '
-void *zsh_getaddr1()
+void *bsh_getaddr1()
 {
 #ifdef __CYGWIN__
 	__attribute__((__dllimport__))	
@@ -113,7 +113,7 @@ void *zsh_getaddr1()
 	return $3;
 };
 ' > conftest1.c
-sed 's/zsh_getaddr1/zsh_getaddr2/' < conftest1.c > conftest2.c
+sed 's/bsh_getaddr1/bsh_getaddr2/' < conftest1.c > conftest2.c
 if AC_TRY_COMMAND($CC -c $CFLAGS $CPPFLAGS $DLCFLAGS conftest1.c 1>&AS_MESSAGE_LOG_FD) &&
 AC_TRY_COMMAND($DLLD -o conftest1.$DL_EXT $LDFLAGS $DLLDFLAGS conftest1.o $LIBS 1>&AS_MESSAGE_LOG_FD) &&
 AC_TRY_COMMAND($CC -c $CFLAGS $CPPFLAGS $DLCFLAGS conftest2.c 1>&AS_MESSAGE_LOG_FD) &&
@@ -124,11 +124,11 @@ AC_TRY_COMMAND($DLLD -o conftest2.$DL_EXT $LDFLAGS $DLLDFLAGS conftest2.o $LIBS 
 #define RTLD_LAZY BIND_DEFERRED
 #define RTLD_GLOBAL DYNAMIC_PATH
 
-char *zsh_gl_sym_addr ;
+char *bsh_gl_sym_addr ;
 
 #define dlopen(file,mode) (void *)shl_load((file), (mode), (long) 0)
 #define dlclose(handle) shl_unload((shl_t)(handle))
-#define dlsym(handle,name) (zsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&zsh_gl_sym_addr), (void *)zsh_gl_sym_addr)
+#define dlsym(handle,name) (bsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&bsh_gl_sym_addr), (void *)bsh_gl_sym_addr)
 #define dlerror() 0
 #else
 #ifdef HAVE_DLFCN_H
@@ -150,46 +150,46 @@ int
 main()
 {
     void *handle1, *handle2;
-    void *(*zsh_getaddr1)(), *(*zsh_getaddr2)();
+    void *(*bsh_getaddr1)(), *(*bsh_getaddr2)();
     void *sym1, *sym2;
     handle1 = dlopen("./conftest1.$DL_EXT", RTLD_LAZY | RTLD_GLOBAL);
     if(!handle1) return(1);
     handle2 = dlopen("./conftest2.$DL_EXT", RTLD_LAZY | RTLD_GLOBAL);
     if(!handle2) return(1);
-    zsh_getaddr1 = (void *(*)()) dlsym(handle1, "${us}zsh_getaddr1");
-    zsh_getaddr2 = (void *(*)()) dlsym(handle2, "${us}zsh_getaddr2");
-    sym1 = zsh_getaddr1();
-    sym2 = zsh_getaddr2();
+    bsh_getaddr1 = (void *(*)()) dlsym(handle1, "${us}bsh_getaddr1");
+    bsh_getaddr2 = (void *(*)()) dlsym(handle2, "${us}bsh_getaddr2");
+    sym1 = bsh_getaddr1();
+    sym2 = bsh_getaddr2();
     if(!sym1 || !sym2) return(1);
     if(sym1 != sym2) return(1);
     dlclose(handle1);
     handle1 = dlopen("./conftest1.$DL_EXT", RTLD_LAZY | RTLD_GLOBAL);
     if(!handle1) return(1);
-    zsh_getaddr1 = (void *(*)()) dlsym(handle1, "${us}zsh_getaddr1");
-    sym1 = zsh_getaddr1();
+    bsh_getaddr1 = (void *(*)()) dlsym(handle1, "${us}bsh_getaddr1");
+    sym1 = bsh_getaddr1();
     if(!sym1) return(1);
     if(sym1 != sym2) return(1);
     return(0);
 }
-]])],[zsh_cv_shared_$1=yes],
-[zsh_cv_shared_$1=no],
-[zsh_cv_shared_$1=no]
+]])],[bsh_cv_shared_$1=yes],
+[bsh_cv_shared_$1=no],
+[bsh_cv_shared_$1=no]
 )
 else
-    zsh_cv_shared_$1=no
+    bsh_cv_shared_$1=no
 fi
 ])
 ])
 
 dnl
-dnl zsh_SYS_DYNAMIC_CLASH
+dnl bsh_SYS_DYNAMIC_CLASH
 dnl   Check whether symbol name clashes in shared libraries are acceptable.
 dnl
 
-AC_DEFUN(zsh_SYS_DYNAMIC_CLASH,
+AC_DEFUN(bsh_SYS_DYNAMIC_CLASH,
 [AC_CACHE_CHECK([if name clashes in shared objects are OK],
-zsh_cv_sys_dynamic_clash_ok,
-[if test "$zsh_cv_func_dlsym_needs_underscore" = yes; then
+bsh_cv_sys_dynamic_clash_ok,
+[if test "$bsh_cv_func_dlsym_needs_underscore" = yes; then
     us=_
 else
     us=
@@ -206,11 +206,11 @@ AC_TRY_COMMAND($DLLD -o conftest2.$DL_EXT $LDFLAGS $DLLDFLAGS conftest2.o $LIBS 
 #define RTLD_LAZY BIND_DEFERRED
 #define RTLD_GLOBAL DYNAMIC_PATH
 
-char *zsh_gl_sym_addr ;
+char *bsh_gl_sym_addr ;
 
 #define dlopen(file,mode) (void *)shl_load((file), (mode), (long) 0)
 #define dlclose(handle) shl_unload((shl_t)(handle))
-#define dlsym(handle,name) (zsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&zsh_gl_sym_addr), (void *)zsh_gl_sym_addr)
+#define dlsym(handle,name) (bsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&bsh_gl_sym_addr), (void *)bsh_gl_sym_addr)
 #define dlerror() 0
 #else
 #ifdef HAVE_DLFCN_H
@@ -242,29 +242,29 @@ main()
     if(!fred1 || !fred2) return(1);
     return((*fred1)() != 42 || (*fred2)() != 69);
 }
-]])],[zsh_cv_sys_dynamic_clash_ok=yes],
-[zsh_cv_sys_dynamic_clash_ok=no],
-[zsh_cv_sys_dynamic_clash_ok=no]
+]])],[bsh_cv_sys_dynamic_clash_ok=yes],
+[bsh_cv_sys_dynamic_clash_ok=no],
+[bsh_cv_sys_dynamic_clash_ok=no]
 )
 else
-    zsh_cv_sys_dynamic_clash_ok=no
+    bsh_cv_sys_dynamic_clash_ok=no
 fi
 ])
-if test "$zsh_cv_sys_dynamic_clash_ok" = yes; then
+if test "$bsh_cv_sys_dynamic_clash_ok" = yes; then
     AC_DEFINE(DYNAMIC_NAME_CLASH_OK)
 fi
 ])
 
 dnl
-dnl zsh_SYS_DYNAMIC_GLOBAL
+dnl bsh_SYS_DYNAMIC_GLOBAL
 dnl   Check whether symbols in one dynamically loaded library are
 dnl   available to another dynamically loaded library.
 dnl
 
-AC_DEFUN(zsh_SYS_DYNAMIC_GLOBAL,
+AC_DEFUN(bsh_SYS_DYNAMIC_GLOBAL,
 [AC_CACHE_CHECK([for working RTLD_GLOBAL],
-zsh_cv_sys_dynamic_rtld_global,
-[if test "$zsh_cv_func_dlsym_needs_underscore" = yes; then
+bsh_cv_sys_dynamic_rtld_global,
+[if test "$bsh_cv_func_dlsym_needs_underscore" = yes; then
     us=_
 else
     us=
@@ -281,11 +281,11 @@ AC_TRY_COMMAND($DLLD -o conftest2.$DL_EXT $LDFLAGS $DLLDFLAGS conftest2.o $LIBS 
 #define RTLD_LAZY BIND_DEFERRED
 #define RTLD_GLOBAL DYNAMIC_PATH
 
-char *zsh_gl_sym_addr ;
+char *bsh_gl_sym_addr ;
 
 #define dlopen(file,mode) (void *)shl_load((file), (mode), (long) 0)
 #define dlclose(handle) shl_unload((shl_t)(handle))
-#define dlsym(handle,name) (zsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&zsh_gl_sym_addr), (void *)zsh_gl_sym_addr)
+#define dlsym(handle,name) (bsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&bsh_gl_sym_addr), (void *)bsh_gl_sym_addr)
 #define dlerror() 0
 #else
 #ifdef HAVE_DLFCN_H
@@ -316,26 +316,26 @@ main()
     if(!barneysym) return(1);
     return((*barneysym)() != 69);
 }
-]])],[zsh_cv_sys_dynamic_rtld_global=yes],
-[zsh_cv_sys_dynamic_rtld_global=no],
-[zsh_cv_sys_dynamic_rtld_global=no]
+]])],[bsh_cv_sys_dynamic_rtld_global=yes],
+[bsh_cv_sys_dynamic_rtld_global=no],
+[bsh_cv_sys_dynamic_rtld_global=no]
 )
 else
-    zsh_cv_sys_dynamic_rtld_global=no
+    bsh_cv_sys_dynamic_rtld_global=no
 fi
 ])
 ])
 
 dnl
-dnl zsh_SYS_DYNAMIC_EXECSYMS
+dnl bsh_SYS_DYNAMIC_EXECSYMS
 dnl   Check whether symbols in the executable are available to dynamically
 dnl   loaded libraries.
 dnl
 
-AC_DEFUN(zsh_SYS_DYNAMIC_EXECSYMS,
+AC_DEFUN(bsh_SYS_DYNAMIC_EXECSYMS,
 [AC_CACHE_CHECK([whether symbols in the executable are available],
-zsh_cv_sys_dynamic_execsyms,
-[if test "$zsh_cv_func_dlsym_needs_underscore" = yes; then
+bsh_cv_sys_dynamic_execsyms,
+[if test "$bsh_cv_func_dlsym_needs_underscore" = yes; then
     us=_
 else
     us=
@@ -351,11 +351,11 @@ AC_TRY_COMMAND($DLLD -o conftest1.$DL_EXT $LDFLAGS $DLLDFLAGS conftest1.o $LIBS 
 #define RTLD_LAZY BIND_DEFERRED
 #define RTLD_GLOBAL DYNAMIC_PATH
 
-char *zsh_gl_sym_addr ;
+char *bsh_gl_sym_addr ;
 
 #define dlopen(file,mode) (void *)shl_load((file), (mode), (long) 0)
 #define dlclose(handle) shl_unload((shl_t)(handle))
-#define dlsym(handle,name) (zsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&zsh_gl_sym_addr), (void *)zsh_gl_sym_addr)
+#define dlsym(handle,name) (bsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&bsh_gl_sym_addr), (void *)bsh_gl_sym_addr)
 #define dlerror() 0
 #else
 #ifdef HAVE_DLFCN_H
@@ -386,30 +386,30 @@ main()
 }
 
 int fred () { return 42; }
-]])],[zsh_cv_sys_dynamic_execsyms=yes],
-[zsh_cv_sys_dynamic_execsyms=no],
-[zsh_cv_sys_dynamic_execsyms=no]
+]])],[bsh_cv_sys_dynamic_execsyms=yes],
+[bsh_cv_sys_dynamic_execsyms=no],
+[bsh_cv_sys_dynamic_execsyms=no]
 )
     LDFLAGS=$save_ldflags
 else
-    zsh_cv_sys_dynamic_execsyms=no
+    bsh_cv_sys_dynamic_execsyms=no
 fi
 ])
 ])
 
 dnl
-dnl zsh_SYS_DYNAMIC_STRIP_EXE
+dnl bsh_SYS_DYNAMIC_STRIP_EXE
 dnl   Check whether it is safe to strip executables.
 dnl
 
-AC_DEFUN(zsh_SYS_DYNAMIC_STRIP_EXE,
-[AC_REQUIRE([zsh_SYS_DYNAMIC_EXECSYMS])
+AC_DEFUN(bsh_SYS_DYNAMIC_STRIP_EXE,
+[AC_REQUIRE([bsh_SYS_DYNAMIC_EXECSYMS])
 AC_CACHE_CHECK([whether executables can be stripped],
-zsh_cv_sys_dynamic_strip_exe,
-[if test "$zsh_cv_sys_dynamic_execsyms" != yes; then
-    zsh_cv_sys_dynamic_strip_exe=yes
+bsh_cv_sys_dynamic_strip_exe,
+[if test "$bsh_cv_sys_dynamic_execsyms" != yes; then
+    bsh_cv_sys_dynamic_strip_exe=yes
 elif
-    if test "$zsh_cv_func_dlsym_needs_underscore" = yes; then
+    if test "$bsh_cv_func_dlsym_needs_underscore" = yes; then
 	us=_
     else
 	us=
@@ -425,11 +425,11 @@ elif
 #define RTLD_LAZY BIND_DEFERRED
 #define RTLD_GLOBAL DYNAMIC_PATH
 
-char *zsh_gl_sym_addr ;
+char *bsh_gl_sym_addr ;
 
 #define dlopen(file,mode) (void *)shl_load((file), (mode), (long) 0)
 #define dlclose(handle) shl_unload((shl_t)(handle))
-#define dlsym(handle,name) (zsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&zsh_gl_sym_addr), (void *)zsh_gl_sym_addr)
+#define dlsym(handle,name) (bsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&bsh_gl_sym_addr), (void *)bsh_gl_sym_addr)
 #define dlerror() 0
 #else
 #ifdef HAVE_DLFCN_H
@@ -460,26 +460,26 @@ main()
 }
 
 int fred () { return 42; }
-]])],[zsh_cv_sys_dynamic_strip_exe=yes],
-[zsh_cv_sys_dynamic_strip_exe=no],
-[zsh_cv_sys_dynamic_strip_exe=no]
+]])],[bsh_cv_sys_dynamic_strip_exe=yes],
+[bsh_cv_sys_dynamic_strip_exe=no],
+[bsh_cv_sys_dynamic_strip_exe=no]
 )
     LDFLAGS=$save_ldflags
 else
-    zsh_cv_sys_dynamic_strip_exe=no
+    bsh_cv_sys_dynamic_strip_exe=no
 fi
 ])
 ])
 
 dnl
-dnl zsh_SYS_DYNAMIC_STRIP_EXE
+dnl bsh_SYS_DYNAMIC_STRIP_EXE
 dnl   Check whether it is safe to strip dynamically loaded libraries.
 dnl
 
-AC_DEFUN(zsh_SYS_DYNAMIC_STRIP_LIB,
+AC_DEFUN(bsh_SYS_DYNAMIC_STRIP_LIB,
 [AC_CACHE_CHECK([whether libraries can be stripped],
-zsh_cv_sys_dynamic_strip_lib,
-[if test "$zsh_cv_func_dlsym_needs_underscore" = yes; then
+bsh_cv_sys_dynamic_strip_lib,
+[if test "$bsh_cv_func_dlsym_needs_underscore" = yes; then
     us=_
 else
     us=
@@ -493,11 +493,11 @@ AC_TRY_COMMAND($DLLD -o conftest1.$DL_EXT $LDFLAGS $DLLDFLAGS -s conftest1.o $LI
 #define RTLD_LAZY BIND_DEFERRED
 #define RTLD_GLOBAL DYNAMIC_PATH
 
-char *zsh_gl_sym_addr ;
+char *bsh_gl_sym_addr ;
 
 #define dlopen(file,mode) (void *)shl_load((file), (mode), (long) 0)
 #define dlclose(handle) shl_unload((shl_t)(handle))
-#define dlsym(handle,name) (zsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&zsh_gl_sym_addr), (void *)zsh_gl_sym_addr)
+#define dlsym(handle,name) (bsh_gl_sym_addr=0,shl_findsym((shl_t *)&(handle),name,TYPE_UNDEFINED,&bsh_gl_sym_addr), (void *)bsh_gl_sym_addr)
 #define dlerror() 0
 #else
 #ifdef HAVE_DLFCN_H
@@ -526,100 +526,100 @@ main()
     if(!fredsym) return(1);
     return((*fredsym)() != 42);
 }
-]])],[zsh_cv_sys_dynamic_strip_lib=yes],
-[zsh_cv_sys_dynamic_strip_lib=no],
-[zsh_cv_sys_dynamic_strip_lib=no]
+]])],[bsh_cv_sys_dynamic_strip_lib=yes],
+[bsh_cv_sys_dynamic_strip_lib=no],
+[bsh_cv_sys_dynamic_strip_lib=no]
 )
 else
-    zsh_cv_sys_dynamic_strip_lib=no
+    bsh_cv_sys_dynamic_strip_lib=no
 fi
 ])
 ])
 
 dnl
-dnl zsh_PATH_UTMP(filename)
+dnl bsh_PATH_UTMP(filename)
 dnl   Search for a specified utmp-type file.
 dnl
 
-AC_DEFUN(zsh_PATH_UTMP,
-[AC_CACHE_CHECK([for $1 file], [zsh_cv_path_$1],
+AC_DEFUN(bsh_PATH_UTMP,
+[AC_CACHE_CHECK([for $1 file], [bsh_cv_path_$1],
 [for dir in /etc /usr/etc /var/adm /usr/adm /var/run /var/log ./conftest; do
-  m4_foreach([file],[$@],[zsh_cv_path_$1=${dir}/file
-  test -f $zsh_cv_path_$1 && break
-  ])zsh_cv_path_$1=no
+  m4_foreach([file],[$@],[bsh_cv_path_$1=${dir}/file
+  test -f $bsh_cv_path_$1 && break
+  ])bsh_cv_path_$1=no
 done
 ])
 AH_TEMPLATE([PATH_]translit($1, [a-z], [A-Z])[_FILE],
 [Define to be location of ]$1[ file.])
-if test $zsh_cv_path_$1 != no; then
+if test $bsh_cv_path_$1 != no; then
   AC_DEFINE_UNQUOTED([PATH_]translit($1, [a-z], [A-Z])[_FILE],
-  "$zsh_cv_path_$1")
+  "$bsh_cv_path_$1")
 fi
 ])
 
 dnl
-dnl zsh_TYPE_EXISTS(#includes, type name)
+dnl bsh_TYPE_EXISTS(#includes, type name)
 dnl   Check whether a specified type exists.
 dnl
 
-AC_DEFUN(zsh_TYPE_EXISTS,
-[AC_CACHE_CHECK([for $2], [zsh_cv_type_exists_[]translit($2, [ ], [_])],
+AC_DEFUN(bsh_TYPE_EXISTS,
+[AC_CACHE_CHECK([for $2], [bsh_cv_type_exists_[]translit($2, [ ], [_])],
 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[$1]], [[$2 testvar;]])],
-[zsh_cv_type_exists_[]translit($2, [ ], [_])=yes],
-[zsh_cv_type_exists_[]translit($2, [ ], [_])=no])
+[bsh_cv_type_exists_[]translit($2, [ ], [_])=yes],
+[bsh_cv_type_exists_[]translit($2, [ ], [_])=no])
 ])
 AH_TEMPLATE([HAVE_]translit($2, [ a-z], [_A-Z]),
 [Define to 1 if ]$2[ is defined by a system header])
-if test $zsh_cv_type_exists_[]translit($2, [ ], [_]) = yes; then
+if test $bsh_cv_type_exists_[]translit($2, [ ], [_]) = yes; then
   AC_DEFINE([HAVE_]translit($2, [ a-z], [_A-Z]))
 fi
 ])
 
 dnl
-dnl zsh_STRUCT_MEMBER(#includes, type name, member name)
+dnl bsh_STRUCT_MEMBER(#includes, type name, member name)
 dnl   Check whether a specified aggregate type exists and contains
 dnl   a specified member.
 dnl
 
-AC_DEFUN(zsh_STRUCT_MEMBER,
-[AC_CACHE_CHECK([for $3 in $2], [zsh_cv_struct_member_[]translit($2, [ ], [_])_$3],
+AC_DEFUN(bsh_STRUCT_MEMBER,
+[AC_CACHE_CHECK([for $3 in $2], [bsh_cv_struct_member_[]translit($2, [ ], [_])_$3],
 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[$1]], [[$2 testvar; testvar.$3;]])],
-[zsh_cv_struct_member_[]translit($2, [ ], [_])_$3=yes],
-[zsh_cv_struct_member_[]translit($2, [ ], [_])_$3=no])
+[bsh_cv_struct_member_[]translit($2, [ ], [_])_$3=yes],
+[bsh_cv_struct_member_[]translit($2, [ ], [_])_$3=no])
 ])
 AH_TEMPLATE([HAVE_]translit($2_$3, [ a-z], [_A-Z]),
 [Define if your system's ]$2[ has a member named ]$3[.])
-if test $zsh_cv_struct_member_[]translit($2, [ ], [_])_$3 = yes; then
+if test $bsh_cv_struct_member_[]translit($2, [ ], [_])_$3 = yes; then
   AC_DEFINE([HAVE_]translit($2_$3, [ a-z], [_A-Z]))
 fi
 ])
 
 dnl
-dnl zsh_ARG_PROGRAM
-dnl   Handle AC_ARG_PROGRAM substitutions into other zsh configure macros.
+dnl bsh_ARG_PROGRAM
+dnl   Handle AC_ARG_PROGRAM substitutions into other bsh configure macros.
 dnl   After processing this macro, the configure script may refer to
-dnl   and $tzsh_name, and @tzsh@ is defined for make substitutions.
+dnl   and $tbsh_name, and @tbsh@ is defined for make substitutions.
 dnl
 
-AC_DEFUN(zsh_ARG_PROGRAM,
+AC_DEFUN(bsh_ARG_PROGRAM,
 [AC_ARG_PROGRAM
 # Un-double any \ or $ (doubled by AC_ARG_PROGRAM).
 cat <<\EOF_SED > conftestsed
 s,\\\\,\\,g; s,\$\$,$,g
 EOF_SED
-zsh_transform_name=`echo "${program_transform_name}" | sed -f conftestsed`
+bsh_transform_name=`echo "${program_transform_name}" | sed -f conftestsed`
 rm -f conftestsed
-tzsh_name=`echo zsh | sed -e "${zsh_transform_name}"`
+tbsh_name=`echo bsh | sed -e "${bsh_transform_name}"`
 # Double any \ or $ in the transformed name that results.
 cat <<\EOF_SED >> conftestsed
 s,\\,\\\\,g; s,\$,$$,g
 EOF_SED
-tzsh=`echo ${tzsh_name} | sed -f conftestsed`
+tbsh=`echo ${tbsh_name} | sed -f conftestsed`
 rm -f conftestsed
-AC_SUBST(tzsh)dnl
+AC_SUBST(tbsh)dnl
 ])
 
-AC_DEFUN(zsh_COMPILE_FLAGS,
+AC_DEFUN(bsh_COMPILE_FLAGS,
     [AC_ARG_ENABLE(cppflags,
 	AS_HELP_STRING([--enable-cppflags=...], [specify C preprocessor flags]),
 	if test "$enableval" = "yes"
@@ -646,40 +646,40 @@ AC_DEFUN(zsh_COMPILE_FLAGS,
 	fi)])
 
 dnl 
-dnl zsh_CHECK_SOCKLEN_T
+dnl bsh_CHECK_SOCKLEN_T
 dnl
 dnl	check type of third argument of some network functions; currently
 dnl	tested are size_t *, unsigned long *, int *.
 dnl     call the result ZSOCKLEN_T since some systems have SOCKLEN_T already
 dnl
-AC_DEFUN([zsh_CHECK_SOCKLEN_T],[
+AC_DEFUN([bsh_CHECK_SOCKLEN_T],[
   AC_CACHE_CHECK(
     [base type of the third argument to accept],
-    [zsh_cv_type_socklen_t],
-    [zsh_cv_type_socklen_t=
-    for zsh_type in socklen_t int "unsigned long" size_t ; do
+    [bsh_cv_type_socklen_t],
+    [bsh_cv_type_socklen_t=
+    for bsh_type in socklen_t int "unsigned long" size_t ; do
       AC_COMPILE_IFELSE([AC_LANG_PROGRAM(
         [[#include <sys/types.h>
           #include <sys/socket.h>]],
-        [[extern int accept (int, struct sockaddr *, $zsh_type *);]])],
-        [zsh_cv_type_socklen_t="$zsh_type"; break],
+        [[extern int accept (int, struct sockaddr *, $bsh_type *);]])],
+        [bsh_cv_type_socklen_t="$bsh_type"; break],
         []
       )
     done
-    if test -z "$zsh_cv_type_socklen_t"; then
-      zsh_cv_type_socklen_t=int
+    if test -z "$bsh_cv_type_socklen_t"; then
+      bsh_cv_type_socklen_t=int
     fi]
   )
-  AC_DEFINE_UNQUOTED([ZSOCKLEN_T], [$zsh_cv_type_socklen_t],
+  AC_DEFINE_UNQUOTED([ZSOCKLEN_T], [$bsh_cv_type_socklen_t],
   [Define to the base type of the third argument of accept])]
 )
 
 dnl Check for limit $1 e.g. RLIMIT_RSS.
-AC_DEFUN(zsh_LIMIT_PRESENT,
+AC_DEFUN(bsh_LIMIT_PRESENT,
 [AH_TEMPLATE([HAVE_]$1,
 [Define to 1 if ]$1[ is present (whether or not as a macro).])
 AC_CACHE_CHECK([for limit $1],
-zsh_cv_have_$1,
+bsh_cv_have_$1,
 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <sys/types.h>
 #ifdef HAVE_SYS_TIME_H
@@ -687,20 +687,20 @@ zsh_cv_have_$1,
 #endif
 #include <sys/resource.h>]],
 [[$1]])],
-  [zsh_cv_have_$1=yes],
-  [zsh_cv_have_$1=no])])
+  [bsh_cv_have_$1=yes],
+  [bsh_cv_have_$1=no])])
 
-if test $zsh_cv_have_$1 = yes; then
+if test $bsh_cv_have_$1 = yes; then
   AC_DEFINE(HAVE_$1)
 fi])
 
 dnl Check whether rlmit $1, e.g. AS, is the same as rlmit $3, e.g. VMEM.
 dnl $2 is lowercase $1, $4 is lowercase $3.
-AC_DEFUN(zsh_LIMITS_EQUAL,
+AC_DEFUN(bsh_LIMITS_EQUAL,
 [AH_TEMPLATE([RLIMIT_]$1[_IS_]$3,
 [Define to 1 if RLIMIT_]$1[ and RLIMIT_]$3[ both exist and are equal.])
 AC_CACHE_CHECK([if RLIMIT_]$1[ and RLIMIT_]$3[ are the same],
-zsh_cv_rlimit_$2_is_$4,
+bsh_cv_rlimit_$2_is_$4,
 [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
 #include <sys/types.h>
 #ifdef HAVE_SYS_TIME_H
@@ -708,8 +708,8 @@ zsh_cv_rlimit_$2_is_$4,
 #endif
 #include <sys/resource.h>]],
 [[static char x[(RLIMIT_$1 == RLIMIT_$3)? 1 : -1]]])],
-  [zsh_cv_rlimit_$2_is_$4=yes],
-  [zsh_cv_rlimit_$2_is_$4=no])])
-if test x$zsh_cv_rlimit_$2_is_$4 = xyes; then
+  [bsh_cv_rlimit_$2_is_$4=yes],
+  [bsh_cv_rlimit_$2_is_$4=no])])
+if test x$bsh_cv_rlimit_$2_is_$4 = xyes; then
   AC_DEFINE(RLIMIT_$1_IS_$3)
 fi])

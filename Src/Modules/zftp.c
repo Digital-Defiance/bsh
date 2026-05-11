@@ -1,7 +1,7 @@
 /*
  * zftp.c - builtin FTP client
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1998 Peter Stephenson
  * All rights reserved.
@@ -324,7 +324,7 @@ static int zfsesscnt;
  * easier).  The complication is that SIGALRM may already be handled
  * by the user setting TMOUT and possibly setting their own trap --- in
  * fact, it's always handled by the shell when it's interactive.  It's
- * too difficult to use zsh's own signal handler --- either it would
+ * too difficult to use bsh's own signal handler --- either it would
  * need rewriting to use a C function as a trap, or we would need a
  * hack to make it callback via a hidden builtin from a function --- so
  * just install our own, and use settrap() to restore the behaviour
@@ -332,7 +332,7 @@ static int zfsesscnt;
  * the main shell code, the better I would like it.
  *
  * Since we don't want to go through the palaver of changing between
- * the main zsh signal handler and ours every time we start or stop the
+ * the main bsh signal handler and ours every time we start or stop the
  * alarm, we keep the flag zfalarmed set to 1 while zftp is rigged to
  * handle alarms.  This is tested at the end of bin_zftp(), which is
  * the entry point for all functions, and that restores the original
@@ -462,7 +462,7 @@ zfunpipe(void)
 }
 
 /*
- * Same as movefd(), but don't mark the fd in the zsh tables,
+ * Same as movefd(), but don't mark the fd in the bsh tables,
  * because we only want it closed by zftp.  However, we still
  * need to shift the fd's out of the way of the user-visible 0-9.
  */
@@ -1013,7 +1013,7 @@ zfopendata(char *name, union tcp_sockaddr *zdsockp, int *is_passivep)
 	if(zdsockp->a.sa_family == AF_INET6) {
 	    /* see RFC 2428 for explanation */
 	    strcpy(portcmd, "EPRT |2|");
-	    zsh_inet_ntop(AF_INET6, &zdsockp->in6.sin6_addr,
+	    bsh_inet_ntop(AF_INET6, &zdsockp->in6.sin6_addr,
 			  portcmd+8, INET6_ADDRSTRLEN);
 	    sprintf(strchr(portcmd, 0), "|%u|\r\n",
 		    (unsigned)ntohs(zdsockp->in6.sin6_port));
@@ -1801,7 +1801,7 @@ zftp_open(char *name, char **args, int flags)
     {
 	off_t tcp_port;
 
-	zhostp = zsh_getipnodebyname(hostnam, af, 0, &herrno);
+	zhostp = bsh_getipnodebyname(hostnam, af, 0, &herrno);
 	if (!zhostp || errflag) {
 	    /* should use herror() here if available, but maybe
 	     * needs configure test. on AIX it's present but not
@@ -1886,7 +1886,7 @@ zftp_open(char *name, char **args, int flags)
 	char pbuf[INET_ADDRSTRLEN];
 #endif
 	addrp--;
-	zsh_inet_ntop(af, *addrp, pbuf, sizeof(pbuf));
+	bsh_inet_ntop(af, *addrp, pbuf, sizeof(pbuf));
 	zfsetparam("ZFTP_IP", ztrdup(pbuf), ZFPM_READONLY);
     }
     freehostent(zhostp);
@@ -2089,7 +2089,7 @@ zftp_params(UNUSED(char *name), char **args, UNUSED(int flags))
 	return 0;
     }
     len = arrlen(args);
-    newarr = (char **)zshcalloc((len+1)*sizeof(char *));
+    newarr = (char **)bshcalloc((len+1)*sizeof(char *));
     for (aptr = args, i = 0; *aptr && !errflag; aptr++, i++) {
 	char *str;
 	if (**aptr == '?')
@@ -2551,7 +2551,7 @@ zftp_getput(char *name, char **args, int flags)
      * At this point I'd like to set progress to 0 if we're
      * backgrounded, since it's hard for the user to find out.
      * It turns out it's hard enough for us to find out.
-     * The problem is that zsh clears it's job table, so we
+     * The problem is that bsh clears it's job table, so we
      * just don't know if we're some forked shell in a pipeline
      * somewhere or in the background.  This seems to me a problem.
      */
@@ -2812,10 +2812,10 @@ newsession(char *nm)
     }
 
     if (!nptr) {
-	zfsess = (Zftp_session) zshcalloc(sizeof(struct zftp_session));
+	zfsess = (Zftp_session) bshcalloc(sizeof(struct zftp_session));
 	zfsess->name = ztrdup(nm);
 	zfsess->dfd = -1;
-	zfsess->params = (char **) zshcalloc(sizeof(zfparams));
+	zfsess->params = (char **) bshcalloc(sizeof(zfparams));
 	zaddlinknode(zfsessions, zfsess);
 
 	zfsesscnt++;
@@ -3167,7 +3167,7 @@ static struct features module_features = {
     0
 };
 
-/* The load/unload routines required by the zsh library interface */
+/* The load/unload routines required by the bsh library interface */
 
 /**/
 int

@@ -1,7 +1,7 @@
 /*
  * glob.c - filename generation
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "glob.pro"
 
 #if defined(OFF_T_IS_64_BIT) && defined(__GNUC__)
@@ -703,7 +703,7 @@ scanner(Complist q, int shortcircuit)
     return;
 }
 
-/* This function tokenizes a zsh glob pattern */
+/* This function tokenizes a bsh glob pattern */
 
 /**/
 static Complist
@@ -1620,7 +1620,7 @@ zglob(LinkList list, LinkNode np, int nountok)
 			g_units = TT_KILOBYTES, ++s;
 		    else if (*s == 'm' || *s == 'M')
 			g_units = TT_MEGABYTES, ++s;
-#if defined(ZSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
+#if defined(BSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
                     else if (*s == 'g' || *s == 'G')
                         g_units = TT_GIGABYTES, ++s;
                     else if (*s == 't' || *s == 'T')
@@ -2537,7 +2537,7 @@ matchpat(char *a, char *b)
  * and finishes e characters in: 0 <= b <= e <= imd->ulen on input
  * (yes, empty matches should work).
  *
- * imd->flags is a set of the SUB_* matches defined in zsh.h from
+ * imd->flags is a set of the SUB_* matches defined in bsh.h from
  * SUB_MATCH onwards; the lower parts are ignored.
  *
  * imd->replstr is the replacement string for a substitution
@@ -2694,7 +2694,7 @@ compgetmatch(char *pat, int *flp, char **replstrp)
 
 /*
  * This is called from paramsubst to get the match for ${foo#bar} etc.
- * fl is a set of the SUB_* flags defined in zsh.h
+ * fl is a set of the SUB_* flags defined in bsh.h
  * *sp points to the string we have to modify. The n'th match will be
  * returned in *sp. The heap is used to get memory for the result string.
  * replstr is the replacement string from a ${.../orig/repl}, in
@@ -3547,7 +3547,7 @@ igetmatch(char **sp, Patprog p, int fl, int n, char *replstr,
 mod_export void
 tokenize(char *s)
 {
-    zshtokenize(s, 0);
+    bshtokenize(s, 0);
 }
 
 /*
@@ -3557,22 +3557,22 @@ tokenize(char *s)
  * modified if it failed to match a pattern.
  *
  * It may be modified by the effect of SH_GLOB which turns off
- * various zsh-specific options.
+ * various bsh-specific options.
  */
 
 /**/
 mod_export void
 shtokenize(char *s)
 {
-    int flags = ZSHTOK_SUBST;
+    int flags = BSHTOK_SUBST;
     if (isset(SHGLOB))
-	flags |= ZSHTOK_SHGLOB;
-    zshtokenize(s, flags);
+	flags |= BSHTOK_SHGLOB;
+    bshtokenize(s, flags);
 }
 
 /**/
 static void
-zshtokenize(char *s, int flags)
+bshtokenize(char *s, int flags)
 {
     char *t;
     int bslash = 0;
@@ -3588,16 +3588,16 @@ zshtokenize(char *s, int flags)
 	case Bnullkeep:
 	case '\\':
 	    if (bslash) {
-		s[-1] = (flags & ZSHTOK_SUBST) ? Bnullkeep : Bnull;
+		s[-1] = (flags & BSHTOK_SUBST) ? Bnullkeep : Bnull;
 		break;
 	    }
 	    bslash = 1;
 	    continue;
 	case '<':
-	    if (flags & ZSHTOK_SHGLOB)
+	    if (flags & BSHTOK_SHGLOB)
 		break;
 	    if (bslash) {
-		s[-1] = (flags & ZSHTOK_SUBST) ? Bnullkeep : Bnull;
+		s[-1] = (flags & BSHTOK_SUBST) ? Bnullkeep : Bnull;
 		break;
 	    }
 	    t = s;
@@ -3613,7 +3613,7 @@ zshtokenize(char *s, int flags)
 	case '(':
 	case '|':
 	case ')':
-	    if (flags & ZSHTOK_SHGLOB)
+	    if (flags & BSHTOK_SHGLOB)
 		break;
 	    /*FALLTHROUGH*/
 	case '>':
@@ -3630,7 +3630,7 @@ zshtokenize(char *s, int flags)
 	    for (t = ztokens; *t; t++) {
 		if (*t == *s) {
 		    if (bslash)
-			s[-1] = (flags & ZSHTOK_SUBST) ? Bnullkeep : Bnull;
+			s[-1] = (flags & BSHTOK_SUBST) ? Bnullkeep : Bnull;
 		    else
 			*s = (t - ztokens) + Pound;
 		    break;
@@ -3826,7 +3826,7 @@ qualiscom(UNUSED(char *name), struct stat *buf, UNUSED(off_t mod), UNUSED(char *
 static int
 qualsize(UNUSED(char *name), struct stat *buf, off_t size, UNUSED(char *dummy))
 {
-#if defined(ZSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
+#if defined(BSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
 # define QS_CAST_SIZE()
     zlong scaled = buf->st_size;
 #else
@@ -3847,7 +3847,7 @@ qualsize(UNUSED(char *name), struct stat *buf, off_t size, UNUSED(char *dummy))
 	scaled += 1048575l;
 	scaled /= 1048576l;
 	break;
-#if defined(ZSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
+#if defined(BSH_64_BIT_TYPE) || defined(LONG_IS_64_BIT)
     case TT_GIGABYTES:
         scaled += ZLONG_CONST(1073741823);
         scaled /= ZLONG_CONST(1073741824);

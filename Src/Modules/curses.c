@@ -1,7 +1,7 @@
 /*
- * curses.c - curses windowing module for zsh
+ * curses.c - curses windowing module for bsh
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2007  Clint Adams
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#define ZSH_CURSES_SOURCE 1
+#define BSH_CURSES_SOURCE 1
 
 #include "curses.mdh"
 #include "curses.pro"
@@ -41,8 +41,8 @@
 # undef HAVE_NCURSESW_NCURSES_H
 #endif
 
-#ifdef ZSH_HAVE_CURSES_H
-# include "../zshcurses.h"
+#ifdef BSH_HAVE_CURSES_H
+# include "../bshcurses.h"
 #endif
 
 #ifdef HAVE_SETCCHAR
@@ -382,7 +382,7 @@ zcurses_colorget(const char *nam, char *colorpair)
 	    return NULL;
 	}
 
-	cpn = (Colorpairnode)zshcalloc(sizeof(struct colorpairnode));
+	cpn = (Colorpairnode)bshcalloc(sizeof(struct colorpairnode));
 	
 	if (!cpn) {
 	    zsfree(cp);
@@ -436,7 +436,7 @@ zccmd_init(UNUSED(const char *nam), UNUSED(char **args))
     LinkNode stdscr_win = zcurses_getwindowbyname("stdscr");
 
     if (!stdscr_win) {
-	ZCWin w = (ZCWin)zshcalloc(sizeof(struct zc_win));
+	ZCWin w = (ZCWin)bshcalloc(sizeof(struct zc_win));
 	if (!w)
 	    return 1;
 
@@ -474,7 +474,7 @@ zccmd_init(UNUSED(const char *nam), UNUSED(char **args))
 	    use_default_colors();
 #endif
 	    /* Initialise the default color pair, always 0 */
-	    cpn = (Colorpairnode)zshcalloc(sizeof(struct colorpairnode));
+	    cpn = (Colorpairnode)bshcalloc(sizeof(struct colorpairnode));
 	    if (cpn) {
 		cpn->colorpair = 0;
 		addhashnode(zcurses_colorpairs,
@@ -516,7 +516,7 @@ zccmd_addwin(const char *nam, char **args)
     begin_y = atoi(args[3]);
     begin_x = atoi(args[4]);
 
-    w = (ZCWin)zshcalloc(sizeof(struct zc_win));
+    w = (ZCWin)bshcalloc(sizeof(struct zc_win));
     if (!w)
 	return 1;
 

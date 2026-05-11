@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/langinfo
+COMMENT(!MOD!bsh/langinfo
 Interface to locale information.
 !MOD!)
-The tt(zsh/langinfo) module makes available one parameter:
+The tt(bsh/langinfo) module makes available one parameter:
 
 startitem()
 vindex(langinfo)

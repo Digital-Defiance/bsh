@@ -2,9 +2,9 @@ Last updated: Tue Aug  7 08:44:03 PDT 2001			-*- text -*-
 
 In this file we maintain a list of "standard shell features" (many of them
 proposed as POSIX extensions by David Korn and the shell@research.att.com
-mailing list) that will require changes to zsh behavior for compatibility.
+mailing list) that will require changes to bsh behavior for compatibility.
 
-This file is not part of the packaged zsh distribution.
+This file is not part of the packaged bsh distribution.
 
 Syntax and Parsing
 ------------------
@@ -38,7 +38,7 @@ done by any other shell.
   special words when emulating a standard shell.
 - "builtin", "command", and "exec" are true commands in other shells, and
   as such take command line options etc., which is not possible with the
-  special rules zsh uses for these commands.
+  special rules bsh uses for these commands.
 
 POSIX requires that shell functions behave like macros, but does not have
 the "function name { ..." syntax.  Ksh uses the latter as an indicator

@@ -22,7 +22,7 @@ many bug fixes and improvements to functions.
 Changes since 4.3.11
 --------------------
 
-The zsh/parameter module has a new readonly associative array
+The bsh/parameter module has a new readonly associative array
 $usergroups whose keys are the names of system groups of which the
 current user is a member and whose values are the corresponding
 group identifiers.
@@ -48,7 +48,7 @@ Changes between versions 4.3.10 and 4.3.11
 ------------------------------------------
 
 When the shell is invoked with the base name of a script, for example as
-`zsh scriptname', previous versions of zsh have used the name directly,
+`bsh scriptname', previous versions of bsh have used the name directly,
 whereas other shells use the value of $PATH to find the script.  The
 option PATH_SCRIPT has been added to provide the alternative behaviour.
 This is turned on where appropriate in compatibility modes.
@@ -59,7 +59,7 @@ Parameters, globbing, etc.
 Parameter expansion has been enhanced to provide the ${NAME:OFFSET} and
 ${NAME:OFFSET:LENGTH} syntax for substrings and subarrays present in
 several other shells.  OFFSET always uses zero-based indexing.  The only
-clash with existing zsh syntax occurs if OFFSET begins with an
+clash with existing bsh syntax occurs if OFFSET begins with an
 alphabetic character or `&', which is not likely.
 
 The (D) flag in parameter expansion abbreviates directories in the
@@ -94,7 +94,7 @@ Line editor and completion
 
 The completion system now has a style path-completion.  Setting this to
 false inhibits completion of paths before the current path component,
-e.g. /u/b/z no longer completes to /usr/bin/zsh.  This is useful on systems
+e.g. /u/b/z no longer completes to /usr/bin/bsh.  This is useful on systems
 where this form of completion is pathologically slow due to network
 performance.
 
@@ -158,7 +158,7 @@ mechanism: the KEYBOARD_HACK variable defines the character to be ignored.
 Add-on modules and function
 -+-+-+-+-+-+-+-+-+-+-+-+-+-
 
-The module zsh/system has a new "zsystem" builtin whose subcommands perform
+The module bsh/system has a new "zsystem" builtin whose subcommands perform
 system level tasks.  Currently "zsystem flock" performs advisory file
 locking (for aficionados, this uses the fcntl() system call so works over
 the network on Linux).  This is a particularly convenient way of locking
@@ -168,7 +168,7 @@ test for this feature.
 There is now a function system for recording and restoring recently
 entered directories in a persistent fashion, with support in completion
 and (if explicitly installed) dynamic directory expansion.  See the
-entry for cdr in the zshcontrib manual page.
+entry for cdr in the bshcontrib manual page.
 
 
 Changes between versions 4.3.9 and 4.3.10
@@ -184,7 +184,7 @@ in spelling correction.  CORRECT_IGNORE='_*' ignores completion functions.
 The option POSIX_ALIASES improves compatibility of aliases with other
 shells.
 
-The variable ZSH_PATCHLEVEL can be used to test for unreleased versions of
+The variable BSH_PATCHLEVEL can be used to test for unreleased versions of
 the shell; it is present but less useful in released versions.
 
 The variables ZLE_REMOVE_SUFFIX_CHARS and ZLE_SPACE_SUFFIX_CHARS allow more
@@ -209,7 +209,7 @@ may provide better reliability.
 
 The syntax ~[...] provides a dynamic form of directory naming,
 supplementing the existing static ~name syntax.  A user-defined shell
-function, zsh_directory_name, is used to handle both expansion of names to
+function, bsh_directory_name, is used to handle both expansion of names to
 directories and contraction of directories to names.
 
 Patterns can now be used in incremental searches with the new widgets
@@ -226,12 +226,12 @@ escapes.  The prompt theme system has been updated.
 
 Various changes have been added to make debugging of shell code easier:
   - As noted in README, the option DEBUG_BEFORE_CMD is now set by default.
-  - In DEBUG traps, $ZSH_DEBUG_CMD gives the code for which the trap is
+  - In DEBUG traps, $BSH_DEBUG_CMD gives the code for which the trap is
     called as a string.
   - "setopt ERR_EXIT" in a DEBUG trap causes the code not to be executed.
-  - $ZSH_SUBSHELL indicates the subshell level at which code is being
+  - $BSH_SUBSHELL indicates the subshell level at which code is being
     executed.
-  - The zsh/parameter module has various additional arrays similar to
+  - The bsh/parameter module has various additional arrays similar to
     the existing $funcstack and $functrace, namely $funcsourcetrace
     and $funcfiletrace.  The consistency and informativeness of
     the output of all these arrays has been improved.
@@ -246,9 +246,9 @@ Various changes have been added to make debugging of shell code easier:
 
 The completion style accept-exact-dirs has been added.  When true, this
 suppresses attempts to complete non-final directory segments of a filename
-path when the directory exists.  (For example, /home/pws/src/zsh/<TAB>
-discovers that /home/pws/src/zsh exists and leaves the directory component
-alone, while /h/p/s/z/<TAB> completes to /home/pws/src/zsh/... as before.)
+path when the directory exists.  (For example, /home/pws/src/bsh/<TAB>
+discovers that /home/pws/src/bsh exists and leaves the directory component
+alone, while /h/p/s/z/<TAB> completes to /home/pws/src/bsh/... as before.)
 This should improve completion behaviour noticeably in special cases, such
 as remote paths under Cygwin.
 
@@ -270,21 +270,21 @@ Major changes between versions 4.3.4 and 4.3.5
 - The new extended globbing flag (#cN,M) behaves similarly to the extended
   regular expression syntax {N,M}.
 
-- The zsh/datetime module has been enhanced and a calendar function
+- The bsh/datetime module has been enhanced and a calendar function
   system has been added along the lines of (but much enhanced from)
   the traditional Unix "calendar" utility.  This is still under
-  development.  See the zshcalsys manual.  (The calendar functions
+  development.  See the bshcalsys manual.  (The calendar functions
   were in 4.3.4 but were not listed in this file.  There have been
   significant enhancements since 4.3.4.)
 
-- A new module zsh/curses provides a builtin zcurses for access to
-  to the curses screen manipulation package.  See the entry for zsh/curses
-  in the zshmodules manual.
+- A new module bsh/curses provides a builtin zcurses for access to
+  to the curses screen manipulation package.  See the entry for bsh/curses
+  in the bshmodules manual.
 
 - The module system has been enhanced to support the notion of "features"
   that give more control over which builtins, parameters, conditions
   and math functions are loaded from a module.  In particular,
-  "zmodload -F zsh/stat b:zstat" makes the builtin previously called
+  "zmodload -F bsh/stat b:zstat" makes the builtin previously called
   "stat" available as "zstat" (only) to avoid clashes with a system
   command named "stat".
 
@@ -296,26 +296,26 @@ Major changes between versions 4.2 and 4.3.4
   properly.  See Multibyte Character Support in INSTALL.
 
 - The shell can now run an installation function for a new user
-  (a user with no .zshrc, .zshenv, .zprofile or .zlogin file) without
-  any additional setting up by the administrator.  See "THE ZSH/NEWUSER
-  MODULE" in the zshmodules manual page.
+  (a user with no .bshrc, .bshenv, .zprofile or .zlogin file) without
+  any additional setting up by the administrator.  See "THE BSH/NEWUSER
+  MODULE" in the bshmodules manual page.
 
-- The manual now has a Roadmap section (manual page zshroadmap) to
+- The manual now has a Roadmap section (manual page bshroadmap) to
   give new users an indication of the most interesting parts of the
   manual.
 
 - New option PROMPT_SP (on by default): works around the problem that the
   line editor can overwrite output with no newline at the end.  See the
-  zshoptions manual page.
+  bshoptions manual page.
 
 - New option HIST_SAVE_BY_COPY (on by default): history is saved by
   copying and renaming instead of directly overwriting.  See the
-  zshoptions manual page.
+  bshoptions manual page.
 
 - New redirection syntax e.g. {myfd}>file opens a new file descriptor
   and stores the number in $myfd, so that >&$myfd will work.  Chosen
   not to break existing code (and to be compatible with proposals for the
-  Korn shell).  See the section REDIRECTION in the zshmisc manual page.
+  Korn shell).  See the section REDIRECTION in the bshmisc manual page.
 
 - Substitutions of the form ${var:-"$@"}, ${var:+"$@"} and similar where
   word-splitting is applied to the text after the :- or :+ (in particular,
@@ -323,12 +323,12 @@ Major changes between versions 4.2 and 4.3.4
   behave as in other Bourne- and POSIX-compatible shells when in the
   appropriate emulation mode.
 
-- New Posix-style zsh-specific tests [[:IDENT:]], [[:IFS:]],
+- New Posix-style bsh-specific tests [[:IDENT:]], [[:IFS:]],
   [[:IFSSPACE:]], [[:WORD:]] test if character can appear in identifier,
   is an IFS character, is an IFS whitespace character, or is considered
   as part of a word (is alphanumeric or appears in $WORDCHARS).  These
   works correctly on multibyte characters if the appropriate support
-  is present.  See the section FILENAME GENERATION in the zshexpn
+  is present.  See the section FILENAME GENERATION in the bshexpn
   manual page.
 
 - Time comparisons on files when sorting or using test operators will
@@ -345,12 +345,12 @@ Major changes between versions 4.2 and 4.3.4
 
 - Supplied functions catch and throw provide limited support for
   exception handling using the `{ ... } always { ... }' syntax.
-  See the section EXCEPTION HANDLING in the zshcontrib manual page.
+  See the section EXCEPTION HANDLING in the bshcontrib manual page.
 
 - Signals now accept the SIG as part of the name for compatibility with
   other shells.
 
 - Editor function argument-base allows non-decimal arguments for
-  editor widgets.  See the entry in the zshzle manual page.
+  editor widgets.  See the entry in the bshzle manual page.
 
 - As always, there are many enhancements to completion functions.

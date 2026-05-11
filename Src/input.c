@@ -1,7 +1,7 @@
 /*
  * input.c - read and store lines of input
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -72,7 +72,7 @@
 #include <stdio.h>
 #endif
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "input.pro"
 
 /* the shell input fd */
@@ -90,7 +90,7 @@ int strin;
 /**/
 mod_export int inbufct;
 
-/* the flags controlling the input routines in input.c: see INP_* in zsh.h */
+/* the flags controlling the input routines in input.c: see INP_* in bsh.h */
 
 /**/
 int inbufflags;
@@ -355,7 +355,7 @@ ingetc(void)
 	    break;
     }
     if (!lexstop)
-	zshlex_raw_add(lastc);
+	bshlex_raw_add(lastc);
     return lastc;
 }
 
@@ -576,7 +576,7 @@ inungetc(int c)
 	     * can't back up where we want to.  Instead, we just push it
 	     * onto the input stack as an extra character.
 	     */
-	    char *cback = (char *)zshcalloc(2);
+	    char *cback = (char *)bshcalloc(2);
 	    cback[0] = (char) c;
 	    inpush(cback, INP_FREE|INP_CONT, NULL);
 	}
@@ -603,7 +603,7 @@ inungetc(int c)
 	    inbufleft = 0;
 	    inbuf = inbufptr = "";
 	}
-	zshlex_raw_back();
+	bshlex_raw_back();
     }
 }
 
@@ -749,7 +749,7 @@ inpoptop(void)
 	     * the input stack.
 	     */
 	    if ((inbufflags & (INP_ALIAS|INP_HIST|INP_RAW_KEEP)) == INP_ALIAS)
-		zshlex_raw_back();
+		bshlex_raw_back();
 	}
     }
 

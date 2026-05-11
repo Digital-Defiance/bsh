@@ -3,7 +3,7 @@ Conventions
 
 There are a number of conventions related to writing completion
 functions and it is useful if they are followed for functions which are
-to be distributed as part of zsh to maintain a level of consistency.
+to be distributed as part of bsh to maintain a level of consistency.
 
 Coding style:
 
@@ -21,7 +21,7 @@ Coding style:
   about breaking long `_arguments' or `_values' specs though.
 
 * Never use alternative, unusual, or optional syntax in completion
-  functions (or any other shell code distributed with zsh). In other
+  functions (or any other shell code distributed with bsh). In other
   words, do NOT use the following:
 
     # Short loops

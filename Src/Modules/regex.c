@@ -1,7 +1,7 @@
 /*
  * regex.c
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2007,2012 Phil Pennock
  * All Rights Reserved.
@@ -56,17 +56,17 @@ zcond_regex_match(char **a, int id)
     regex_t re;
     regmatch_t *m, *matches = NULL;
     size_t matchessz = 0;
-    char *lhstr, *lhstr_zshmeta, *rhre, *rhre_zshmeta, *s, **arr, **x;
+    char *lhstr, *lhstr_bshmeta, *rhre, *rhre_bshmeta, *s, **arr, **x;
     int r, n, return_value, rcflags, reflags, nelem, start;
 
-    lhstr_zshmeta = cond_str(a,0,0);
-    rhre_zshmeta = cond_str(a,1,0);
+    lhstr_bshmeta = cond_str(a,0,0);
+    rhre_bshmeta = cond_str(a,1,0);
     rcflags = reflags = 0;
     return_value = 0; /* 1 => matched successfully */
 
-    lhstr = ztrdup(lhstr_zshmeta);
+    lhstr = ztrdup(lhstr_bshmeta);
     unmetafy(lhstr, NULL);
-    rhre = ztrdup(rhre_zshmeta);
+    rhre = ztrdup(rhre_bshmeta);
     unmetafy(rhre, NULL);
 
     switch(id) {

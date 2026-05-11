@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/zselect
+COMMENT(!MOD!bsh/zselect
 Block and return when file descriptors are ready.
 !MOD!)
-The tt(zsh/zselect) module makes available one builtin command:
+The tt(bsh/zselect) module makes available one builtin command:
 
 startitem()
 findex(zselect)
@@ -29,7 +29,7 @@ an arbitrary list of file descriptors may be given in any order.
 documentation for many implementations of the select system call.
 According to recent versions of the POSIX specification, it is really an
 em(exception) condition, of which the only standard example is out-of-band
-data received on a socket.  So zsh users are unlikely to find the tt(-e)
+data received on a socket.  So bsh users are unlikely to find the tt(-e)
 option useful.)
 
 The option `tt(-t) var(timeout)' specifies a timeout in hundredths of a

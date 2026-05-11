@@ -95,7 +95,7 @@ The feature can be used with floating
 point numbers, in which case the base must be omitted; grouping
 is away from the decimal point.  For example,
 
-example(zmodload zsh/mathfunc
+example(zmodload bsh/mathfunc
 print $(( [#_] sqrt+LPAR()1e7+RPAR() )))
 
 outputs `tt(3_162.277_660_168_379_5)' (the number of decimal places
@@ -140,10 +140,10 @@ typeset -F f=NaN
 typeset -F f=123.0000000000)
 
 To check whether a value is NaN, either use the tt(isnan) function
-provided by the tt(zsh/mathfunc) module
+provided by the tt(bsh/mathfunc) module
 or compare it to the string tt(NaN):
 
-example(% zmodload zsh/mathfunc
+example(% zmodload bsh/mathfunc
 % LPAR()LPAR() isnan+LPAR()0.0 / 0+RPAR() RPAR()RPAR() && print is nan
 is nan
 % typeset -F f=nan && [[ $f == NaN ]] && print is nan
@@ -214,7 +214,7 @@ Mathematical functions can be called with the syntax
 `var(func)tt(LPAR())var(args)tt(RPAR())', where the function decides
 if the var(args) is used as a string or a comma-separated list of
 arithmetic expressions. The shell currently defines no mathematical
-functions by default, but the module tt(zsh/mathfunc) may be loaded with
+functions by default, but the module tt(bsh/mathfunc) may be loaded with
 the tt(zmodload) builtin to provide standard floating point mathematical
 functions.
 
@@ -270,7 +270,7 @@ towards zero except for `tt(~)' which rounds down.
 
 Users should beware that, in common with many other programming
 languages but not software designed for calculation, the evaluation of
-an expression in zsh is taken a term at a time and promotion of integers
+an expression in bsh is taken a term at a time and promotion of integers
 to floating point does not occur in terms only containing integers.  A
 typical result of this is that a division such as tt(6/8) is truncated,
 in this being rounded towards 0.  The tt(FORCE_FLOAT) shell option can

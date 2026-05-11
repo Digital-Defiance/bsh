@@ -1,9 +1,9 @@
-COMMENT(!MOD!zsh/mathfunc
+COMMENT(!MOD!bsh/mathfunc
 Standard scientific functions for use in mathematical evaluations.
 !MOD!)
 cindex(functions, mathematical)
 cindex(mathematical functions)
-The tt(zsh/mathfunc) module provides standard
+The tt(bsh/mathfunc) module provides standard
 mathematical functions for use when
 evaluating mathematical formulae.  The syntax agrees with normal C and
 FORTRAN conventions, for example,
@@ -38,7 +38,7 @@ distinct expressions.
 
 The functions tt(min), tt(max), and tt(sum) are defined not in this module
 but in the tt(zmathfunc) autoloadable function, described in
-sectref(Mathematical Functions)(zshcontrib).
+sectref(Mathematical Functions)(bshcontrib).
 
 The following functions take two floating point arguments: tt(copysign),
 tt(fmod), tt(hypot), tt(nextafter).

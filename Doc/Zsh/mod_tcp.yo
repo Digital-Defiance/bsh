@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/net/tcp
+COMMENT(!MOD!bsh/net/tcp
 Manipulation of TCP sockets
 !MOD!)
-The tt(zsh/net/tcp) module makes available one builtin command:
+The tt(bsh/net/tcp) module makes available one builtin command:
 
 startitem()
 findex(ztcp)
@@ -130,7 +130,7 @@ session table.  If var(fd) is not specified,
 tt(ztcp) will close everything in the session table.
 
 Normally, sockets registered by zftp (see
-sectref(The zsh/zftp Module)(zshmodules))
+sectref(The bsh/zftp Module)(bshmodules))
 cannot be closed this way.  In order
 to force such a socket closed, use tt(-f).
 
@@ -140,11 +140,11 @@ enditem()
 
 subsect(Example)
 cindex(TCP, example)
-Here is how to create a TCP connection between two instances of zsh.  We
+Here is how to create a TCP connection between two instances of bsh.  We
 need to pick an unassigned port; here we use the randomly chosen 5123.
 
 On tt(host1),
-example(zmodload zsh/net/tcp
+example(zmodload bsh/net/tcp
 ztcp -l 5123
 listenfd=$REPLY
 ztcp -a $listenfd
@@ -153,7 +153,7 @@ The second from last command blocks until there is an incoming connection.
 
 Now create a connection from tt(host2) (which may, of course, be the same
 machine):
-example(zmodload zsh/net/tcp
+example(zmodload bsh/net/tcp
 ztcp host1 5123
 fd=$REPLY)
 

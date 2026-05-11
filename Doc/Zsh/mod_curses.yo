@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/curses
+COMMENT(!MOD!bsh/curses
 curses windowing commands
 !MOD!)
-The tt(zsh/curses) module makes available one builtin command and
+The tt(bsh/curses) module makes available one builtin command and
 various parameters.
 
 subsect(Builtin)
@@ -250,12 +250,12 @@ init) is run.
 )
 vindex(zcurses_attrs)
 item(tt(zcurses_attrs))(
-Readonly array.  The attributes supported by tt(zsh/curses); available
+Readonly array.  The attributes supported by tt(bsh/curses); available
 as soon as the module is loaded.
 )
 vindex(zcurses_colors)
 item(tt(zcurses_colors))(
-Readonly array.  The colors supported by tt(zsh/curses); available
+Readonly array.  The colors supported by tt(bsh/curses); available
 as soon as the module is loaded.
 )
 vindex(zcurses_keycodes)

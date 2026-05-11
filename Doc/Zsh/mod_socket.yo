@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/net/socket
+COMMENT(!MOD!bsh/net/socket
 Manipulation of Unix domain sockets
 !MOD!)
-The tt(zsh/net/socket) module makes available one builtin command:
+The tt(bsh/net/socket) module makes available one builtin command:
 
 startitem()
 findex(zsocket)

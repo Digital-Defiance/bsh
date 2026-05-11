@@ -1,7 +1,7 @@
 /*
  * sort.c - comparison and sorting of strings
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-2007 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "sort.pro"
 
 /* Flag for direction of sort: 1 forwards, -1 reverse */
@@ -222,7 +222,7 @@ zstrcmp(const char *as, const char *bs, int sortflags)
 
 /*
  * Sort an array of metafied strings.  Use an "or" of bit flags
- * to decide how to sort.  See the SORTIT_* flags in zsh.h.
+ * to decide how to sort.  See the SORTIT_* flags in bsh.h.
  *
  * If unmetalenp is not NULL, the strings in array are already
  * unmetafied and unmetalenp is an array containing the corresponding

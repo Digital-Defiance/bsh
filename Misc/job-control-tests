@@ -1,5 +1,5 @@
 # These are some tests for the job control code.  The code chunks
-# have to be run interactively.  Some use files in the zsh distribution.
+# have to be run interactively.  Some use files in the bsh distribution.
 
 # Try
 #   ^Z

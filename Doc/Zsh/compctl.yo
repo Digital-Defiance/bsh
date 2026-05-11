@@ -5,16 +5,16 @@ cindex(completion, controlling)
 ifzman(\
 sect(Description)
 findex(compctl)
-This version of zsh has two ways of performing completion of words on the
+This version of bsh has two ways of performing completion of words on the
 command line.  New users of the shell may prefer to use the newer
 and more powerful system based on shell functions; this is described in
-zmanref(zshcompsys), and the basic shell mechanisms which support it are
-described in zmanref(zshcompwid).  This manual entry describes the older
+zmanref(bshcompsys), and the basic shell mechanisms which support it are
+described in zmanref(bshcompwid).  This manual entry describes the older
 tt(compctl) command.
 )\
 ifnzman(\
 sect(Types of completion)
-This version of zsh has two ways of performing completion of words on the
+This version of bsh has two ways of performing completion of words on the
 command line.  New users of the shell may prefer to use the newer
 and more powerful system based on shell functions; this is described
 in noderef(Completion System), and the basic shell mechanisms which support
@@ -134,7 +134,7 @@ the default.  In other words, completion will subsequently use the
 options specified by the tt(-D) flag.
 
 The form with tt(-M) as the first and only option defines global
-matching specifications (see sectref(Completion Matching Control)(zshcompwid)).
+matching specifications (see sectref(Completion Matching Control)(bshcompwid)).
 The match specifications given will be used for every completion
 attempt (only when using tt(compctl), not with the new completion
 system) and are tried in the order in which they are defined until one 
@@ -220,7 +220,7 @@ will complete names of functions, builtins, reserved words or aliases
 whether or not they are disabled.
 )
 item(tt(-o))(
-Names of shell options (see nmref(Options)(zshoptions)).
+Names of shell options (see nmref(Options)(bshoptions)).
 )
 item(tt(-v))(
 Names of any variable defined in the shell.
@@ -296,7 +296,7 @@ globbing.  Use the syntax `tt((either|or))' to match alternatives.)
 item(tt(-s) var(subststring))(
 The var(subststring) is split into words and these words are than
 expanded using all shell expansion mechanisms (see
-nmref(Expansion)(zshexpn)).
+nmref(Expansion)(bshexpn)).
 The resulting words are taken as possible
 completions.  The tt(fignore) special parameter is not applied to the
 resulting files.  Note that tt(-g) is faster for filenames.
@@ -408,7 +408,7 @@ of the command line if there is no such string) as if they were
 a separate command line.
 )
 item(tt(-h) var(cmd))(
-Normally zsh completes quoted strings as a whole. With this option,
+Normally bsh completes quoted strings as a whole. With this option,
 completion can be done separately on different parts of such
 strings. It works like the tt(-l) option but makes the completion code 
 work on the parts of the current word that are separated by
@@ -534,7 +534,7 @@ item(tt(-M) var(match-spec))(
 This defines additional matching control specifications that should be used
 only when testing words for the list of flags this flag appears in. The format
 of the var(match-spec) string is described in 
-sectref(Completion Matching Control)(zshcompwid).
+sectref(Completion Matching Control)(bshcompwid).
 )
 enditem()
 

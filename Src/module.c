@@ -1,7 +1,7 @@
 /*
  * module.c - deal with dynamic modules
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Zoltán Hidvégi
  * All rights reserved.
@@ -26,7 +26,7 @@
  * support, updates, enhancements, or modifications.
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "module.pro"
 
 /*
@@ -294,10 +294,10 @@ newmoduletable(int size, char const *name)
 }
 
 /************************************************************************
- * zsh/main standard module functions
+ * bsh/main standard module functions
  ************************************************************************/
 
-/* The `zsh/main' module contains all the base code that can't actually be *
+/* The `bsh/main' module contains all the base code that can't actually be *
  * built as a separate module.  It is initialised by main(), so there's    *
  * nothing for the boot function to do.                                    */
 
@@ -428,7 +428,7 @@ add_autobin(const char *module, const char *bnam, int flags)
     Builtin bn;
     int ret;
 
-    bn = zshcalloc(sizeof(*bn));
+    bn = bshcalloc(sizeof(*bn));
     bn->node.nam = ztrdup(bnam);
     bn->optstr = ztrdup(module);
     if (flags & FEAT_AUTOALL)
@@ -1579,7 +1579,7 @@ hpux_dlsym(void *handle, char *name)
 
 /*
  * Attempt to load a module.  This is the lowest level of
- * zsh function for dynamical modules.  Returns the handle
+ * bsh function for dynamical modules.  Returns the handle
  * from the dynamic loader.
  */
 
@@ -1678,7 +1678,7 @@ find_module(const char *name, int flags, const char **namep)
     }
     if (!(flags & FINDMOD_CREATE))
 	return NULL;
-    m = zshcalloc(sizeof(*m));
+    m = bshcalloc(sizeof(*m));
     modulestab->addnode(modulestab, ztrdup(name), m);
     return m;
 }
@@ -2227,7 +2227,7 @@ load_module(char const *name, Feature_enables enablesarr, int silent)
 	    unqueue_signals();
 	    return 1;
 	}
-	m = zshcalloc(sizeof(*m));
+	m = bshcalloc(sizeof(*m));
 	if (handle) {
 	    m->u.handle = handle;
 	    m->node.flags |= MOD_SETUP;
@@ -2526,7 +2526,7 @@ bin_zmodload_alias(char *nam, char **args, Options ops)
      * to making it possible to force an alias onto an existing unloaded
      * module which has dependencies.  This would simply transfer
      * the dependencies down the line to the aliased-to module name.
-     * This is actually useful, since then you can alias zsh/zle=mytestzle
+     * This is actually useful, since then you can alias bsh/zle=mytestzle
      * to load another version of zle.  But then what happens when the
      * alias is removed?  Do you transfer the dependencies back? And
      * suppose other names are aliased to the same file?  It might be
@@ -2595,7 +2595,7 @@ bin_zmodload_alias(char *nam, char **args, Options ops)
 		    }
 		    zsfree(m->u.alias);
 		} else {
-		    m = (Module) zshcalloc(sizeof(*m));
+		    m = (Module) bshcalloc(sizeof(*m));
 		    m->node.flags = MOD_ALIAS;
 		    modulestab->addnode(modulestab, ztrdup(*args), m);
 		}
@@ -2910,7 +2910,7 @@ unload_module(Module m)
 	 * Module has autoloadable features.  Restore them
 	 * so that the module will be reloaded when needed.
 	 */
-	autofeatures("zsh", m->node.nam,
+	autofeatures("bsh", m->node.nam,
 		     hlinklist2array(m->autoloads, 0), 0, FEAT_IGNORE);
     } else if (!m->deps) {
 	delete_module(m);

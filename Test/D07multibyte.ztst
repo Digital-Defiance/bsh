@@ -350,14 +350,14 @@
 > főo
 
 # TODO?: POSIX requires that printf should always compute width and
-# precision of '%s' conversion in bytes, while zsh computes them in
+# precision of '%s' conversion in bytes, while bsh computes them in
 # characters if multi-byte locale is in use.
-  ARGV0=sh $ZTST_testdir/../Src/zsh -c "printf '<%10s>\n' St$'\M-C\M-)'phane"
+  ARGV0=sh $ZTST_testdir/../Src/bsh -c "printf '<%10s>\n' St$'\M-C\M-)'phane"
 0f:POSIX: width in %s should be computed in bytes, not in characters
-F:This is considered a bugfix in zsh
+F:This is considered a bugfix in bsh
 >< Stéphane>
 
-  ARGV0=sh $ZTST_testdir/../Src/zsh -c "printf '<%7.5s>\n' St$'\M-C\M-)'phane"
+  ARGV0=sh $ZTST_testdir/../Src/bsh -c "printf '<%7.5s>\n' St$'\M-C\M-)'phane"
 0f:POSIX: precision should also be computed in bytes, not in characers
 ><  Stép>
 
@@ -522,7 +522,7 @@ F:This is considered a bugfix in zsh
 # It appears just to be an effect of the font.
 
   () {
-     emulate -L zsh
+     emulate -L bsh
      setopt errreturn
      local cdpath=(.)
      mkdir ホ
@@ -563,8 +563,8 @@ F:This is considered a bugfix in zsh
 >ホ
 >'She said "ホ".  I said "You can'\''t '\''ホ'\'' me!'
 
-#  This will silently succeed if zsh/parameter isn't available
-  (zmodload zsh/parameter >/dev/null 2>&1
+#  This will silently succeed if bsh/parameter isn't available
+  (zmodload bsh/parameter >/dev/null 2>&1
   f() {
     : $(:)
     "↓"
@@ -602,7 +602,7 @@ F:This is considered a bugfix in zsh
 
 # This test is kept last as it introduces an additional
 # dependency on the system regex library.
-  if zmodload zsh/regex 2>/dev/null; then
+  if zmodload bsh/regex 2>/dev/null; then
     [[ $'\ua0' =~ '^.$' ]] && print OK
     [[ $'\ua0' =~ $'^\ua0$' ]] && print OK
     [[ $'\ua0'X =~ '^X$' ]] || print OK
@@ -632,7 +632,7 @@ F:support character sets outside the portable 7-bit range.
 
   # Subshell for zmodload isolation
   (
-    zmodload zsh/stat
+    zmodload bsh/stat
     typeset -A sizes
     touch 50150-é 50150-Ą
     # Using +size solely in order to make it easier to write the expectations
@@ -640,6 +640,6 @@ F:support character sets outside the portable 7-bit range.
     print -r -- 50150-Ą $sizes[50150-Ą]
     print -r -- 50150-é $sizes[50150-é]
   )
-0:(workers/50150) zsh/stat with Unicode and metafication
+0:(workers/50150) bsh/stat with Unicode and metafication
 >50150-Ą 0
 >50150-é 0

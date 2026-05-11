@@ -1,7 +1,7 @@
 /*
  * lex.c - lexical analysis
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "lex.pro"
 
 #define LEX_HEAP_SIZE (32)
@@ -40,7 +40,7 @@ mod_export char ztokens[] = "#$^*(())$=|{}[]`<>>?~`,-!'\"\\\\";
 /* parts of the current token */
 
 /**/
-char *zshlextext;
+char *bshlextext;
 /**/
 mod_export char *tokstr;
 /**/
@@ -51,7 +51,7 @@ mod_export int tokfd;
 /*
  * Line number at which the first character of a token was found.
  * We always set this in gettok(), which is always called from
- * zshlex() unless we have reached an error.  So it is always
+ * bshlex() unless we have reached an error.  So it is always
  * valid when parsing.  It is not useful during execution
  * of the parsed structure.
  */
@@ -224,7 +224,7 @@ lex_context_save(struct lex_stack *ls, int toplevel)
 
     ls->tok = tok;
     ls->tokstr = tokstr;
-    ls->zshlextext = zshlextext;
+    ls->bshlextext = bshlextext;
     ls->lexbuf = lexbuf;
     ls->lex_add_raw = lex_add_raw;
     ls->tokstr_raw = tokstr_raw;
@@ -232,7 +232,7 @@ lex_context_save(struct lex_stack *ls, int toplevel)
     ls->lexstop = lexstop;
     ls->toklineno = toklineno;
 
-    tokstr = zshlextext = lexbuf.ptr = NULL;
+    tokstr = bshlextext = lexbuf.ptr = NULL;
     lexbuf.siz = 256;
     tokstr_raw = lexbuf_raw.ptr = NULL;
     lexbuf_raw.siz = lexbuf_raw.len = lex_add_raw = 0;
@@ -252,7 +252,7 @@ lex_context_restore(const struct lex_stack *ls, int toplevel)
     lexflags = ls->lexflags;
     tok = ls->tok;
     tokstr = ls->tokstr;
-    zshlextext = ls->zshlextext;
+    bshlextext = ls->bshlextext;
     lexbuf = ls->lexbuf;
     lex_add_raw = ls->lex_add_raw;
     tokstr_raw = ls->tokstr_raw;
@@ -263,7 +263,7 @@ lex_context_restore(const struct lex_stack *ls, int toplevel)
 
 /**/
 void
-zshlex(void)
+bshlex(void)
 {
     if (tok == LEXERR)
 	return;
@@ -318,7 +318,7 @@ ctxtlex(void)
 {
     static int oldpos;
 
-    zshlex();
+    bshlex();
     switch (tok) {
     case SEPER:
     case NEWLIN:
@@ -1903,15 +1903,15 @@ checkalias(void)
 {
     Alias an;
 
-    if (!zshlextext)
+    if (!bshlextext)
 	return 0;
 
     if (!noaliases && isset(ALIASESOPT) &&
 	(!isset(POSIXALIASES) ||
-	 (tok == STRING && !reswdtab->getnode(reswdtab, zshlextext)))) {
+	 (tok == STRING && !reswdtab->getnode(reswdtab, bshlextext)))) {
 	char *suf;
 
-	an = (Alias) aliastab->getnode(aliastab, zshlextext);
+	an = (Alias) aliastab->getnode(aliastab, bshlextext);
 	if (an && !an->inuse &&
 	    ((an->node.flags & ALIAS_GLOBAL) ||
 	     (incmdpos && tok == STRING) || inalmore)) {
@@ -1931,11 +1931,11 @@ checkalias(void)
 	    lexstop = 0;
 	    return 1;
 	}
-	if ((suf = strrchr(zshlextext, '.')) && suf[1] &&
-	    suf > zshlextext && suf[-1] != Meta &&
+	if ((suf = strrchr(bshlextext, '.')) && suf[1] &&
+	    suf > bshlextext && suf[-1] != Meta &&
 	    (an = (Alias)sufaliastab->getnode(sufaliastab, suf+1)) &&
 	    !an->inuse && incmdpos) {
-	    inpush(dupstring(zshlextext), INP_ALIAS, an);
+	    inpush(dupstring(bshlextext), INP_ALIAS, an);
 	    inpush(" ", INP_ALIAS, NULL);
 	    inpush(an->text, INP_ALIAS, NULL);
 	    lexstop = 0;
@@ -1962,7 +1962,7 @@ exalias(void)
 	spckword(&tokstr, 1, incmdpos, 1);
 
     if (!tokstr) {
-	zshlextext = tokstrings[tok];
+	bshlextext = tokstrings[tok];
 
 	if (tok == NEWLIN)
 	    return 0;
@@ -1973,56 +1973,56 @@ exalias(void)
 	if (has_token(tokstr)) {
 	    char *p, *t;
 
-	    zshlextext = p = copy;
+	    bshlextext = p = copy;
 	    for (t = tokstr;
 		 (*p++ = itok(*t) ? ztokens[*t++ - Pound] : *t++););
 	} else
-	    zshlextext = tokstr;
+	    bshlextext = tokstr;
 
 	if ((lexflags & LEXFLAGS_ZLE) && !(inbufflags & INP_ALIAS)) {
 	    int zp = lexflags;
 
 	    gotword();
 	    if ((zp & LEXFLAGS_ZLE) && !lexflags) {
-		if (zshlextext == copy)
-		    zshlextext = tokstr;
+		if (bshlextext == copy)
+		    bshlextext = tokstr;
 		return 0;
 	    }
 	}
 
 	if (tok == STRING) {
 	    /* Check for an alias */
-	    if ((zshlextext != copy || !isset(POSIXALIASES)) && checkalias()) {
-		if (zshlextext == copy)
-		    zshlextext = tokstr;
+	    if ((bshlextext != copy || !isset(POSIXALIASES)) && checkalias()) {
+		if (bshlextext == copy)
+		    bshlextext = tokstr;
 		return 1;
 	    }
 
 	    /* Then check for a reserved word */
 	    if ((incmdpos ||
 		 (unset(IGNOREBRACES) && unset(IGNORECLOSEBRACES) &&
-		  zshlextext[0] == '}' && !zshlextext[1])) &&
-		(rw = (Reswd) reswdtab->getnode(reswdtab, zshlextext))) {
+		  bshlextext[0] == '}' && !bshlextext[1])) &&
+		(rw = (Reswd) reswdtab->getnode(reswdtab, bshlextext))) {
 		tok = rw->token;
 		inrepeat_ = (tok == REPEAT);
 		if (tok == DINBRACK)
 		    incond = 1;
-	    } else if (incond && !strcmp(zshlextext, "]]")) {
+	    } else if (incond && !strcmp(bshlextext, "]]")) {
 		tok = DOUTBRACK;
 		incond = 0;
-	    } else if (incond == 1 && zshlextext[0] == '!' && !zshlextext[1])
+	    } else if (incond == 1 && bshlextext[0] == '!' && !bshlextext[1])
 		tok = BANG;
 	}
 	inalmore = 0;
-	if (zshlextext == copy)
-	    zshlextext = tokstr;
+	if (bshlextext == copy)
+	    bshlextext = tokstr;
     }
     return 0;
 }
 
 /**/
 void
-zshlex_raw_add(int c)
+bshlex_raw_add(int c)
 {
     if (!lex_add_raw)
 	return;
@@ -2040,7 +2040,7 @@ zshlex_raw_add(int c)
 
 /**/
 void
-zshlex_raw_back(void)
+bshlex_raw_back(void)
 {
     if (!lex_add_raw)
 	return;
@@ -2050,7 +2050,7 @@ zshlex_raw_back(void)
 
 /**/
 int
-zshlex_raw_mark(int offset)
+bshlex_raw_mark(int offset)
 {
     if (!lex_add_raw)
 	return 0;
@@ -2059,7 +2059,7 @@ zshlex_raw_mark(int offset)
 
 /**/
 void
-zshlex_raw_back_to_mark(int mark)
+bshlex_raw_back_to_mark(int mark)
 {
     if (!lex_add_raw)
 	return;
@@ -2081,7 +2081,7 @@ zshlex_raw_back_to_mark(int mark)
 static int
 skipcomm(void)
 {
-#ifdef ZSH_OLD_SKIPCOMM
+#ifdef BSH_OLD_SKIPCOMM
     int pct = 1, c, start = 1;
 
     cmdpush(CS_CMDSUBST);

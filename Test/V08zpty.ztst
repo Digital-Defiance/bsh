@@ -3,9 +3,9 @@
 
 %prep
 
-  if ! zmodload zsh/zpty 2>/dev/null
+  if ! zmodload bsh/zpty 2>/dev/null
   then
-    ZTST_unimplemented="the zsh/zpty module is not available"
+    ZTST_unimplemented="the bsh/zpty module is not available"
   fi
 
 %test

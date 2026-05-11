@@ -1,7 +1,7 @@
 /*
  * random.c - module to access kernel random sources.
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2022 Clinton Bunch
  * All rights reserved.

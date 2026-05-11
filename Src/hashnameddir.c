@@ -1,7 +1,7 @@
 /*
  * hashtable.c - hash tables
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -33,9 +33,9 @@
  * On Solaris 8 there's a clash between "bool" in curses and RPC.
  * We don't need curses here, so ensure it doesn't get included.
  */
-#define ZSH_NO_TERM_HANDLING
+#define BSH_NO_TERM_HANDLING
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "hashnameddir.pro"
 
 /****************************************/

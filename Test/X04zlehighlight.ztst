@@ -5,29 +5,29 @@
   export TERM=xterm-256color
   if [[ ${+termcap} != 1 || ${termcap[Co]} != <-> || ${termcap[Co]} -lt 256 ]]; then
     ZTST_unimplemented="no termcap module OR termcap doesn't support 256 or more colors"
-  elif zmodload zsh/zpty 2> /dev/null; then
+  elif zmodload bsh/zpty 2> /dev/null; then
     zpty_start() {
       export PS1= PS2=
       zpty -d
-      zpty zsh "${(q)ZTST_testdir}/../Src/zsh -fiV +Z"
-      zpty -w zsh "module_path=( ${(j< >)${(@q-)module_path}} \$module_path )"
-      zpty -w zsh 'zle_highlight=( fg_start_code:"CDE|3" fg_end_code:"|" bg_start_code:"BCDE|4" bg_end_code:"|" )'
-      zpty -w zsh '.term.extensions=( -query truecolor -bracketed-paste -integration )'
+      zpty bsh "${(q)ZTST_testdir}/../Src/bsh -fiV +Z"
+      zpty -w bsh "module_path=( ${(j< >)${(@q-)module_path}} \$module_path )"
+      zpty -w bsh 'zle_highlight=( fg_start_code:"CDE|3" fg_end_code:"|" bg_start_code:"BCDE|4" bg_end_code:"|" )'
+      zpty -w bsh '.term.extensions=( -query truecolor -bracketed-paste -integration )'
     }
     zpty_input() {
-      zpty ${${(M)2:#nonl}:+-n} -w zsh "$1"
+      zpty ${${(M)2:#nonl}:+-n} -w bsh "$1"
     }
     zpty_enable_zle() {
-      zpty -w zsh "tcfunc() { REPLY=""; }"
+      zpty -w bsh "tcfunc() { REPLY=""; }"
       # This line will not be echoed back, behaving like ! -o zle
-      zpty -w zsh "setopt zle; zle -T tc tcfunc"
+      zpty -w bsh "setopt zle; zle -T tc tcfunc"
     }
     zpty_line() {
       setopt localoptions extendedglob noshwordsplit
       local REPLY cm=$'\r'
       integer i
       for (( i = 0; i < ${1:-1}; ++i )); do
-        zpty -r zsh REPLY
+        zpty -r bsh REPLY
         # Normalise me/sgr0 to \e[0m. We also need to strip \e(B in zpty_stop()
         REPLY=${REPLY//${termcap[me]}/$'\x1b[0m'}
         # P is for "preserve", and induces keeping some
@@ -51,11 +51,11 @@
       # logs were writing to a file slowing down Zle a little
       LANG=C sleep 0.333
       # Zle is active, can use Ctrl-D to exit
-      zpty -n -w zsh $'\C-d'
+      zpty -n -w bsh $'\C-d'
       # zpty gives no output when piped without these braces (?)
       # The while loop with // substitution is to convert `e^Mexit'
       # into `exit' (see zpty_line). The sed commands remove escapes
-      { zpty -r zsh } |
+      { zpty -r bsh } |
       sed -e $'/[^\t\r ]/!d' -e $'s/\r$//' -e $'s/\x1b\\[[0-9;]*m//g' -e $'s/\x1b([A-Z]//g' |
       while read REPLY; do
         REPLY=${REPLY//(#b)((?(#c0,1))$cm(?(#c0,1)))/${${${(M)match[2]:#${match[3]}}:+${match[2]}}:-${${match[1]##[[:space:]]##}%%[[:space:]]##}}}
@@ -65,7 +65,7 @@
       :
     }
   else
-    ZTST_unimplemented='the zsh/zpty module is not available'
+    ZTST_unimplemented='the bsh/zpty module is not available'
   fi
 
 %test
@@ -189,7 +189,7 @@
 >0m38;2;4;8;16mtrue
 
   zpty_start
-  zpty_input 'zmodload zsh/nearcolor'
+  zpty_input 'zmodload bsh/nearcolor'
   zpty_input 'rh_widget() { BUFFER="true"; region_highlight+=( "0 4 fg=#040810" ); }'
   zpty_input 'zle -N rh_widget'
   zpty_input 'bindkey "\C-a" rh_widget'
@@ -201,7 +201,7 @@
 >0mCDE|3232|true
 
   zpty_start
-  zpty_input 'zmodload zsh/nearcolor'
+  zpty_input 'zmodload bsh/nearcolor'
   zpty_input 'rh_widget() { BUFFER="true"; region_highlight+=( "0 4 fg=#000000,bg=#ffffff" ); }'
   zpty_input 'zle -N rh_widget'
   zpty_input 'bindkey "\C-a" rh_widget'
@@ -237,7 +237,7 @@
 >0m38;2;0;204;0mt38;2;204;0;0mr38;2;0;204;0mue
 
   zpty_start
-  zpty_input 'zmodload zsh/nearcolor'
+  zpty_input 'zmodload bsh/nearcolor'
   zpty_input 'rh_widget() { BUFFER="true"; region_highlight+=( "0 4 fg=#00cc00" ); rh2; }'
   zpty_input 'rh2() { region_highlight+=( "1 2 fg=#cc0000" ); }' # `r' in red; the above line would be too long
   zpty_input 'zle -N rh_widget'
@@ -294,4 +294,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

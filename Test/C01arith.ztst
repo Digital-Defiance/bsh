@@ -191,7 +191,7 @@
 >+ OK Worked
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     print $(( [#16] 255 ))
     print $(( [##16] 255 ))
     setopt cbases
@@ -298,7 +298,7 @@
 0:Grouping output with underscores: floating point
 >610_351.562_5
 
-  env SHLVL=1+RANDOM $ZTST_testdir/../Src/zsh -f -c 'print $SHLVL'
+  env SHLVL=1+RANDOM $ZTST_testdir/../Src/bsh -f -c 'print $SHLVL'
 0:Imported integer functions are not evaluated
 >2
 
@@ -366,7 +366,7 @@
   # The following tests for a bug that only happens when
   # backing up over input read a line at a time, so we'll
   # read the input from stdin.
-  $ZTST_testdir/../Src/zsh -f <<<'
+  $ZTST_testdir/../Src/bsh -f <<<'
   print $((echo first command
   ); echo second command)
   print third command
@@ -375,7 +375,7 @@
 >first command second command
 >third command
 
-  $ZTST_testdir/../Src/zsh -f <<<'
+  $ZTST_testdir/../Src/bsh -f <<<'
   print $((3 +
   4))
   print next line
@@ -384,7 +384,7 @@
 >7
 >next line
 
-  $ZTST_testdir/../Src/zsh -f <<<'
+  $ZTST_testdir/../Src/bsh -f <<<'
   print $((case foo in
   bar)
   echo not this no, no

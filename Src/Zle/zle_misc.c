@@ -1,7 +1,7 @@
 /*
  * zle_misc.c - miscellaneous editor routines
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.

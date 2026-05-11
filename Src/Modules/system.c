@@ -1,7 +1,7 @@
 /*
  * sysread.c - interface to system read/write
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1998-2003 Peter Stephenson
  * All rights reserved.
@@ -913,7 +913,7 @@ static struct features module_features = {
     0
 };
 
-/* The load/unload routines required by the zsh library interface */
+/* The load/unload routines required by the bsh library interface */
 
 /**/
 int

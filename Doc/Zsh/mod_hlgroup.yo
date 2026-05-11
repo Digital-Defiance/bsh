@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/hlgroup
+COMMENT(!MOD!bsh/hlgroup
 Alternative views of highlighting groups
 !MOD!)
-The tt(zsh/hlgroup) module defines special parameters that represent
+The tt(bsh/hlgroup) module defines special parameters that represent
 highlighting groups in different forms to ease the use of the groups when
 configuring other tools.
 

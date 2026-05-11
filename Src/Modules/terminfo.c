@@ -1,7 +1,7 @@
 /*
  * terminfo.c - parameter interface to terminfo via curses
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2000 Sven Wishnowsky, Clint Adams
  * All rights reserved.
@@ -30,7 +30,7 @@
 #define USES_TERM_H 1
 #include "terminfo.mdh"
 
-#if defined(HAVE_TIGETFLAG) && defined(ZSH_HAVE_CURSES_H)
+#if defined(HAVE_TIGETFLAG) && defined(BSH_HAVE_CURSES_H)
 # define USE_TERMINFO_MODULE 1
 #else
 # undef USE_TERMINFO_MODULE
@@ -49,12 +49,12 @@
 #  undef offsetof
 # endif
 
-#ifdef ZSH_HAVE_CURSES_H
-# include "../zshcurses.h"
+#ifdef BSH_HAVE_CURSES_H
+# include "../bshcurses.h"
 #endif
 
-# ifdef ZSH_HAVE_TERM_H
-#  include "../zshterm.h"
+# ifdef BSH_HAVE_TERM_H
+#  include "../bshterm.h"
 # endif
 
 /* echoti: output a terminfo capability */

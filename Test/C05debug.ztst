@@ -43,7 +43,7 @@
 >bug file here
 >EXIT hit
 
-  cat >zsh-trapreturn-bug2 <<-'HERE'
+  cat >bsh-trapreturn-bug2 <<-'HERE'
 	cmd='./fdasfsdafd'
 	[[ -x $cmd ]] && rm $cmd
 	set -o DEBUG_BEFORE_CMD
@@ -52,7 +52,7 @@
 	# Failure
 	exit 10
 	HERE
-  $ZTST_testdir/../Src/zsh -f ./zsh-trapreturn-bug2 2>erroutput.dif
+  $ZTST_testdir/../Src/bsh -f ./bsh-trapreturn-bug2 2>erroutput.dif
   mystat=$?
   (
    setopt extendedglob
@@ -60,7 +60,7 @@
   )
   (( mystat == 0 ))
 0: trapreturn handling bug is properly fixed
->./zsh-trapreturn-bug2:5
+>./bsh-trapreturn-bug2:5
 
   fn() {
     setopt localtraps localoptions debugbeforecmd
@@ -119,8 +119,8 @@
 >    third
 
   fn() {
-    emulate -L zsh; setopt debugbeforecmd
-    trap 'print "$LINENO: '\''$ZSH_DEBUG_CMD'\''"' DEBUG
+    emulate -L bsh; setopt debugbeforecmd
+    trap 'print "$LINENO: '\''$BSH_DEBUG_CMD'\''"' DEBUG
     print foo &&
     print bar ||
     print rod
@@ -130,7 +130,7 @@
     fn2
   }
   fn
-0:ZSH_DEBUG_CMD in debug traps
+0:BSH_DEBUG_CMD in debug traps
 >3: 'print foo && print bar || print rod'
 >foo
 >bar
@@ -145,8 +145,8 @@
 >wow
 
   foo() {
-    emulate -L zsh; setopt debugbeforecmd
-    trap '[[ $ZSH_DEBUG_CMD == *bar* ]] && return 2' DEBUG
+    emulate -L bsh; setopt debugbeforecmd
+    trap '[[ $BSH_DEBUG_CMD == *bar* ]] && return 2' DEBUG
     echo foo
     echo bar
   }
@@ -156,4 +156,4 @@
 
 %clean
 
- rm -f bug-file bug-file2 erroutput.dif zsh-trapreturn-bug2
+ rm -f bug-file bug-file2 erroutput.dif bsh-trapreturn-bug2

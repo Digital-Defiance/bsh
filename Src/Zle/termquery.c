@@ -1,7 +1,7 @@
 /*
  * termquery.c - terminal feature probes
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2025 Oliver Kiddle
  * All rights reserved.
@@ -482,12 +482,12 @@ handle_query(int sequence, int *numbers, int len, char *capture, int clen,
 		handle_color(numbers[0], numbers[1], numbers[2], numbers[3]);
 	    break;
 	case 2: /* kitty keyboard */
-	    feat = zshcalloc(2 * sizeof(char *));
+	    feat = bshcalloc(2 * sizeof(char *));
 	    *feat = ztrdup(features[3]);
 	    assignaparam(EXTVAR, feat, ASSPM_AUGMENT);
 	    break;
 	case 3: /* truecolor */
-	    feat = zshcalloc(2 * sizeof(char *));
+	    feat = bshcalloc(2 * sizeof(char *));
 	    *feat = ztrdup(features[4]);
 	    assignaparam(EXTVAR, feat, ASSPM_AUGMENT);
 	    break;

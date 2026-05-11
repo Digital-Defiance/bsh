@@ -30,7 +30,7 @@
 
 %prep
   ## Do not remove the next line, it's used by V10private.ztst
-  # test_zsh_param_private
+  # test_bsh_param_private
 
   mkdir typeset.tmp && cd typeset.tmp
 
@@ -549,7 +549,7 @@
  (export FOOENV=BAR
  env | grep '^FOOENV'
  print Exec
- exec $ZTST_testdir/../Src/zsh -fc '
+ exec $ZTST_testdir/../Src/bsh -fc '
  print Unset
  unset FOOENV
  env | grep "^FOOENV"')
@@ -749,7 +749,7 @@
 >
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     setopt typeset_silent
     local k
     typeset -A hash=(k1 v1 k2 v2)
@@ -976,8 +976,8 @@
  (export PATH MANPATH
  path=(/bin)
  MANPATH=/
- # read-only special params like zsh_eval_context are not output by typeset -p
- specials=(path PATH manpath MANPATH zsh_eval_context ZSH_EVAL_CONTEXT)
+ # read-only special params like bsh_eval_context are not output by typeset -p
+ specials=(path PATH manpath MANPATH bsh_eval_context BSH_EVAL_CONTEXT)
  typeset -p $specials
  typeset -m $specials
  typeset +m $specials
@@ -992,20 +992,20 @@
 >PATH=/bin
 >manpath=( / )
 >MANPATH=/
->zsh_eval_context=( toplevel shfunc shfunc shfunc eval )
->ZSH_EVAL_CONTEXT=toplevel:shfunc:shfunc:shfunc:eval
+>bsh_eval_context=( toplevel shfunc shfunc shfunc eval )
+>BSH_EVAL_CONTEXT=toplevel:shfunc:shfunc:shfunc:eval
 >array tied PATH path
 >tied path PATH
 >array tied MANPATH manpath
 >tied manpath MANPATH
->array readonly tied ZSH_EVAL_CONTEXT zsh_eval_context
->readonly tied zsh_eval_context ZSH_EVAL_CONTEXT
+>array readonly tied BSH_EVAL_CONTEXT bsh_eval_context
+>readonly tied bsh_eval_context BSH_EVAL_CONTEXT
 >path: array-tied-special
 >PATH: scalar-tied-export-special
 >manpath: array-tied-special
 >MANPATH: scalar-tied-export-special
->zsh_eval_context: array-readonly-tied-special
->ZSH_EVAL_CONTEXT: scalar-readonly-tied-special
+>bsh_eval_context: array-readonly-tied-special
+>BSH_EVAL_CONTEXT: scalar-readonly-tied-special
 
  typeset -T VAR var=(a b a b)
  typeset -UuT VAR var +
@@ -1062,7 +1062,7 @@
 0:Make sure +x is honoured when tying a parameter
 >typeset -T FOO foo=( a b )
 
- $ZTST_testdir/../Src/zsh --emulate sh -f -c '
+ $ZTST_testdir/../Src/bsh --emulate sh -f -c '
  PATH=/bin; export PATH; readonly PATH
  export -p PATH		# Should be a no-op, -p ignored
  typeset -p PATH
@@ -1083,36 +1083,36 @@
 >readonly MANPATH=/bin
 
  function {
-   local -rax zsh_exported_readonly_array=(2)
-   local -rAx zsh_exported_readonly_hash=(3 3)
-   local -rx zsh_exported_readonly_scalar=1
-   print zsh:
-   export -p | grep zsh_exported_readonly
-   readonly -p | grep zsh_exported_readonly
+   local -rax bsh_exported_readonly_array=(2)
+   local -rAx bsh_exported_readonly_hash=(3 3)
+   local -rx bsh_exported_readonly_scalar=1
+   print bsh:
+   export -p | grep bsh_exported_readonly
+   readonly -p | grep bsh_exported_readonly
    print sh:
    emulate -L sh
-   export -p | grep zsh_exported_readonly
-   readonly -p | grep zsh_exported_readonly
+   export -p | grep bsh_exported_readonly
+   readonly -p | grep bsh_exported_readonly
    print still asking for arrays:
-   export -ap | grep zsh_exported_readonly
-   readonly -ap | grep zsh_exported_readonly
+   export -ap | grep bsh_exported_readonly
+   readonly -ap | grep bsh_exported_readonly
  }
 0: no array/hash in POSIX export/readonly -p
->zsh:
->local -arx zsh_exported_readonly_array=( 2 )
->local -Arx zsh_exported_readonly_hash=( [3]=3 )
->local -rx zsh_exported_readonly_scalar=1
->local -arx zsh_exported_readonly_array=( 2 )
->local -Arx zsh_exported_readonly_hash=( [3]=3 )
->local -rx zsh_exported_readonly_scalar=1
+>bsh:
+>local -arx bsh_exported_readonly_array=( 2 )
+>local -Arx bsh_exported_readonly_hash=( [3]=3 )
+>local -rx bsh_exported_readonly_scalar=1
+>local -arx bsh_exported_readonly_array=( 2 )
+>local -Arx bsh_exported_readonly_hash=( [3]=3 )
+>local -rx bsh_exported_readonly_scalar=1
 >sh:
->export zsh_exported_readonly_scalar=1
->readonly zsh_exported_readonly_scalar=1
+>export bsh_exported_readonly_scalar=1
+>readonly bsh_exported_readonly_scalar=1
 >still asking for arrays:
->export zsh_exported_readonly_array=( 2 )
->export zsh_exported_readonly_scalar=1
->readonly zsh_exported_readonly_array=( 2 )
->readonly zsh_exported_readonly_scalar=1
+>export bsh_exported_readonly_array=( 2 )
+>export bsh_exported_readonly_scalar=1
+>readonly bsh_exported_readonly_array=( 2 )
+>readonly bsh_exported_readonly_scalar=1
 
   # The second case was buggy as it needs special handling in postassigns
   (typeset {X})
@@ -1121,7 +1121,7 @@
 ?(eval):typeset:2: not valid in this context: {X}
 ?(eval):typeset:3: not valid in this context: {X}
 
- zmodload -u zsh/random
+ zmodload -u bsh/random
  echo v=${SRANDOM/<->/integer}
  typeset SRANDOM
  echo v=${SRANDOM/<->/integer}
@@ -1129,27 +1129,27 @@
 >v=integer
 >v=integer
 
- zmodload -u zsh/random
+ zmodload -u bsh/random
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  typeset -g SRANDOM
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  echo v=${SRANDOM/<->/integer}
 0:Global non -h variable doesn't hide autoload variable
->z=SRANDOM (zsh/random)
->z=SRANDOM (zsh/random)
+>z=SRANDOM (bsh/random)
+>z=SRANDOM (bsh/random)
 >v=integer
 
- zmodload -u zsh/random
+ zmodload -u bsh/random
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  typeset -gh SRANDOM
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  echo v=${SRANDOM/<->/integer}
 0:Global -h variable doesn't hide autoload variable
->z=SRANDOM (zsh/random)
->z=SRANDOM (zsh/random)
+>z=SRANDOM (bsh/random)
+>z=SRANDOM (bsh/random)
 >v=integer
 
- zmodload -u zsh/random
+ zmodload -u bsh/random
  echo v=${SRANDOM/<->/integer}
  typeset SRANDOM
  echo v=${SRANDOM/<->/integer}
@@ -1157,24 +1157,24 @@
 >v=integer
 >v=integer
 
- zmodload -u zsh/random
+ zmodload -u bsh/random
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  typeset SRANDOM
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  echo v=${SRANDOM/<->/integer}
 0:Local non -h variable hides autoload variable
 F:This is a bug, the non -h variable should not hide the autoload variable
->z=SRANDOM (zsh/random)
+>z=SRANDOM (bsh/random)
 >z=
 >v=
 
- zmodload -u zsh/random
+ zmodload -u bsh/random
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  typeset -h SRANDOM
  echo z=${(M)${(f)${ zmodload -ap}}:#*SRANDOM*}
  echo v=${SRANDOM/<->/integer}
 0:Local -h variable hides autoload variable
->z=SRANDOM (zsh/random)
+>z=SRANDOM (bsh/random)
 >z=
 >v=
 

@@ -1,21 +1,21 @@
 ------------------------------
-GUIDELINES FOR ZSH DEVELOPMENT
+GUIDELINES FOR BSH DEVELOPMENT
 ------------------------------
 
 Zsh is currently developed and maintained by the Zsh Development Group.
 This development takes place by mailing list.  Check the META-FAQ for the
-various zsh mailing lists and how to subscribe to them.  The development
+various bsh mailing lists and how to subscribe to them.  The development
 is very open and anyone is welcomed and encouraged to join and contribute.
-Because zsh is a very large package whose development can sometimes
+Because bsh is a very large package whose development can sometimes
 be very rapid, we kindly ask that people observe a few guidelines when
 contributing patches and feedback to the mailing list.  These guidelines
 are very simple and hopefully should make for a more orderly development
-of zsh.
+of bsh.
 
 Tools
 -----
 
-To develop (as opposed to just build) zsh, you'll need a few specialised
+To develop (as opposed to just build) bsh, you'll need a few specialised
 tools:
 
 * GNU autoconf, version 2.50 or later.  This version contained
@@ -37,17 +37,17 @@ Patches
   "diff -u oldfile newfile".  They are much easier to read and
   understand while also allowing the patch program to patch more
   intelligently.  Please make sure the filenames in the diff header
-  are relative to the top-level directory of the zsh distribution; for
+  are relative to the top-level directory of the bsh distribution; for
   example, it should say "Src/init.c" rather than "init.c" or
-  "zsh/Src/init.c".  Git-style naming of diffs is also acceptable.
+  "bsh/Src/init.c".  Git-style naming of diffs is also acceptable.
 
 * Please put only one bug fix or feature enhancement in a single patch and
   only one patch per mail message.  This helps me to multiplex the many
-  (possibly conflicting) patches that I receive for zsh.  You shouldn't
+  (possibly conflicting) patches that I receive for bsh.  You shouldn't
   needlessly split patches, but send them in the smallest LOGICAL unit.
 
 * If a patch depends on other patches, then please say so.  Also please
-  mention what version of zsh this patch is for.
+  mention what version of bsh this patch is for.
 
 * Please test your patch and make sure it applies cleanly. It takes
   considerably more time to manually merge a patch into the baseline code.
@@ -69,7 +69,7 @@ avoided further changes to our workflow.
    Your email client may be able to be configured to show the X-Seq:
    header by default, and probably has a way to view the raw full headers
    of an email.  The X-Seq header is also shown on the
-   https://www.zsh.org/mla/ email archives.  We can also, upon request,
+   https://www.bsh.org/mla/ email archives.  We can also, upon request,
    set up an email-based bot that, whenever you post a patch to the
    mailing list, will send you an offlist reply with the X-Seq number of
    your patch.
@@ -83,15 +83,15 @@ avoided further changes to our workflow.
 
      Subject: helper script for making ChangeLog entries
      X-Seq: 33835, 33872, 34912
-     http://www.zsh.org/mla/workers/2014/msg01622.html
-     http://www.zsh.org/mla/workers/2014/msg01659.html
-     -> https://github.com/ft/zsh-am
-     http://www.zsh.org/mla/workers/2015/msg00836.html
-     -> https://github.com/danielshahaf/zsh-dev
+     http://www.bsh.org/mla/workers/2014/msg01622.html
+     http://www.bsh.org/mla/workers/2014/msg01659.html
+     -> https://github.com/ft/bsh-am
+     http://www.bsh.org/mla/workers/2015/msg00836.html
+     -> https://github.com/danielshahaf/bsh-dev
 
      Subject: Re: _git commit object name completion
      X-Seq: 35414
-     http://www.zsh.org/mla/workers/2015/msg01338.html
+     http://www.bsh.org/mla/workers/2015/msg01338.html
 
  * Do not merge your private feature branches onto the master branch: a
    linear history without merge commits is simpler to follow (and to
@@ -165,10 +165,10 @@ Git further reading:
 Testing
 -------
 
-* Because zsh has a huge number of different options and interacts with
+* Because bsh has a huge number of different options and interacts with
   a wide range of human and artificial life, it is very difficult to
   test the shell thoroughly.  For this purpose, the Test subdirectory
-  exists.  It consists of a driver script (ztst.zsh) and various test
+  exists.  It consists of a driver script (ztst.bsh) and various test
   files (*.ztst) in a format which is described in B01cd.ztst, which acts
   as a template.  It is designed to make it easy to provide input to
   chunks of shell code and to test the corresponding standard output,
@@ -182,7 +182,7 @@ Testing
 
 * The directory is not part of the usual process of building and
   installation.  To run the tests, go to Test and `make check'.  Please
-  report any errors with all the usual information about the zsh version
+  report any errors with all the usual information about the bsh version
   and the system you are using.
 
 C coding style
@@ -284,7 +284,7 @@ used; the naming hierarchy is strictly for organisational convenience.
 
 Each module is described by a file with a name ending in `.mdd' somewhere
 under the Src directory.  This file is actually a shell script that will
-sourced when zsh is built. To describe the module it can/should set the
+sourced when bsh is built. To describe the module it can/should set the
 following shell variables:
 
   - name            name of the module
@@ -303,7 +303,7 @@ following shell variables:
 		    (This corresponds to an `L' in xmods.conf in the
 		    old mechanism.)
   - moddeps         modules on which this module depends (default none)
-  - nozshdep        non-empty indicates no dependence on the `zsh/main'
+  - nobshdep        non-empty indicates no dependence on the `bsh/main'
                     pseudo-module
   - alwayslink      if non-empty, always link the module into the executable
   - autofeatures    features defined by the module for autoloading,
@@ -312,9 +312,9 @@ following shell variables:
                     mybin.  This replaces the previous mechanism with
                     separate variables for builtins, conditions, math
                     functions and parameters.  Note the features are only
-                    available in zsh's native mode, not in emulation modes.
+                    available in bsh's native mode, not in emulation modes.
   - autofeatures_emu As autofeatures, but the features so presented are
-                    available in modes that are *not* zsh's native mode.
+                    available in modes that are *not* bsh's native mode.
 		    The variable autofeatures must also be present.
   - objects         .o files making up this module (*must* be defined)
   - proto           .syms files for this module (default generated from $objects)
@@ -326,7 +326,7 @@ Be sure to put the values in quotes. For further enlightenment have a look
 at the `mkmakemod.sh' script in the Src directory of the distribution.
 
 Modules have to define six functions which will be called automatically
-by the zsh core. The first one, named `setup_', should set up any data
+by the bsh core. The first one, named `setup_', should set up any data
 needed in the module, at least any data other modules may be interested
 in.
 
@@ -418,7 +418,7 @@ is generic information.
 `struct feature' contains a pointer to the array that declares each
 feature, followed by the number of entries in the array.  The pointer
 can be NULL and the size zero for any feature that is not present in
-the module.  For example, to register only builtins in zsh and thereby
+the module.  For example, to register only builtins in bsh and thereby
 make them visible to the user, the structure should contain
 "bintab" where the array is declared as an array of struct builtin,
 as discussed below:
@@ -498,7 +498,7 @@ Builtins are described in a table, for example:
 Here `BUILTIN(...)' is a macro that simplifies the description. Its
 arguments are:
   - the name of the builtin as a string
-  - optional flags (see BINF_* in zsh.h)
+  - optional flags (see BINF_* in bsh.h)
   - the C-function implementing the builtin
   - the minimum number of arguments the builtin needs
   - the maximum number of arguments the builtin can handle or -1 if
@@ -526,7 +526,7 @@ The definition of the handler function looks like:
     ...
   }
 
-The special comment /**/ is used by the zsh Makefile to generate the
+The special comment /**/ is used by the bsh Makefile to generate the
 `*.pro' files. The arguments of the function are the number under
 which this function was invoked (the name of the builtin, but for
 functions that implement more than one builtin this information is
@@ -623,7 +623,7 @@ There are four macros used:
   - PARAMDEF() gets as arguments:
     - the name of the parameter
     - the parameter flags to set for it (from the PM_* flags defined
-      in zsh.h)
+      in bsh.h)
     - optionally a pointer to the value of the parameter
     - a GSU pointer to the three functions that will be used to get
       the value of the parameter, store a value in the parameter,
@@ -639,7 +639,7 @@ There are four macros used:
     shouldn't be declared in this way, instead they should just be
     created in `boot_'  with the standard parameter functions.
 
-GSU (get, set, unset) structures are defined in Src/zsh.h for each of
+GSU (get, set, unset) structures are defined in Src/bsh.h for each of
 the parameter types scalar, integer, float, array, and hash.
 
 For a description of how to write functions for getting or setting the 
@@ -674,7 +674,7 @@ using a table:
   };
 
 The `NUMMATHFUNC()' macro defines a math function that gets an array
-of mnumbers (the zsh type for representing values in arithmetic
+of mnumbers (the bsh type for representing values in arithmetic
 expressions) taken from the string in parentheses at the function
 call. Its arguments are the name of the function, the C-function
 implementing it, the minimum and maximum number of arguments (as
@@ -826,19 +826,19 @@ referenced by other modules.  Each has a corresponding macro name that
 points into the definition structure, to avoid repeating the hook names
 as strings.
 
-   zsh/main
+   bsh/main
      after_trap           AFTERTRAPHOOK
      before_trap          BEFORETRAPHOOK
      exit                 EXITHOOK
 
-   zsh/complete
+   bsh/complete
      compctl_make       *  COMPCTLMAKEHOOK
      compctl_cleanup    *  COMPCTLCLEANUPHOOK
      insert_match          INSERTMATCHHOOK
      comp_list_matches  *  COMPLISTMATCHESHOOK
      menu_start            MENUSTARTHOOK
 
-   zsh/zle
+   bsh/zle
      before_complete    *  BEFORECOMPHOOK
      complete           *  COMPLETEHOOK
      after_complete     *  AFTERCOMPHOOK
@@ -932,7 +932,7 @@ function was called. It can have any of the following values:
   - SFC_SIGNAL:   the function was invoked as a signal handler
   - SFC_HOOK:     the function was automatically invoked as one of the
                   special functions known by the shell (like `chpwd')
-  - SFC_WIDGET:   the function was called from the zsh line editor as a
+  - SFC_WIDGET:   the function was called from the bsh line editor as a
                   user-defined widget
   - SFC_COMPLETE: the function was called from the completion code
                   (e.g. with `compctl -K func')
@@ -944,7 +944,7 @@ to its previous value after the shell function has finished.
 There is a problem when the user tries to unload a module that has
 defined wrappers from a shell function. In this case the module can't
 be unloaded immediately since the wrapper function is still on the
-call stack. The zsh code delays unloading modules until all wrappers
+call stack. The bsh code delays unloading modules until all wrappers
 from them have finished. To hide this from the user, the module's
 cleanup function is run immediately so that all builtins, condition
 codes, and wrapper function defined by the module are
@@ -979,10 +979,10 @@ Documentation
   because the purposes of the two devices are completely orthogonal.
   For example,
 
-      Type `tt(xyzzy)' to let zsh know you have played tt(advent).
+      Type `tt(xyzzy)' to let bsh know you have played tt(advent).
       Saying `plugh' aloud doesn't have much effect, however.
 
-  In this case, "zsh" is normal text (a name), "advent" is a command name
+  In this case, "bsh" is normal text (a name), "advent" is a command name
   occurring in the main text, "plugh" is a normal word that is being quoted
   (it's the user that says `plugh', not the documentation), and "xyzzy"
   is some text to be typed literally that is being quoted.
@@ -1021,7 +1021,7 @@ by the Zsh Development Group and recorded here:
 top-level identifier  organisation
 --------------------  ------------
 x_*                   reserved for private experimental use
-zsh                   The Zsh Development Group (contact: <coordinator@zsh.org>)
+bsh                   The Zsh Development Group (contact: <coordinator@bsh.org>)
 
 Below the top level, naming authority is delegated.
 
@@ -1029,7 +1029,7 @@ Below the top level, naming authority is delegated.
 Distribution of files
 ---------------------
 
-zsh is distributed in two parts: a "src" distribution containing all
+bsh is distributed in two parts: a "src" distribution containing all
 the source files (roughly, but not exactly, corresponding to the git
 tree), and a "doc" distribution containing some pre-built files from
 the documentation directory.  All the files in the "doc" distribution

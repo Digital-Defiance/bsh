@@ -14,7 +14,7 @@ em(command substitution) and
 em(arithmetic expansion).
 See
 ifzman(\
-zmanref(zshexpn).
+zmanref(bshexpn).
 )\
 ifnzman(\
 noderef(Expansion).
@@ -113,7 +113,7 @@ tt($HOME), that part is replaced by a `tt(~)'. Furthermore, if it has a named
 directory as its prefix, that part is replaced by a `tt(~)' followed by
 the name of the directory, but only if the result is shorter than
 the full path; see bf(Dynamic) and bf(Static Named Directories) in
-sectref(Filename Expansion)(zshexpn).
+sectref(Filename Expansion)(bshexpn).
 )
 item(tt(%e))(
 Evaluation depth of the current sourced file, shell function, or tt(eval).
@@ -142,7 +142,7 @@ item(tt(%L))(
 The current value of tt($SHLVL).
 )
 item(tt(%N))(
-The name of the script, sourced file, or shell function that zsh is
+The name of the script, sourced file, or shell function that bsh is
 currently executing, whichever was started most recently.  If there is
 none, this is equivalent to the parameter tt($0).  An integer may follow
 the `tt(%)' to specify a number of trailing path components to show; zero
@@ -188,7 +188,7 @@ The date in var(mm)tt(/)var(dd)tt(/)var(yy) format.
 )
 item(tt(%D{)var(string)tt(}))(
 var(string) is formatted using the tt(strftime) function.
-See manref(strftime)(3) for more details.  Various zsh
+See manref(strftime)(3) for more details.  Various bsh
 extensions provide numbers with no leading zero or space
 if the number is a single digit:
 
@@ -241,7 +241,7 @@ by the terminal.  The colour may be specified two ways: either
 as a numeric argument, as normal, or by a sequence in braces
 following the tt(%F), for example tt(%F{red}).  In the latter case
 the values allowed are as described for the tt(fg) tt(zle_highlight)
-attribute; see sectref(Character Highlighting)(zshzle).
+attribute; see sectref(Character Highlighting)(bshzle).
 This means that numeric
 colours are allowed in the second format also.
 )

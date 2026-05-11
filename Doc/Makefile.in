@@ -49,10 +49,10 @@ PAPERSIZE = @PAPERSIZE@
 .SUFFIXES: .yo .1
 
 # man pages to install
-MAN = zsh.1 zshbuiltins.1 zshcalsys.1 zshcompctl.1 zshcompwid.1 zshcompsys.1 \
-zshcontrib.1 zshexpn.1 zshmisc.1 zshmodules.1 \
-zshoptions.1 zshparam.1 zshroadmap.1 zshtcpsys.1 zshzftpsys.1 zshzle.1 \
-zshall.1
+MAN = bsh.1 bshbuiltins.1 bshcalsys.1 bshcompctl.1 bshcompwid.1 bshcompsys.1 \
+bshcontrib.1 bshexpn.1 bshmisc.1 bshmodules.1 \
+bshoptions.1 bshparam.1 bshroadmap.1 bshtcpsys.1 bshzftpsys.1 bshzle.1 \
+bshall.1
 
 # yodl documentation
 
@@ -92,30 +92,30 @@ Zsh/seealso.yo Zsh/tcpsys.yo Zsh/zftpsys.yo Zsh/zle.yo
 all: man $(runhelp) texi ../META-FAQ
 .PHONY: all
 
-everything: all html info zsh_a4.dvi zsh_us.dvi zsh_a4.pdf zsh_us.pdf \
+everything: all html info bsh_a4.dvi bsh_us.dvi bsh_a4.pdf bsh_us.pdf \
             intro.a4.pdf intro.us.pdf
 .PHONY: everything
 
-dvi: zsh.dvi
+dvi: bsh.dvi
 .PHONY: dvi
 
-zsh.dvi zsh_a4.dvi zsh_us.dvi: $(sdir)/zsh.texi
-	if test $@ = zsh_us.dvi || \
-	  { test $@ = zsh.dvi && test "$(PAPERSIZE)" = us; }; then \
-	  $(TEXI2DVI) -o $@ $(sdir)/zsh.texi; \
+bsh.dvi bsh_a4.dvi bsh_us.dvi: $(sdir)/bsh.texi
+	if test $@ = bsh_us.dvi || \
+	  { test $@ = bsh.dvi && test "$(PAPERSIZE)" = us; }; then \
+	  $(TEXI2DVI) -o $@ $(sdir)/bsh.texi; \
 	else \
-	  $(TEXI2DVI) -o $@ -t @afourpaper $(sdir)/zsh.texi; \
+	  $(TEXI2DVI) -o $@ -t @afourpaper $(sdir)/bsh.texi; \
 	fi
 
-pdf: zsh.pdf intro.pdf
+pdf: bsh.pdf intro.pdf
 .PHONY: pdf
 
-zsh.pdf zsh_a4.pdf zsh_us.pdf: $(sdir)/zsh.texi
-	if test $@ = zsh_us.pdf || \
-	  { test $@ = zsh.pdf && test "$(PAPERSIZE)" = us; }; then \
-	  $(TEXI2PDF) -o $@ $(sdir)/zsh.texi; \
+bsh.pdf bsh_a4.pdf bsh_us.pdf: $(sdir)/bsh.texi
+	if test $@ = bsh_us.pdf || \
+	  { test $@ = bsh.pdf && test "$(PAPERSIZE)" = us; }; then \
+	  $(TEXI2PDF) -o $@ $(sdir)/bsh.texi; \
 	else \
-	  $(TEXI2PDF) -o $@ -t @afourpaper $(sdir)/zsh.texi; \
+	  $(TEXI2PDF) -o $@ -t @afourpaper $(sdir)/bsh.texi; \
 	fi
 
 intro.pdf intro.a4.pdf intro.us.pdf: $(sdir)/intro.ms
@@ -133,20 +133,20 @@ intro.html: $(sdir)/intro.ms
 	  rm -f tmp.html; false; \
 	fi
 
-texi: $(sdir)/zsh.texi
+texi: $(sdir)/bsh.texi
 .PHONY: texi
 
-$(sdir)/zsh.texi: version.yo
+$(sdir)/bsh.texi: version.yo
 	case '$(YODL)' in :*) touch $@ ;; *) \
-	    $(YODL) -o $@ -I$(sdir) -w ztexi.yo version.yo zsh.yo; \
+	    $(YODL) -o $@ -I$(sdir) -w ztexi.yo version.yo bsh.yo; \
 	    test -f $@ \
 	;; esac
 
-info: zsh.info
+info: bsh.info
 .PHONY: info
 
-zsh.info: $(sdir)/zsh.texi
-	$(MAKEINFO) $(sdir)/zsh.texi
+bsh.info: $(sdir)/bsh.texi
+	$(MAKEINFO) $(sdir)/bsh.texi
 
 .yo.1:
 	@case $@ in \
@@ -165,33 +165,33 @@ zsh.info: $(sdir)/zsh.texi
 ps: us_ps a4_ps
 .PHONY: ps
 
-us_ps: zsh_us.ps
+us_ps: bsh_us.ps
 .PHONY: us_ps
 
-zsh_us.ps: zsh_us.dvi
-	$(DVIPS) -t letter -o $@ zsh_us.dvi
+bsh_us.ps: bsh_us.dvi
+	$(DVIPS) -t letter -o $@ bsh_us.dvi
 
-a4_ps: zsh_a4.ps
+a4_ps: bsh_a4.ps
 .PHONY: a4_ps
 
-zsh_a4.ps: zsh_a4.dvi
-	$(DVIPS) -t a4 -o $@ zsh_a4.dvi
+bsh_a4.ps: bsh_a4.dvi
+	$(DVIPS) -t a4 -o $@ bsh_a4.dvi
 
-html: zsh_toc.html intro.html
+html: bsh_toc.html intro.html
 .PHONY: html
 
-zsh_toc.html: $(sdir)/zsh.texi texi2html.conf
+bsh_toc.html: $(sdir)/bsh.texi texi2html.conf
 	$(TEXI2HTML) --output . --ifinfo --split=chapter --node-files \
-	             --init-file texi2html.conf $(sdir)/zsh.texi
+	             --init-file texi2html.conf $(sdir)/bsh.texi
 
-zshall.1: zsh.yo
+bshall.1: bsh.yo
 	case $@ in \
 	  */*) target=$@ ;; \
 	  *) target=$@ ;; \
 	esac; \
 	case '$(YODL)' in :*) touch $$target ;; *) \
-	    echo $(YODL) -o $$target -I$(sdir) -DZSHALL -w zman.yo version.yo zsh.yo; \
-	    $(YODL) -I$(sdir) -DZSHALL -w zman.yo version.yo zsh.yo | sed -e '1s/\\-/-/g' -e '/^\.'\''/d' > $$target \
+	    echo $(YODL) -o $$target -I$(sdir) -DBSHALL -w zman.yo version.yo bsh.yo; \
+	    $(YODL) -I$(sdir) -DBSHALL -w zman.yo version.yo bsh.yo | sed -e '1s/\\-/-/g' -e '/^\.'\''/d' > $$target \
 	;; esac; \
 
 ../META-FAQ: META-FAQ.yo Zsh/metafaq.yo
@@ -201,7 +201,7 @@ zshall.1: zsh.yo
 
 $(YODLDOC): version.yo
 
-$(sdir)/zsh.texi: $(YODLSRC)
+$(sdir)/bsh.texi: $(YODLSRC)
 
 man: $(MAN)
 .PHONY: man
@@ -209,49 +209,49 @@ man: $(MAN)
 runhelp: help.txt
 .PHONY: runhelp
 
-help.txt: zshbuiltins.1
+help.txt: bshbuiltins.1
 	@-rm -f $@ help/*
 	perl $(sdir_top)/Util/helpfiles \
-	    zshbuiltins.1 help help.txt \
+	    bshbuiltins.1 help help.txt \
 	    || rm -f help.txt help/*
 
 $(MAN): zmacros.yo zman.yo
 
-zsh.1 zshall.1: Zsh/intro.yo Zsh/metafaq.yo Zsh/invoke.yo Zsh/files.yo \
+bsh.1 bshall.1: Zsh/intro.yo Zsh/metafaq.yo Zsh/invoke.yo Zsh/files.yo \
                 Zsh/filelist.yo Zsh/filelist.yo Zsh/seealso.yo \
                 Zsh/compat.yo
 
-zshbuiltins.1: Zsh/builtins.yo
+bshbuiltins.1: Zsh/builtins.yo
 
-zshcalsys.1: Zsh/calsys.yo
+bshcalsys.1: Zsh/calsys.yo
 
-zshcompctl.1: Zsh/compctl.yo
+bshcompctl.1: Zsh/compctl.yo
 
-zshcompwid.1: Zsh/compwid.yo
+bshcompwid.1: Zsh/compwid.yo
 
-zshcompsys.1: Zsh/compsys.yo
+bshcompsys.1: Zsh/compsys.yo
 
-zshcontrib.1: Zsh/contrib.yo
+bshcontrib.1: Zsh/contrib.yo
 
-zshexpn.1: Zsh/expn.yo
+bshexpn.1: Zsh/expn.yo
 
-zshmisc.1: Zsh/grammar.yo Zsh/redirect.yo Zsh/exec.yo Zsh/func.yo \
+bshmisc.1: Zsh/grammar.yo Zsh/redirect.yo Zsh/exec.yo Zsh/func.yo \
            Zsh/jobs.yo Zsh/arith.yo Zsh/cond.yo Zsh/compat.yo \
            Zsh/prompt.yo
 
-zshmodules.1: Zsh/modules.yo Zsh/modlist.yo Zsh/modmenu.yo $(MODDOCSRC)
+bshmodules.1: Zsh/modules.yo Zsh/modlist.yo Zsh/modmenu.yo $(MODDOCSRC)
 
-zshoptions.1: Zsh/options.yo
+bshoptions.1: Zsh/options.yo
 
-zshparam.1: Zsh/params.yo
+bshparam.1: Zsh/params.yo
 
-zshroadmap.1: Zsh/roadmap.yo
+bshroadmap.1: Zsh/roadmap.yo
 
-zshtcpsys.1: Zsh/tcpsys.yo
+bshtcpsys.1: Zsh/tcpsys.yo
 
-zshzftpsys.1: Zsh/zftpsys.yo
+bshzftpsys.1: Zsh/zftpsys.yo
 
-zshzle.1: Zsh/zle.yo
+bshzle.1: Zsh/zle.yo
 
 # This should depend on config.status to get the /etc files right
 # but that would introduce a dependency on Yodl in shipped versions
@@ -261,9 +261,9 @@ version.yo: $(sdir_top)/Config/version.mk
 	  echo 'IFDEF(INCWSLEVEL)(INCWSLEVEL())(STARTDEF())'; \
 	  echo 'def(version)(0)('$(VERSION)')'; \
 	  echo 'def(date)(0)('$(VERSION_DATE)')'; \
-	  echo 'def(zshenv)(0)(@zshenv@)'; \
+	  echo 'def(bshenv)(0)(@bshenv@)'; \
 	  echo 'def(zprofile)(0)(@zprofile@)'; \
-	  echo 'def(zshrc)(0)(@zshrc@)'; \
+	  echo 'def(bshrc)(0)(@bshrc@)'; \
 	  echo 'def(zlogin)(0)(@zlogin@)'; \
 	  echo 'def(zlogout)(0)(@zlogout@)'; \
 	  echo 'IFDEF(DECWSLEVEL)(DECWSLEVEL())(ENDDEF())#' | tr '#' '\\'; \
@@ -338,7 +338,7 @@ install.man: man
 	${SHELL} $(sdir_top)/mkinstalldirs $(DESTDIR)$(mandir)/man1
 	for file in $(MAN); do \
 	    test -s $$file || exit 1; \
-	    $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man1/`echo $$file | sed 's|zsh|$(tzsh)|'` || exit 1; \
+	    $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man1/`echo $$file | sed 's|bsh|$(tbsh)|'` || exit 1; \
 	done
 .PHONY: install.man
 
@@ -360,16 +360,16 @@ install.info: texi
 	rm -rf infodir
 	mkdir infodir
 	if ( \
-	    sed '/^@setfilename/s|zsh|$(tzsh)|' \
-		< $(sdir)/zsh.texi > infodir/tzsh.texi && \
-	    (cd infodir && $(MAKEINFO) tzsh.texi) && \
-	    for file in infodir/$(tzsh).info*; do \
+	    sed '/^@setfilename/s|bsh|$(tbsh)|' \
+		< $(sdir)/bsh.texi > infodir/tbsh.texi && \
+	    (cd infodir && $(MAKEINFO) tbsh.texi) && \
+	    for file in infodir/$(tbsh).info*; do \
 		$(INSTALL_DATA) $$file $(DESTDIR)$(infodir) || exit 1; \
 	    done \
 	); then \
 	    if $(SHELL) -c 'install-info --version' >/dev/null 2>&1; then \
 	      install-info --info-dir=$(DESTDIR)$(infodir) \
-	        $(DESTDIR)$(infodir)/$(tzsh).info; \
+	        $(DESTDIR)$(infodir)/$(tbsh).info; \
 	    else true; fi; \
 	    rm -rf infodir; \
 	    exit 0; \
@@ -382,7 +382,7 @@ install.info: texi
 # uninstall man pages
 uninstall.man:
 	for file in $(MAN); do \
-	    rm -f $(DESTDIR)$(mandir)/man1/`echo $$file | sed 's|zsh|$(tzsh)|'`; \
+	    rm -f $(DESTDIR)$(mandir)/man1/`echo $$file | sed 's|bsh|$(tbsh)|'`; \
 	done
 .PHONY: uninstall.man
 
@@ -393,8 +393,8 @@ uninstall.runhelp:
 
 # uninstall info pages
 uninstall.info:
-	rm -f $(DESTDIR)$(infodir)/$(tzsh).info
-	rm -f $(DESTDIR)$(infodir)/$(tzsh).info-[1-9]*
+	rm -f $(DESTDIR)$(infodir)/$(tbsh).info
+	rm -f $(DESTDIR)$(infodir)/$(tbsh).info-[1-9]*
 .PHONY: uninstall.info
 
 # install HTML manual
@@ -426,7 +426,7 @@ distclean-here: clean-here
 
 realclean-here: distclean-here
 	cd $(sdir) && rm -f Zsh/modlist.yo Zsh/modmenu.yo Zsh/manmodmenu.yo
-	cd $(sdir) && rm -f version.yo ../META-FAQ zsh.texi $(MAN)
+	cd $(sdir) && rm -f version.yo ../META-FAQ bsh.texi $(MAN)
 	rm -f help.txt help/*
 .PHONY: realclean-here
 

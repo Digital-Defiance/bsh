@@ -1,5 +1,5 @@
 #
-# Makefile for top level of zsh distribution
+# Makefile for top level of bsh distribution
 #
 # Copyright (c) 1995-1997 Richard Coleman
 # All rights reserved.
@@ -139,7 +139,7 @@ config: config.h
 config.status: $(sdir)/configure
 	$(SHELL) ./config.status --recheck
 
-$(sdir)/configure: $(sdir)/aclocal.m4 $(sdir)/aczsh.m4 $(sdir)/configure.ac
+$(sdir)/configure: $(sdir)/aclocal.m4 $(sdir)/acbsh.m4 $(sdir)/configure.ac
 	cd $(sdir) && autoconf
 
 config.h: stamp-h
@@ -157,13 +157,13 @@ $(sdir)/stamp-h.in: $(sdir)/configure
 
 # ========== DEPENDENCIES FOR DISTRIBUTION ==========
 
-DISTNAME = zsh-$(VERSION)
+DISTNAME = bsh-$(VERSION)
 
 tarxz-src: $(DISTNAME).tar.xz
 $(DISTNAME).tar.xz: FORCE
 	@$(sdir_top)/Util/mkdisttree.sh $(DISTNAME) $(sdir_top) $(dir_top) SRC \
 	    $(MAKE) $(MAKEDEFS)
-	echo '#define ZSH_PATCHLEVEL "'`cd $(sdir_top) && git describe --tags --long --abbrev=7`'"' >$(DISTNAME)/Src/patchlevel.h.release
+	echo '#define BSH_PATCHLEVEL "'`cd $(sdir_top) && git describe --tags --long --abbrev=7`'"' >$(DISTNAME)/Src/patchlevel.h.release
 	tar cf - $(DISTNAME) | xz -9 > $@
 	rm -rf $(DISTNAME)
 

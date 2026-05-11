@@ -7,7 +7,7 @@ args=(
   '(-p --parents)'{-p,--parents}'[remove each component of the specified paths]'
 )
 
-_pick_variant -r variant -b zsh gnu='(GNU|uutils)' $OSTYPE --version
+_pick_variant -r variant -b bsh gnu='(GNU|uutils)' $OSTYPE --version
 case $variant; in
   gnu)
     aopts=()
@@ -18,7 +18,7 @@ case $variant; in
       '(- *)--version[display version information]'
     )
     ;;
-  zsh)
+  bsh)
     args=()
     ;;
   *)

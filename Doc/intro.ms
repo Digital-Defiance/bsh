@@ -58,7 +58,7 @@
 .ps 18
 .vs 20
 .ss 20
-\f3An Introduction to the Z Shell\fP
+\f3An Introduction to the BrightShell\fP
 
 .ps 14
 .vs 16
@@ -80,7 +80,7 @@ bas@phys.uva.nl\fP
 .\"
 .\" ----- main text -----
 .TL
-An Introduction to the Z Shell
+An Introduction to the BrightShell
 .AU
 Paul Falstad
 pf@software.com
@@ -90,19 +90,19 @@ bas@phys.uva.nl
 .PP
 .Sh "Introduction"
 .PP
-\fBzsh\fP is a shell designed for interactive use, although it is also
+\fBbsh\fP is a shell designed for interactive use, although it is also
 a powerful scripting language.  Many of the useful features of bash,
-ksh, and tcsh were incorporated into \fBzsh\fP; many original features were
-added.  This document details some of the unique features of \fBzsh\fP.  It
+ksh, and tcsh were incorporated into \fBbsh\fP; many original features were
+added.  This document details some of the unique features of \fBbsh\fP.  It
 assumes basic knowledge of the standard UNIX shells; the intent is to
 show a reader already familiar with one of the other major shells what
-makes \fBzsh\fP more useful or more powerful.  This document is not at all
+makes \fBbsh\fP more useful or more powerful.  This document is not at all
 comprehensive; read the manual entry for a description of the shell
 that is complete and concise, although somewhat overwhelming and
 devoid of examples.
 .PP
 The text will frequently mention options that you can set to change
-the behaviour of \fBzsh\fP.  You can set these options with the
+the behaviour of \fBbsh\fP.  You can set these options with the
 command
 .Ds
 %\0setopt\0\fIoptionname\fC
@@ -115,7 +115,7 @@ Case is ignored in option names, as are embedded underscores.
 .Sh "Filename Generation"
 .PP
 Otherwise known as \fIglobbing\fP, filename generation
-is quite extensive in \fBzsh\fP.  Of course, it has all the
+is quite extensive in \fBbsh\fP.  Of course, it has all the
 basics:
 .Ds
 %\0ls
@@ -320,11 +320,11 @@ This checks for a certain user's files:
 .De
 .Sh "Startup Files"
 .PP
-There are five startup files that \fBzsh\fP will read commands from:
+There are five startup files that \fBbsh\fP will read commands from:
 .Ds
-$ZDOTDIR/.zshenv
+$ZDOTDIR/.bshenv
 $ZDOTDIR/.zprofile
-$ZDOTDIR/.zshrc
+$ZDOTDIR/.bshrc
 $ZDOTDIR/.zlogin
 $ZDOTDIR/.zlogout
 .De
@@ -332,21 +332,21 @@ If \fBZDOTDIR\fP is not set, then the value of \fBHOME\fP is used;
 this is the usual case.
 .\".KE    <--- missing .KS or .KF above
 .PP
-\&\fC.zshenv\fP is sourced on all invocations of the shell,
+\&\fC.bshenv\fP is sourced on all invocations of the shell,
 unless the \fC-f\fP option is set.  It should contain commands to set
 the command search path, plus other important environment
 variables.
-\&\fC.zshenv\fP should not contain commands that produce output
+\&\fC.bshenv\fP should not contain commands that produce output
 or assume the shell is attached to a tty.
 .PP
-\&\fC.zshrc\fP is sourced in interactive shells.  It should contain
+\&\fC.bshrc\fP is sourced in interactive shells.  It should contain
 commands to set up aliases, functions, options, key bindings, etc.
 .PP
 \&\fC.zlogin\fP is sourced in login shells.  It should contain
 commands that should be executed only in login shells.
 \&\fC.zlogout\fP is sourced when login shells exit.
 \&\fC.zprofile\fP is similar to \fC.zlogin\fP, except that it is sourced before
-\&\fC.zshrc\fP.
+\&\fC.bshrc\fP.
 \&\fC.zprofile\fP is meant as an alternative to \fC.zlogin\fP for
 ksh fans;
 the two are not intended to be used together, although this
@@ -358,14 +358,14 @@ at all.  Rather, it should be used to set the terminal type
 and run a series of external commands (\fCfortune\fP, \fCmsgs\fP, etc).
 .Sh "Shell Functions"
 .PP
-\fBzsh\fP also allows you to create your own commands by defining shell
+\fBbsh\fP also allows you to create your own commands by defining shell
 functions.  For example:
 .Ds
 %\0yp\0()\0{
 >\0\0\0\0\0\0\0ypmatch\0$1\0passwd.byname
 >\0}
 %\0yp\0pfalstad
-pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/zsh
+pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/bsh
 .De
 This function looks up a user in the NIS password map.
 The \fC$1\fP expands to the first argument to \fCyp\fP.
@@ -385,7 +385,7 @@ parsed, not when the function is executed.  For example:
 .Ds
 %\0alias\0ypmatch=echo
 %\0yp\0pfalstad
-pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/zsh
+pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/bsh
 .De
 Since the alias was defined after the function was parsed, it has
 no effect on the function's execution.
@@ -408,8 +408,8 @@ We can make the function take multiple arguments:
 >\0\0\0\0\0\0\0done
 >\0}
 %\0yp\0pfalstad\0subbarao\0sukthnkr
-pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/zsh
-subbarao:*:3338:35:Kartik\0Subbarao:/u/subbarao:/usr/princeton/bin/zsh
+pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/bsh
+subbarao:*:3338:35:Kartik\0Subbarao:/u/subbarao:/usr/princeton/bin/bsh
 sukthnkr:*:1267:35:Rahul\0Sukthankar:/u/sukthnkr:/usr/princeton/bin/tcsh
 .De
 The \fCfor i\fP loops through each of the function's arguments,
@@ -425,7 +425,7 @@ if no arguments are given:
 %\0yp
 usage:\0yp\0name\0...
 %\0yp\0pfalstad\0sukthnkr
-pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/zsh
+pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/bsh
 sukthnkr:*:1267:35:Rahul\0Sukthankar:/u/sukthnkr:/usr/princeton/bin/tcsh
 .De
 \fC$#\fP is the number of arguments supplied to the function.
@@ -508,12 +508,12 @@ Note that this could also have been implemented as an alias:
 -rwxr-xr-x\0\01\0pfalstad\0\0\0\0\0\0\029\0May\024\004:38\0foo
 .De
 .PP
-Instead of defining a lot of functions in your \fC.zshrc\fP,
+Instead of defining a lot of functions in your \fC.bshrc\fP,
 all of which you may not use,
 it is often better to use the \fCautoload\fP builtin.
 The idea is, you create a directory where function
 definitions are stored, declare the names in
-your \fC.zshrc\fP, and tell the shell where to look for them.
+your \fC.bshrc\fP, and tell the shell where to look for them.
 Whenever you reference a function, the shell
 will automatically load it into memory.
 .Ds
@@ -545,23 +545,23 @@ separate process is not created.)
 %\0ed\0/tmp/funs/yp
 25
 i
-#!\0/usr/local/bin/zsh
+#!\0/usr/local/bin/bsh
 .
 w
 42
 q
 %\0</tmp/funs/yp
-#!\0/usr/local/bin/zsh
+#!\0/usr/local/bin/bsh
 ypmatch\0$1\0passwd.byname
 %\0/tmp/funs/yp\0sukthnkr
 sukthnkr:*:1267:35:Rahul\0Sukthankar:/u/sukthnkr:/usr/princeton/bin/tcsh
 .De
-Now other people, who may not use \fBzsh\fP, or who don't want to
-copy all of your \fC.zshrc\fP, may use these functions as shell
+Now other people, who may not use \fBbsh\fP, or who don't want to
+copy all of your \fC.bshrc\fP, may use these functions as shell
 scripts.
 .Sh "Directories"
 .PP
-One nice feature of \fBzsh\fP is the way it prints directories.
+One nice feature of \fBbsh\fP is the way it prints directories.
 For example, if we set the prompt like this:
 .Ds
 phoenix%\0PROMPT='%~>\0'
@@ -570,7 +570,7 @@ phoenix%\0PROMPT='%~>\0'
 .De
 the shell will print the current directory in the prompt,
 using the \fC~\fP character.
-However, \fBzsh\fP is smarter than most other shells in this respect:
+However, \fBbsh\fP is smarter than most other shells in this respect:
 .Ds
 ~/src>\0cd\0~subbarao
 ~subbarao>\0cd\0~maruchck
@@ -584,10 +584,10 @@ However, \fBzsh\fP is smarter than most other shells in this respect:
 ~foo/news/nntp>\0cd\0inews
 ~foo/news/nntp/inews>
 .De
-Note that \fBzsh\fP prints \fIother\fP users' directories 
+Note that \fBbsh\fP prints \fIother\fP users' directories 
 in the form \fC~user\fP.  Also note that you can
 set a parameter and use it as a directory name;
-\fBzsh\fP will act as if \fCfoo\fP is a user
+\fBbsh\fP will act as if \fCfoo\fP is a user
 with the login directory \fC/usr/princeton/common/src\fP.
 This is convenient, especially if you're sick of seeing
 prompts like this:
@@ -616,9 +616,9 @@ You can define a shell function for this purpose:
 ~spool>\0cd\0.msgs
 ~spool/.msgs>
 .De
-You may want to add this one-line function to your \fC.zshrc\fP.
+You may want to add this one-line function to your \fC.bshrc\fP.
 
-\fBzsh\fP can also put the current directory in your title bar,
+\fBbsh\fP can also put the current directory in your title bar,
 if you are using a windowing system.
 One way to do this is with the \fCchpwd\fP function, which is
 automatically executed by the shell whenever you change
@@ -670,7 +670,7 @@ Z\0/tmp>\0pushd\0/etc
 Z\0/etc>\0popd\0
 /tmp\0~
 .De
-\fBzsh\fP's directory stack commands work similarly.  One
+\fBbsh\fP's directory stack commands work similarly.  One
 difference is the way \fCpushd\fP is handled if no arguments
 are given.  As in csh, this exchanges the top two elements
 of the directory stack:
@@ -792,11 +792,11 @@ from getting too large, much like \fIHISTSIZE\fP:
 .De
 .Sh "Command/Process Substitution"
 .PP
-Command substitution in \fBzsh\fP can take two forms.
+Command substitution in \fBbsh\fP can take two forms.
 In the traditional form, a command enclosed in
 backquotes (\fC`\fP...\fC`\fP) is replaced on the command line with its output.
 This is the form used by the older shells.
-Newer shells (like \fBzsh\fP) also provide another form,
+Newer shells (like \fBbsh\fP) also provide another form,
 \fC$(\fR...\fC)\fR.  This form is much easier to nest.
 .Ds
 %\0ls\0-l\0`echo\0/vmunix`
@@ -822,7 +822,7 @@ crwx-w----\0\01\0subbarao\0\020,\0\086\0May\023\018:38\0ttyu6
 crw--w----\0\01\0pfalstad\0\020,\0\099\0May\023\018:41\0ttyv3
 .De
 Many common uses of command substitution, however, are
-superseded by other mechanisms of \fBzsh\fP:
+superseded by other mechanisms of \fBbsh\fP:
 .Ds
 %\0ls\0-l\0`tty`
 crw-rw-rw-\0\01\0root\0\0\0\0\0\020,\0\028\0May\023\018:35\0/dev/ttyqc
@@ -840,7 +840,7 @@ for you, you can turn it off:
 %\0ls
 =foo\0\0\0\0=bar
 %\0ls\0=foo\0=bar
-zsh:\0foo\0not\0found
+bsh:\0foo\0not\0found
 %\0setopt\0noequals
 %\0ls\0=foo\0=bar
 =foo\0\0\0\0=bar
@@ -893,29 +893,29 @@ shgchan\0\0ttyvb\0\0\0May\023\016:51\0\0\0(gaudi.Princeton.)
 .De
 or easily read archived mail:
 .Ds
-%\0mail\0-f\0=(zcat\0~/mail/oldzshmail.Z)
-"/tmp/zsha06024":\084\0messages,\00\0new,\043\0unread
->\0\01\0\0U\0\0TO:\0pfalstad,\0zsh\0(10)
+%\0mail\0-f\0=(zcat\0~/mail/oldbshmail.Z)
+"/tmp/bsha06024":\084\0messages,\00\0new,\043\0unread
+>\0\01\0\0U\0\0TO:\0pfalstad,\0bsh\0(10)
 \0\0\02\0\0U\0\0nytim!tim@uunet.uu.net,\0Re:\0Zsh\0on\0Sparc1\0/SunOS\04.0.3
-\0\0\03\0\0U\0\0JAM%TPN@utrcgw.utc.com,\0zsh\0fix\0(15)
-\0\0\04\0\0U\0\0djm@eng.umd.edu,\0way\0to\0find\0out\0if\0running\0zsh?\0(25)
-\0\0\05\0\0U\0\0djm@eng.umd.edu,\0Re:\0way\0to\0find\0out\0if\0running\0zsh?\0(17)
+\0\0\03\0\0U\0\0JAM%TPN@utrcgw.utc.com,\0bsh\0fix\0(15)
+\0\0\04\0\0U\0\0djm@eng.umd.edu,\0way\0to\0find\0out\0if\0running\0bsh?\0(25)
+\0\0\05\0\0U\0\0djm@eng.umd.edu,\0Re:\0way\0to\0find\0out\0if\0running\0bsh?\0(17)
 \0\0\06\0\0\0r\0djm@eng.umd.edu,\0Meta\0.\0(18)
-\0\0\07\0\0U\0\0jack@cs.glasgow.ac.uk,\0Re:\0problem\0building\0zsh\0(147)
+\0\0\07\0\0U\0\0jack@cs.glasgow.ac.uk,\0Re:\0problem\0building\0bsh\0(147)
 \0\0\08\0\0U\0\0nytim!tim@uunet.uu.net,\0Re:\0Zsh\0on\0Sparc1\0/SunOS\04.0.3
 \0\0\09\0\0\0\0\0ursa!jmd,\0Another\0fix...\0(61)
 \0\010\0\0U\0\0pplacewa@bbn.com,\0Re:\0v18i084:\0Zsh\02.00\0-\0A\0small\0complaint\0(36)
 \0\011\0\0U\0\0lubkin@cs.rochester.edu,\0POSIX\0job\0control\0(34)
 \0\012\0\0U\0\0yale!bronson!tan@uunet.UU.NET
-\0\013\0\0U\0\0brett@rpi.edu,\0zsh\0(36)
-\0\014\0\0S\0\0subbarao,\0zsh\0sucks!!!!\0(286)
-\0\015\0\0U\0\0snibru!d241s008!d241s013!ala@relay.EU.net,\0zsh\0(165)
+\0\013\0\0U\0\0brett@rpi.edu,\0bsh\0(36)
+\0\014\0\0S\0\0subbarao,\0bsh\0sucks!!!!\0(286)
+\0\015\0\0U\0\0snibru!d241s008!d241s013!ala@relay.EU.net,\0bsh\0(165)
 \0\016\0\0U\0\0nytim!tim@uunet.UU.NET,\0Re:\0Zsh\0on\0Sparc1\0/SunOS\04.0.3
-\0\017\0\0U\0\0subbarao,\0zsh\0is\0a\0junk\0shell\0(43)
-\0\018\0\0U\0\0amaranth@vela.acs.oakland.edu,\0zsh\0(33)
+\0\017\0\0U\0\0subbarao,\0bsh\0is\0a\0junk\0shell\0(43)
+\0\018\0\0U\0\0amaranth@vela.acs.oakland.edu,\0bsh\0(33)
 43u/84\01:\0x
-%\0ls\0-l\0/tmp/zsha06024
-/tmp/zsha06024\0not\0found
+%\0ls\0-l\0/tmp/bsha06024
+/tmp/bsha06024\0not\0found
 .De
 Note that the shell creates a temporary file, and deletes it
 when the command is finished.
@@ -930,7 +930,7 @@ when the command is finished.
 ---
 >\0strfile*
 .De
-If you read \fBzsh\fP's man page, you may notice that \fC<(\fR...\fC)\fR
+If you read \fBbsh\fP's man page, you may notice that \fC<(\fR...\fC)\fR
 is another form of process substitution which is similar to
 \fC=(\fR...\fC)\fR.
 There is an important difference between the two.
@@ -953,12 +953,12 @@ file.
 command between the parentheses will get its input from the named
 pipe.
 .Ds
-%\0dvips\0-o\0>(lpr)\0zsh.dvi
+%\0dvips\0-o\0>(lpr)\0bsh.dvi
 .De
 .Sh "Redirection"
 .PP
 Apart from all the regular redirections like the Bourne shell has,
-\fBzsh\fP can do more.  You can send the output of a command to more
+\fBbsh\fP can do more.  You can send the output of a command to more
 than one file, by specifying more redirections like
 .Ds
 %\0echo\0Hello\0World\0>file1\0>file2
@@ -984,7 +984,7 @@ and then the contents of \fCnewnames\fP.
 .PP
 Suppose you would like to watch the standard output of a command on
 your terminal, but want to pipe the standard error to another command.
-An easy way to do this in \fBzsh\fP is by redirecting the standard
+An easy way to do this in \fBbsh\fP is by redirecting the standard
 error using \fC2> >(\fR...\fC)\fR.
 .Ds
 %\0find\0/\0-name\0games\02>\0>(grep\0-v\0'Permission'\0>\0realerrors)
@@ -1053,7 +1053,7 @@ drwxr-sr-x\0\02\0bin\0\0\0\0\0\0\0\0\014848\0May\023\018:48\0dev
 %\0alias\0rable='ls\0-AFtrd\0*(R)'\0nrable='ls\0-AFtrd\0*(^R)'
 %\0rable
 README\0\0\0\0\0\0func/\0\0\0\0\0\0\0bin/\0\0\0\0\0\0\0\0pub/\0\0\0\0\0\0\0\0News/\0\0\0\0\0\0\0src/
-nicecolors\0\0etc/\0\0\0\0\0\0\0\0scr/\0\0\0\0\0\0\0\0tmp/\0\0\0\0\0\0\0\0iris/\0\0\0\0\0\0\0zsh*
+nicecolors\0\0etc/\0\0\0\0\0\0\0\0scr/\0\0\0\0\0\0\0\0tmp/\0\0\0\0\0\0\0\0iris/\0\0\0\0\0\0\0bsh*
 %\0nrable
 Mailboxes/\0\0mail/\0\0\0\0\0\0\0notes
 .De
@@ -1061,7 +1061,7 @@ Mailboxes/\0\0mail/\0\0\0\0\0\0\0notes
 directory, and \fC*(^R)\fP matches all unreadable files.)
 .PP
 Most other shells have aliases of this kind (\fIcommand\fP aliases).
-However, \fBzsh\fP also has \fIglobal\fP aliases, which are substituted
+However, \fBbsh\fP also has \fIglobal\fP aliases, which are substituted
 anywhere on a line.
 Global aliases can be used to abbreviate frequently-typed
 usernames, hostnames, etc.
@@ -1087,7 +1087,7 @@ Here are some more interesting uses.
 %\0who\0GF\0\0#\0\fIsee\0if\0your\0friends\0are\0on\fC
 %\0w\0GF\0\0\0\0#\0\fIsee\0what\0your\0friends\0are\0doing
 .De
-Another example makes use of \fBzsh\fP's process substitution.
+Another example makes use of \fBbsh\fP's process substitution.
 If you run NIS, and you miss being able to do this:
 .Ds
 %\0grep\0pfalstad\0/etc/passwd
@@ -1097,18 +1097,18 @@ than \fCypmatch pfalstad passwd\fP:
 .Ds
 %\0alias\0-g\0PASS='<(ypcat\0passwd)'
 %\0grep\0pfalstad\0PASS
-pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/zsh
+pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/bsh
 .De
 If you're really crazy, you can even call it \fC/etc/passwd\fP:
 .Ds
 %\0alias\0-g\0/etc/passwd='<(ypcat\0passwd)'
 %\0grep\0pfalstad\0/etc/passwd
-pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/zsh
+pfalstad:*:3564:35:Paul\0John\0Falstad:/u/pfalstad:/usr/princeton/bin/bsh
 .De
 The last example shows one of the perils of global aliases;
 they have a lot of potential to cause confusion.
 For example, if you defined a global alias called \fC|\fP (which is
-possible), \fBzsh\fP would begin to act very strangely; every pipe
+possible), \fBbsh\fP would begin to act very strangely; every pipe
 symbol would be replaced with the text of your alias.
 To some extent, global aliases are like macros in C;
 discretion is advised in using them and in choosing names for them.
@@ -1116,17 +1116,17 @@ Using names in all caps is not a bad idea, especially
 for aliases which introduce shell metasyntax (like \fCM\fP and \fCGF\fP
 above).
 .PP
-Note that \fBzsh\fP aliases are not like csh aliases.  The syntax for
+Note that \fBbsh\fP aliases are not like csh aliases.  The syntax for
 defining them is different, and they do not have arguments.
-All your favorite csh aliases will probably not work under \fBzsh\fP.
+All your favorite csh aliases will probably not work under \fBbsh\fP.
 For example, if you try:
 .Ds
 alias\0rm\0mv\0'\e!*\0/tmp/wastebasket'
 .De
-no aliases will be defined, but \fBzsh\fP will not report an error.
+no aliases will be defined, but \fBbsh\fP will not report an error.
 In csh, this line defines an alias that makes \fCrm\fP safe---files
 that are \fCrm\fP'd will be moved to a temporary directory instead of
-instantly destroyed.  In \fBzsh\fP's syntax, however, this line asks
+instantly destroyed.  In \fBbsh\fP's syntax, however, this line asks
 the shell to print any existing alias definitions for \fCrm\fP,
 \fCmv\fP, or \fC!*\ /tmp/wastebasket\fP.  Since there are none, most
 likely, the shell will not print anything, although \fCalias\fP will
@@ -1137,10 +1137,10 @@ alias\0rm='mv\0\e!*\0/tmp/wastebasket'
 However, this won't work either:
 .Ds
 %\0rm\0foo.dvi
-zsh:\0no\0matches\0found:\0!*
+bsh:\0no\0matches\0found:\0!*
 .De
 While this makes \fCrm\fP safe, it is certainly not what the user
-intended.  In \fBzsh\fP, you must use a shell function for this:
+intended.  In \fBbsh\fP, you must use a shell function for this:
 .Ds
 %\0unalias\0rm
 %\0rm\0()\0{\0mv\0$*\0/tmp/wastebasket\0}
@@ -1151,7 +1151,7 @@ foo.dvi
 While this is much cleaner and easier to read (I hope you will
 agree), it is not csh-compatible.  Therefore, a script to convert
 csh aliases and variables has been provided.  You should only need to use it
-once, to convert all your csh aliases and parameters to \fBzsh\fP format:
+once, to convert all your csh aliases and parameters to \fBbsh\fP format:
 .Ds
 %\0csh
 csh>\0alias
@@ -1159,27 +1159,27 @@ l\0\0\0\0\0\0\0ls\0-AF
 more\0\0\0\0less
 on\0\0\0\0\0\0last\0-2\0!:1\0;\0who\0|\0grep\0!:1
 csh>\0exit
-%\0c2z\0>neat_zsh_aliases
-%\0cat\0neat_zsh_aliases
+%\0c2z\0>neat_bsh_aliases
+%\0cat\0neat_bsh_aliases
 alias\0l='ls\0-AF'
 alias\0more='less'
 on\0()\0{\0last\0-2\0$1\0;\0who\0|\0grep\0$1\0}
 \&...
 .De
-The first two aliases were converted to regular \fBzsh\fP aliases, while
+The first two aliases were converted to regular \fBbsh\fP aliases, while
 the third, since it needed to handle arguments, was converted to
-a function.  \fCc2z\fP can convert most aliases to \fBzsh\fP format without
+a function.  \fCc2z\fP can convert most aliases to \fBbsh\fP format without
 any problems.  However, if you're using some really arcane csh tricks,
 or if you have an alias with a name like \fCdo\fP (which is reserved
-in \fBzsh\fP), you may have to fix some of the aliases by hand.
+in \fBbsh\fP), you may have to fix some of the aliases by hand.
 .PP
 The \fCc2z\fP script checks your csh setup, and produces a list
-of \fBzsh\fP commands which replicate your aliases and parameter settings
+of \fBbsh\fP commands which replicate your aliases and parameter settings
 as closely as possible.  You could include its output in your
-startup file, \fC.zshrc\fP.
+startup file, \fC.bshrc\fP.
 .Sh "History"
 .PP
-There are several ways to manipulate history in \fBzsh\fP.
+There are several ways to manipulate history in \fBbsh\fP.
 One way is to use csh-style \fC!\fP history:
 .Ds
 %\0/usr/local/bin/!:0\0!-2*:s/foo/bar/\0>>!$
@@ -1217,7 +1217,7 @@ foo
 /usr/bin/ls\0bar
 bar
 .De
-In this example, no event designator was used, which tells \fBzsh\fP
+In this example, no event designator was used, which tells \fBbsh\fP
 to use the previous command.  A \fC$\fP specifies the last argument
 .Ds
 %\0mkdir\0/usr/local/lib/emacs/site-lisp/calc
@@ -1248,9 +1248,9 @@ example, if you type an erroneous command:
 \0do\0
 \0rpu\0$i\0
 \0done
-zsh:\0command\0not\0found:\0rpu
-zsh:\0command\0not\0found:\0rpu
-zsh:\0command\0not\0found:\0rpu
+bsh:\0command\0not\0found:\0rpu
+bsh:\0command\0not\0found:\0rpu
+bsh:\0command\0not\0found:\0rpu
 \&\fR...
 .De
 typing \fCfc\fP will execute an editor on this command, allowing
@@ -1295,11 +1295,11 @@ bar
 .De
 .Sh "Command Line Editing"
 .PP
-\fBzsh\fP's command line editor, \fBZLE\fP, is quite powerful.
+\fBbsh\fP's command line editor, \fBZLE\fP, is quite powerful.
 It is designed to emulate either emacs or vi; the default
 is emacs.  To set the bindings for vi mode, type \fCbindkey -v\fP.  If
 your \fBEDITOR\fP or \fBVISUAL\fP environment variable is vi,
-\fBzsh\fP will use vi emulation by default.  You can then switch to
+\fBbsh\fP will use vi emulation by default.  You can then switch to
 emacs mode with \fCbindkey -e\fP.
 .PP
 In addition to basic editing, the shell allows you to 
@@ -1309,7 +1309,7 @@ cursor-up key:
 .Ds
 %\0ls\0~
 -\0\0\0\0\0\0\0\0\0\0\0README\0\0\0\0\0\0file\0\0\0\0\0\0\0\0mail\0\0\0\0\0\0\0\0pub\0\0\0\0\0\0\0\0\0tmp
-Mailboxes\0\0\0bin\0\0\0\0\0\0\0\0\0func\0\0\0\0\0\0\0\0nicecolors\0\0scr\0\0\0\0\0\0\0\0\0zsh
+Mailboxes\0\0\0bin\0\0\0\0\0\0\0\0\0func\0\0\0\0\0\0\0\0nicecolors\0\0scr\0\0\0\0\0\0\0\0\0bsh
 News\0\0\0\0\0\0\0\0etc\0\0\0\0\0\0\0\0\0iris\0\0\0\0\0\0\0\0notes\0\0\0\0\0\0\0src
 %\0echo\0foobar
 foobar
@@ -1408,7 +1408,7 @@ Here is one way to do this:
 ''
 'foo\0\e`\e\0\e\e\e\0\e`\0dspfok\0foo\0foo.c\0rrr_
 .De
-When you expand \fC*\fP, \fBzsh\fP inserts the names of all the files
+When you expand \fC*\fP, \fBbsh\fP inserts the names of all the files
 into the editing buffer, with proper shell quoting.
 Now, just move back and remove \fCfoo.c\fP from the buffer:
 .Ds
@@ -1435,7 +1435,7 @@ out for a minute and check by typing
 but you don't want to retype the whole command again,
 and you can't press return now because the current command
 is incomplete.
-In \fBzsh\fP, you can put the line on the \fIbuffer stack\fP, using
+In \fBbsh\fP, you can put the line on the \fIbuffer stack\fP, using
 \fIESC-Q\fP, and type some other commands.  The next time a prompt is printed,
 the \fCgcc\fP line will be popped off the stack and put
 in the editing buffer automatically; you can then enter the
@@ -1510,7 +1510,7 @@ You can now edit the path.  When you press return, the contents
 of the edit buffer will be assigned to \fBPATH\fP.
 .Sh "Completion"
 .PP
-Another great \fBzsh\fP feature is completion.  If you hit \fITAB\fP, \fBzsh\fP
+Another great \fBbsh\fP feature is completion.  If you hit \fITAB\fP, \fBbsh\fP
 will complete all kinds of stuff.  Like commands or filenames:
 .Ds
 %\0comp\fITAB\fC
@@ -1728,7 +1728,7 @@ will only complete options which are actually set to be arguments to
 \fCunsetopt\fP.
 .PP
 Sometimes a command takes another command as its argument.  You can
-tell \fBzsh\fP to complete commands as the first argument to such a
+tell \fBbsh\fP to complete commands as the first argument to such a
 command and then use the completion method of the second command.  The
 \fC-l\fP flag with a null-string argument is used for this.
 .Ds
@@ -1802,10 +1802,10 @@ after a \fC-u\fP flag and an executable after a \fC-x\fP flag.  This
 section will introduce you to the ways to specify these things.  To
 many people it seems rather difficult at first, but taking the trouble
 to understand it can save you lots of typing in the end.  Even I keep
-being surprised when \fBzsh\fP manages to complete a small or even
+being surprised when \fBbsh\fP manages to complete a small or even
 empty prefix to the right file in a large directory.
 .PP
-To tell \fBzsh\fP about these kinds of completion, you use \*Qextended
+To tell \fBbsh\fP about these kinds of completion, you use \*Qextended
 completion\*U by specifying the \fC-x\fP flag to compctl.  The
 \fC-x\fP flag takes a list of patterns/flags pairs.  The patterns
 specify when to complete and the flags specify what.  The flags are
@@ -1827,7 +1827,7 @@ foo1\0\0\0bar1\0\0\0foo.Z\0\0bar.Z
 %\0compress\0-d\0foo.Z\0_
 .De
 In the above example, if the cursor is after the \fC-d\fP the pattern
-will match and therefore \fBzsh\fP uses the \fC-g *.Z\fP flag that will only
+will match and therefore \fBbsh\fP uses the \fC-g *.Z\fP flag that will only
 complete files ending in \fC.Z\fP.  Otherwise, if no pattern matches,
 it will use the flags before the \fC-x\fP and in this case complete
 every file that does not end in \fC.Z\fP.
@@ -1984,7 +1984,7 @@ bindings may come in handy:
 %\0bindkey\0-s\0'\ee='\0'|'
 .De
 Now you can type \fIALT-/\fP to get a backslash, and \fIALT-=\fP to
-get a vertical bar.  This only works inside \fBzsh\fP, of course;
+get a vertical bar.  This only works inside \fBbsh\fP, of course;
 \fCbindkey\fP has no effect on the key mappings inside \fCtalk\fP
 or \fCmail\fP, etc.
 .PP
@@ -1997,7 +1997,7 @@ allow you to bind the start and stop characters to editor commands,
 while retaining their normal use for external commands.
 .Sh "Parameter Substitution"
 .PP
-In \fBzsh\fP, parameters are set like this:
+In \fBbsh\fP, parameters are set like this:
 .Ds
 %\0foo=bar
 %\0echo\0$foo
@@ -2006,7 +2006,7 @@ bar
 Spaces before or after the \fC=\fP are frowned upon:
 .Ds
 %\0foo\0=\0bar
-zsh:\0command\0not\0found:\0foo
+bsh:\0command\0not\0found:\0foo
 .De
 Also, \fCset\fP doesn't work for setting parameters:
 .Ds
@@ -2054,7 +2054,7 @@ To get around that you need a \fCcase\fP statement:
 .De
 For the most part, this should make csh users happy.
 .PP
-The following sh-style operators are supported in \fBzsh\fP:
+The following sh-style operators are supported in \fBbsh\fP:
 .Ds
 %\0unset\0null
 %\0echo\0${foo-xxx}
@@ -2080,11 +2080,11 @@ Also, csh-style \fC:\fP modifiers may be appended to a parameter
 substitution.
 .Ds
 %\0echo\0$PWD
-/home/learning/pf/zsh/zsh2.00/src
+/home/learning/pf/bsh/bsh2.00/src
 %\0echo\0$PWD:h
-/home/learning/pf/zsh/zsh2.00
+/home/learning/pf/bsh/bsh2.00
 %\0echo\0$PWD:h:h
-/home/learning/pf/zsh
+/home/learning/pf/bsh
 %\0echo\0$PWD:t
 src
 %\0name=foo.c
@@ -2095,7 +2095,7 @@ foo
 %\0echo\0$name:e
 c
 .De
-The equivalent constructs in ksh (which are also supported in \fBzsh\fP)
+The equivalent constructs in ksh (which are also supported in \fBbsh\fP)
 are a bit more general and easier to remember.
 When the shell expands \fC${foo#\fR\fIpat\fR\fC}\fR,
 it checks to see if \fIpat\fP matches a substring at the beginning
@@ -2108,9 +2108,9 @@ from the end.
 Here are the ksh equivalents of the \fC:\fP modifiers:
 .Ds
 %\0echo\0${PWD%/*}
-/home/learning/pf/zsh/zsh2.00
+/home/learning/pf/bsh/bsh2.00
 %\0echo\0${PWD%/*/*}
-/home/learning/pf/zsh
+/home/learning/pf/bsh
 %\0echo\0${PWD##*/}
 src
 %\0echo\0${name%.*}
@@ -2118,7 +2118,7 @@ foo
 %\0echo\0${name#*.}
 c
 .De
-\fBzsh\fP also has upper/lowercase modifiers:
+\fBbsh\fP also has upper/lowercase modifiers:
 .Ds
 %\0xx=Test
 %\0echo\0$xx:u
@@ -2148,7 +2148,7 @@ For example, \fCo\fP sorts the words resulting from the expansion:
 %\0echo\0${(o)path}
 /etc\0/usr/bin\0/usr/bin/X11
 .De
-One possible source of confusion is the fact that in \fBzsh\fP,
+One possible source of confusion is the fact that in \fBbsh\fP,
 the result of parameter substitution is \fInot\fP split into
 words.  Thus, this will not work:
 .Ds
@@ -2168,14 +2168,14 @@ bar\0not\0found
 %\0ll\0'fuu\0bar'
 fuu\0bar\0not\0found
 .De
-Of course, a hackish workaround is available in sh (and \fBzsh\fP):
+Of course, a hackish workaround is available in sh (and \fBbsh\fP):
 .Ds
 %\0setopt\0shwordsplit
 %\0ll\0()\0{\0ls\0-F\0"$@"\0}
 %\0ll\0'fuu\0bar'
 fuu\0bar\0not\0found
 .De
-If you like the sh behaviour, \fBzsh\fP can accommodate you:
+If you like the sh behaviour, \fBbsh\fP can accommodate you:
 .Ds
 %\0ls\0${=srcs}
 exec.c\0\0glob.c\0\0init.c
@@ -2256,7 +2256,7 @@ dendrite\0sun4
 %\0echo\0$TTY
 /dev/ttyp4
 %\0echo\0$VERSION
-zsh\0v2.00.03
+bsh\0v2.00.03
 %\0echo\0$USERNAME
 pf
 .De
@@ -2265,7 +2265,7 @@ The \fCcdpath\fP variable sets the search path for the \fCcd\fP command.
 If you do not specify \fC.\fP somewhere in the path, it is assumed to
 be the first component.
 .Ds
-%\0cdpath=(\0/usr\0~\0~/zsh\0)
+%\0cdpath=(\0/usr\0~\0~/bsh\0)
 %\0ls\0/usr
 5bin\0\0\0\0\0\0\0\0\0dict\0\0\0\0\0\0\0\0\0lang\0\0\0\0\0\0\0\0\0net\0\0\0\0\0\0\0\0\0\0sccs\0\0\0\0\0\0\0\0\0sys
 5include\0\0\0\0\0etc\0\0\0\0\0\0\0\0\0\0lector\0\0\0\0\0\0\0nserve\0\0\0\0\0\0\0services\0\0\0\0\0tmp
@@ -2303,7 +2303,7 @@ changes \fBpath\fP as well, and vice versa.
 The same is true of \fBCDPATH\fP and \fBcdpath\fP:
 .Ds
 %\0echo\0$CDPATH
-/usr:/u/pfalstad:/u/pfalstad/zsh
+/usr:/u/pfalstad:/u/pfalstad/bsh
 %\0CDPATH=/u/subbarao:/usr/src:/tmp
 %\0echo\0$cdpath
 /u/subbarao\0/usr/src\0/tmp
@@ -2329,7 +2329,7 @@ a:b:c
 \fBHISTFILE\fP is the name of the history file, where the history
 is saved when a shell exits.
 .Ds
-%\0zsh
+%\0bsh
 phoenix%\0HISTFILE=/tmp/history
 phoenix%\0SAVEHIST=20
 phoenix%\0echo\0foo
@@ -2352,13 +2352,13 @@ exit
 \0\0\029\0\0HISTSIZE=3
 \0\0\030\0\0history
 .De
-If you have several instances of \fBzsh\fP running at the same
+If you have several instances of \fBbsh\fP running at the same
 time, like when using the X window system, it might be preferable to
 append the history of each shell to a file when a shell exits instead
 of overwriting the old contents of the file.  You can get this
 behaviour by setting the \fIAPPENDHISTORY\fP option.
 .PP
-In \fBzsh\fP, if you say
+In \fBbsh\fP, if you say
 .Ds
 %\0>file
 .De
@@ -2389,7 +2389,7 @@ command is specified (like csh).
 .Ds
 %\0unset\0NULLCMD
 %\0>file
-zsh:\0redirection\0with\0no\0command
+bsh:\0redirection\0with\0no\0command
 .De
 Actually, \fBREADNULLCMD\fP is used whenever you have a null command
 reading input from a single file.  Thus, you can set \fBREADNULLCMD\fP
@@ -2398,7 +2398,7 @@ set \fBNULLCMD\fP to \fC:\fP for sh compatibility, you can still read
 files with \fC< file\fP if you leave \fBREADNULLCMD\fP set to \fCmore\fP.
 .Sh "Prompting"
 .PP
-The default prompt for \fBzsh\fP is:
+The default prompt for \fBbsh\fP is:
 .Ds
 phoenix%\0echo\0$PROMPT
 %m%#\0
@@ -2406,25 +2406,25 @@ phoenix%\0echo\0$PROMPT
 The \fC%m\fP stands for the short form of the current hostname,
 and the \fC%#\fP stands for a \fC%\fP or a \fC#\fP, depending on whether
 the shell is running as root or not.
-\fBzsh\fP supports many other control sequences
+\fBbsh\fP supports many other control sequences
 in the \fBPROMPT\fP variable.
 .Ds
 %\0PROMPT='%/>\0'
-/u/pfalstad/etc/TeX/zsh>
+/u/pfalstad/etc/TeX/bsh>
 
 %\0PROMPT='%~>\0'\0\0\0
-~/etc/TeX/zsh>\0
+~/etc/TeX/bsh>\0
 
 %\0PROMPT='%h\0%~>\0'
-6\0~/etc/TeX/zsh>\0
+6\0~/etc/TeX/bsh>\0
 .De
 \fC%h\fP\0represents\0the\0number\0of\0current\0history\0event.
 .Ds
 %\0PROMPT='%h\0%~\0%M>\0'
-10\0~/etc/TeX/zsh\0apple-gunkies.gnu.ai.mit.edu>\0
+10\0~/etc/TeX/bsh\0apple-gunkies.gnu.ai.mit.edu>\0
 
 %\0PROMPT='%h\0%~\0%m>\0'
-11\0~/etc/TeX/zsh\0apple-gunkies>\0
+11\0~/etc/TeX/bsh\0apple-gunkies>\0
 
 %\0PROMPT='%h\0%t>\0'
 12\06:11am>\0
@@ -2451,10 +2451,10 @@ of the screen.
 %\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\06:14am
 
 %\0RPROMPT='%~'
-%\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0~/etc/TeX/zsh
+%\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0~/etc/TeX/bsh
 
 %\0PROMPT='%l\0%T\0%m[%h]\0'\0RPROMPT='\0%~'
-p0\06:15\0phoenix[5]\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0~/etc/TeX/zsh
+p0\06:15\0phoenix[5]\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0~/etc/TeX/bsh
 .De
 These special escape sequences can also be used with the
 \fC-P\fP option to \fCprint\fP:
@@ -2560,7 +2560,7 @@ pfalstad\0logged\0on\0at\03:39am\0Fri\024.
 pfalstad\0logged\0on\0at\03:42am\0Fri\024.
 .De
 If you have a \fC.friends\fP file in your home directory,
-a convenient way to make \fBzsh\fP watch for all your friends
+a convenient way to make \fBbsh\fP watch for all your friends
 is to do this:
 .Ds
 %\0watch=(\0$(<\0~/.friends)\0)
@@ -2600,13 +2600,13 @@ for all arguments.
 .Ds
 %\0setopt\0correct
 %\0sl
-zsh:\0correct\0`sl'\0to\0`ls'\0[nyae]?\0y
+bsh:\0correct\0`sl'\0to\0`ls'\0[nyae]?\0y
 %\0setopt\0correctall
 %\0ls\0x.v11r4
-zsh:\0correct\0`x.v11r4'\0to\0`X.V11R4'\0[nyae]?\0n
+bsh:\0correct\0`x.v11r4'\0to\0`X.V11R4'\0[nyae]?\0n
 /usr/princton/src/x.v11r4\0not\0found
 %\0ls\0/etc/paswd
-zsh:\0correct\0to\0`/etc/paswd'\0to\0`/etc/passwd'\0[nyae]?\0y
+bsh:\0correct\0to\0`/etc/paswd'\0to\0`/etc/passwd'\0[nyae]?\0y
 /etc/passwd
 .De
 If you press \fCy\fP
@@ -2631,7 +2631,7 @@ in csh.
 .Ds
 %\0setopt\0cshjunkiequotes
 %\0ls\0'foo
-zsh:\0unmatched\0'
+bsh:\0unmatched\0'
 .De
 \fIGLOBDOTS\fP lets files beginning with a \fC.\fP be matched without
 explicitly specifying the dot. This can also be specified for a particular
@@ -2683,7 +2683,7 @@ instead of just pressing \fI^D\fP.
 .Ds
 %\0setopt\0ignoreeof
 %\0^D
-zsh:\0use\0'exit'\0to\0exit.
+bsh:\0use\0'exit'\0to\0exit.
 .De
 \fIINTERACTIVECOMMENTS\fP turns on interactive comments;
 comments begin with a \fC#\fP.
@@ -2698,19 +2698,19 @@ Fri\0May\024\006:54:14\0EDT\01991
 overwriting an existing file.
 .Ds
 %\0setopt\0noclobber
-%\0cat\0/dev/null\0>~/.zshrc
-zsh:\0file\0exists:\0/u/pfalstad/.zshrc
+%\0cat\0/dev/null\0>~/.bshrc
+bsh:\0file\0exists:\0/u/pfalstad/.bshrc
 .De
 If you really do want to clobber a file, you can use the
 \fC>!\fP operator.
 To make things easier in this case, the \fC>\fP is stored in
 the history list as a \fC>!\fP:
 .Ds
-%\0cat\0/dev/null\0>!\0~/.zshrc
-%\0cat\0/etc/motd\0>\0~/.zshrc
-zsh:\0file\0exists:\0/u/pfalstad/.zshrc
+%\0cat\0/dev/null\0>!\0~/.bshrc
+%\0cat\0/etc/motd\0>\0~/.bshrc
+bsh:\0file\0exists:\0/u/pfalstad/.bshrc
 %\0!!
-cat\0/etc/motd\0>!\0~/.zshrc
+cat\0/etc/motd\0>!\0~/.bshrc
 %\0\fR...
 .De
 \fIRCQUOTES\fP lets you use a more elegant method for including

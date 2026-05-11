@@ -1,7 +1,7 @@
 /*
  * watch.c - login/logout watching
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -28,6 +28,9 @@
  */
 
 #include "watch.mdh"
+
+/* BrightDate FFI — converts a Unix time_t (seconds) to a BrightDate value */
+extern double bsh_unix_to_brightdate(double unix_secs);
 
 /* Headers for utmp/utmpx structures */
 #ifdef HAVE_UTMP_H
@@ -134,9 +137,9 @@
 #endif
 
 #ifdef WATCH_UTMP_UT_HOST
-# define DEFAULT_WATCHFMT "%n has %a %l from %m."
+# define DEFAULT_WATCHFMT "%n has %a %l from %m at %d."
 #else /* !WATCH_UTMP_UT_HOST */
-# define DEFAULT_WATCHFMT "%n has %a %l."
+# define DEFAULT_WATCHFMT "%n has %a %l at %d."
 #endif /* !WATCH_UTMP_UT_HOST */
 
 #ifdef WATCH_STRUCT_UTMP
@@ -412,6 +415,12 @@ watchlog2(int inout, WATCH_STRUCT_UTMP *u, char *fmt, int prnt, int fini)
 		    break;
 		case 'u':
 		    tunsetattrs(TXTUNDERLINE);
+		    break;
+		case 'd':
+		    /* BrightDate value of login/logout time */
+		    applytextattributes(TSC_RAW);
+		    timet = getlogtime(u, inout);
+		    printf("%.6f", bsh_unix_to_brightdate((double)timet));
 		    break;
 		default:
 		    applytextattributes(TSC_RAW);
@@ -713,7 +722,7 @@ static struct features module_features = {
 int
 setup_(UNUSED(Module m))
 {
-    /* On Cygwin, colonarr_gsu exists in libzsh.dll and we can't
+    /* On Cygwin, colonarr_gsu exists in libbsh.dll and we can't
      * use &colonarr_gsu in the initialization of partab[] above */
     partab[0].gsu = (void *)&colonarr_gsu;
     partab[1].gsu = (void *)&vararray_gsu;
@@ -744,7 +753,7 @@ boot_(UNUSED(Module m))
     watch = mkarray(NULL);
 
     /* These two parameters are only set to defaults if not set.
-     * So setting them in .zshrc will not be enough to load the
+     * So setting them in .bshrc will not be enough to load the
      * module. It's useless until the watch array is set anyway. */
     if (!paramtab->getnode(paramtab, "WATCHFMT"))
 	setsparam("WATCHFMT", ztrdup_metafy(default_watchfmt));

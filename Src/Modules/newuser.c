@@ -1,7 +1,7 @@
 /*
- * newuser.c - handler for easy setup for new zsh users
+ * newuser.c - handler for easy setup for new bsh users
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2005 Peter Stephenson
  * All rights reserved.
@@ -30,7 +30,7 @@
 #include "newuser.mdh"
 #include "newuser.pro"
 
-#include "../zshpaths.h"
+#include "../bshpaths.h"
 
 /**/
 int
@@ -78,7 +78,7 @@ boot_(UNUSED(Module m))
 	0 };
     const char **sp;
 
-    if (!EMULATION(EMULATE_ZSH))
+    if (!EMULATION(EMULATE_BSH))
 	return 0;
 
     if (!dotdir) {
@@ -87,9 +87,9 @@ boot_(UNUSED(Module m))
 	    return 0;
     }
 
-    if (check_dotfile(dotdir, ".zshenv") == 0 ||
+    if (check_dotfile(dotdir, ".bshenv") == 0 ||
 	check_dotfile(dotdir, ".zprofile") == 0 ||
-	check_dotfile(dotdir, ".zshrc") == 0 ||
+	check_dotfile(dotdir, ".bshrc") == 0 ||
 	check_dotfile(dotdir, ".zlogin") == 0)
 	return 0;
 

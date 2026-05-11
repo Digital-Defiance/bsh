@@ -1,13 +1,13 @@
-# Test zsh/system module
+# Test bsh/system module
 
 %prep
 
-  if zmodload -s zsh/system && zmodload -s zsh/zselect; then
+  if zmodload -s bsh/system && zmodload -s bsh/zselect; then
     tst_dir=V14.tmp
     mkdir -p -- $tst_dir
     : > $tst_dir/file # File on which to acquire flock.
   else
-    ZTST_unimplemented='the zsh/system and zsh/zselect modules are not available'
+    ZTST_unimplemented='the bsh/system and bsh/zselect modules are not available'
   fi
 
 %test
@@ -53,7 +53,7 @@
     fi
   )
 2:zsystem flock unsuccessful wait test
-F:This timing test might fail due to process scheduling issues unrelated to zsh.
+F:This timing test might fail due to process scheduling issues unrelated to bsh.
 
   (
     # Lock file for 0.5 second in the background.
@@ -84,7 +84,7 @@ F:This timing test might fail due to process scheduling issues unrelated to zsh.
   )
 0:zsystem flock successful wait test, no timeout
 ?elapsed time seems OK
-F:This timing test might fail due to process scheduling issues unrelated to zsh.
+F:This timing test might fail due to process scheduling issues unrelated to bsh.
 
   (
     # Lock file for 0.5 second in the background.
@@ -115,7 +115,7 @@ F:This timing test might fail due to process scheduling issues unrelated to zsh.
   )
 0:zsystem flock successful wait test, integral seconds
 ?elapsed time seems OK
-F:This timing test might fail due to process scheduling issues unrelated to zsh.
+F:This timing test might fail due to process scheduling issues unrelated to bsh.
 
   (
     # Lock file for 0.25 second in the background.
@@ -146,7 +146,7 @@ F:This timing test might fail due to process scheduling issues unrelated to zsh.
   )
 0:zsystem flock successful wait test, fractional seconds
 ?elapsed time seems OK
-F:This timing test might fail due to process scheduling issues unrelated to zsh.
+F:This timing test might fail due to process scheduling issues unrelated to bsh.
 
   (
     zsystem flock -t 0.1 -i 0.1 -f XYZ $tst_dir/file

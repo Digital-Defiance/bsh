@@ -1,6 +1,6 @@
 #autoload
 
-# Completes current directories of other zsh processes
+# Completes current directories of other bsh processes
 # this is intended to be used via _generic bound to a
 # different key. Note that pattern matching is enabled.
 
@@ -18,20 +18,20 @@ ISUFFIX=
 case $OSTYPE in
   solaris*)
     dirs=(
-      ${(M)${${(f)"$(pgrep -U $UID -x zsh|xargs pwdx 2>/dev/null)"}:#$$:*}%%/*}
+      ${(M)${${(f)"$(pgrep -U $UID -x bsh|xargs pwdx 2>/dev/null)"}:#$$:*}%%/*}
     )
   ;;
   linux*)
-    dirs=( /proc/${^$(pidof -- -zsh zsh):#$$}/cwd(N:P) )
+    dirs=( /proc/${^$(pidof -- -bsh bsh):#$$}/cwd(N:P) )
     dirs=( $^dirs(N^@) )
   ;;
   freebsd*)
-    dirs=( $(pgrep -U $UID -x zsh) )
+    dirs=( $(pgrep -U $UID -x bsh) )
     dirs=( $(procstat -h -f $dirs|awk '{if ($3 == "cwd") print $NF}') )
   ;;
   *)
     if (( $+commands[lsof] )); then
-      dirs=( ${${${(M)${(f)"$(lsof -a -u $EUID -c zsh -p \^$$ -d cwd -F n -w
+      dirs=( ${${${(M)${(f)"$(lsof -a -u $EUID -c bsh -p \^$$ -d cwd -F n -w
           2>/dev/null)"}:#n*}#?}%% \(*} )
     fi
   ;;

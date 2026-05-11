@@ -1,7 +1,7 @@
 /*
  * text.c - textual representations of syntax trees
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "text.pro"
 
 /*
@@ -43,7 +43,7 @@ int text_expand_tabs;
 /*
  * Binary operators in conditions.
  * There order is tied to the order of the definitions COND_STREQ
- * et seq. in zsh.h.
+ * et seq. in bsh.h.
  */
 static const char *cond_binary_ops[] = {
     "=", "==", "!=", "<", ">", "-nt", "-ot", "-ef", "-eq",

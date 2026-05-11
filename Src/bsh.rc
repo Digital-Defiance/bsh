@@ -5,4 +5,4 @@
 // 
 // myapp.res : myapp.rc resource.h
 // 	   windres $< -O coff -o $@
-IDR_MAINFRAME           ICON    DISCARDABLE     "zsh.ico"
+IDR_MAINFRAME           ICON    DISCARDABLE     "bsh.ico"

@@ -1,7 +1,7 @@
 /*
  * hashtable.c - hash tables
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -28,7 +28,7 @@
  */
 
 #include "../config.h"
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "hashtable.pro"
 
 typedef struct scanstatus *ScanStatus;
@@ -42,12 +42,12 @@ struct hashtableimpl {
     /* HASHTABLE INTERNAL MEMBERS */
     ScanStatus scan;		/* status of a scan over this hashtable     */
 
-#ifdef ZSH_HASH_DEBUG
+#ifdef BSH_HASH_DEBUG
     /* HASHTABLE DEBUG MEMBERS */
     HashTableImpl next, last;	/* linked list of all hash tables           */
     char *tablename;		/* string containing name of the hash table */
     PrintTableStats printinfo;	/* pointer to function to print table stats */
-#endif /* !ZSH_HASH_DEBUG */
+#endif /* !BSH_HASH_DEBUG */
 };
 
 static inline HashTableImpl impl(HashTable ht) { return (HashTableImpl)ht; }
@@ -74,10 +74,10 @@ struct scanstatus {
 /* Generic Hash Table functions */
 /********************************/
 
-#ifdef ZSH_HASH_DEBUG
+#ifdef BSH_HASH_DEBUG
 static void printhashtabinfo(HashTable ht);
 static HashTableImpl firstht, lastht;
-#endif /* ZSH_HASH_DEBUG */
+#endif /* BSH_HASH_DEBUG */
 
 /* Generic hash function */
 
@@ -101,8 +101,8 @@ newhashtable(int size, UNUSED(char const *name), UNUSED(PrintTableStats printinf
 {
     HashTableImpl ht;
 
-    ht = (HashTableImpl) zshcalloc(sizeof *ht);
-#ifdef ZSH_HASH_DEBUG
+    ht = (HashTableImpl) bshcalloc(sizeof *ht);
+#ifdef BSH_HASH_DEBUG
     ht->next = NULL;
     if(!firstht)
 	firstht = ht;
@@ -112,8 +112,8 @@ newhashtable(int size, UNUSED(char const *name), UNUSED(PrintTableStats printinf
     lastht = ht;
     ht->printinfo = printinfo ? printinfo : printhashtabinfo;
     ht->tablename = ztrdup(name);
-#endif /* ZSH_HASH_DEBUG */
-    ht->pub.nodes = (HashNode *) zshcalloc(size * sizeof(HashNode));
+#endif /* BSH_HASH_DEBUG */
+    ht->pub.nodes = (HashNode *) bshcalloc(size * sizeof(HashNode));
     ht->pub.hsize = size;
     ht->pub.ct = 0;
     ht->scan = NULL;
@@ -129,7 +129,7 @@ mod_export void
 deletehashtable(HashTable ht)
 {
     ht->emptytable(ht);
-#ifdef ZSH_HASH_DEBUG
+#ifdef BSH_HASH_DEBUG
     if(impl(ht)->next)
 	impl(ht)->next->last = impl(ht)->last;
     else
@@ -139,7 +139,7 @@ deletehashtable(HashTable ht)
     else
 	firstht = impl(ht)->next;
     zsfree(impl(ht)->tablename);
-#endif /* ZSH_HASH_DEBUG */
+#endif /* BSH_HASH_DEBUG */
     zfree(ht->nodes, ht->hsize * sizeof(HashNode));
     zfree(ht, sizeof(struct hashtableimpl));
 }
@@ -464,7 +464,7 @@ expandhashtable(HashTable ht)
     onodes = ht->nodes;
 
     ht->hsize = osize * 4;
-    ht->nodes = (HashNode *) zshcalloc(ht->hsize * sizeof(HashNode));
+    ht->nodes = (HashNode *) bshcalloc(ht->hsize * sizeof(HashNode));
     ht->ct = 0;
 
     /* scan through the old list of nodes, and *
@@ -502,7 +502,7 @@ resizehashtable(HashTable ht, int newsize)
      * we free it and allocate a new nodes array.          */
     if (ht->hsize != newsize) {
 	zfree(ht->nodes, ht->hsize * sizeof(HashNode));
-	ht->nodes = (HashNode *) zshcalloc(newsize * sizeof(HashNode));
+	ht->nodes = (HashNode *) bshcalloc(newsize * sizeof(HashNode));
 	ht->hsize = newsize;
     } else {
 	/* else we just re-zero the current nodes array */
@@ -522,7 +522,7 @@ emptyhashtable(HashTable ht)
 }
 
 /**/
-#ifdef ZSH_HASH_DEBUG
+#ifdef BSH_HASH_DEBUG
 
 /* Print info about hash table */
 
@@ -578,7 +578,7 @@ bin_hashinfo(UNUSED(char *nam), UNUSED(char **args), UNUSED(Options ops), UNUSED
 }
 
 /**/
-#endif /* ZSH_HASH_DEBUG */
+#endif /* BSH_HASH_DEBUG */
 
 /********************************/
 /* Command Hash Table Functions */
@@ -675,7 +675,7 @@ hashdir(char **dirp)
 		    add = 1;
 	    }
 	    if (add) {
-		cn = (Cmdnam) zshcalloc(sizeof *cn);
+		cn = (Cmdnam) bshcalloc(sizeof *cn);
 		cn->node.flags = 0;
 		cn->u.name = dirp;
 		cmdnamtab->addnode(cmdnamtab, fname, cn);
@@ -692,7 +692,7 @@ hashdir(char **dirp)
 	    (exe[3] == 'E' || exe[3] == 'e') && exe[4] == 0) {
 	    *exe = 0;
 	    if (!cmdnamtab->getnode(cmdnamtab, fn)) {
-		cn = (Cmdnam) zshcalloc(sizeof *cn);
+		cn = (Cmdnam) bshcalloc(sizeof *cn);
 		cn->node.flags = 0;
 		cn->u.name = dirp;
 		cmdnamtab->addnode(cmdnamtab, ztrdup(fn), cn);
@@ -960,7 +960,7 @@ printshfuncnode(HashNode hn, int printflags)
 	    char *fopt = "UtTkzc";
 	    int flgs[] = {
 		PM_UNALIASED, PM_TAGGED, PM_TAGGED_LOCAL,
-		PM_KSHSTORED, PM_ZSHSTORED, PM_CUR_FPATH, 0
+		PM_KSHSTORED, PM_BSHSTORED, PM_CUR_FPATH, 0
 	    };
 	    int fl;;
 
@@ -1113,7 +1113,7 @@ static struct reswd reswds[] = {
 /**/
 mod_export HashTable reswdtab;
 
-/* Build the hash table containing zsh's reserved words. */
+/* Build the hash table containing bsh's reserved words. */
 
 /**/
 void
@@ -1231,7 +1231,7 @@ createaliasnode(char *txt, int flags)
 {
     Alias al;
 
-    al = (Alias) zshcalloc(sizeof *al);
+    al = (Alias) bshcalloc(sizeof *al);
     al->node.flags = flags;
     al->text = txt;
     al->inuse = 0;

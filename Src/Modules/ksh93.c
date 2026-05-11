@@ -1,7 +1,7 @@
 /*
  * ksh93.c - support for more ksh93 features
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2022 Barton E. Schaefer
  * All rights reserved.
@@ -41,7 +41,7 @@ static struct builtin bintab[] = {
     BUILTIN("nameref", BINF_ASSIGN, (HandlerFunc)bin_typeset, 0, -1, 0, "gpru", "n")
 };
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 
 static void
 edcharsetfn(Param pm, char *x)
@@ -59,7 +59,7 @@ edcharsetfn(Param pm, char *x)
 static char **
 matchgetfn(Param pm)
 {
-    char **zsh_match = getaparam("match");
+    char **bsh_match = getaparam("match");
 
     /* For this to work accurately, ksh emulation should always imply
      * that the (#m) and (#b) extendedglob operators are enabled.
@@ -70,16 +70,16 @@ matchgetfn(Param pm)
 
     if (pm->u.arr)
 	freearray(pm->u.arr);
-    if (zsh_match && *zsh_match) {
+    if (bsh_match && *bsh_match) {
 	if (isset(KSHARRAYS)) {
 	    char **ap =
-		(char **) zalloc(sizeof(char *) * (arrlen(zsh_match)+1));
+		(char **) zalloc(sizeof(char *) * (arrlen(bsh_match)+1));
 	    pm->u.arr = ap;
 	    *ap++ = ztrdup(getsparam("MATCH"));
-	    while (*zsh_match)
-		*ap = ztrdup(*zsh_match++);
+	    while (*bsh_match)
+		*ap = ztrdup(*bsh_match++);
 	} else
-	    pm->u.arr = zarrdup(zsh_match);
+	    pm->u.arr = zarrdup(bsh_match);
     } else if (isset(KSHARRAYS)) {
 	pm->u.arr = mkarray(ztrdup(getsparam("MATCH")));
     } else
@@ -118,16 +118,16 @@ static struct paramdef partab[] = {
 	     &sh_edchar, &sh_edchar_gsu),
     PARAMDEF(".sh.edmode", PM_SCALAR|PM_READONLY|PM_SPECIAL,
 	     &sh_edmode, &sh_edmode_gsu),
-    PARAMDEF(".sh.file", PM_NAMEREF|PM_READONLY, "ZSH_SCRIPT", &constant_gsu),
+    PARAMDEF(".sh.file", PM_NAMEREF|PM_READONLY, "BSH_SCRIPT", &constant_gsu),
     PARAMDEF(".sh.lineno", PM_NAMEREF|PM_READONLY, "LINENO", &constant_gsu),
     PARAMDEF(".sh.match", PM_ARRAY|PM_READONLY, NULL, &sh_match_gsu),
     PARAMDEF(".sh.name", PM_SCALAR|PM_READONLY|PM_SPECIAL,
 	     &sh_name, &sh_name_gsu),
     PARAMDEF(".sh.subscript", PM_SCALAR|PM_READONLY|PM_SPECIAL,
 	     &sh_subscript, &sh_subscript_gsu),
-    PARAMDEF(".sh.subshell", PM_NAMEREF|PM_READONLY, "ZSH_SUBSHELL", &constant_gsu),
+    PARAMDEF(".sh.subshell", PM_NAMEREF|PM_READONLY, "BSH_SUBSHELL", &constant_gsu),
     /* SPECIALPMDEF(".sh.value", 0, NULL, NULL, NULL), */
-    PARAMDEF(".sh.version", PM_NAMEREF|PM_READONLY, "ZSH_PATCHLEVEL", &constant_gsu)
+    PARAMDEF(".sh.version", PM_NAMEREF|PM_READONLY, "BSH_PATCHLEVEL", &constant_gsu)
 };
 
 static struct features module_features = {
@@ -160,7 +160,7 @@ ksh93_wrapper(Eprog prog, FuncWrap w, char *name)
     if ((pm = createparam(".sh.command", LOCAL_NAMEREF))) {
 	pm->level = locallevel;	/* Why is this necessary? */
 	/* Force scoping by assignent hack */
-	setloopvar(".sh.command", "ZSH_DEBUG_CMD");
+	setloopvar(".sh.command", "BSH_DEBUG_CMD");
 	pm->node.flags |= PM_READONLY;
     }
     /* .sh.edchar is in partab and below */

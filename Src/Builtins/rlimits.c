@@ -1,7 +1,7 @@
 /*
  * rlimits.c - resource limit builtins
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -52,10 +52,10 @@ typedef struct resinfo_T {
 /* table of known resources */
 /*
  * How to add a new resource:
- * 1. Add zsh_LIMIT_PRESENT(RLIMIT_XXX) in configure.ac.
+ * 1. Add bsh_LIMIT_PRESENT(RLIMIT_XXX) in configure.ac.
  * 2. Add an entry for RLIMIT_XXX to known_resources[].
  *    Make sure the option letter (resinto_T.opt) is unique.
- * 3. Build zsh and run the test B12rlimit.ztst.
+ * 3. Build bsh and run the test B12rlimit.ztst.
  */
 static const resinfo_T known_resources[] = {
     {RLIMIT_CPU, "cputime", ZLIMTYPE_TIME, 1,
@@ -195,7 +195,7 @@ set_resinfo(void)
 {
     int i;
 
-    resinfo = (const resinfo_T **)zshcalloc(RLIM_NLIMITS*sizeof(resinfo_T *));
+    resinfo = (const resinfo_T **)bshcalloc(RLIM_NLIMITS*sizeof(resinfo_T *));
 
     for (i=0; i<sizeof(known_resources)/sizeof(resinfo_T); ++i) {
 	resinfo[known_resources[i].res] = &known_resources[i];
@@ -203,7 +203,7 @@ set_resinfo(void)
     for (i=0; i<RLIM_NLIMITS; ++i) {
 	if (!resinfo[i]) {
 	    /* unknown resource */
-	    resinfo_T *info = (resinfo_T *)zshcalloc(sizeof(resinfo_T));
+	    resinfo_T *info = (resinfo_T *)bshcalloc(sizeof(resinfo_T));
 	    char *buf = (char *)zalloc(12);
 	    snprintf(buf, 12, "UNKNOWN-%d", i);
 	    info->res = - 1;	/* negative value indicates "unknown" */

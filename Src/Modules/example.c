@@ -1,7 +1,7 @@
 /*
- * example.c - an example module for zsh
+ * example.c - an example module for bsh
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Zoltán Hidvégi
  * All rights reserved.
@@ -55,7 +55,7 @@ bin_example(char *nam, char **args, Options ops, UNUSED(int func))
 	fputs(*args, stdout);
     }
     printf("\nName: %s\n", nam);
-#ifdef ZSH_64_BIT_TYPE
+#ifdef BSH_64_BIT_TYPE
     printf("\nInteger Parameter: %s\n", output64(intparam));
 #else
     printf("\nInteger Parameter: %ld\n", intparam);

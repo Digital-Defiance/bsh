@@ -19,15 +19,15 @@
 # The -L option lists the hooks and their associated widgets.
 
 # This is probably more safeguarding than necessary
-zmodload -e zsh/zle || return 1
-{ zmodload zsh/parameter && zmodload zsh/zleparameter } || {
+zmodload -e bsh/zle || return 1
+{ zmodload bsh/parameter && zmodload bsh/zleparameter } || {
     print -u2 "add-zle-hook-widget: Need parameter modules for zle hooks"
     return 1
 }
 
 () { # Preserve caller global option settings
 
-emulate -L zsh
+emulate -L bsh
 
 # Setup - create the base functions for hook widgets that call the others
 
@@ -61,7 +61,7 @@ function add-zle-hook-widget {
     local -a hooktypes match mbegin mend
     zstyle -a zle-hook types hooktypes
 
-    # This part copied from add-zsh-hook
+    # This part copied from add-bsh-hook
     local usage="Usage: $funcstack[1] hook widgetname\nValid hooks are:\n  $hooktypes"
 
     local opt
@@ -170,17 +170,17 @@ function add-zle-hook-widget {
 
 } "$@" # Resume caller global options
 
-# Handle zsh autoloading conventions:
-# - "file" appears last in zsh_eval_context when "source"-ing
+# Handle bsh autoloading conventions:
+# - "file" appears last in bsh_eval_context when "source"-ing
 # - "evalautofunc" appears with kshautoload set or autoload -k
 # - "loadautofunc" appears with kshautoload unset or autoload -z
 # - use of autoload +X cannot reliably be detected, use best guess
-case "$zsh_eval_context" in
+case "$bsh_eval_context" in
 *file) ;;
 *evalautofunc) ;;
 *loadautofunc) add-zle-hook-widget "$@";;
 *) [[ -o kshautoload ]] || add-zle-hook-widget "$@";;
 esac
 # Note fallback here is equivalent to the usual best-guess used by
-# functions written for zsh before $zsh_eval_context was available
+# functions written for bsh before $bsh_eval_context was available
 # so this case-statement is backward-compatible.

@@ -30,7 +30,7 @@ _add-zle-hook-widget() {
     '(-L -D -U -z -k)-d[remove HOOK from the array]' \
     '(-L -d -U -z -k)-D[interpret HOOK as pattern to remove from the array]' \
     '(-L -d -D)-U[suppress alias expansion for functions]' \
-    '(-L -d -D -k)-z[mark function for zsh-style autoloading]' \
+    '(-L -d -D -k)-z[mark function for bsh-style autoloading]' \
     '(-L -d -D -z)-k[mark function for ksh-style autoloading]' \
     ':hook type:_add-zle-hook-widget_types' \
     ':widget:_add-zle-hook-widget_widgets'

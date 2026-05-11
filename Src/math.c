@@ -1,7 +1,7 @@
 /*
  * math.c - mathematical expression evaluation
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -29,7 +29,7 @@
 
 struct mathvalue;
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "math.pro"
 
 #include <math.h>
@@ -220,7 +220,7 @@ static int c_prec[TOKCOUNT] =
 
 /*
  * Operator precedences: in reverse order, i.e. lower number, high precedence.
- * These are the default zsh precedences.
+ * These are the default bsh precedences.
  *
  * 0   Non-operators: NUM (numeric constant), ID (identifier),
  *                    CID (identifier with '#'), FUNC (math function)
@@ -1009,7 +1009,7 @@ setmathvar(struct mathvalue *mvp, mnumber v)
 	 * number with the same type as the parameter we are
 	 * assigning to, in the spirit of the way assignments
 	 * in C work.  Note this was a change to long-standing
-	 * zsh behaviour.
+	 * bsh behaviour.
 	 */
 	switch (PM_TYPE(pm->node.flags)) {
 	case PM_INTEGER:

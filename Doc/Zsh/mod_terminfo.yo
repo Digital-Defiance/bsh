@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/terminfo
+COMMENT(!MOD!bsh/terminfo
 Interface to the terminfo database.
 !MOD!)
-The tt(zsh/terminfo) module makes available one builtin command:
+The tt(bsh/terminfo) module makes available one builtin command:
 
 startitem()
 findex(echoti)
@@ -12,7 +12,7 @@ var(cap), instantiated with var(arg) if applicable.
 )
 enditem()
 
-The tt(zsh/terminfo) module makes available one parameter:
+The tt(bsh/terminfo) module makes available one parameter:
 
 startitem()
 vindex(terminfo)

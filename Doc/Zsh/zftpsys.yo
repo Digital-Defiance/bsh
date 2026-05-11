@@ -14,9 +14,9 @@ and so on, are present, and macros are particularly simple to write as they
 are just ordinary shell functions.
 
 The prerequisite is that the tt(zftp) command, as described in
-sectref(The zsh/zftp Module)(zshmodules), must be available in the
-version of tt(zsh) installed at your site.  If the shell is configured to
-load new commands at run time, it probably is: typing `tt(zmodload zsh/zftp)'
+sectref(The bsh/zftp Module)(bshmodules), must be available in the
+version of tt(bsh) installed at your site.  If the shell is configured to
+load new commands at run time, it probably is: typing `tt(zmodload bsh/zftp)'
 will make sure (if that runs silently, it has worked).  If this is not the
 case, it is possible tt(zftp) was linked into the shell anyway: to test
 this, type `tt(which zftp)' and if tt(zftp) is available you will get the
@@ -45,7 +45,7 @@ appear as one of the elements of the tt($fpath) array (this should already
 be the case if they were installed), and at least the function tt(zfinit)
 should be autoloaded; it will autoload the rest.  Finally, to initialize
 the use of the system you need to call the tt(zfinit) function.  The
-following code in your tt(.zshrc) will arrange for this; assume the
+following code in your tt(.bshrc) will arrange for this; assume the
 functions are stored in the directory tt(~/myfns):
 
 example(fpath=(~/myfns $fpath)
@@ -372,7 +372,7 @@ present location (host, user and directory) of the current FTP connection
 for later use.  The file to be used for storing and retrieving bookmarks is
 given by the parameter tt($ZFTP_BMFILE); if not set when one of the two
 functions is called, it will be set to the file tt(.zfbkmarks) in the
-directory where your zsh startup files live (usually tt(~)).
+directory where your bsh startup files live (usually tt(~)).
 
 startitem()
 findex(zfmark)
@@ -457,7 +457,7 @@ item(tt(zfrtime) var(lfile) var(rfile) [ var(time) ])(
 Set the local file var(lfile) to have the same modification time as the
 remote file var(rfile), or the explicit time var(time) in FTP format
 tt(CCYYMMDDhhmmSS) for the GMT timezone.  This uses the shell's
-tt(zsh/datetime) module to perform the conversion from
+tt(bsh/datetime) module to perform the conversion from
 GMT to local time.
 )
 findex(zftp_chpwd, supplied version)
@@ -506,7 +506,7 @@ cindex(zftp function system, styles)
 cindex(styles in zftp functions)
 
 Various styles are available using the standard shell style mechanism,
-described in sectref(The zsh/zutil Module)(zshmodules). Briefly, the
+described in sectref(The bsh/zutil Module)(bshmodules). Briefly, the
 command `tt(zstyle ':zftp:*') var(style) var(value) ...'.
 defines the var(style) to have value var(value); more than one value may be
 given, although that is not useful in the cases described here.  These
@@ -548,7 +548,7 @@ As described for tt(progress), tt(zfinit) will force this to default to 1.
 kindex(remote-glob, zftp style)
 item(tt(remote-glob))(
 If set to `tt(1)', `tt(yes)' or `tt(true)', filename generation (globbing) is
-performed on the remote machine instead of by zsh itself; see below.
+performed on the remote machine instead of by bsh itself; see below.
 )
 kindex(titlebar, zftp style)
 item(tt(titlebar))(
@@ -583,7 +583,7 @@ The commands for retrieving files usually perform filename generation
 tt(-G) to each of the commands.  Normally this operates by retrieving a
 complete list of files for the directory in question, then matching these
 locally against the pattern supplied.  This has the advantage that the full
-range of zsh patterns (respecting the setting of the option
+range of bsh patterns (respecting the setting of the option
 tt(EXTENDED_GLOB)) can be used.  However, it means that the directory part
 of a filename will not be expanded and must be given exactly.  If the
 remote server does not support the UNIX directory semantics, directory

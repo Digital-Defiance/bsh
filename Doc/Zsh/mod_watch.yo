@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/watch
+COMMENT(!MOD!bsh/watch
 Reporting of login and logout events.
 !MOD!)
-The tt(zsh/watch) module can be used to report when specific users log in or
+The tt(bsh/watch) module can be used to report when specific users log in or
 out. This is controlled via the following parameters.
 
 startitem()
@@ -98,8 +98,8 @@ The date in `var(yy)tt(-)var(mm)tt(-)var(dd)' format.
 )
 item(tt(%D{)var(string)tt(}))(
 The date formatted as var(string) using the tt(strftime) function, with
-zsh extensions as described for tt(%D{)var(string)tt(}) escape sequence in
-sectref(Simple Prompt Escapes)(zshmisc).)
+bsh extensions as described for tt(%D{)var(string)tt(}) escape sequence in
+sectref(Simple Prompt Escapes)(bshmisc).)
 item(tt(%LPAR())var(x)tt(:)var(true-text)tt(:)var(false-text)tt(RPAR()))(
 Specifies a ternary expression.
 The character following the var(x) is
@@ -129,7 +129,7 @@ enditem()
 )
 enditem()
 
-Furthermore, the tt(zsh/watch) module makes available one builtin
+Furthermore, the tt(bsh/watch) module makes available one builtin
 command:
 
 startitem()

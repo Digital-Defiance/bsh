@@ -13,7 +13,7 @@
 # Doesn't get right special characters in the filename; should
 # strip them (e.g. "foo\ bar" -> "foo bar") and then re-insert them.
 
-emulate -LR zsh
+emulate -LR bsh
 setopt extendedglob
 
 local file="$PREFIX$SUFFIX" trylist tilde etilde testcmd

@@ -1,7 +1,7 @@
 /*
  * main.c - the main() function
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "main.pro"
 
 /*
@@ -41,7 +41,7 @@
  * based on the mount attributes of the filesystem.  If a file is on
  * a binary mounted filesystem, you get exactly what's in the file, CRLF's
  * and all.  If it's on a text mounted filesystem, Cygwin will strip out
- * the CRs.  This presents a problem because zsh code doesn't allow for
+ * the CRs.  This presents a problem because bsh code doesn't allow for
  * CRLF's as line terminators.  So, we must force all open files to be
  * in text mode regardless of the underlying filesystem attributes.
  * However, we only want to do this for reading, not writing as we still
@@ -90,5 +90,5 @@ cygwin_premain0 (int argc, char **argv, void *myself)
 int
 main(int argc, char **argv)
 {
-    return (zsh_main(argc, argv));
+    return (bsh_main(argc, argv));
 }

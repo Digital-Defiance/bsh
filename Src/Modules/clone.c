@@ -1,7 +1,7 @@
 /*
  * clone.c - start a forked instance of the current shell on a new terminal
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1997 Zoltán Hidvégi
  * All rights reserved.

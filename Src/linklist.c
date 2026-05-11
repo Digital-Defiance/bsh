@@ -1,7 +1,7 @@
 /*
  * linklist.c - linked lists
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "linklist.pro"
 
 /*
@@ -36,7 +36,7 @@
  * LinkList with 4 nodes:
  *
  * LinkList is a        first   last   flags   (LinkList)
- * union; see zsh.h     next    prev   dat     (LinkNode)
+ * union; see bsh.h     next    prev   dat     (LinkNode)
  *                    +-------+------+------+
  *                    |       |      |      | See comment in subst.c
  *     +------------> |   |   |   |  |      | about LF_ARRAY.
@@ -72,7 +72,7 @@
  * Traversing a LinkList:
  * Traversing forward through a list uses an iterator-style paradigm.
  * for (LinkNode node = firstnode(list); node; incnode(node)) {
- *     // Access/manipulate the node using macros (see zsh.h)
+ *     // Access/manipulate the node using macros (see bsh.h)
  * }
  *
  * Traversing backwards is the same, with a small caveat.

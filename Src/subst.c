@@ -1,7 +1,7 @@
 /*
  * subst.c - various substitutions
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -27,7 +27,7 @@
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "subst.pro"
 
 #define LF_ARRAY	1
@@ -88,7 +88,7 @@ keyvalpairelement(LinkList list, LinkNode node)
  *  - Brace expansion
  *  - Tilde and equals substitution
  *
- * "flag"s contains PREFORK_* flags, defined in zsh.h.
+ * "flag"s contains PREFORK_* flags, defined in bsh.h.
  *
  * "ret_flags" is used to return PREFORK_* values from nested parameter
  * substitutions.  It may be NULL in which case PREFORK_SUBEXP must not
@@ -759,7 +759,7 @@ filesubstr(char **namptr, int assign)
 	    char **arr;
 	    untokenize(tmp = dupstrpfx(str+2, ptr2 - (str+2)));
 	    remnulargs(tmp);
-	    arr = subst_string_by_hook("zsh_directory_name", "n", tmp);
+	    arr = subst_string_by_hook("bsh_directory_name", "n", tmp);
 	    res = arr ? *arr : NULL;
 	    if (res) {
 		*namptr = dyncat(res, ptr2+1);
@@ -1904,7 +1904,7 @@ paramsubst(LinkList l, LinkNode n, char **str, int qt, int pf_flags,
 	char *outbracep = s, sav = *s;
 	Param rplypm = NULL;
 	size_t slen = 0;
-	int trim = (!EMULATION(EMULATE_ZSH)) ? 2 : !qt;
+	int trim = (!EMULATION(EMULATE_BSH)) ? 2 : !qt;
 
 	inbrace = 1;	/* Outer scope boolean, see above */
 
@@ -2022,7 +2022,7 @@ paramsubst(LinkList l, LinkNode n, char **str, int qt, int pf_flags,
 		/* Future?  Expose global value of $REPLY if any? */
 		/* if (rplyval) setsparam("REPLY", ztrdup(rplyval)); */
 	    } else if (inblank(inchar)) {
-		rplypm = createparam((rplyvar = ".zsh.cmdsubst"),
+		rplypm = createparam((rplyvar = ".bsh.cmdsubst"),
 				     PM_LOCAL|PM_UNSET|PM_HIDE|
 				     PM_READONLY_SPECIAL);
 		if (rplypm)
@@ -2106,7 +2106,7 @@ paramsubst(LinkList l, LinkNode n, char **str, int qt, int pf_flags,
 	 * In ksh emulation a leading `!' is a special flag working
 	 * sort of like our (k).  This is true only for arrays or
 	 * associative arrays and only with subscripts [*] or [@],
-	 * so zsh's implementation is approximate.  For namerefs
+	 * so bsh's implementation is approximate.  For namerefs
 	 * in ksh, ${!ref} substitues the parameter name at the
 	 * end of any chain of references, rather than the value.
 	 *
@@ -3252,7 +3252,7 @@ paramsubst(LinkList l, LinkNode n, char **str, int qt, int pf_flags,
 		val = dupstring(s);
 		if (spsep || !arrasg) {
 		    /* POSIX requires PREFORK_SINGLE semantics here, but
-		     * traditional zsh used PREFORK_NOSHWORDSPLIT.  Base
+		     * traditional bsh used PREFORK_NOSHWORDSPLIT.  Base
 		     * behavior on caller choice of PREFORK_SHWORDSPLIT. */
 		    multsub(&val,
 			    spbreak ? PREFORK_SINGLE : PREFORK_NOSHWORDSPLIT,

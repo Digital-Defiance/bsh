@@ -1,7 +1,7 @@
 /*
  * string.c - string manipulation
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2000 Peter Stephenson
  * All rights reserved.
@@ -26,7 +26,7 @@
  * support, updates, enhancements, or modifications.
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 
 /**/
 mod_export char *

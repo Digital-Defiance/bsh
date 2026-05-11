@@ -1,7 +1,7 @@
-COMMENT(!MOD!zsh/sched
+COMMENT(!MOD!bsh/sched
 A builtin that provides a timed execution facility within the shell.
 !MOD!)
-The tt(zsh/sched) module makes available one builtin command and one
+The tt(bsh/sched) module makes available one builtin command and one
 parameter.
 
 startitem()
@@ -17,8 +17,8 @@ and either as hours, minutes and (optionally) seconds separated by a
 colon, or seconds alone.
 An absolute number of seconds indicates the time since the epoch
 (1970/01/01 00:00); this is useful in combination with the features in
-the tt(zsh/datetime) module, see
-sectref(The zsh/datetime Module)(zshmodules).
+the tt(bsh/datetime) module, see
+sectref(The bsh/datetime Module)(bshmodules).
 
 With no arguments, prints the list of scheduled commands.  If the
 scheduled command has the tt(-o) flag set, this is shown at the
@@ -45,19 +45,19 @@ the named var(widget).
 
 The tt(sched) builtin is not made available by default when the shell
 starts in a mode emulating another shell.  It can be made available
-with the command `tt(zmodload -F zsh/sched b:sched)'.
+with the command `tt(zmodload -F bsh/sched b:sched)'.
 )
 enditem()
 
 startitem()
-vindex(zsh_scheduled_events)
-item(tt(zsh_scheduled_events))(
+vindex(bsh_scheduled_events)
+item(tt(bsh_scheduled_events))(
 A readonly array corresponding to the events scheduled by the
 tt(sched) builtin.  The indices of the array correspond to the numbers
 shown when tt(sched) is run with no arguments (provided that the
 tt(KSH_ARRAYS) option is not set).  The value of the array
 consists of the scheduled time in seconds since the epoch
-(see sectref(The zsh/datetime Module)(zshmodules) for facilities for
+(see sectref(The bsh/datetime Module)(bshmodules) for facilities for
 using this number), followed by a colon, followed by any options
 (which may be empty but will be preceded by a `tt(-)' otherwise),
 followed by a colon, followed by the command to be executed.

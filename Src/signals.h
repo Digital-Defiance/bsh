@@ -1,7 +1,7 @@
 /*
  * signals.h - header file for signals handling code
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -70,7 +70,7 @@
  * critical sections of code.  You call queue_signals to *
  * start queueing, and unqueue_signals to process the    *
  * queue and stop queueing.  Since the kernel doesn't    *
- * queue signals, it is probably overkill for zsh to do  *
+ * queue signals, it is probably overkill for bsh to do  *
  * this, but it shouldn't hurt anything to do it anyway. */
 
 #define MAX_QUEUE_SIZE 128

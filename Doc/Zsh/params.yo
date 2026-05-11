@@ -81,7 +81,7 @@ When the integer attribute, tt(-i), or a floating point attribute, tt(-E)
 or tt(-F), is set for var(name), the var(value) is subject to arithmetic
 evaluation.  Furthermore, by replacing `tt(=)' with `tt(+=)', a parameter
 can be incremented or appended to.  See sectref(Array Parameters)(below) and
-sectref(Arithmetic Evaluation)(zshmisc)
+sectref(Arithmetic Evaluation)(bshmisc)
 for additional forms of assignment.
 
 Note that assignment may implicitly change the attributes of a parameter.
@@ -91,7 +91,7 @@ pattern to a variable may change its type to an array.
 
 To reference the value of a parameter, write `tt($)var(name)' or
 `tt(${)var(name)tt(})'.  The latter form is required when var(name)
-includes a namespace prefix.  See sectref(Parameter Expansion)(zshexpn)
+includes a namespace prefix.  See sectref(Parameter Expansion)(bshexpn)
 for complete details.  That section also explains the effect
 of the difference between scalar and array assignment on parameter
 expansion.
@@ -151,10 +151,10 @@ both var(key) and var(value) undergo all forms of expansion
 allowed for single word shell expansions (this does not include filename
 generation); these are as performed by the parameter expansion flag
 tt(LPAR()e+RPAR()) as described in
-subref(Parameter Expansion Flags)(zshexpn).
+subref(Parameter Expansion Flags)(bshexpn).
 Nested parentheses may surround var(value) and are included as part of the
 value, which is joined into a plain string; this differs from ksh which
-allows the values themselves to be arrays.  A future version of zsh may
+allows the values themselves to be arrays.  A future version of bsh may
 support that.  To cause the brackets to be interpreted as a character
 class for filename generation, and therefore to treat the resulting list
 of files as a set of values, quote the equal sign using any form of quoting.
@@ -239,7 +239,7 @@ an array element with a subscript that evaluates to zero return an
 empty string, while an attempt to write such an element is treated as
 an error.  For backward compatibility the tt(KSH_ZERO_SUBSCRIPT)
 option can be set to cause subscript values 0 and 1 to be equivalent; see
-the description of the option in nmref(Description of Options)(zshoptions).
+the description of the option in nmref(Description of Options)(bshoptions).
 
 The same subscripting syntax is used for associative arrays, except that
 no arithmetic expansion is applied to var(exp).  However, the parsing
@@ -255,7 +255,7 @@ appear within double quotes.
 associative arrays, `tt([*])' or `tt([@])' evaluate to all the values,
 in no particular order.  Note that this does not substitute
 the keys; see the documentation for the `tt(k)' flag under
-subref(Parameter Expansion Flags)(zshexpn)
+subref(Parameter Expansion Flags)(bshexpn)
 for complete details.
 When an array parameter is referenced as `tt($)var(name)' (with no
 subscript) it evaluates to `tt($)var(name)tt([*])', unless the tt(KSH_ARRAYS)
@@ -467,7 +467,7 @@ for either purpose on the left side of an assignment.
 )
 enditem()
 
-See subref(Parameter Expansion Flags)(zshexpn)
+See subref(Parameter Expansion Flags)(bshexpn)
 for additional ways to manipulate the results of array subscripting.
 
 subsect(Subscript Parsing)
@@ -484,7 +484,7 @@ example(aa+=('key with "*strange*" characters' 'value string'))
 
 The basic rule to remember when writing a subscript expression is that all
 text between the opening `tt([)' and the closing `tt(])' is interpreted
-em(as if) it were in double quotes (see sectref(Quoting)(zshmisc)).
+em(as if) it were in double quotes (see sectref(Quoting)(bshmisc)).
 However, unlike double quotes which normally cannot nest, subscript
 expressions may appear inside double-quoted strings or inside other
 subscript expressions (or both!), so the rules have two important
@@ -559,7 +559,7 @@ brackets, parentheses, etc., are seen only when the complete expression is
 converted to a pattern.  To match the value of a parameter literally in a
 reverse subscript, rather than as a pattern,
 use `tt(${LPAR()q)tt(RPAR())var(name)tt(})' (\
-sectref(Parameter Expansion)(zshexpn)\
+sectref(Parameter Expansion)(bshexpn)\
 ) to quote the expanded value.
 
 Note that the `tt(k)' and `tt(K)' flags are reverse subscripting for an
@@ -586,7 +586,7 @@ cindex(parameters, positional)
 sect(Positional Parameters)
 The positional parameters provide access to the command-line arguments
 of a shell function, shell script, or the shell itself; see
-sectref(Invocation)(zsh), and also sectref(Functions)(zshmisc).
+sectref(Invocation)(bsh), and also sectref(Functions)(bshmisc).
 The parameter var(n), where var(n) is a number,
 is the var(n)th positional parameter.
 The parameter `tt($0)' is a special case, see
@@ -642,7 +642,7 @@ example(typeset PATH=/new/directory:$PATH)
 is valid for temporarily allowing the shell or programmes called from it to
 find the programs in tt(/new/directory) inside a function.
 
-Note that the restriction in older versions of zsh that local parameters
+Note that the restriction in older versions of bsh that local parameters
 were never exported has been removed.
 
 texinode(Named References)(Parameters Set by the Shell)(Local Parameters)(Parameters)
@@ -659,7 +659,7 @@ tt(print -r -- ${)var(pname)tt(}))
 
 The `tt((P))' flag method is older and should be used when a script
 needs to be backwards-compatible.  This is described fully in
-subref(Parameter Expansion Flags)(zshexpn). Zsh
+subref(Parameter Expansion Flags)(bshexpn). Zsh
 versions em(greater than) tt(5.9.0) are required for `tt(typeset -n)'.
 This manual was generated with Zsh tt(version()).
 
@@ -686,7 +686,7 @@ tt(typeset -n )var(pname)tt(=))
 acts as a placeholder.  The first non-empty assignment to var(pname)
 initializes the reference, and subsequently any expansions of, or
 assignments to, var(pname) act on the referenced parameter.  This
-is explained in subref(Named References)(zshexpn).
+is explained in subref(Named References)(bshexpn).
 
 A placeholder var(pname) in a calling function may be initialized in a
 called function to reference a local parameter var(rname).  In this
@@ -705,8 +705,8 @@ when the shell initializes in tt(sh) or tt(ksh) emulation mode.
 
 The parameters `tt(!)', `tt(#)', `tt(*)', `tt(-)', `tt(?)', `tt(@)',
 `tt($)', `tt(ARGC)', `tt(HISTCMD)', `tt(LINENO)', `tt(PPID)',
-`tt(status)', `tt(TTYIDLE)', `tt(zsh_eval_context)',
-`tt(ZSH_EVAL_CONTEXT)', and `tt(ZSH_SUBSHELL)' are read-only and thus
+`tt(status)', `tt(TTYIDLE)', `tt(bsh_eval_context)',
+`tt(BSH_EVAL_CONTEXT)', and `tt(BSH_SUBSHELL)' are read-only and thus
 cannot be restored by the user, so they are not output by
 `tt(typeset -p)'.  This also applies to many read-only parameters loaded
 from modules.
@@ -788,7 +788,7 @@ last pipeline.
 vindex(_)
 item(tt(_) <S>)(
 Initially, if tt(_) exists in the environment, then this parameter is set to
-its value. This value may be the full pathname of the current zsh
+its value. This value may be the full pathname of the current bsh
 executable or the script command file.
 Later, this parameter is set to the last argument of the previous command.
 Also, this parameter is set in the environment of every command
@@ -826,7 +826,7 @@ item(tt(ERRNO) <S>)(
 The value of tt(errno) (see manref(errno)(3))
 as set by the most recently failed system call.
 This value is system dependent and is intended for debugging
-purposes.  It is also useful with the tt(zsh/system) module which
+purposes.  It is also useful with the tt(bsh/system) module which
 allows the number to be turned into a name or message.
 
 To use this parameter, it must first be assigned a value (typically
@@ -930,8 +930,8 @@ referenced or seeded in the parent shell in between subshell invocations.
 tt(RANDOM) uses the system's library function manref(rand)(3).
 If higher degree of randomness is required, please consider using
 the autoloadable parameter tt(SRANDOM) from
-ifzman(the tt(zsh/random) module (see zmanref(zshmodules)))\
-ifnzman(noderef(The zsh/random Module)).
+ifzman(the tt(bsh/random) module (see zmanref(bshmodules)))\
+ifnzman(noderef(The bsh/random Module)).
 )
 vindex(SECONDS)
 item(tt(SECONDS) <S>)(
@@ -952,7 +952,7 @@ varies by platform (and probably isn't accurate to 1 ns regardless),
 and the shell may show more or fewer digits depending on the
 use of tt(typeset).  See
 the documentation for the builtin tt(typeset) in
-nmref(Shell Builtin Commands)(zshbuiltins) for more details.
+nmref(Shell Builtin Commands)(bshbuiltins) for more details.
 )
 vindex(SHLVL)
 item(tt(SHLVL) <S>)(
@@ -961,12 +961,12 @@ Incremented by one each time a new shell is started.
 vindex(signals)
 item(tt(signals))(
 An array containing the names of the signals.  Note that with
-the standard zsh numbering of array indices, where the first element
+the standard bsh numbering of array indices, where the first element
 has index 1, the signals are offset by 1 from the signal number
 used by the operating system.  For example, on typical Unix-like systems
 tt(HUP) is signal number 1, but is referred to as tt($signals[2]).  This
 is because of tt(EXIT) at position 1 in the array, which is used
-internally by zsh but is not known to the operating system. On many systems
+internally by bsh but is not known to the operating system. On many systems
 there is a block of reserved or unused signal numbers before the POSIX
 real-time signals so the array index can't be used as an accurate indicator
 of their signal number. Use, for example, tt(kill -l SIGRTMIN) instead.
@@ -1016,7 +1016,7 @@ item(tt(TRY_BLOCK_ERROR) <S>)(
 In an tt(always) block, indicates whether the preceding list of code
 caused an error.  The value is 1 to indicate an error, 0 otherwise.
 It may be reset, clearing the error condition.  See
-sectref(Complex Commands)(zshmisc)
+sectref(Complex Commands)(bshmisc)
 )
 vindex(TRY_BLOCK_INTERRUPT)
 item(tt(TRY_BLOCK_INTERRUPT) <S>)(
@@ -1062,9 +1062,9 @@ vindex(VENDOR)
 item(tt(VENDOR))(
 The vendor, as determined at compile time.
 )
-vindex(zsh_eval_context)
-vindex(ZSH_EVAL_CONTEXT)
-item(tt(zsh_eval_context) <S> <Z> (tt(ZSH_EVAL_CONTEXT) <S>))(
+vindex(bsh_eval_context)
+vindex(BSH_EVAL_CONTEXT)
+item(tt(bsh_eval_context) <S> <Z> (tt(BSH_EVAL_CONTEXT) <S>))(
 An array (colon-separated list) indicating the context of shell
 code that is being run.  Each time a piece of shell code that
 is stored within the shell is executed a string is temporarily appended to
@@ -1073,7 +1073,7 @@ Read in order the array gives an indication of the stack of
 operations being performed with the most immediate context last.
 
 Note that the variable does not give information on syntactic context such
-as pipelines or subshells.  Use tt($ZSH_SUBSHELL) to detect subshells.
+as pipelines or subshells.  Use tt($BSH_SUBSHELL) to detect subshells.
 
 The context is one of the following:
 startitem()
@@ -1136,7 +1136,7 @@ so this value is unlikely to be seen in practice.
 )
 item(tt(style))(
 Code executed as part of a style retrieved by the tt(zstyle) builtin
-from the tt(zsh/zutil) module.
+from the tt(bsh/zutil) module.
 )
 item(tt(toplevel))(
 The highest execution level of a script or interactive shell.
@@ -1148,68 +1148,68 @@ asynchronous they may have a different hierarchy from other
 code.
 )
 item(tt(zpty))(
-Code executed by the tt(zpty) builtin from the tt(zsh/zpty) module.
+Code executed by the tt(zpty) builtin from the tt(bsh/zpty) module.
 )
 item(tt(zregexparse-guard))(
 Code executed as a guard by the tt(zregexparse) command from the
-tt(zsh/zutil) module.
+tt(bsh/zutil) module.
 )
 item(tt(zregexparse-action))(
 Code executed as an action by the tt(zregexparse) command from the
-tt(zsh/zutil) module.
+tt(bsh/zutil) module.
 )
 enditem()
 )
-vindex(ZSH_ARGZERO)
-item(tt(ZSH_ARGZERO))(
-If zsh was invoked to run a script, this is the name of the script.
+vindex(BSH_ARGZERO)
+item(tt(BSH_ARGZERO))(
+If bsh was invoked to run a script, this is the name of the script.
 Otherwise, it is the name used to invoke the current shell.  This is
 the same as the value of tt($0) when the tt(POSIX_ARGZERO) option is
 set, but is always available.
 )
-vindex(ZSH_EXECUTION_STRING)
-item(tt(ZSH_EXECUTION_STRING))(
+vindex(BSH_EXECUTION_STRING)
+item(tt(BSH_EXECUTION_STRING))(
 If the shell was started with the option tt(-c), this contains
 the argument passed to the option.  Otherwise it is not set.
 )
-vindex(ZSH_EXEPATH)
-item(tt(ZSH_EXEPATH))(
-Full pathname of the executable file of the current zsh process.
+vindex(BSH_EXEPATH)
+item(tt(BSH_EXEPATH))(
+Full pathname of the executable file of the current bsh process.
 This value should be accurate on Linux, macOS, FreeBSD, DragonflyBSD,
 NetBSD, Solaris, Cygwin, and their derivatives.  On other systems, it is
 determined from tt(argv[0]), which is not always accurate.
 )
-vindex(ZSH_NAME)
-item(tt(ZSH_NAME))(
+vindex(BSH_NAME)
+item(tt(BSH_NAME))(
 Expands to the basename of the command used to invoke this instance
-of zsh.
+of bsh.
 )
-vindex(ZSH_PATCHLEVEL)
-item(tt(ZSH_PATCHLEVEL))(
-The output of `tt(git describe --tags --long)' for the zsh repository
+vindex(BSH_PATCHLEVEL)
+item(tt(BSH_PATCHLEVEL))(
+The output of `tt(git describe --tags --long)' for the bsh repository
 used to build the shell.  This is most useful in order to keep
 track of versions of the shell during development between releases;
 hence most users should not use it and should instead rely on
-tt($ZSH_VERSION).
+tt($BSH_VERSION).
 )
-item(tt(zsh_scheduled_events))(
-See sectref(The zsh/sched Module)(zshmodules).
+item(tt(bsh_scheduled_events))(
+See sectref(The bsh/sched Module)(bshmodules).
 )
-vindex(ZSH_SCRIPT)
-item(tt(ZSH_SCRIPT))(
-If zsh was invoked to run a script, this is the name of the script,
+vindex(BSH_SCRIPT)
+item(tt(BSH_SCRIPT))(
+If bsh was invoked to run a script, this is the name of the script,
 otherwise it is unset.
 )
-vindex(ZSH_SUBSHELL <S>)
-item(tt(ZSH_SUBSHELL))(
+vindex(BSH_SUBSHELL <S>)
+item(tt(BSH_SUBSHELL))(
 Readonly integer.  Initially zero, incremented each time the shell forks
-to create a subshell for executing code.  Hence `tt((print $ZSH_SUBSHELL))'
-and `tt(print $(print $ZSH_SUBSHELL))' output 1, while
-`tt(( (print $ZSH_SUBSHELL) ))' outputs 2.
+to create a subshell for executing code.  Hence `tt((print $BSH_SUBSHELL))'
+and `tt(print $(print $BSH_SUBSHELL))' output 1, while
+`tt(( (print $BSH_SUBSHELL) ))' outputs 2.
 )
-vindex(ZSH_VERSION)
-item(tt(ZSH_VERSION))(
-The version number of the release of zsh.
+vindex(BSH_VERSION)
+item(tt(BSH_VERSION))(
+The version number of the release of bsh.
 )
 enditem()
 texinode(Parameters Used by the Shell)()(Parameters Set by the Shell)(Parameters)
@@ -1288,11 +1288,11 @@ pindex(AUTO_PUSHD, use of)
 )
 vindex(ENV)
 item(tt(ENV))(
-If the tt(ENV) environment variable is set when zsh is invoked as tt(sh)
+If the tt(ENV) environment variable is set when bsh is invoked as tt(sh)
 or tt(ksh), tt($ENV) is sourced after the profile scripts.  The value of
 tt(ENV) is subjected to parameter expansion, command substitution, and
 arithmetic expansion before being interpreted as a pathname.  Note that
-tt(ENV) is em(not) used unless the shell is interactive and zsh is
+tt(ENV) is em(not) used unless the shell is interactive and bsh is
 emulating bf(sh) or bf(ksh).
 )
 vindex(FCEDIT)
@@ -1350,14 +1350,14 @@ Note that tt(HISTORY_IGNORE) defines a single pattern: to
 specify alternatives use the
 `tt(LPAR())var(first)tt(|)var(second)tt(|)var(...)tt(RPAR())' syntax.
 
-Compare the tt(HIST_NO_STORE) option or the tt(zshaddhistory) hook,
+Compare the tt(HIST_NO_STORE) option or the tt(bshaddhistory) hook,
 either of which would prevent such commands from being added to the
 interactive history at all.  If you wish to use tt(HISTORY_IGNORE) to
 stop history being added in the first place, you can define the
 following hook:
 
-example(zshaddhistory+LPAR()RPAR() {
-  emulate -L zsh
+example(bshaddhistory+LPAR()RPAR() {
+  emulate -L bsh
   ## uncomment if HISTORY_IGNORE
   ## should use EXTENDED_GLOB syntax
   # setopt extendedglob
@@ -1447,13 +1447,13 @@ Linux distributions) or tt(en_US.ISO8859-1) (MacOS).
 vindex(LC_MESSAGES)
 item(tt(LC_MESSAGES) <S>)(
 This variable determines the language in which messages should be
-written.  Note that zsh does not use message catalogs.
+written.  Note that bsh does not use message catalogs.
 )
 vindex(LC_NUMERIC)
 item(tt(LC_NUMERIC) <S>)(
 This variable affects the decimal point character and thousands
 separator character for the formatted input/output functions
-and string conversion functions.  Note that zsh ignores this
+and string conversion functions.  Note that bsh ignores this
 setting when parsing floating point mathematical expressions.
 )
 vindex(LC_TIME)
@@ -1508,13 +1508,13 @@ xitem(tt(match))
 xitem(tt(mbegin))
 item(tt(mend))(
 Arrays set by the shell when the tt(b) globbing flag is used in pattern
-matches.  See subref(Globbing Flags)(zshexpn).
+matches.  See subref(Globbing Flags)(bshexpn).
 )
 xitem(tt(MATCH))
 xitem(tt(MBEGIN))
 item(tt(MEND))(
 Set by the shell when the tt(m) globbing flag is used in pattern
-matches.  See subref(Globbing Flags)(zshexpn).
+matches.  See subref(Globbing Flags)(bshexpn).
 )
 vindex(module_path)
 vindex(MODULE_PATH)
@@ -1523,7 +1523,7 @@ An array (colon-separated list)
 of directories that tt(zmodload)
 searches for dynamically loadable modules.
 This is initialized to a standard pathname,
-usually `tt(/usr/local/lib/zsh/$ZSH_VERSION)'.
+usually `tt(/usr/local/lib/bsh/$BSH_VERSION)'.
 (The `tt(/usr/local/lib)' part varies from installation to installation.)
 For security reasons, any value set in the environment when the shell
 is started will be ignored.
@@ -1583,7 +1583,7 @@ vindex(PS1)
 item(tt(PS1) <S>)(
 The primary prompt string, printed before a command is read.
 It undergoes a special form of expansion
-before being displayed; see sectref(Expansion of Prompt Sequences)(zshmisc).
+before being displayed; see sectref(Expansion of Prompt Sequences)(bshmisc).
 The default is `tt(%m%# )'.
 )
 vindex(PS2)
@@ -1721,7 +1721,7 @@ similar to the tt(ttyctl) builtin.
 vindex(TERM)
 item(tt(TERM) <S>)(
 The type of terminal in use.  This is used when looking up termcap
-sequences.  An assignment to tt(TERM) causes zsh to re-initialize the
+sequences.  An assignment to tt(TERM) causes bsh to re-initialize the
 terminal, even if the value does not change (e.g., `tt(TERM=$TERM)').  It
 is necessary to make such an assignment upon any change to the terminal
 definition database or terminal type in order for the new settings to
@@ -1742,12 +1742,12 @@ used by certain terminal libraries, in particular ncurses; see
 manref(terminfo)(5) to check support on your system.  If set, this
 causes the shell to reinitialise the terminal, making the workaround
 `tt(TERM=$TERM)' unnecessary.  Note that unlike other colon-separated
-arrays this is not tied to a zsh array.
+arrays this is not tied to a bsh array.
 )
 vindex(.term.extensions)
 item(tt(.term.extensions))(
 An array containing a list of extension features of the terminal.
-See sectref(Terminal Extensions)(zshzle).
+See sectref(Terminal Extensions)(bshzle).
 )
 vindex(.term.querywait)
 item(tt(.term.querywait))(
@@ -1810,14 +1810,14 @@ seconds after issuing a prompt. If there is a trap on tt(SIGALRM), it
 will be executed and a new alarm is scheduled using the value of the
 tt(TMOUT) parameter after executing the trap.  If no trap is set, and
 the idle time of the terminal is not less than the value of the
-tt(TMOUT) parameter, zsh terminates.  Otherwise a new alarm is
+tt(TMOUT) parameter, bsh terminates.  Otherwise a new alarm is
 scheduled to tt(TMOUT) seconds after the last keypress.
 )
 vindex(TMPPREFIX)
 item(tt(TMPPREFIX))(
 A pathname prefix which the shell will use for all temporary files.
 Note that this should include an initial part for the file name as
-well as any directory names.  The default is `tt(/tmp/zsh)'.
+well as any directory names.  The default is `tt(/tmp/bsh)'.
 )
 vindex(TMPSUFFIX)
 item(tt(TMPSUFFIX))(
@@ -1837,7 +1837,7 @@ vindex(ZBEEP)
 item(tt(ZBEEP))(
 If set, this gives a string of characters, which can use all the same codes
 as the tt(bindkey) command as described in
-sectref(The zsh/zle Module)(zshmodules), that will be output to the terminal
+sectref(The bsh/zle Module)(bshmodules), that will be output to the terminal
 instead of beeping.  This may have a visible instead of an audible effect;
 for example, the string `tt(\e[?5h\e[?5l)' on a vt100 or xterm will have
 the effect of flashing reverse video on and off (if you usually use reverse
@@ -1846,7 +1846,7 @@ precedence over the tt(NOBEEP) option.
 )
 vindex(ZDOTDIR)
 item(tt(ZDOTDIR))(
-The directory to search for shell startup files (.zshrc, etc),
+The directory to search for shell startup files (.bshrc, etc),
 if not tt($HOME).
 )
 vindex(zle_bracketed_paste)
@@ -1865,13 +1865,13 @@ vindex(zle_cursorform)
 item(tt(zle_cursorform))(
 An array describing contexts in which ZLE should change the shape and color
 of the cursor.
-See ifzman(em(Cursor Shape and Color) in zmanref(zshzle))\
+See ifzman(em(Cursor Shape and Color) in zmanref(bshzle))\
 ifnzman(noderef(Cursor Shape and Color)).
 )
 vindex(zle_highlight)
 item(tt(zle_highlight))(
 An array describing contexts in which ZLE should highlight the input text.
-See sectref(Character Highlighting)(zshzle).
+See sectref(Character Highlighting)(bshzle).
 )
 vindex(ZLE_LINE_ABORTED)
 item(tt(ZLE_LINE_ABORTED))(
@@ -1920,7 +1920,7 @@ include `tt(&)' the result is `tt(DIR &)'.
 Note that certain completions may provide their own suffix removal
 or replacement behaviour which overrides the values described here.
 See the completion system documentation in
-nmref(Completion System)(zshcompsys).
+nmref(Completion System)(bshcompsys).
 )
 vindex(ZLE_RPROMPT_INDENT)
 item(tt(ZLE_RPROMPT_INDENT) <S>)(

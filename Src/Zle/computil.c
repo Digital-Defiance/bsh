@@ -1,7 +1,7 @@
 /*
  * computil.c - completion utilities
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -506,7 +506,7 @@ cd_init(char *nam, char *hide, char *mlen, char *sep,
         grp = 1;
     }
     while (*args) {
-	*setp = set = (Cdset) zshcalloc(sizeof(*set));
+	*setp = set = (Cdset) bshcalloc(sizeof(*set));
 	setp = &(set->next);
         *setp = NULL;
         set->opts = NULL;

@@ -1,0 +1,8 @@
+name=bsh/brightdate
+
+link=static
+load=yes
+
+autofeatures="b:bdate b:btime b:buptime b:bcal b:bwatch b:date b:time b:uptime b:cal b:watch"
+
+objects="brightdate.o"

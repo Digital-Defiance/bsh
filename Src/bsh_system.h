@@ -1,7 +1,7 @@
 /*
  * system.h - system configuration header file
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -55,8 +55,8 @@
 # undef HAVE_SYS_UTSNAME_H
 #endif
 
-#ifndef ZSH_NO_XOPEN
-# ifdef ZSH_CURSES_SOURCE
+#ifndef BSH_NO_XOPEN
+# ifdef BSH_CURSES_SOURCE
 #  define _XOPEN_SOURCE_EXTENDED 1
 # else
 #  ifdef MULTIBYTE_SUPPORT
@@ -67,8 +67,8 @@
  */
 #   define _XOPEN_SOURCE_EXTENDED 1
 #  endif /* MULTIBYTE_SUPPORT */
-# endif /* ZSH_CURSES_SOURCE */
-#endif /* ZSH_NO_XOPEN */
+# endif /* BSH_CURSES_SOURCE */
+#endif /* BSH_NO_XOPEN */
 
 /*
  * Solaris by default zeroes all elements of the tm structure in
@@ -173,7 +173,7 @@ char *alloca (size_t);
 #endif /* !HAVE_DIRENT_H */
 
 #ifdef HAVE_STDLIB_H
-# ifdef ZSH_MEM
+# ifdef BSH_MEM
    /* malloc and calloc are macros in GNU's stdlib.h unless the
     * the __MALLOC_0_RETURNS_NULL macro is defined */
 #  define __MALLOC_0_RETURNS_NULL
@@ -233,7 +233,7 @@ char *alloca (size_t);
 #include <time.h>
 
 /* This is needed by some old SCO unices */
-#if !defined(HAVE_STRUCT_TIMEZONE) && !defined(ZSH_OOT_MODULE)
+#if !defined(HAVE_STRUCT_TIMEZONE) && !defined(BSH_OOT_MODULE)
 struct timezone {
     int tz_minuteswest;
     int tz_dsttime;
@@ -241,7 +241,7 @@ struct timezone {
 #endif
 
 /* Used to provide compatibility with clock_gettime() */
-#if !defined(HAVE_STRUCT_TIMESPEC) && !defined(ZSH_OOT_MODULE)
+#if !defined(HAVE_STRUCT_TIMESPEC) && !defined(BSH_OOT_MODULE)
 struct timespec {
     time_t tv_sec;
     long tv_nsec;
@@ -304,18 +304,18 @@ struct timespec {
  * The number of file descriptors we'll allocate initially.
  * We will reallocate later if necessary.
  */
-#define ZSH_INITIAL_OPEN_MAX 64
+#define BSH_INITIAL_OPEN_MAX 64
 #ifndef OPEN_MAX
 # ifdef NOFILE
 #  define OPEN_MAX NOFILE
 # else
    /* so we will just pick something */
-#  define OPEN_MAX ZSH_INITIAL_OPEN_MAX
+#  define OPEN_MAX BSH_INITIAL_OPEN_MAX
 # endif
 #endif
 #ifndef HAVE_SYSCONF
-# define zopenmax() ((long) (OPEN_MAX > ZSH_INITIAL_OPEN_MAX ? \
-			     ZSH_INITIAL_OPEN_MAX : OPEN_MAX))
+# define zopenmax() ((long) (OPEN_MAX > BSH_INITIAL_OPEN_MAX ? \
+			     BSH_INITIAL_OPEN_MAX : OPEN_MAX))
 #endif
 
 #ifdef HAVE_FCNTL_H
@@ -426,6 +426,7 @@ struct timespec {
 
 #define DEFAULT_WORDCHARS "*?_-.[]~=/&;!#$%^(){}<>"
 #define DEFAULT_TIMEFMT   "%J  %U user %S system %P cpu %*E total"
+#define BSH_DEFAULT_TIMEFMT "%J  %dU user  %dS sys  %P cpu  %dE real"
 
 /* Posix getpgrp takes no argument, while the BSD version *
  * takes the process ID as an argument                    */
@@ -459,7 +460,7 @@ struct timespec {
 #if !defined(HAVE_SETREUID) && !(defined(HAVE_SETEUID) && defined(HAVE_SETUID))
   /*
    * If you run into this error, you have two options:
-   * - Teach zsh how to do the equivalent of setreuid() on your system
+   * - Teach bsh how to do the equivalent of setreuid() on your system
    * - Remove support for PRIVILEGED option, and then remove the #error.
    */
 # error "Don't know how to change UID"
@@ -473,9 +474,9 @@ struct timespec {
 #ifndef HAVE_SETRESUID
 int	setresuid(uid_t, uid_t, uid_t);
 # define HAVE_SETRESUID
-# define ZSH_IMPLEMENT_SETRESUID
+# define BSH_IMPLEMENT_SETRESUID
 # ifdef HAVE_SETREUID
-#  define ZSH_HAVE_NATIVE_SETREUID
+#  define BSH_HAVE_NATIVE_SETREUID
 # endif
 #endif
 
@@ -483,9 +484,9 @@ int	setresuid(uid_t, uid_t, uid_t);
 #ifndef HAVE_SETRESGID
 int	setresgid(gid_t, gid_t, gid_t);
 # define HAVE_SETRESGID
-# define ZSH_IMPLEMENT_SETRESGID
+# define BSH_IMPLEMENT_SETRESGID
 # ifdef HAVE_SETREGID
-#  define ZSH_HAVE_NATIVE_SETREGID
+#  define BSH_HAVE_NATIVE_SETREGID
 # endif
 #endif
 
@@ -562,7 +563,7 @@ int	setresgid(gid_t, gid_t, gid_t);
 #endif
 
 /* DIGBUFSIZ is the length of a buffer which can hold the -LONG_MAX-1 *
- * (or with ZSH_64_BIT_TYPE maybe -LONG_LONG_MAX-1)                   *
+ * (or with BSH_64_BIT_TYPE maybe -LONG_LONG_MAX-1)                   *
  * converted to printable decimal form including the sign and the     *
  * terminating null character. Below 0.30103 > lg 2.                  *
  * BDIGBUFSIZE is for a number converted to printable binary form.    */
@@ -896,8 +897,8 @@ extern short ospeed;
 # define GET_ST_CTIME_NSEC(st) (st).st_ctimensec
 #endif
 
-#if defined(HAVE_TGETENT) && !defined(ZSH_NO_TERM_HANDLING)
-# if defined(ZSH_HAVE_CURSES_H) && defined(ZSH_HAVE_TERM_H)
+#if defined(HAVE_TGETENT) && !defined(BSH_NO_TERM_HANDLING)
+# if defined(BSH_HAVE_CURSES_H) && defined(BSH_HAVE_TERM_H)
 #  define USES_TERM_H 1
 # else
 #  ifdef HAVE_TERMCAP_H
@@ -909,10 +910,10 @@ extern short ospeed;
 #  ifdef HAVE_TERMIO_H
 #   include <termio.h>
 #  endif
-#  ifdef ZSH_HAVE_CURSES_H
-#   include "zshcurses.h"
+#  ifdef BSH_HAVE_CURSES_H
+#   include "bshcurses.h"
 #  endif
-#  include "zshterm.h"
+#  include "bshterm.h"
 # else
 #  ifdef USES_TERMCAP_H
 #   include <termcap.h>
@@ -924,7 +925,7 @@ extern short ospeed;
 # define srand srand_deterministic
 #endif
 
-#ifdef ZSH_VALGRIND
+#ifdef BSH_VALGRIND
 # include "valgrind/valgrind.h"
 # include "valgrind/memcheck.h"
 #endif

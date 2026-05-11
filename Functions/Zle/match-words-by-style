@@ -72,7 +72,7 @@
 #  -c <word-class>
 #  -C <word-chars>
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local wordstyle spacepat wordpat1 wordpat2 opt charskip wordchars wordclass
@@ -164,7 +164,7 @@ case $wordstyle in
 	fi
 	if [[ $wc = (#b)(?*)-(*) ]]; then
 	  # We need to bring any `-' to the front to avoid confusing
-	  # character classes... we get away with `]' since in zsh
+	  # character classes... we get away with `]' since in bsh
           # this isn't a pattern character if it's quoted.
 	  wc=-$match[1]$match[2]
 	fi
