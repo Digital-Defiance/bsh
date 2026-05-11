@@ -30,6 +30,8 @@
 #include "bsh.mdh"
 #include "prompt.pro"
 
+extern double bsh_unix_to_brightdate(double unix_secs);
+
 /* current text attributes */
 
 /**/
@@ -700,6 +702,16 @@ putpromptchar(int doprint, int endchar)
 		    *bv->bp++ = Outpar;
 		}
 		break;
+	    case 'P':
+		{
+		    struct timespec bts;
+		    zgettime(&bts);
+		    double bd = bsh_unix_to_brightdate(
+			(double)bts.tv_sec + (double)bts.tv_nsec * 1e-9);
+		    addbufspc(32);
+		    bv->bp += sprintf(bv->bp, "%.6f", bd);
+		    break;
+		}
 	    case 't':
 	    case '@':
 	    case 'T':

@@ -31,6 +31,8 @@
 #include "datetime.pro"
 #include <time.h>
 
+extern double bsh_unix_to_brightdate(double unix_secs);
+
 #ifndef HAVE_MKTIME
 #ifdef HAVE_TIMELOCAL
 #define	mktime(x)	timelocal(x)
@@ -216,6 +218,14 @@ getcurrentrealtime(UNUSED(Param pm))
     return (double)now.tv_sec + (double)now.tv_nsec * 1e-9;
 }
 
+static double
+getcurrentbrightdate(UNUSED(Param pm))
+{
+    struct timespec now;
+    zgettime(&now);
+    return bsh_unix_to_brightdate((double)now.tv_sec + (double)now.tv_nsec * 1e-9);
+}
+
 static char **
 getcurrenttime(UNUSED(Param pm))
 {
@@ -248,11 +258,16 @@ static const struct gsu_float epochrealtime_gsu =
 static const struct gsu_array epochtime_gsu =
 { getcurrenttime, NULL, stdunsetfn };
 
+static const struct gsu_float brightepoch_gsu =
+{ getcurrentbrightdate, NULL, stdunsetfn };
+
 static struct paramdef patab[] = {
     SPECIALPMDEF("EPOCHSECONDS", PM_INTEGER|PM_READONLY,
 		 &epochseconds_gsu, NULL, NULL),
     SPECIALPMDEF("EPOCHREALTIME", PM_FFLOAT|PM_READONLY,
 		 &epochrealtime_gsu, NULL, NULL),
+    SPECIALPMDEF("BRIGHTEPOCH", PM_FFLOAT|PM_READONLY,
+		 &brightepoch_gsu, NULL, NULL),
     SPECIALPMDEF("epochtime", PM_ARRAY|PM_READONLY,
 		 &epochtime_gsu, NULL, NULL)
 };
