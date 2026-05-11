@@ -1099,6 +1099,10 @@ AC_CHECK_MEMBERS([struct stat.st_atim.tv_nsec,
                   struct stat.st_ctimespec.tv_nsec,
                   struct stat.st_ctimensec])
 
+dnl check for BSD/macOS file birth time
+AC_CHECK_MEMBERS([struct stat.st_birthtimespec.tv_nsec,
+                  struct stat.st_birthtime])
+
 dnl Check for struct timezone since some old SCO versions do not define it
 bsh_TYPE_EXISTS([
 #define _GNU_SOURCE 1

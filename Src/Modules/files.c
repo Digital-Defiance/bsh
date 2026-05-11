@@ -794,6 +794,153 @@ bin_chown(char *nam, char **args, Options ops, int func)
 
 /* module paraphernalia */
 
+/* BrightDate FFI — converts a Unix time_t (seconds) to a BrightDate value */
+extern double bsh_unix_to_brightdate(double unix_secs);
+
+/*
+ * Build a 10-character POSIX mode string (type + rwxrwxrwx) into buf[11].
+ */
+static void
+ls_modestr(mode_t mode, char *buf)
+{
+    static const mode_t bits[9] = {
+	S_IRUSR, S_IWUSR, S_IXUSR,
+	S_IRGRP, S_IWGRP, S_IXGRP,
+	S_IROTH, S_IWOTH, S_IXOTH
+    };
+    static const char rwx[3] = "rwx";
+    int i;
+
+    if      (S_ISREG(mode))  buf[0] = '-';
+    else if (S_ISDIR(mode))  buf[0] = 'd';
+    else if (S_ISLNK(mode))  buf[0] = 'l';
+    else if (S_ISCHR(mode))  buf[0] = 'c';
+    else if (S_ISBLK(mode))  buf[0] = 'b';
+    else if (S_ISFIFO(mode)) buf[0] = 'p';
+    else if (S_ISSOCK(mode)) buf[0] = 's';
+    else                     buf[0] = '?';
+
+    for (i = 0; i < 9; i++)
+	buf[1 + i] = (mode & bits[i]) ? rwx[i % 3] : '-';
+    if (mode & S_ISUID) buf[3] = (mode & S_IXUSR) ? 's' : 'S';
+    if (mode & S_ISGID) buf[6] = (mode & S_IXGRP) ? 's' : 'S';
+    if (mode & S_ISVTX) buf[9] = (mode & S_IXOTH) ? 't' : 'T';
+    buf[10] = '\0';
+}
+
+/*
+ * Print one long-format ls line for a file.
+ * Timestamps are shown as BrightDate decimal values prefixed b= a= m=
+ * (birth, access, modification).
+ */
+static void
+ls_print_long(struct stat *st, const char *name)
+{
+    char modestr[11];
+    char owner[64] = "", grp[64] = "";
+    double bd_birth = 0.0;
+    double bd_access = bsh_unix_to_brightdate((double)st->st_atime);
+    double bd_mtime  = bsh_unix_to_brightdate((double)st->st_mtime);
+
+#ifdef HAVE_STAT_BIRTHTIME
+    bd_birth = bsh_unix_to_brightdate((double)GET_ST_BTIME(*st));
+#else
+    bd_birth = bd_mtime;   /* fall back to mtime on platforms without btime */
+#endif
+
+    ls_modestr(st->st_mode, modestr);
+
+#ifdef HAVE_GETPWUID
+    {
+	struct passwd *pw = getpwuid(st->st_uid);
+	if (pw)
+	    strncpy(owner, pw->pw_name, sizeof(owner) - 1);
+    }
+#endif
+    if (!owner[0])
+	sprintf(owner, "%lu", (unsigned long)st->st_uid);
+
+#ifdef USE_GETGRGID
+    {
+	struct group *gr = getgrgid(st->st_gid);
+	if (gr)
+	    strncpy(grp, gr->gr_name, sizeof(grp) - 1);
+    }
+#endif
+    if (!grp[0])
+	sprintf(grp, "%lu", (unsigned long)st->st_gid);
+
+    printf("%s %3lu %-8s %-8s %8llu  b=%.6f a=%.6f m=%.6f  %s\n",
+	   modestr,
+	   (unsigned long)st->st_nlink,
+	   owner, grp,
+	   (unsigned long long)st->st_size,
+	   bd_birth, bd_access, bd_mtime,
+	   name);
+}
+
+/* ls builtin — list files with BrightDate timestamps */
+
+/**/
+static int
+bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
+{
+    int long_fmt    = OPT_ISSET(ops, 'l');
+    int follow_syms = OPT_ISSET(ops, 'L');
+    int show_all    = OPT_ISSET(ops, 'a');
+    int err = 0;
+    char *dot[] = { ".", NULL };
+
+    if (!*args)
+	args = dot;
+
+    for (; *args; args++) {
+	struct stat st;
+	int rv = follow_syms ? stat(*args, &st) : lstat(*args, &st);
+
+	if (rv) {
+	    zwarnnam(nam, "%s: %e", *args, errno);
+	    err = 1;
+	    continue;
+	}
+
+	if (S_ISDIR(st.st_mode)) {
+	    DIR *dp = opendir(*args);
+	    if (!dp) {
+		zwarnnam(nam, "%s: %e", *args, errno);
+		err = 1;
+		continue;
+	    }
+	    struct dirent *de;
+	    while ((de = readdir(dp))) {
+		if (!show_all && de->d_name[0] == '.')
+		    continue;
+		if (long_fmt) {
+		    char path[PATH_MAX];
+		    struct stat est;
+		    snprintf(path, sizeof(path), "%s/%s", *args, de->d_name);
+		    rv = follow_syms ? stat(path, &est) : lstat(path, &est);
+		    if (rv) {
+			zwarnnam(nam, "%s: %e", path, errno);
+			err = 1;
+			continue;
+		    }
+		    ls_print_long(&est, de->d_name);
+		} else {
+		    printf("%s\n", de->d_name);
+		}
+	    }
+	    closedir(dp);
+	} else {
+	    if (long_fmt)
+		ls_print_long(&st, *args);
+	    else
+		printf("%s\n", *args);
+	}
+    }
+    return err;
+}
+
 #ifdef HAVE_LSTAT
 # define LN_OPTS "dfhins"
 #else
@@ -807,6 +954,7 @@ static struct builtin bintab[] = {
     BUILTIN("chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
+    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "alL",   NULL),
     BUILTIN("mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),
@@ -817,6 +965,7 @@ static struct builtin bintab[] = {
     BUILTIN("zf_chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("zf_chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("zf_ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
+    BUILTIN("zf_ls",    0, bin_ls,    0, -1, 0,         "alL",   NULL),
     BUILTIN("zf_mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("zf_mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("zf_rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),

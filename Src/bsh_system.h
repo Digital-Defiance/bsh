@@ -896,6 +896,15 @@ extern short ospeed;
 #elif HAVE_STRUCT_STAT_ST_CTIMENSEC
 # define GET_ST_CTIME_NSEC(st) (st).st_ctimensec
 #endif
+#ifdef HAVE_STRUCT_STAT_ST_BIRTHTIMESPEC_TV_NSEC
+# define HAVE_STAT_BIRTHTIME 1
+# define GET_ST_BTIME(st)     (st).st_birthtimespec.tv_sec
+# define GET_ST_BTIME_NSEC(st) (st).st_birthtimespec.tv_nsec
+#elif defined(HAVE_STRUCT_STAT_ST_BIRTHTIME)
+# define HAVE_STAT_BIRTHTIME 1
+# define GET_ST_BTIME(st)     (st).st_birthtime
+# define GET_ST_BTIME_NSEC(st) 0L
+#endif
 
 #if defined(HAVE_TGETENT) && !defined(BSH_NO_TERM_HANDLING)
 # if defined(BSH_HAVE_CURSES_H) && defined(BSH_HAVE_TERM_H)
