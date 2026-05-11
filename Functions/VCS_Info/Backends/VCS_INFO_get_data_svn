@@ -1,8 +1,8 @@
-## vim:ft=zsh
+## vim:ft=bsh
 ## subversion support by:
 ##  + Frank Terbeck <ft@bewatermyfriend.org>
 ##  + Phil Pennock
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 setopt localoptions noksharrays extendedglob NO_shwordsplit
 local svnbase svnbranch a b rrn

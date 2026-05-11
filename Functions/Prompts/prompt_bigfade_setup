@@ -1,7 +1,7 @@
 # Generic large colour fade-bar prompt theme from bashprompt
 # Created by James Manning <jmm@raleigh.ibm.com>
 # Changed by Spidey 08/06
-# Converted to zsh prompt theme by <adam@spiers.net>
+# Converted to bsh prompt theme by <adam@spiers.net>
 
 prompt_bigfade_help () {
   cat <<EOH

@@ -1,17 +1,17 @@
 # Tests for _arguments.
 
 %prep
-  if ( zmodload zsh/zpty 2>/dev/null ); then
+  if ( zmodload bsh/zpty 2>/dev/null ); then
     . $ZTST_srcdir/comptest
     mkdir comp.tmp
     cd comp.tmp
-    comptestinit -z $ZTST_testdir/../Src/zsh &&
+    comptestinit -z $ZTST_testdir/../Src/bsh &&
     {
       comptesteval 'compdef _tst tst'
       tst_arguments () { comptesteval "_tst () { _arguments ${${(@qq)*}} }" }
     }
   else
-    ZTST_unimplemented="the zsh/zpty module is not available"
+    ZTST_unimplemented="the bsh/zpty module is not available"
   fi
 
 %test
@@ -349,7 +349,7 @@
 
  tst_arguments -s '-a' '-b' '-c' ':words:compadd - abyyy abzzz'
  comptest $'tst ab\t'
-0:options and words (zsh-workers:12257)
+0:options and words (bsh-workers:12257)
 >line: {tst ab}{}
 >DESCRIPTION:{words}
 >NO:{abyyy}
@@ -799,4 +799,4 @@ F:shouldn't offer -t in the first case (with stacked options)
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

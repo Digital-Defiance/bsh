@@ -5,7 +5,7 @@
 #     or compleat al Maner of Wordes and such-like Diversities.''
 #            - Francis Bacon, `New Atlantis' (or not).
 #
-# Convert tcsh "complete" statements to zsh "compctl" statements.
+# Convert tcsh "complete" statements to bsh "compctl" statements.
 # Runs as a filter.  Should ignore anything which isn't a "complete".
 # It expects each "complete" statement to be the first thing on a line.
 # All the examples in the tcsh manual give sensible results.
@@ -24,7 +24,7 @@
 #    I don't understand what the hyphen in complete does and I've ignored it.
 #
 # Notes:
-# (1) The -s option is the way to do backquote expansion.  In zsh,
+# (1) The -s option is the way to do backquote expansion.  In bsh,
 #     "compctl -s '`users`' talk" works (duplicates are removed).
 # (2) Complicated backquote completions should definitely be rewritten as
 #     shell functions (compctl's "-K func" option).  Although most of
@@ -33,13 +33,13 @@
 # (3) Replacement of $:n with the n'th word on the current line with
 #     backquote expansion now works; it is not necessarily the most
 #     efficient way of doing it in any given case, however.
-# (4) I have made use of zsh's more sophisticated globbing to change
+# (4) I have made use of bsh's more sophisticated globbing to change
 #     things like ^foo.{a,b,c,d} to ^foo.(a|b|c|d), which works better.
 #     It's just possible in some cases you may want to change it back.
 # (5) Make sure all command names with wildcards are processed together --
 #     they need to be lumped into one "compctl -C" or "compctl -D"
-#     statement for zsh.
-# (6) Group completion (complete's g flag) is not built into zsh, so
+#     statement for bsh.
+# (6) Group completion (complete's g flag) is not built into bsh, so
 #     you need perl to be available to generate the groups.  If this
 #     script is useful, I assume that's not a problem.
 # (7) I don't know what `completing completions' means, so the X
@@ -94,7 +94,7 @@ sub getpat {
 	$num = ($pat eq 'N') ? 2 : 1;
 	$ret = "${let}[-${num},$arg]";
     } elsif ($pat eq 'c' || $pat eq 'C') {
-	# A few tricks to get zsh to ignore up to the end of
+	# A few tricks to get bsh to ignore up to the end of
 	# any matched pattern.
 	if (($pat eq 'c' && $arg =~ /^\*([^*?]*)$/)) {
 	    $ret = "n[-1,$1]";
@@ -198,7 +198,7 @@ HERE
     }
 
     # foo{bar,ba,blak,sheap} -> foo(bar|ba|blak|sheap).
-    # This saves a lot of mess, since in zsh brace expansion occurs
+    # This saves a lot of mess, since in bsh brace expansion occurs
     # before globbing.  I'm sorry, but I don't trust $` and $'.
     while (defined($glob) && (($b,$m,$e) = ($glob =~ /^(.*)\{(.*)\}(.*)$/))
 	   && $m =~ /,/) {

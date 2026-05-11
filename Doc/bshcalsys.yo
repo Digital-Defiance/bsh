@@ -1,0 +1,3 @@
+manpage(BSHCALSYS)(1)(date())(bsh version())
+manpagename(bshcalsys)(bsh calendar system)
+includefile(Bsh/calsys.yo)

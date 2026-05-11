@@ -1,12 +1,12 @@
 # Tests of the vi mode of ZLE
 
 %prep
-  ZSH_TEST_LANG=$(ZTST_find_UTF8)
-  if ( zmodload zsh/zpty 2>/dev/null ); then
+  BSH_TEST_LANG=$(ZTST_find_UTF8)
+  if ( zmodload bsh/zpty 2>/dev/null ); then
     . $ZTST_srcdir/comptest
-    comptestinit -v -z $ZTST_testdir/../Src/zsh
+    comptestinit -v -z $ZTST_testdir/../Src/bsh
   else
-    ZTST_unimplemented="the zsh/zpty module is not available"
+    ZTST_unimplemented="the bsh/zpty module is not available"
   fi
 
 %test
@@ -186,7 +186,7 @@
 >double
 >CURSOR: 0
 
-# zsh works like vi here; in vim you get the concatenated string
+# bsh works like vi here; in vim you get the concatenated string
   zletest $'first\e"addasecond\eddP'
 0:retrieve unnamed register after appending
 >BUFFER: second
@@ -528,7 +528,7 @@
 >  wwe
 >CURSOR: 29
 
-  if [[ -z $ZSH_TEST_LANG ]]; then
+  if [[ -z $BSH_TEST_LANG ]]; then
     ZTST_skip="no UTF-8 locale for Zle vi-mode test"
   else
     zletest $'/あいう/えお/かき\ebxgegex0wxex'
@@ -605,4 +605,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

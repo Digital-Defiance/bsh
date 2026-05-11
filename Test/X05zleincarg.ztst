@@ -1,10 +1,10 @@
 # Tests the incarg ZLE widget
 
 %prep
-  ZSH_TEST_LANG=$(ZTST_find_UTF8)
-  if ( zmodload zsh/zpty 2>/dev/null ); then
+  BSH_TEST_LANG=$(ZTST_find_UTF8)
+  if ( zmodload bsh/zpty 2>/dev/null ); then
     . $ZTST_srcdir/comptest
-    comptestinit -v -z $ZTST_testdir/../Src/zsh
+    comptestinit -v -z $ZTST_testdir/../Src/bsh
     zpty_run '
       autoload -Uz incarg
       for name in {,vim-,vim-backward-}{,sync-}{inc,dec}arg; do
@@ -26,7 +26,7 @@
       }
     '
   else
-    ZTST_unimplemented="the zsh/zpty module is not available"
+    ZTST_unimplemented="the bsh/zpty module is not available"
   fi
 
 %test
@@ -559,4 +559,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

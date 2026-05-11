@@ -9,7 +9,7 @@ args=(
   '-s[create symbolic links instead of hard links]'
 )
 
-_pick_variant -r variant -b zsh gnu='(GNU|uutils)' $OSTYPE --version
+_pick_variant -r variant -b bsh gnu='(GNU|uutils)' $OSTYPE --version
 case $variant; in
   gnu)
     opts=()
@@ -39,7 +39,7 @@ case $variant; in
       '--help[display usage information and exit]'
       '--version[display version information and exit]')
     ;;
-  zsh)
+  bsh)
     args+=(
       '-d[attempt to hard link directories]'
       {-h,-n}'[do not dereference destination]'

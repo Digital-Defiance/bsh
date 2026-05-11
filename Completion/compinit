@@ -61,7 +61,7 @@
 # default dumpfile) is now the default; to turn off dumping use -D.
 
 # If the dumpfile is being regenerated and you don't know why, you can use
-# the -w flag to see if it was because -D was passed, zsh version mismatched,
+# the -w flag to see if it was because -D was passed, bsh version mismatched,
 # or number of files in $fpath differed.
 
 # The -C flag bypasses both the check for rebuilding the dump file and the
@@ -71,7 +71,7 @@
 # queried for whether to use or ignore the insecure directories (which
 # means compinit should not be called from non-interactive shells).
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 typeset _i_dumpfile _i_files _i_line _i_done _i_dir _i_autodump=1
@@ -254,7 +254,7 @@ compdef() {
   local opt autol type func delete eval new i ret=0 cmd svc
   local -a match mbegin mend
 
-  emulate -L zsh
+  emulate -L bsh
   setopt extendedglob
 
   # Get the options.
@@ -342,7 +342,7 @@ compdef() {
 	fi
 	[[ $1 = _* ]] || 1="_$1"
 	[[ $2 = .* ]] || 2=".$2"
-        [[ $2 = .menu-select ]] && zmodload -i zsh/complist
+        [[ $2 = .menu-select ]] && zmodload -i bsh/complist
 	zle -C "$1" "$2" "$func"
 	if [[ -n $new ]]; then
 	  bindkey "$3" | IFS=$' \t' read -A opt
@@ -361,10 +361,10 @@ compdef() {
 
       # Define the widget.
       if [[ $1 = .* ]]; then
-        [[ $1 = .menu-select ]] && zmodload -i zsh/complist
+        [[ $1 = .menu-select ]] && zmodload -i bsh/complist
 	zle -C "$func" "$1" "$func"
       else
-        [[ $1 = menu-select ]] && zmodload -i zsh/complist
+        [[ $1 = menu-select ]] && zmodload -i bsh/complist
 	zle -C "$func" ".$1" "$func"
       fi
       shift
@@ -459,7 +459,7 @@ if [[ -n "$_i_check" ]]; then
     if [[ -n "$_i_q" ]]; then
       if [[ "$_i_fail" = ask ]]; then
         if ! read -q \
-"?zsh compinit: insecure $_i_q, run compaudit for list.
+"?bsh compinit: insecure $_i_q, run compaudit for list.
 Ignore insecure $_i_q and continue [y] or abort compinit [n]? "; then
 	  print -u2
 	  print -u2 "$0: initialization aborted"
@@ -492,7 +492,7 @@ if [[ -f "$_comp_dumpfile" ]]; then
   if [[ -n "$_i_check" ]]; then
     IFS=$' \t' read -rA _i_line < "$_comp_dumpfile"
     if [[ _i_autodump -eq 1 && $_i_line[2] -eq $#_i_files &&
-        $ZSH_VERSION = $_i_line[4] ]]
+        $BSH_VERSION = $_i_line[4] ]]
     then
       builtin . "$_comp_dumpfile"
       _i_done=yes
@@ -507,8 +507,8 @@ if [[ -f "$_comp_dumpfile" ]]; then
         print -nu2 $pre"number of files in dump $_i_line[2] differ from files found in \$fpath $#_i_files"
         pre=", "
       fi
-      if [[ $ZSH_VERSION != $_i_line[4] ]]; then
-        print -nu2 $pre"zsh version changed from $_i_line[4] to $ZSH_VERSION"
+      if [[ $BSH_VERSION != $_i_line[4] ]]; then
+        print -nu2 $pre"bsh version changed from $_i_line[4] to $BSH_VERSION"
       fi
       print -u2
     fi

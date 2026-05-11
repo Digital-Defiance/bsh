@@ -44,7 +44,7 @@ _arguments -C -s -S \
 
 
 if [[ $state = name ]]; then
-  if ! zmodload -e zsh/zpty; then
+  if ! zmodload -e bsh/zpty; then
     _message "zpty module not loaded"
     return 1
   fi

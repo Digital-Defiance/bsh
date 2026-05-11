@@ -3,7 +3,7 @@
 # cursor goes down one line; with a negative argument the previous two
 # lines are swapped and the cursor goes up one line.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob # xtrace
 
 local -a match mbegin mend

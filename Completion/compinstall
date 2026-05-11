@@ -1,9 +1,9 @@
 # Configure the completion system.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
-zmodload -F zsh/files b:zf_ln || return 1
+zmodload -F bsh/files b:zf_ln || return 1
 
 local key
 local compcontext=-default-
@@ -49,7 +49,7 @@ while getopts "do" opt; do
 done
 
 #
-# Check the user's .zshrc, if any.
+# Check the user's .bshrc, if any.
 #
 # This relies on the stuff we find being only minimally edited from
 # the stuff we originally saved.  A better way of doing this would
@@ -69,7 +69,7 @@ if zstyle -s :compinstall filename ifile &&
   __ci_test_ifile $ifile; then
   foundold=true
 else
-  ifile=${ZDOTDIR:-~}/.zshrc
+  ifile=${ZDOTDIR:-~}/.bshrc
   if __ci_test_ifile ${ZDOTDIR:-~}/.compinstall; then
     ifile=${ZDOTDIR:-~}/.compinstall
     foundold=true
@@ -204,7 +204,7 @@ ${match[3]}"
 fi
 
 #
-# Print warnings about what we found in .zshrc.
+# Print warnings about what we found in .bshrc.
 #
 
 if [[ -n $warn_old ]]; then
@@ -235,7 +235,7 @@ elif (( ! $lines_found )); then
       ifile=$HOME/.compinstall
     else
       print "appended to the file $ifile.  It is up to you to ensure
-that these lines are actually executed.  They will not be if your .zshrc
+that these lines are actually executed.  They will not be if your .bshrc
 usually returns before the end."
     fi
   fi
@@ -273,19 +273,19 @@ elif [[ -d $compdir/Base ]]; then
 fi
 
 if [[ -z $compdir ]]; then
-  # Start up a new zsh and get its default fpath.  If some swine has
-  # tinkered with this in /etc/zshenv we're out of luck.
-  lines=(${(f)"$(zsh -fc 'print -l $ZSH_VERSION $fpath')"})
+  # Start up a new bsh and get its default fpath.  If some swine has
+  # tinkered with this in /etc/bshenv we're out of luck.
+  lines=(${(f)"$(bsh -fc 'print -l $BSH_VERSION $fpath')"})
   line=$lines[1]
   shift lines
-  # If the zsh in that path isn't right, maybe the user's shell is elsewhere.
-  if [[ $line != $ZSH_VERSION && -x $SHELL ]]; then
-    lines=(${(f)"$($SHELL -fc 'print -l $ZSH_VERSION $fpath' 2>/dev/null)"})
+  # If the bsh in that path isn't right, maybe the user's shell is elsewhere.
+  if [[ $line != $BSH_VERSION && -x $SHELL ]]; then
+    lines=(${(f)"$($SHELL -fc 'print -l $BSH_VERSION $fpath' 2>/dev/null)"})
     line=$lines[1]
     shift lines
   fi
-  if [[ $line != $ZSH_VERSION ]]; then
-    print "Hmmm, the zsh in your path is not what's running, nor is \$SHELL.
+  if [[ $line != $BSH_VERSION ]]; then
+    print "Hmmm, the bsh in your path is not what's running, nor is \$SHELL.
 That's bad.
 "
   fi
@@ -331,7 +331,7 @@ fi
 
 if [[ -z $compdir ]]; then
   print "\
-The zsh in your path doesn't seem to have completion directories in the
+The bsh in your path doesn't seem to have completion directories in the
 function autoload path (\$fpath).  This suggests the shell wasn't installed
 for completion.  If you want to use it, you will need to locate all the
 completion functions yourself and install them in your \$fpath.  I will
@@ -1394,9 +1394,9 @@ q.   Return without saving.
 
     case $key in
       1) print "\
-Zsh can produce coloured completion listings where different file types
+Bsh can produce coloured completion listings where different file types
 etc. appear in different colours.  If you want to tailor that to your
-own needs, you will have to edit ~/.zshrc.  Here you have the choice of:
+own needs, you will have to edit ~/.bshrc.  Here you have the choice of:
 
 1.  Using the default colours.
 2.  Using the colours already set up for GNU ls via the \$LS_COLORS
@@ -1421,7 +1421,7 @@ own needs, you will have to edit ~/.zshrc.  Here you have the choice of:
 	 esac
 	 ;;
       2) print "\
-If you use zsh's menu completion and the feature that all short completion
+If you use bsh's menu completion and the feature that all short completion
 lists appear below the line on which you are editing, you can enable
 \`menu selection', which lets you pick a completion with the cursor keys:
 the choice is highlighted, and hitting return accepts it.  Note that
@@ -1582,7 +1582,7 @@ configuring) always take precedence over the old sort defined with compctl.
 You can choose whether or not you want to search for a compctl-defined
 completion if no new completion was found for a command.  The default
 behaviour is only to check for compctl-defined completions if the required
-library, zsh/compctl, is already loaded.  (If not, this implies that
+library, bsh/compctl, is already loaded.  (If not, this implies that
 compctl has not been called.)  Do you want to test for compctl-defined
 completions?
 "
@@ -1959,7 +1959,7 @@ if [[ -z $ifile || -d $ifile ]] ||
    ifile=${~ifile}
 fi
 
-local tmpout=${TMPPREFIX:-/tmp/zsh}compinstall$$
+local tmpout=${TMPPREFIX:-/tmp/bsh}compinstall$$
 zf_ln -fn =(<<<'') $tmpout &&	# safe tempfile creation
 zf_ln -fn =(<<<'') ${tmpout}x || return 1
 
@@ -1970,11 +1970,11 @@ zf_ln -fn =(<<<'') ${tmpout}x || return 1
 __ci_output >>$tmpout
 
 if [[ -n $ifile ]]; then
-  if [[ $ifile != *(zshrc|zlogin|zshenv) ]]; then 
+  if [[ $ifile != *(bshrc|zlogin|bshenv) ]]; then 
     print "\
 If you want this file to be run automatically, you should add
   . $ifile
-to your .zshrc.  compinstall will remember the name of this file for
+to your .bshrc.  compinstall will remember the name of this file for
 future use."
     __ci_newline || return 1
   fi

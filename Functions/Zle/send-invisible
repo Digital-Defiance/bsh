@@ -25,7 +25,7 @@
 
 # Shamelessly cribbed from read-from-minibuffer.
 
-emulate -L zsh
+emulate -L bsh
 
 # Hide the value of INVISIBLE in any output of set and typeset
 typeset -g -H INVISIBLE=

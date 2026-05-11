@@ -1,13 +1,13 @@
 #autoload
 
 ##
-# self-insert-by-keymap originally appeared in zsh-users/10559 (July 2006).
+# self-insert-by-keymap originally appeared in bsh-users/10559 (July 2006).
 # Changes have been made to the widget naming scheme, based on feedback on
 # the mailing list thread.
 ##
 
-emulate -L zsh
-zmodload -i zsh/zleparameter || return 1
+emulate -L bsh
+zmodload -i bsh/zleparameter || return 1
 
 # Rebind the most common widgets to override in multiple keymaps.  Ideally
 # complete-word would also be in this list, but so many other things
@@ -57,7 +57,7 @@ return 0
 # 	zle recursive-edit -K frobber
 
 # Here's a simple example, which improves upon the caps-lock example in
-# the zsh manual entry for recursive-edit:
+# the bsh manual entry for recursive-edit:
 #
 #   ucase+self-insert() {
 #     LBUFFER+=${(U)KEYS[-1]}

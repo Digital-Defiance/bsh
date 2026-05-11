@@ -1,5 +1,5 @@
 ##
-## zsh prompt themes extension
+## bsh prompt themes extension
 ## by Adam Spiers <adam@spiers.net>
 ##
 ## Load with `autoload -Uz promptinit; promptinit'.
@@ -12,9 +12,9 @@ typeset -g prompt_newline
 prompt_themes=()
 
 promptinit () {
-  emulate -L zsh
+  emulate -L bsh
   setopt extendedglob
-  autoload -Uz add-zsh-hook add-zle-hook-widget
+  autoload -Uz add-bsh-hook add-zle-hook-widget
 
   local ppath='' name theme
   local -a match mbegin mend
@@ -39,7 +39,7 @@ promptinit () {
 }
 
 prompt_preview_safely() {
-  emulate -L zsh
+  emulate -L bsh
   print -P "%b%f%k"
   if [[ -z "$prompt_themes[(r)$1]" ]]; then
     print "Unknown theme: $1"
@@ -66,7 +66,7 @@ prompt_preview_safely() {
 }
 
 set_prompt() {
-  emulate -L zsh
+  emulate -L bsh
   local opt preview theme usage old_theme
 
   usage='Usage: prompt <options>
@@ -127,7 +127,7 @@ Use prompt -h <theme> for help on specific themes.'
        done
        print -P "%b%f%k"
        ;;
-    s) print "Set and save not yet implemented.  Please ensure your ~/.zshrc"
+    s) print "Set and save not yet implemented.  Please ensure your ~/.bshrc"
        print "contains something similar to the following:\n"
        print "  autoload -Uz promptinit"
        print "  promptinit"
@@ -151,9 +151,9 @@ Use prompt -h <theme> for help on specific themes.'
 
        # Reset some commonly altered bits to the default
        local hook
-       for hook in chpwd precmd preexec periodic zshaddhistory zshexit \
-           zsh_directory_name; do
-         add-zsh-hook -D "$hook" "prompt_*_$hook"
+       for hook in chpwd precmd preexec periodic bshaddhistory bshexit \
+           bsh_directory_name; do
+         add-bsh-hook -D "$hook" "prompt_*_$hook"
        done
        for hook in isearch-exit isearch-update line-pre-redraw line-init \
            line-finish history-line-set keymap-select; do
@@ -225,7 +225,7 @@ prompt () {
 }
 
 prompt_preview_theme () {
-  emulate -L zsh
+  emulate -L bsh
 
   # Minimal preview for prompts that don't supply one
   local -a prompt_opts

@@ -1,7 +1,7 @@
 #compdef -K _bash_complete-word complete-word \e~ _bash_list-choices list-choices ^X~
 #
 # This function is for bash compatibility.  As some of the bash bindings
-# are already taken up in zsh, only Esc ~ and \C-x ~ are bound, and
+# are already taken up in bsh, only Esc ~ and \C-x ~ are bound, and
 # you must add the rest by hand.  The bindings expected are:
 #
 # Esc ! -> command name
@@ -13,7 +13,7 @@
 # C-x instead of Esc with one of the above will list matches and won't
 # attempt any completion.
 #
-# The following will bind the remaining set; simply put it in .zshrc
+# The following will bind the remaining set; simply put it in .bshrc
 # after compinit is run.
 #
 # for key in '!' '$' '@' '/'; do

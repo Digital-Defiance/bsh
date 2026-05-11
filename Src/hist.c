@@ -1,7 +1,7 @@
 /*
  * hist.c - history expansion
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,22 +12,22 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "hist.pro"
 
 /* Functions to call for getting/ungetting a character and for history
@@ -388,7 +388,7 @@ ihwaddc(int c)
 }
 
 /* This function adds a character to the zle input line. It is used when *
- * zsh expands history (see doexpandhist() in zle_tricky.c). It also     *
+ * bsh expands history (see doexpandhist() in zle_tricky.c). It also     *
  * calculates the new cursor position after the expansion. It is called  *
  * from hgetc() and from gettok() in lex.c for characters in comments.   */
 
@@ -612,7 +612,7 @@ histsubchar(int c)
      *
      * Include the character we are attempting to substitute.
      */
-    lexraw_mark = zshlex_raw_mark(-1); 
+    lexraw_mark = bshlex_raw_mark(-1); 
 
     /* look, no goto's */
     if (isfirstch && c == hatchar) {
@@ -960,7 +960,7 @@ histsubchar(int c)
 	}
     }
 
-    zshlex_raw_back_to_mark(lexraw_mark);
+    bshlex_raw_back_to_mark(lexraw_mark);
 
     /*
      * Push the expanded value onto the input stack,
@@ -1144,7 +1144,7 @@ hbegin(int dohist)
 	hwend = nohwe;
 	addtoline = nohw;
     } else {
-	chline = hptr = zshcalloc(hlinesz = 64);
+	chline = hptr = bshcalloc(hlinesz = 64);
 	chwords = zalloc((chwordlen = 64) * sizeof(short));
 	hgetc = ihgetc;
 	hungetc = ihungetc;
@@ -1397,7 +1397,7 @@ prepnexthistent(void)
     }
 
     if (histlinect < histsiz || !hist_ring) {
-	he = (Histent)zshcalloc(sizeof *he);
+	he = (Histent)bshcalloc(sizeof *he);
 	if (!hist_ring)
 	    hist_ring = he->up = he->down = he;
 	else {
@@ -1517,9 +1517,9 @@ hend(Eprog prog)
 	int save_errflag = errflag;
 	errflag = 0;
 
-	addlinknode(hookargs, "zshaddhistory");
+	addlinknode(hookargs, "bshaddhistory");
 	addlinknode(hookargs, chline);
-	callhookfunc("zshaddhistory", hookargs, 1, &hookret);
+	callhookfunc("bshaddhistory", hookargs, 1, &hookret);
 
 	errflag &= ~ERRFLAG_ERROR;
 	errflag |= save_errflag;
@@ -2187,7 +2187,7 @@ remlpaths(char **junkptr, int count)
 
 /*
  * Return modified version of str from the heap with modification
- * according to one of the CASMOD_* types defined in zsh.h; CASMOD_NONE
+ * according to one of the CASMOD_* types defined in bsh.h; CASMOD_NONE
  * is not handled, for obvious reasons.
  */
 

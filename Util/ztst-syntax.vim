@@ -5,8 +5,8 @@
 "
 " See B01cd.ztst for cases we cover
 
-" TODO: Some zsh syntax isn't highlighted, e.g., «{ cd $0 }» doesn't highlight either 'cd' or '$0'
-"   Apparently because the $VIMRUNTIME/syntax/zsh.vim zshBrackets group is defined as 'contains=TOP'?
+" TODO: Some bsh syntax isn't highlighted, e.g., «{ cd $0 }» doesn't highlight either 'cd' or '$0'
+"   Apparently because the $VIMRUNTIME/syntax/bsh.vim bshBrackets group is defined as 'contains=TOP'?
 "   https://bugs.debian.org/947120
 " TODO: ZTST_unimplemented ZTST_skip aren't recognized everywhere
 "   I haven't found yet a legitimate use where they aren't highlighted, but
@@ -23,15 +23,15 @@ set cpo&vim
 "" Syntax groups:
 syn clear
 
-syn include @zsh                   syntax/zsh.vim
+syn include @bsh                   syntax/bsh.vim
 
 " Note that we don't do /^\s\zs.*/ here.  If we did that, lines that start
 " with " #" (a space and a hash sign) would not be highlighted as comments,
-" because zshComment's patterns won't match unless the '#' is preceded by
+" because bshComment's patterns won't match unless the '#' is preceded by
 " a space or start-of-line.  See:
 "
-" https://github.com/chrisbra/vim-zsh/issues/21#issuecomment-577738791
-syn match  ztstPayload             /^\s.*/ contains=@zsh
+" https://github.com/chrisbra/vim-bsh/issues/21#issuecomment-577738791
+syn match  ztstPayload             /^\s.*/ contains=@bsh
 
 syn match  ztstExitCode            /^\d\+\|^-/                nextgroup=ztstFlags
 syn match  ztstFlags               /[.dDqf]*:/      contained nextgroup=ztstTestName contains=ztstColon
@@ -62,12 +62,12 @@ syn match  ztstComment             /^#.*/
 
 " Highlight those variables which are /de jure/ or /de facto/ APIs of the test
 " harness to the test files.
-syn keyword ztstSpecialVariable ZTST_unimplemented ZTST_skip ZTST_testdir ZTST_fd ZTST_srcdir containedin=@zsh 
+syn keyword ztstSpecialVariable ZTST_unimplemented ZTST_skip ZTST_testdir ZTST_fd ZTST_srcdir containedin=@bsh 
 
 "" Sync
 " The following is sufficient for our modest line-based format, and helps
 " sidestep problems resulting from test cases that use syntax constructs
-" that confuse us and/or syntax/zsh.vim.  If we outgrow it, we should sync
+" that confuse us and/or syntax/bsh.vim.  If we outgrow it, we should sync
 " on empty lines instead.
 "
 " If you run into syntax highlighting issues, just scroll the line that throws

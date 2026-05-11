@@ -1,4 +1,4 @@
-name=zsh/pcre
+name=bsh/pcre
 link=`if test x$enable_pcre = xyes; then echo dynamic; else echo no; fi`
 load=no
 

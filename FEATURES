@@ -1,9 +1,9 @@
 ------------
-ZSH FEATURES
+BSH FEATURES
 ------------
 
 (Note that this file only lists basic shell features, for those who
-may not have encountered zsh before.  Those familiar with zsh are
+may not have encountered bsh before.  Those familiar with bsh are
 unlikely to find anything new here.)
 
 very close to ksh/sh grammar, with csh additions

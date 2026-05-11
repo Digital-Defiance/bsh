@@ -19,7 +19,7 @@
 # unrecognised options are passed through to dir, but zfdir options must
 # appear first and unmixed with the others.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfdir

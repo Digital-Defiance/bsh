@@ -1,7 +1,7 @@
 /*
- * example.c - an example module for zsh
+ * example.c - an example module for bsh
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Zoltán Hidvégi
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Zoltán Hidvégi or the Zsh Development Group be liable
+ * In no event shall Zoltán Hidvégi or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Zoltán Hidvégi and the Zsh Development Group have been advised of
+ * even if Zoltán Hidvégi and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Zoltán Hidvégi and the Zsh Development Group specifically disclaim any
+ * Zoltán Hidvégi and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Zoltán Hidvégi and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -55,7 +55,7 @@ bin_example(char *nam, char **args, Options ops, UNUSED(int func))
 	fputs(*args, stdout);
     }
     printf("\nName: %s\n", nam);
-#ifdef ZSH_64_BIT_TYPE
+#ifdef BSH_64_BIT_TYPE
     printf("\nInteger Parameter: %s\n", output64(intparam));
 #else
     printf("\nInteger Parameter: %ld\n", intparam);

@@ -86,14 +86,14 @@ compgen() {
 	  ;;
 	  function) results+=( "${(k)functions[@]}" ) ;;
 	  group)
-	    emulate zsh
+	    emulate bsh
 	    _groups -U -O res
 	    emulate sh
 	    setopt kshglob noshglob braceexpand
 	    results+=( "${res[@]}" )
 	  ;;
 	  hostname)
-	    emulate zsh
+	    emulate bsh
 	    _hosts -U -O res
 	    emulate sh
 	    setopt kshglob noshglob braceexpand
@@ -151,7 +151,7 @@ compgen() {
     esac
   done
   
-  # support for the last, `word' option to compgen. Zsh's matching does a
+  # support for the last, `word' option to compgen. Bsh's matching does a
   # better job but if you need to, comment this in and use compadd -U
   # (( $# >= OPTIND)) && results=( "${(M)results[@]:#${@[-1]}*}" )
 
@@ -159,7 +159,7 @@ compgen() {
 }
 
 complete() {
-  emulate -L zsh
+  emulate -L bsh
   local args void cmd print remove
   args=( "$@" )
   zparseopts -D -a void o: A: G: W: C: F: P: S: X: a b c d e f g j k u v \

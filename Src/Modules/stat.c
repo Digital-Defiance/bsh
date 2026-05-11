@@ -1,7 +1,7 @@
 /*
  * stat.c - stat builtin interface to system call
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1996-1997 Peter Stephenson
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Peter Stephenson or the Zsh Development Group be liable
+ * In no event shall Peter Stephenson or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Peter Stephenson and the Zsh Development Group have been advised of
+ * even if Peter Stephenson and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Peter Stephenson and the Zsh Development Group specifically disclaim any
+ * Peter Stephenson and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Peter Stephenson and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -30,16 +30,19 @@
 #include "stat.mdh"
 #include "stat.pro"
 
+/* BrightDate FFI — converts a Unix time_t (seconds) to a BrightDate value */
+extern double bsh_unix_to_brightdate(double unix_secs);
+
 enum statnum { ST_DEV, ST_INO, ST_MODE, ST_NLINK, ST_UID, ST_GID,
 		   ST_RDEV, ST_SIZE, ST_ATIM, ST_MTIM, ST_CTIM,
-		   ST_BLKSIZE, ST_BLOCKS, ST_READLINK, ST_COUNT };
+		   ST_BLKSIZE, ST_BLOCKS, ST_READLINK, ST_BTIM, ST_COUNT };
 enum statflags { STF_NAME = 1,  STF_FILE = 2, STF_STRING = 4, STF_RAW = 8,
 		     STF_PICK = 16, STF_ARRAY = 32, STF_GMT = 64,
 		     STF_HASH = 128, STF_OCTAL = 256 };
 static char *statelts[] = { "device", "inode", "mode", "nlink",
 				"uid", "gid", "rdev", "size", "atime",
 				"mtime", "ctime", "blksize", "blocks",
-				"link", NULL };
+				"link", "btime", NULL };
 #define HNAMEKEY "name"
 
 /**/
@@ -185,21 +188,27 @@ statgidprint(gid_t gid, char *outbuf, int flags)
 }
 
 static char *timefmt;
+static int timefmt_is_custom;
 
 /**/
 static void
 stattimeprint(time_t tim, long nsecs, char *outbuf, int flags)
 {
     if (flags & STF_RAW) {
-	sprintf(outbuf, "%ld", (unsigned long)tim);
+	sprintf(outbuf, "%ld", (long)tim);
 	if (flags & STF_STRING)
 	    strcat(outbuf, " (");
     }
     if (flags & STF_STRING) {
 	char *oend = outbuf + strlen(outbuf);
-	/* Where the heck does "40" come from? */
-	ztrftime(oend, 40, timefmt, (flags & STF_GMT) ? gmtime(&tim) :
-			   localtime(&tim), nsecs);
+	if (timefmt_is_custom) {
+	    /* User supplied -F format: use traditional strftime rendering */
+	    ztrftime(oend, 40, timefmt, (flags & STF_GMT) ? gmtime(&tim) :
+			       localtime(&tim), nsecs);
+	} else {
+	    /* Default: emit BrightDate decimal value */
+	    sprintf(oend, "%.6f", bsh_unix_to_brightdate((double)tim));
+	}
 	if (flags & STF_RAW)
 	    strcat(oend, ")");
     }
@@ -323,6 +332,19 @@ statprint(struct stat *sbuf, char *outbuf, char *fname, int iwhich, int flags)
 	statlinkprint(sbuf, optr, fname);
 	break;
 
+    case ST_BTIM:
+#ifdef HAVE_STAT_BIRTHTIME
+#ifdef GET_ST_BTIME_NSEC
+	stattimeprint(GET_ST_BTIME(*sbuf), GET_ST_BTIME_NSEC(*sbuf), optr, flags);
+#else
+	stattimeprint(GET_ST_BTIME(*sbuf), 0L, optr, flags);
+#endif
+#else
+	/* birth time not available on this platform */
+	strcpy(optr, "0");
+#endif
+	break;
+
     case ST_COUNT:			/* keep some compilers happy */
 	break;
     }
@@ -374,6 +396,7 @@ bin_stat(char *name, char **args, Options ops, UNUSED(int func))
     int found = 0, nargs;
 
     timefmt = "%a %b %e %k:%M:%S %Z %Y";
+    timefmt_is_custom = 0;
 
     for (; *args && (**args == '+' || **args == '-'); args++) {
 	char *arg = *args+1;
@@ -446,6 +469,7 @@ bin_stat(char *name, char **args, Options ops, UNUSED(int func))
 			zwarnnam(name, "missing time format");
 			return 1;
 		    }
+		    timefmt_is_custom = 1;
 		    /* force string format in order to use time format */
 		    ops->ind['s'] = 1;
 		    break;
@@ -542,7 +566,7 @@ bin_stat(char *name, char **args, Options ops, UNUSED(int func))
 	arrsize = (flags & STF_PICK) ? 1 : ST_COUNT;
 	if (flags & STF_FILE)
 	    arrsize++;
-	hashptr = hash = (char **)zshcalloc((arrsize+1)*2*sizeof(char *));
+	hashptr = hash = (char **)bshcalloc((arrsize+1)*2*sizeof(char *));
     }
 
     if (arrnam) {
@@ -550,7 +574,7 @@ bin_stat(char *name, char **args, Options ops, UNUSED(int func))
 	if (flags & STF_FILE)
 	    arrsize++;
 	arrsize *= nargs;
-	arrptr = array = (char **)zshcalloc((arrsize+1)*sizeof(char *));
+	arrptr = array = (char **)bshcalloc((arrsize+1)*sizeof(char *));
     }
 
     for (; OPT_ISSET(ops,'f') || *args; args++) {

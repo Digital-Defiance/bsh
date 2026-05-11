@@ -1,6 +1,6 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 
-emulate zsh
+emulate bsh
 
 # Run all specified tests, keeping count of which succeeded.
 # The reason for this extra layer above the test script is to
@@ -9,7 +9,7 @@ emulate zsh
 
 integer success=0 failure=0 skipped=0 retval
 for file in "${(f)ZTST_testlist}"; do
-  $ZTST_exe +Z -f $ZTST_srcdir/ztst.zsh $file
+  $ZTST_exe +Z -f $ZTST_srcdir/ztst.bsh $file
   retval=$?
   if (( $retval == 2 )); then
     (( skipped++ ))

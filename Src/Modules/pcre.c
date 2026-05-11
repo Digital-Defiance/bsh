@@ -1,7 +1,7 @@
 /*
  * pcre.c - interface to the PCRE library
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2001, 2002, 2003, 2004, 2007 Clint Adams
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Clint Adams or the Zsh Development Group be liable
+ * In no event shall Clint Adams or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Andrew Main and the Zsh Development Group have been advised of
+ * even if Andrew Main and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Clint Adams and the Zsh Development Group specifically disclaim any
+ * Clint Adams and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Andrew Main and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -219,7 +219,7 @@ zpcre_get_substrings(pcre2_code *pat, char *arg, pcre2_match_data *mdata,
 	{
 	    char **hash, **hashptr;
 	    uint32_t nidx;
-	    hashptr = hash = (char **)zshcalloc((ncount+1)*2*sizeof(char *));
+	    hashptr = hash = (char **)bshcalloc((ncount+1)*2*sizeof(char *));
 	    for (nidx = 0; nidx < ncount; nidx++) {
 		vec_off = (ntable[nsize * nidx] << 9) + 2 * ntable[nsize * nidx + 1];
 		/* would metafy the key but pcre limits characters in the name */
@@ -468,7 +468,7 @@ cond_pcre_match(char **a, int id)
 		 * r > 0 => (r-1) substrings found; r==1 => no substrings
 		 */
     		if (r==0) {
-		    zwarn("reportable zsh problem: pcre2_match() returned 0");
+		    zwarn("reportable bsh problem: pcre2_match() returned 0");
 		    return_value = 1;
 		    break;
 		}

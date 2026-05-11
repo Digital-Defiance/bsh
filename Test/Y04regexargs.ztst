@@ -2,12 +2,12 @@
 
 %prep
   if [[ $OSTYPE = cygwin ]]; then
-    ZTST_unimplemented="the zsh/zpty module does not work on Cygwin"
-  elif ( zmodload zsh/zpty 2>/dev/null ); then
+    ZTST_unimplemented="the bsh/zpty module does not work on Cygwin"
+  elif ( zmodload bsh/zpty 2>/dev/null ); then
     . $ZTST_srcdir/comptest
     mkdir comp.tmp
     cd comp.tmp
-    comptestinit -z $ZTST_testdir/../Src/zsh &&
+    comptestinit -z $ZTST_testdir/../Src/bsh &&
     {
       word=$'[^\0]#\0'
       comptesteval \
@@ -16,7 +16,7 @@
       tst_regex() { comptesteval "_regex_arguments _tst /$'[^\0]#\0'/ ${${(@q)*}}" }
     }
   else
-    ZTST_unimplemented="the zsh/zpty module is not available"
+    ZTST_unimplemented="the bsh/zpty module is not available"
   fi
 
 %test
@@ -108,4 +108,4 @@
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

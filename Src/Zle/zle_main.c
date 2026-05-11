@@ -1,7 +1,7 @@
 /*
  * zle_main.c - main routines for line editor
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -290,7 +290,7 @@ zsetterm(void)
 	echo foo<return>  <--- typed before sleep returns
 
 	The shell sees \n instead of \r, since it was changed by the kernel
-	while zsh wasn't looking. Then in getbyte() \n is changed back to \r,
+	while bsh wasn't looking. Then in getbyte() \n is changed back to \r,
 	and it sees "echo foo<accept line>", as expected. Without the double
 	swap the shell would see "echo foo\n", which is translated to
 	"echo fooecho foo<accept line>" because of the binding.
@@ -894,7 +894,7 @@ getbyte(long do_keytmout, int *timeout, int full)
 	    if (r == 1)
 		break;
 	    if (r == 0) {
-		/* The test for IGNOREEOF was added to make zsh ignore ^Ds
+		/* The test for IGNOREEOF was added to make bsh ignore ^Ds
 		   that were typed while commands are running.  Unfortunately
 		   this caused trouble under at least one system (SunOS 4.1).
 		   Here shells that lost their xterm (e.g. if it was killed
@@ -1457,8 +1457,8 @@ execzlefunc(Thingy func, char **args, int set_bindk, int set_lbindk)
 	 */
 	if (keybuf[0] == eofchar && !keybuf[1] && args == zlenoargs &&
 	    !zlell && isfirstln && (zlereadflags & ZLRF_IGNOREEOF)) {
-	    showmsg((!islogin) ? "zsh: use 'exit' to exit." :
-		    "zsh: use 'logout' to logout.");
+	    showmsg((!islogin) ? "bsh: use 'exit' to exit." :
+		    "bsh: use 'logout' to logout.");
 	    use_exit_printed = 1;
 	    eofsent = 1;
 	    ret = 1;
@@ -2270,9 +2270,9 @@ setup_(UNUSED(Module m))
     incompfunc = incompctlfunc = hascompmod = 0;
     hascompwidgets = 0;
 
-    clwords = (char **) zshcalloc((clwsize = 16) * sizeof(char *));
+    clwords = (char **) bshcalloc((clwsize = 16) * sizeof(char *));
 
-    bpaste = zshcalloc(3*sizeof(char *));
+    bpaste = bshcalloc(3*sizeof(char *));
     bpaste[0] = ztrdup("\033[?2004h");
     bpaste[1] = ztrdup("\033[?2004l");
     /* Intended to be global, no WARNCREATEGLOBAL check. */

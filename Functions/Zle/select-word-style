@@ -1,4 +1,4 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local -a word_functions
@@ -41,7 +41,7 @@ ${detail}? " || return 1
     ;;
 
     ([nN]*)
-    # normal zsh style
+    # normal bsh style
     wordstyle=standard
     zstyle ':zle:*' word-chars "$WORDCHARS"
     zstyle ':zle:*' skip-whitespace-first false

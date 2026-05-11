@@ -1,7 +1,7 @@
 /*
  * complete.c - the complete module, interface part
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Sven Wischnowsky or the Zsh Development Group be liable
+ * In no event shall Sven Wischnowsky or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Sven Wischnowsky and the Zsh Development Group have been advised of
+ * even if Sven Wischnowsky and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Sven Wischnowsky and the Zsh Development Group specifically disclaim any
+ * Sven Wischnowsky and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Sven Wischnowsky and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -920,7 +920,7 @@ restrict_range(int b, int e)
 	    e = wl;
 
 	i = e - b + 1;
-	p = (char **) zshcalloc((i + 1) * sizeof(char *));
+	p = (char **) bshcalloc((i + 1) * sizeof(char *));
 
 	for (q = p, pp = compwords + b; i; i--, q++, pp++)
 	    *q = ztrdup(*pp);
@@ -1495,7 +1495,7 @@ compunsetfn(Param pm, int exp)
 		*((char **) pm->u.data) = ztrdup("");
 	    } else if (PM_TYPE(pm->node.flags) == PM_ARRAY) {
 		freearray(*((char ***) pm->u.data));
-		*((char ***) pm->u.data) = zshcalloc(sizeof(char *));
+		*((char ***) pm->u.data) = bshcalloc(sizeof(char *));
 	    } else if (PM_TYPE(pm->node.flags) == PM_HASHED) {
 		deleteparamtable(pm->u.hash);
 		pm->u.hash = NULL;

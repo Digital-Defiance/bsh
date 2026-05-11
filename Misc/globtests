@@ -1,4 +1,4 @@
-#!/usr/local/bin/zsh -f
+#!/usr/local/bin/bsh -f
 
 setopt extendedglob badpattern
 unsetopt kshglob
@@ -104,7 +104,7 @@ f foob          (^foo)b*
 t foobb         (^foo)b*
 f foob          (*~foo)b*
 t foobb         (*~foo)b*
-f zsh           ^z*
+f bsh           ^z*
 t a%1X          [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]]
 f a%1           [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]]
 t [:            [[:]#
@@ -202,10 +202,10 @@ t aa               a(#c1,)a
 t aa               a(#c0,1)a
 f aa               a(#c0,0)a
 f aa               a(#c2,)a
-t test.zsh         *.?(#c1)sh
+t test.bsh         *.?(#c1)sh
 t test.bash        *.?(#c2)sh
 t test.bash        *.?(#c1,2)sh
 t test.bash        *.?(#c1,)sh
-t test.zsh         *.?(#c1,)sh
+t test.bsh         *.?(#c1,)sh
 EOT
 print "$failed tests failed."

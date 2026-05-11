@@ -12,7 +12,7 @@ local tmp line compcontext=nslookup curcontext='nslookup:::' pmpt
 local pager opager="$PAGER"
 typeset +g -x PAGER=cat
 
-zmodload -e zsh/zpty || zmodload -i zsh/zpty
+zmodload -e bsh/zpty || zmodload -i bsh/zpty
 
 trap 'return 130' INT
 trap 'zpty -d nslookup' EXIT

@@ -1,7 +1,7 @@
 #autoload
 
-zsh_math_func_min() {
-  emulate -L zsh
+bsh_math_func_min() {
+  emulate -L bsh
   local result=$1
   shift
   local arg
@@ -16,10 +16,10 @@ zsh_math_func_min() {
   (( result ))
   true # Careful here: `return 0` evaluates an arithmetic expression
 }
-functions -M min 1 -1 zsh_math_func_min # at least one argument
+functions -M min 1 -1 bsh_math_func_min # at least one argument
 
-zsh_math_func_max() {
-  emulate -L zsh
+bsh_math_func_max() {
+  emulate -L bsh
   local result=$1
   shift
   local arg
@@ -34,10 +34,10 @@ zsh_math_func_max() {
   (( result ))
   true # Careful here: `return 0` evaluates an arithmetic expression
 }
-functions -M max 1 -1 zsh_math_func_max # at least one argument
+functions -M max 1 -1 bsh_math_func_max # at least one argument
 
-zsh_math_func_sum() {
-  emulate -L zsh
+bsh_math_func_sum() {
+  emulate -L bsh
   local sum
   local arg
   for arg ; do
@@ -46,5 +46,5 @@ zsh_math_func_sum() {
   (( sum ))
   true # Careful here: `return 0` evaluates an arithmetic expression
 }
-functions -M sum 0 -1 zsh_math_func_sum
+functions -M sum 0 -1 bsh_math_func_sum
 

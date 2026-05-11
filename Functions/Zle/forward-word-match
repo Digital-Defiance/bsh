@@ -1,4 +1,4 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 autoload -Uz match-words-by-style
@@ -17,10 +17,10 @@ while (( count-- )); do
   match-words-by-style
  
   if zstyle -t $curcontext skip-whitespace-first; then
-    # Standard non-zsh behaviour: skip leading whitespace and the word.
+    # Standard non-bsh behaviour: skip leading whitespace and the word.
     word=$matched_words[4]$matched_words[5]
   else
-    # Traditional zsh behaviour.
+    # Traditional bsh behaviour.
     # For some reason forward-word doesn't work like the other word
     # commands; it skips whitespace only after any matched word
     # characters.

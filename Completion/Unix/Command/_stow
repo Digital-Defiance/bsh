@@ -1,7 +1,7 @@
 #compdef stow chkstow
 
 #
-# A zsh completion script for GNU stow (https://www.gnu.org/software/stow/)
+# A bsh completion script for GNU stow (https://www.gnu.org/software/stow/)
 #
 
 (( $+functions[__stow_packages] )) ||

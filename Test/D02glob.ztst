@@ -7,7 +7,7 @@
   : >glob.tmp/{,{dir1,dir2}/}{a,b,c}
 
   globtest () {
-    $ZTST_testdir/../Src/zsh -f $ZTST_srcdir/../Misc/$1
+    $ZTST_testdir/../Src/bsh -f $ZTST_srcdir/../Misc/$1
   }
 
   regress_absolute_path_and_core_dump() {
@@ -22,7 +22,7 @@
 %test
 
   globtest globtests
-0:zsh globbing
+0:bsh globbing
 >0:  [[ foo~ = foo~ ]]
 >0:  [[ foo~ = (foo~) ]]
 >0:  [[ foo~ = (foo~|) ]]
@@ -107,7 +107,7 @@
 >0:  [[ foobb = (^foo)b* ]]
 >1:  [[ foob = (*~foo)b* ]]
 >0:  [[ foobb = (*~foo)b* ]]
->1:  [[ zsh = ^z* ]]
+>1:  [[ bsh = ^z* ]]
 >0:  [[ a%1X = [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]] ]]
 >1:  [[ a%1 = [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]] ]]
 >0:  [[ [: = [[:]# ]]
@@ -197,11 +197,11 @@
 >0:  [[ aa = a(#c0,1)a ]]
 >1:  [[ aa = a(#c0,0)a ]]
 >1:  [[ aa = a(#c2,)a ]]
->0:  [[ test.zsh = *.?(#c1)sh ]]
+>0:  [[ test.bsh = *.?(#c1)sh ]]
 >0:  [[ test.bash = *.?(#c2)sh ]]
 >0:  [[ test.bash = *.?(#c1,2)sh ]]
 >0:  [[ test.bash = *.?(#c1,)sh ]]
->0:  [[ test.zsh = *.?(#c1,)sh ]]
+>0:  [[ test.bsh = *.?(#c1,)sh ]]
 >0 tests failed.
 
   globtest globtests.ksh
@@ -290,7 +290,7 @@
 >0 tests failed.
 
  (unsetopt multibyte
- [[ björn = *[åäöÅÄÖ]* ]])
+ [[ bjï¿½rn = *[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½]* ]])
 0:single byte match with top bit set
 
   ( regress_absolute_path_and_core_dump )
@@ -440,7 +440,7 @@
   print -r "$1, $2: $?"
  }
  test_pattern_disables() {
-   emulate -L zsh
+   emulate -L bsh
    tpd 'forthcoming' 'f*g'
    disable -p '*'
    tpd 'forthcoming' 'f*g'

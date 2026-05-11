@@ -1,5 +1,5 @@
 -------------------------------------
-CHANGES FROM PREVIOUS VERSIONS OF ZSH
+CHANGES FROM PREVIOUS VERSIONS OF BSH
 -------------------------------------
 
 Note also the list of incompatibilities in the README file.
@@ -7,19 +7,19 @@ Note also the list of incompatibilities in the README file.
 Changes since 5.9
 -----------------
 
-zsh 5.10 is dedicated to the memory of Sebastian Gniazdowski, who was
-an enthusiastic new community member interested in making zsh easy to
+bsh 5.10 is dedicated to the memory of Sebastian Gniazdowski, who was
+an enthusiastic new community member interested in making bsh easy to
 extend with community code/`plugins'.
 
 Support for named references and namespaces has been added, similar to
 those features in ksh but with some notable differences. The `nameref`
 builtin and some ksh-equivalent namespace names are available by loading
-the zsh/ksh93 module.  See the documentation of that module for more.
+the bsh/ksh93 module.  See the documentation of that module for more.
 
 The parameter expansion flag ! was added for the referred-to name of a
 named reference.
 
-The parameter ZSH_EXEPATH expands to the full path of the current zsh
+The parameter BSH_EXEPATH expands to the full path of the current bsh
 process, reliably on Linux, Mac, {Net,Free,Dragonfly}BSD, Solaris, and
 Cygwin, and falls back to argv[0] elsewhere.
 
@@ -54,7 +54,7 @@ NTP, etc. For the most part this is transparent to users. However, as a
 side effect, some features like $SECONDS and the time keyword gained
 (nominal) nanosecond precision.
 
-The zsh/zutil module's zparseopts builtin learnt the following:
+The bsh/zutil module's zparseopts builtin learnt the following:
 
   - a new -G option enables GNU-style argument parsing
     ('--opt=arg', etc.)
@@ -72,9 +72,9 @@ enabling support for option stacking (-DFG instead of -D -F -G).
 A new contrib function zgetopt was added. It wraps `zparseopts -G` to
 provide an interface similar to util-linux's getopt(1).
 
-The module zsh/pcre has been updated to use the pcre2 library.
+The module bsh/pcre has been updated to use the pcre2 library.
 
-The new zsh/random module defines an SRANDOM parameter, zrand_float()
+The new bsh/random module defines an SRANDOM parameter, zrand_float()
 and zrand_int() math functions.
 
 The shell keyword time now works on builtins, assignments, and
@@ -84,7 +84,7 @@ The new completion helper _shadow can be used to temporarily wrap or
 substitute a function. The contrib function mkshadow makes it easier
 to use outside of completion contexts.
 
-The zsh/mathfunc module now provides isnan() and isinf() functions.
+The bsh/mathfunc module now provides isnan() and isinf() functions.
 
 The getopts builtin learnt a -p option to make it behave like the
 POSIX_BUILTINS option has been temporarily enabled.
@@ -92,8 +92,8 @@ POSIX_BUILTINS option has been temporarily enabled.
 Changes since 5.8.1
 -------------------
 
-zsh 5.9 is dedicated to the memory of Sven Guckes, who was, amongst other
-things, a long-time zsh advocate.  For more information, see:
+bsh 5.9 is dedicated to the memory of Sven Guckes, who was, amongst other
+things, a long-time bsh advocate.  For more information, see:
 
   https://linuxnews.de/2022/02/sven-guckes-verstorben/
   https://groups.google.com/g/vim_announce/c/MJBKVd-xrEE/m/joVNaDgAAgAJ
@@ -121,7 +121,7 @@ opt_args array via the -0 option. Developers of completion functions
 should find this easier to handle reliably than the default
 colon-delimiting behaviour.
 
-The zsh/system module's `zsystem flock` command learnt an -i option to
+The bsh/system module's `zsystem flock` command learnt an -i option to
 set the wait interval used with -t. Additionally, -t now supports
 fractional seconds.
 
@@ -144,7 +144,7 @@ insecure elements (like the -i option) where previously it ignored the
 result (thus formerly like the -u option).  Further, removing those
 elements includes dropping directories from the $fpath array.
 
-The zsh/datetime module's strftime builtin learnt an -n option to omit
+The bsh/datetime module's strftime builtin learnt an -n option to omit
 the trailing newline when printing a formatted time.
 
 The XTRACE option is now disabled while running user-defined completion
@@ -171,7 +171,7 @@ disabled by default.
 
 The compadd builtin's -D option can now be specified more than once.
 
-The zsh/zutil module's zformat builtin learnt an -F option which behaves
+The bsh/zutil module's zformat builtin learnt an -F option which behaves
 like -f except that ternary expressions check for existence instead of
 doing math evaluation.
 
@@ -183,9 +183,9 @@ function has been added to help function authors offer rich completion
 for these values.
 
 The log builtin, WATCH parameter, et al., have been broken out into a
-separate module, zsh/watch. The module is enabled by default.
+separate module, bsh/watch. The module is enabled by default.
 
-The zsh/watch module's WATCHFMT parameter now supports colours via the
+The bsh/watch module's WATCHFMT parameter now supports colours via the
 %F and %K escapes.
 
 The STTY parameter can now be set to an empty string before running a
@@ -219,7 +219,7 @@ source. [ Reported by RyotaK <security@ryotak.me>. Additional thanks to
 Marc Cornellà <hello@mcornella.com>. ]
 
 A regression was introduced in 5.8.1 in which, when reading a script
-from standard input, zsh itself would consume lines that should otherwise
+from standard input, bsh itself would consume lines that should otherwise
 have been consumed by commands executed earlier in the script. This was
 not intentional and has been fixed in subsequent versions.
 
@@ -240,10 +240,10 @@ setopt now returns non-zero if it is unable to safely drop privileges.
 Changes from 5.7.1 to 5.7.1-test-3
 ----------------------------------
 
-The zsh/zutil module's zparseopts builtin learnt an -F option to abort
+The bsh/zutil module's zparseopts builtin learnt an -F option to abort
 parsing when an unrecognised option-like parameter is encountered.
 
-The zsh/files module gained a chmod builtin.
+The bsh/files module gained a chmod builtin.
 
 Several changes have been made to the way completion functions track
 'precommands' (such as `command` and `env`) and determine whether the
@@ -267,7 +267,7 @@ path the leading '/' counts as one component.
 
 The functions builtin gained a -c option to efficiently copy functions.
 
-The zshmisc(1) manual page incorrectly stated that when 'exit' is used
+The bshmisc(1) manual page incorrectly stated that when 'exit' is used
 in a `try' block inside a function, the corresponding `always' block will
 be executed.  The manual page has been corrected.  The shell's behaviour
 has not changed, but code such as the following:
@@ -284,11 +284,11 @@ There are only minor changes between 5.7 and 5.7.1.
 
 Support for 24-bit true color terminals has been added. Hex triplets
 can be used when specifying colours for prompts and line editor
-highlighting. On 88 and 256 colour terminals, a new zsh/nearcolor module
+highlighting. On 88 and 256 colour terminals, a new bsh/nearcolor module
 allows colours specified with hex triplets to be matched against the
 nearest available colour.
 
-The zsh/datetime module's strftime builtin now accepts an argument
+The bsh/datetime module's strftime builtin now accepts an argument
 specifying the nanoseconds time component; both arguments can be omitted
 to use the current time.
 
@@ -297,7 +297,7 @@ Changes from 5.6.1 to 5.6.2
 
 Fix another SIGTTOU case.
 
-Fix SIGWINCH being ignored when zsh is not in the foreground.
+Fix SIGWINCH being ignored when bsh is not in the foreground.
 
 The release tarballs are now compressed using xz(1), whereas previously
 both xz(1) and gzip(1) versions were available.  If this gets in your way,
@@ -342,15 +342,15 @@ In shell patterns, [[:blank:]] now honours the locale instead of
 matching exclusively on space and tab, like for the other POSIX
 character classes or for extended regular expressions.
 
-The zsh/system module now provides the PID of the last process
+The bsh/system module now provides the PID of the last process
 substitution via $sysparams[procsubstpid].
 
 Time formatting via the %D prompt escape now offers nanosecond
 precision with the %. and %N format specifiers. Additionally,
 nanosecond precision on file times is supported in the module
-zsh/stat.
+bsh/stat.
 
-The zsh/mathfunc module now includes a log2() function.
+The bsh/mathfunc module now includes a log2() function.
 
 The parameter ZLE_RECURSIVE has been added to indicate the
 current ZLE recursion level.
@@ -382,7 +382,7 @@ The %E, %S, and %U TIMEFMT specifiers now support m and u prefixes
 (e.g., %mE) to output times in milliseconds and microseconds,
 respectively.
 
-The option CHECK_RUNNING_JOBS was added to control whether zsh should
+The option CHECK_RUNNING_JOBS was added to control whether bsh should
 check for running jobs in addition to suspended ones with CHECK_JOBS.
 It is enabled by default.
 
@@ -394,7 +394,7 @@ There are only minor changes between 5.4 and 5.4.2.
 The 'exec' and 'command' precommand modifiers, and options to them, are
 now parsed after parameter expansion.  Previously, both the modifier and
 any options to it were parsed between alias expansion and parameter
-expansion (see zshexpn(1)), so they could neither be quoted nor be the
+expansion (see bshexpn(1)), so they could neither be quoted nor be the
 result of parameter expansion.  Examples: 's=command; $s -V ls' and
 '\command -V ls' now work as expected.
 
@@ -414,7 +414,7 @@ The autoload builtin gained several new features to load functions from a
 file path determined at the time of definition rather than at the time of
 loading.
 
-The zsh/parameter module now exposes the file paths associated with
+The bsh/parameter module now exposes the file paths associated with
 shell functions via the parameters functions_source and
 dis_functions_source.
 
@@ -469,7 +469,7 @@ disable match specifications hardcoded in completion functions.
 Changes from 5.1.1 to 5.2
 -------------------------
 
-The new module zsh/param/private can be loaded to allow the shell
+The new module bsh/param/private can be loaded to allow the shell
 to define parameters that are private to a function scope (i.e. are
 not propagated to nested functions called within this function).
 
@@ -512,7 +512,7 @@ added.
 The ZLE variables YANK_ACTIVE, YANK_START and YANK_END have been added
 and are useful for managing highlighting.
 
-The zsh-specific pattern match range tests have been supplemented with
+The bsh-specific pattern match range tests have been supplemented with
 [:INCOMPLETE:] and [:INVALID:] to help detect the state of partially
 read multibyte character strings.
 
@@ -559,7 +559,7 @@ and an array "array" containing the words "several"
 - Many changes to child-process and signal handling to eliminate race
   conditions and avoid deadlocks on descriptor and memory management.
 
-- New builtin sysopen in zsh/system module for detailed control of
+- New builtin sysopen in bsh/system module for detailed control of
   file descriptor modes.
 
 
@@ -603,7 +603,7 @@ Changes from 5.0.0 to 5.0.8
 
 - The logic for retrying history locking has been improved.
 
-- Some rationalisations have been made to the zsh/db/gdbm module that
+- Some rationalisations have been made to the bsh/db/gdbm module that
   should make it more useful and predictable in operation.
 
 - Numeric constants encountered in mathematical expressions (but not other
@@ -612,7 +612,7 @@ Changes from 5.0.0 to 5.0.8
   0xFFFF_FFFF, or 3.141_592_654.  From 5.0.6 this is also available
   in output, e.g.
     setopt cbases
-    zmodload zsh/mathfunc
+    zmodload bsh/mathfunc
     print $(( [#16_4] 2**32 - 1 )) $(( [#_3] 4 * atan(1.0) ))
 
 - "functions -T" turns on tracing for the specified function(s) only,
@@ -625,11 +625,11 @@ Changes from 5.0.0 to 5.0.8
   functions or scripts performing floating point calculations.
 
 - The default $fpath/$FPATH is now designed to include
-  /usr/local/share/zsh/site-functions unless the installer has
+  /usr/local/share/bsh/site-functions unless the installer has
   specifically decided to use another path, i.e. regardless of
   the standard installation location.  This directory does not need to
   exist.  Sites that set an explicit site directory can put that in
-  /etc/zshenv as before.  The intention of the new path element is to
+  /etc/bshenv as before.  The intention of the new path element is to
   increase the likelihood that locally added functions can be found with
   the shell running "out of the box", unless the shell has been
   deliberately configured differently by the installer for some special
@@ -647,14 +647,14 @@ Changes from 5.0.0 to 5.0.8
   such file descriptors can be a line editor widget.  Previously the
   handler always behaved as a standard shell function.
 
-- Hooks for adding history (the function zshaddhistory and the
-  array zshaddhistory_functions) can return status 2 to indicate that
+- Hooks for adding history (the function bshaddhistory and the
+  array bshaddhistory_functions) can return status 2 to indicate that
   history is to be saved internally within the shell but not written.
 
 - In file completion, the recursive-files style can be set to an array of
   patterns to match against "$PWD/".  In any matched location, it is
   possible to complete files in arbitrarily deep subdirectories without
-  needing to type the directory prefix.  See example in the zshcompsys
+  needing to type the directory prefix.  See example in the bshcompsys
   manual.
 
 - The _user_expand completer now allows expansion functions in the
@@ -664,7 +664,7 @@ Changes from 5.0.0 to 5.0.8
 - The parameter HISTORY_IGNORE may be set to a pattern which matches
   lines in the internal history that are to be omitted from the history
   file at file write time.  This differs from history changes made in
-  the zshaddhistory hook or by the HIST_IGNORE_* options, all of which
+  the bshaddhistory hook or by the HIST_IGNORE_* options, all of which
   take effect immediately on the internal history list itself.
 
 - The parameter ZLE_RPROMPT_INDENT can be set to 0 to remove the space
@@ -738,7 +738,7 @@ Here is a summary of the most significant changes:
 
 - Job control is supported in non-interactive shells and subshells.
 
-- The zshroadmap manual page provides a slightly more helpful
+- The bshroadmap manual page provides a slightly more helpful
   introduction to the shell manual than was previously available.
 
 - There have been some notable enhancements to POSIX compatibility
@@ -760,7 +760,7 @@ Expansion (parameters, globbing, etc.) and redirection
   word before each glob match.
 
 - The syntax ~[...] provides dynamic directory naming by means
-  of the shell function zsh_directory_name or associated hook functions.
+  of the shell function bsh_directory_name or associated hook functions.
   This is useful for expanding paths with many variable components as
   commonly found in software development.
 
@@ -841,7 +841,7 @@ Builtins and shell functions
 - Various enhancements have been made to traps:
   - The option DEBUG_BEFORE_CMD is on by default, so DEBUG traps
     can be used to debug code about to be run
-  - $ZSH_DEBUG_CMD in such a trap gives the code to be run
+  - $BSH_DEBUG_CMD in such a trap gives the code to be run
   - "setopt ERR_EXIT" in a DEBUG trap causes the code not to be executed
 
 - The "fc" builtin is now more useful non-interactively.
@@ -854,9 +854,9 @@ Shell variables (parameters)
   KEYBOARD_HACK defines characters to be ignored if typed unmatched at
     the end of the line (an extension of the SUN_KEYBOARD_HACK option,
     but note that setting the option will override the variable).
-  ZSH_PATCHLEVEL provides a unique indication of the code compiled to
+  BSH_PATCHLEVEL provides a unique indication of the code compiled to
     make the shell, even between releases.
-  ZSH_SUBSHELL indicates the subshell level, incremented once per fork, at
+  BSH_SUBSHELL indicates the subshell level, incremented once per fork, at
     which the code is being run.
 
 Options
@@ -976,23 +976,23 @@ Modules
   (p:), conditions (c:) and math functions (f:), allowing more control
   over what is imported from a module.
 
-- The zsh/curses module provides access to the "curses" screen
+- The bsh/curses module provides access to the "curses" screen
   manipulation package.
 
-- The zsh/datetime module has a calendar utility, although it is not
+- The bsh/datetime module has a calendar utility, although it is not
   as robust as standalone calendar utilities.
 
-- The zsh/newuser module and associated functions has facilities for
+- The bsh/newuser module and associated functions has facilities for
   setting up startup files for a first-time user.
 
-- The zsh/parameter module contains some new arrays to aid in tracing
+- The bsh/parameter module contains some new arrays to aid in tracing
   of the shell's call stack: $funcsourcetrace and $funcfiletrace.
 
-- The zsh/parameter module provides $usergroups, an associative arrays
+- The bsh/parameter module provides $usergroups, an associative arrays
   whose keys are the names of groups the current user belongs to, with
   the group identifier as the corresponding value.
 
-- The zsh/system module has a zsystem builtin which provides file
+- The bsh/system module has a zsystem builtin which provides file
   locking and also a forward-compatible means for testing subcommands
   supported.
 
@@ -1021,7 +1021,7 @@ Changes in 4.2 since version 4.2.0
 ----------------------------------
 
 - The autoload and related builtins take options -k and -z to indicate
-  ksh or zsh autoloading style for given functions, making it possible
+  ksh or bsh autoloading style for given functions, making it possible
   to mix and match.
 
 - Assignments to associative arrays can use the i and r index flags.
@@ -1049,7 +1049,7 @@ Changes in 4.2 since version 4.2.0
   (but not an exit, which is immediate).  The syntax is:
     `{' try-block-list `}' `always' `{' always-block-list `}'
   where no newline or semicolon may appear between `}' and `always'.
-  This is compatible with all previous valid zsh syntax as an `always'
+  This is compatible with all previous valid bsh syntax as an `always'
   at that point used to be a syntax error.  For example,
     { echo Code run in current shell } always { echo Tidy-up code }
 
@@ -1074,7 +1074,7 @@ Changes in 4.2 since version 4.2.0
   were set.  The new behaviour is more compatible with other shells.
 
 - New option TRAPS_ASYNC which if set allows traps to run while the
-  shell is waiting for a child process.  This is the traditional zsh
+  shell is waiting for a child process.  This is the traditional bsh
   behaviour; POSIX requires the option to be unset.  In sh/ksh
   compatibility mode the option is turned off by default and the option
   letter -T turns it on, for compatibility with FreeBSD sh.
@@ -1085,7 +1085,7 @@ Changes in 4.2 since version 4.2.0
   typically a shell function, with no argument).
 
 
-New features between zsh versions 4.0 and 4.2
+New features between bsh versions 4.0 and 4.2
 ---------------------------------------------
 
 Configuration:
@@ -1102,21 +1102,21 @@ Syntax and builtins:
   maintaining full compatibility with POSIX syntax.
 - Suffix aliases allow the shell to run a command on a file by suffix,
   e.g `alias -s ps=gv' makes `foo.ps' execute `gv foo.ps'.  Supplied
-  function zsh-mime-setup uses existing mailcap and mime.types files
+  function bsh-mime-setup uses existing mailcap and mime.types files
   to set up suitable aliases.  Supplied function pick-web-browser is
   suitable for finding a browser to show .html etc. files by suffix alias.
 - new option `no_case_glob' for case-insensitive globbing.
 
 Add-on modules and functions:
-- zsh/datetime modules makes date formatting and seconds since EPOCH
+- bsh/datetime modules makes date formatting and seconds since EPOCH
   available inside the shell.
-- zsh/net/tcp module provides builtin interface to TCP through ztcp
+- bsh/net/tcp module provides builtin interface to TCP through ztcp
   builtin.  Function suite for interactive and script use with expect-style
   pattern matching.
-- zsh/net/socket module provides zsocket builtin.
+- bsh/net/socket module provides zsocket builtin.
 - zcalc calculator function with full line editing.
 - builtin interface to pcre library
-- zsh/zselect module provides zselect builtin as interface to select
+- bsh/zselect module provides zselect builtin as interface to select
   system call
 
 Completion system:
@@ -1125,7 +1125,7 @@ Completion system:
 - in verbose mode, matches with the same description are grouped
 - highly configurable completions for values of specific parameters,
   specific redirections for specific commands
-- support for bash completion functions (typically zsh native functions are
+- support for bash completion functions (typically bsh native functions are
   more powerful where available)
 - New completions provided for (some of these may be in later 4.0
   releases):  valgrind, tidy, texinfo, infocmp, Java classes, larch, limit,
@@ -1158,7 +1158,7 @@ Local internal improvements:
 - `=prog' expands only paths, no longer aliases for consistency
 - job display in prompts; `jobs' command output can be piped
 - prompts: new $RPROMPT2, %^, %j, %y, enhanced %{, %}, %_.
-- rand48() function in zsh/mathfunc for better randomness in arithmetic
+- rand48() function in bsh/mathfunc for better randomness in arithmetic
   (if the corresponding math library function is present)
 - $SECONDS parameter can be made floating point via `typeset -F SECONDS'
   for better timing accuracy
@@ -1168,7 +1168,7 @@ Local internal improvements:
 - many bugfixes
 
 
-New features in zsh version 4.0.1
+New features in bsh version 4.0.1
 ---------------------------------
 
 Compared with 3.1.9, there are mostly incremental improvements to
@@ -1182,7 +1182,7 @@ Compared with 3.1.9, there are mostly incremental improvements to
   - the test suite
 plus various bug fixes and compatibility improvements.
 
-The alias modules (zle.so as an alias for zsh/zle.so, etc.) have been
+The alias modules (zle.so as an alias for bsh/zle.so, etc.) have been
 removed; use `zmodload -A' to load modules under other names.  This is
 irrelevant if you are upgrading from 3.0.
 
@@ -1207,14 +1207,14 @@ significant of a large number of improvements in the shell are:
 See the 3.1.x changes below for more detail.
 
 
-New features in zsh version 3.1.8 and 3.1.9
+New features in bsh version 3.1.8 and 3.1.9
 -------------------------------------------
 These are primarily bug-fix versions.  There are only a few user-visible
 changes.
  - Array slices ${array[a,b]} with b < a now correctly have zero length.
 
 
-New features in zsh version 3.1.7
+New features in bsh version 3.1.7
 ---------------------------------
 Further enhancements to new completion system:
  - Comprehensive context-sensitive configuration via `styles', which
@@ -1236,8 +1236,8 @@ Further enhancements to new completion system:
  - New LIST_PACKED and LIST_ROWS_FIRST completion options and corresponding
    styles
  - compctl library separated out (frozen but still supported)
- - User-friendly introduction available at zsh website
-   http://zsh.sourceforge.net/
+ - User-friendly introduction available at bsh website
+   http://bsh.sourceforge.net/
 
 Additions to complist listing library (coloured completion and menu
 selection):
@@ -1259,7 +1259,7 @@ Parameters:
  - Floating point support added, similar to ksh93, `typeset -F' and
    `typeset -E' declare floating point variables; usual C/Fortran-like
    rules for integer/float conversion
- - Mathematical library zsh/mathfunc contains all the standard mathematical
+ - Mathematical library bsh/mathfunc contains all the standard mathematical
    functions for use in arithmetical expressions
  - Improved parsing of arithmetical expressions and better error messages
  - Special parameters can be made local
@@ -1268,7 +1268,7 @@ Parameters:
  - Local parameters can now be exported as in other shells; new option
    GLOBAL_EXPORTS on by default provides old behaviour that `typeset -x'
    referred to global parameters.
- - zsh/parameter module enhanced: now needed for new completion; parameters
+ - bsh/parameter module enhanced: now needed for new completion; parameters
    provided have `-h' flag set so that they are hidden by `typeset', so
    that existing functions don't need to be changed
  - Quotes can be stripped from parameter values with ${(Q)...}, providing
@@ -1297,16 +1297,16 @@ Functions etc.:
 
 Modules:
  - New hierarchical naming scheme for modules; supplied modules go into
-   zsh subdirectory, so zle becomes zsh/zle etc.; aliases supplied for
+   bsh subdirectory, so zle becomes bsh/zle etc.; aliases supplied for
    compatibility for existing code, but the new format should be used in
    future.
  - zmodload is more consistent between dynamically and statically linked
    shells
- - zsh/zftp and its function suite support multiple sessions (zfsession
+ - bsh/zftp and its function suite support multiple sessions (zfsession
    command); zftransfer allows transfer of files between two ftp sessions
    with no local file; use styles for e.g. progress style; IPv6 supported;
    recursive put `zfput -r' for uploads
- - zsh/zpty module creates pseudoterminal and allows builtin `expect'-like
+ - bsh/zpty module creates pseudoterminal and allows builtin `expect'-like
    behaviour
 
 Other:
@@ -1318,14 +1318,14 @@ Other:
  - Internal memory usage optimisations
 
 
-New features in zsh version 3.1.6 (beta version)
+New features in bsh version 3.1.6 (beta version)
 ------------------------------------------------
 Note also the changes for 3.0.6, which include changes between 3.1.5. and
 3.1.6.
 
 New completion system via shell functions; massive degree of
 programmability and configurability:
- - ready-made function suite to use, see zshcompsys(1)
+ - ready-made function suite to use, see bshcompsys(1)
  - approximate completion and spelling correction via completion
  - control over matching for case-independence, partial word completion, etc.
  - menu selection:  choose a completion by moving the cursor
@@ -1358,7 +1358,7 @@ Globbing changes:
   - General file mode qualifier with chmod(1)-like syntax, e.g. *(f:u+wx:)
 
 New loadable modules:
-  - zftp, plus associated function suite, for turning your zsh session
+  - zftp, plus associated function suite, for turning your bsh session
     into an FTP session too
   - parameter, for examining and altering shell hash tables via an
     associative array interface.
@@ -1394,8 +1394,8 @@ Builtin and function changes
 Other new options:
   - LOCAL_TRAPS allows signal traps to be local to functions (as in ksh).
   - NO_RCS can now be turned on at any point in initialization files.
-  - NO_GLOBAL_RCS can force /etc/z* files after /etc/zshenv to be skipped.
-    (Please don't use this as an excuse to stuff more into /etc/zshenv!)
+  - NO_GLOBAL_RCS can force /etc/z* files after /etc/bshenv to be skipped.
+    (Please don't use this as an excuse to stuff more into /etc/bshenv!)
   - Existing MAGIC_EQUAL_SUBST option is more useful; any argument containing
     ...=~...:~... will perform filename expansion on the ~ (previously,
     the string before `=' had to look like a parameter name).
@@ -1405,12 +1405,12 @@ Configuration changes:
   - Customizable installation of shell functions from distribution.
 
 
-New features in zsh version 3.0.6
+New features in bsh version 3.0.6
 ---------------------------------
 
-Most of these changes are designed to improve compatibility with zsh
+Most of these changes are designed to improve compatibility with bsh
 version 3.1.6, the latest development release.  However, this release also
-fixes all known Year 2000 (Y2K) bugs in zsh 3.0.
+fixes all known Year 2000 (Y2K) bugs in bsh 3.0.
 
 History changes:
   - whitespace between words is ignored in history searches.
@@ -1446,7 +1446,7 @@ Builtin and function changes:
     command line but before executing the command.
 
 Other changes:
-  - the option PRINT_EIGHT_BIT causes zsh to emit raw bytes in prompts
+  - the option PRINT_EIGHT_BIT causes bsh to emit raw bytes in prompts
     and completion lists even if the system ctype(3) package says that
     those bytes are not "printable."
 
@@ -1462,10 +1462,10 @@ Configuration changes:
   - a few more system features, such as getpwnam/getpwuid, are tested for.
 
 
-New features in zsh version 3.1 (beta version)
+New features in bsh version 3.1 (beta version)
 ----------------------------------------------
 
-On most operating systems zsh can load binary modules dynamically at
+On most operating systems bsh can load binary modules dynamically at
 run-time.  ZLE and the compctl builtin are now reside in a separate
 module which is loaded automatically on demand.
 
@@ -1496,20 +1496,20 @@ Completion can be performed within a brace expansion.
 EMACS-like universal-argument function.
 
 
-New features in zsh version 3.0
+New features in bsh version 3.0
 -------------------------------
 
 Trailing "/" in a glob pattern now works like in other shell thus it
 can no longer be used as a shorthand for "(/)".
 
-Much improved sh/ksh emulation.  When zsh is invoked as sh it mostly
+Much improved sh/ksh emulation.  When bsh is invoked as sh it mostly
 conforms to POSIX 1003.2.
 
 Enhanced parameter expansion features: new flags: A, @, e, W, p, f, F.
 Expansions can be nested.  For example,
 "${${(M)${(f@)$(<builtin.pro)}:#char*}[2][(w)3]}" expands to the third
 word of the second line of builtin.pro which begins with char.  See
-zshexpn(1) for the details.
+bshexpn(1) for the details.
 
 ***/foo glob does recursive directory search following symbolic links.
 
@@ -1525,7 +1525,7 @@ Option names can be prefixed by `no' to unset an option.
 setopt no_option_name is the same as unsetopt option_name.
 This change affects the output of the setopt and unsetopt
 builtins when these are invoked without arguments.  See
-the zshoptions manual page for more explanation.
+the bshoptions manual page for more explanation.
 
 !, {, } and [[ are now reserved words.  Things like [[-z $foo]] or {foo}
 should not be used.  {foo} still works if the IGNORE_BRACES option is not
@@ -1535,7 +1535,7 @@ set but this feature may be removed in the future.  [[ -z $foo ]] and
 HOSTTYPE special parameter is removed.  The new OSTYPE, MACHTYPE and
 VENDOR parameters should be used instead.
 
-VERSION parameter is renamed to ZSH_VERSION
+VERSION parameter is renamed to BSH_VERSION
 
 exec now saves the history in interactive shells.  If you do not like this
 behaviour you can alias exec to 'unset HISTFILE ; exec'.
@@ -1602,11 +1602,11 @@ set.  If you preferred the old behaviour you can alias cd to pushd.
 
 IFS word splitting with SH_WORD_SPLIT and the splitting of the input in the
 read builtin has changed in cases when IFS contains characters other than
-<space>, <tab>, <newline>.  See the description of IFS in the zshparam
+<space>, <tab>, <newline>.  See the description of IFS in the bshparam
 manual page for more details.
 
 
-New features in zsh version 2.5
+New features in bsh version 2.5
 -------------------------------
 
 Greatly expanded completion possibilities.  Programmable completion

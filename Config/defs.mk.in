@@ -10,17 +10,17 @@
 # purpose, provided that the above copyright notice and the following
 # two paragraphs appear in all copies of this software.
 #
-# In no event shall Richard Coleman or the Zsh Development Group be liable
+# In no event shall Richard Coleman or the Bsh Development Group be liable
 # to any party for direct, indirect, special, incidental, or consequential
 # damages arising out of the use of this software and its documentation,
-# even if Richard Coleman and the Zsh Development Group have been advised of
+# even if Richard Coleman and the Bsh Development Group have been advised of
 # the possibility of such damage.
 #
-# Richard Coleman and the Zsh Development Group specifically disclaim any
+# Richard Coleman and the Bsh Development Group specifically disclaim any
 # warranties, including, but not limited to, the implied warranties of
 # merchantability and fitness for a particular purpose.  The software
 # provided hereunder is on an "as is" basis, and Richard Coleman and the
-# Zsh Development Group have no obligation to provide maintenance,
+# Bsh Development Group have no obligation to provide maintenance,
 # support, updates, enhancements, or modifications.
 #
 
@@ -30,18 +30,18 @@ SHELL = /bin/sh
 EXEEXT = @EXEEXT@
 
 # headers
-ZSH_CURSES_H = @ZSH_CURSES_H@
-ZSH_TERM_H = @ZSH_TERM_H@
+BSH_CURSES_H = @BSH_CURSES_H@
+BSH_TERM_H = @BSH_TERM_H@
 
 # install basename
-tzsh            = @tzsh@
+tbsh            = @tbsh@
 
 # installation directories
 prefix          = @prefix@
 exec_prefix     = @exec_prefix@
 bindir          = @bindir@
 libdir          = @libdir@
-MODDIR          = $(libdir)/$(tzsh)/$(VERSION)
+MODDIR          = $(libdir)/$(tbsh)/$(VERSION)
 infodir         = @infodir@
 mandir          = @mandir@
 datarootdir     = @datarootdir@
@@ -75,6 +75,7 @@ IMPOPT          = @IMPOPT@
 
 # utilities
 AWK             = @AWK@
+CARGO           = @CARGO@
 YODL            = @YODL@ @YODL_OPTIONS@
 YODL2TXT        = @YODL@2txt
 YODL2HTML       = @YODL@2html
@@ -101,7 +102,7 @@ LIBLDFLAGS='$(LIBLDFLAGS)' EXELDFLAGS='$(EXELDFLAGS)' \
 LIBS='$(LIBS)' DL_EXT='$(DL_EXT)' DLLD='$(DLLD)' \
 AWK='$(AWK)' \
 YODL='$(YODL)' YODL2TXT='$(YODL2TXT)' YODL2HTML='$(YODL2HTML)' \
-FUNCTIONS_INSTALL='$(FUNCTIONS_INSTALL)' tzsh='$(tzsh)'
+FUNCTIONS_INSTALL='$(FUNCTIONS_INSTALL)' tbsh='$(tbsh)'
 
 # override built-in suffix list
 .SUFFIXES:

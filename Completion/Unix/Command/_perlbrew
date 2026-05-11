@@ -1,7 +1,7 @@
 #compdef perlbrew
 
 #
-# A zsh completion script for perlbrew (https://metacpan.org/dist/App-perlbrew/)
+# A bsh completion script for perlbrew (https://metacpan.org/dist/App-perlbrew/)
 #
 
 local curcontext="$curcontext" state state_descr line ret=1

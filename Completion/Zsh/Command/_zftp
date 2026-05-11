@@ -4,7 +4,7 @@
 # zfcd_match and zfget_match (also used for old-style completion)
 # need to be installed for remote file and directory completion to work.
 
-# emulate -L zsh
+# emulate -L bsh
 
 # Don't try any more completion after this.
 _compskip=all

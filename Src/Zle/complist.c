@@ -1,7 +1,7 @@
 /*
  * complist.c - completion listing enhancements
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Sven Wischnowsky or the Zsh Development Group be liable
+ * In no event shall Sven Wischnowsky or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Sven Wischnowsky and the Zsh Development Group have been advised of
+ * even if Sven Wischnowsky and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Sven Wischnowsky and the Zsh Development Group specifically disclaim any
+ * Sven Wischnowsky and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Sven Wischnowsky and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -1404,7 +1404,7 @@ compprintlist(int showall)
     while (g && !errflag) {
 	char **pp = g->ylist;
 
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(g->heap_id)) {
 	    HEAP_ERROR(g->heap_id);
 	}
@@ -1995,7 +1995,7 @@ complistmatches(UNUSED(Hookdef dummy), Chdata dat)
     Cmgroup oamatches = amatches;
 
     amatches = dat->matches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     if (memory_validate(amatches->heap_id)) {
 	HEAP_ERROR(amatches->heap_id);
     }
@@ -2694,7 +2694,7 @@ domenuselect(Hookdef dummy, Chdata dat)
 	    s->mlbeg = mlbeg;
 	    memcpy(&(s->info), &minfo, sizeof(struct menuinfo));
 	    s->amatches = amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(amatches->heap_id)) {
 		HEAP_ERROR(amatches->heap_id);
 	    }
@@ -2897,7 +2897,7 @@ domenuselect(Hookdef dummy, Chdata dat)
 		if (lastmatches)
 		    freematches(lastmatches, 0);
 		amatches = u->amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 		if (memory_validate(amatches->heap_id)) {
 		    HEAP_ERROR(amatches->heap_id);
 		}
@@ -3441,7 +3441,7 @@ domenuselect(Hookdef dummy, Chdata dat)
 	 * I added the following because in certain cases the zrefresh()
 	 * here was screwing up the list.  Forcing it to redraw the
 	 * screen worked.  The case in question (courtesy of
-	 * "Matt Wozniski" <godlygeek@gmail.com>) is in zsh-workers/24756.
+	 * "Matt Wozniski" <godlygeek@gmail.com>) is in bsh-workers/24756.
 	 *
 	 * *** PLEASE DON'T ASK ME WHY THIS IS NECESSARY ***
 	 */

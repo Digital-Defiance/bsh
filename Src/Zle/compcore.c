@@ -1,7 +1,7 @@
 /*
  * compcore.c - the complete module, completion core code
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Sven Wischnowsky or the Zsh Development Group be liable
+ * In no event shall Sven Wischnowsky or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Sven Wischnowsky and the Zsh Development Group have been advised of
+ * even if Sven Wischnowsky and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Sven Wischnowsky and the Zsh Development Group specifically disclaim any
+ * Sven Wischnowsky and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Sven Wischnowsky and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -399,7 +399,7 @@ do_completion(UNUSED(Hookdef dummy), Compldat dat)
 	} else if (nmatches == 1 || (nmatches > 1 && !diffmatches)) {
 	    /* Only one match. */
 	    Cmgroup m = amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(m->heap_id)) {
 		HEAP_ERROR(m->heap_id);
 	    }
@@ -507,7 +507,7 @@ after_complete(UNUSED(Hookdef dummy), int *dat)
 	int ret;
 
 	cdat.matches = amatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(cdat.matches->heap_id)) {
 	    HEAP_ERROR(cdat.matches->heap_id);
 	}
@@ -643,14 +643,14 @@ callcompfunc(char *s, char *fn)
 		untokenize(*q = ztrdup(*p));
 	    *q = NULL;
 	} else
-	    compwords = (char **) zshcalloc(sizeof(char *));
+	    compwords = (char **) bshcalloc(sizeof(char *));
 
 	if (compredirs)
 	    freearray(compredirs);
         if (rdstrs)
             compredirs = zlinklist2array(rdstrs, 1);
         else
-            compredirs = (char **) zshcalloc(sizeof(char *));
+            compredirs = (char **) bshcalloc(sizeof(char *));
 
 	/*
 	 * We need to untokenize compparameter which is the
@@ -999,7 +999,7 @@ makecomplist(char *s, int incmd, int lst)
 	    diffmatches = odm;
 	    validlist = 1;
 	    amatches = lastmatches;
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(amatches->heap_id)) {
 		HEAP_ERROR(amatches->heap_id);
 	    }
@@ -3076,7 +3076,7 @@ begcmgroup(char *n, int flags)
 	/* If a group named <n> already exists, reuse it. */
 	Cmgroup p;
 	for (p = amatches; p; p = p->next) {
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	    if (memory_validate(p->heap_id)) {
 		HEAP_ERROR(p->heap_id);
 	    }
@@ -3099,7 +3099,7 @@ begcmgroup(char *n, int flags)
 
     /* Create a new group. */
     mgroup = (Cmgroup) zhalloc(sizeof(struct cmgroup));
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
     mgroup->heap_id = last_heap_id;
 #endif
     mgroup->name = dupstring(n);
@@ -3371,7 +3371,7 @@ dupmatch(Cmatch m, int nbeg, int nend)
 {
     Cmatch r;
 
-    r = (Cmatch) zshcalloc(sizeof(struct cmatch));
+    r = (Cmatch) bshcalloc(sizeof(struct cmatch));
 
     r->str = ztrdup(m->str);
     r->orig = ztrdup(m->orig);
@@ -3445,7 +3445,7 @@ permmatches(int last)
 	fi = 1;
     }
     while (g) {
-#ifdef ZSH_HEAP_DEBUG
+#ifdef BSH_HEAP_DEBUG
 	if (memory_validate(g->heap_id)) {
 	    HEAP_ERROR(g->heap_id);
 	}
@@ -3477,8 +3477,8 @@ permmatches(int last)
 	    if (g->mcount > 1)
 		diffmatches = 1;
 
-	    n = (Cmgroup) zshcalloc(sizeof(struct cmgroup));
-#ifdef ZSH_HEAP_DEBUG
+	    n = (Cmgroup) bshcalloc(sizeof(struct cmgroup));
+#ifdef BSH_HEAP_DEBUG
 	    n->heap_id = HEAPID_PERMANENT;
 #endif
 
@@ -3498,7 +3498,7 @@ permmatches(int last)
 	    n->num = gn++;
 	    n->flags = g->flags;
 	    n->mcount = g->mcount;
-	    n->matches = p = (Cmatch *) zshcalloc((n->mcount + 1) * sizeof(Cmatch));
+	    n->matches = p = (Cmatch *) bshcalloc((n->mcount + 1) * sizeof(Cmatch));
 	    n->name = ztrdup(g->name);
 	    for (q = g->matches; *q; q++, p++)
 		*p = dupmatch(*q, nbrbeg, nbrend);
@@ -3512,9 +3512,9 @@ permmatches(int last)
 		n->ylist = NULL;
 
 	    if ((n->ecount = g->ecount)) {
-		n->expls = ep = (Cexpl *) zshcalloc((n->ecount + 1) * sizeof(Cexpl));
+		n->expls = ep = (Cexpl *) bshcalloc((n->ecount + 1) * sizeof(Cexpl));
 		for (eq = g->expls; (o = *eq); eq++, ep++) {
-		    *ep = e = (Cexpl) zshcalloc(sizeof(struct cexpl));
+		    *ep = e = (Cexpl) bshcalloc(sizeof(struct cexpl));
 		    e->count = (fi ? o->fcount : o->count);
                     e->always = o->always;
 		    e->fcount = 0;

@@ -1,4 +1,4 @@
-## vim:ft=zsh
+## vim:ft=bsh
 #
 # A function for calling the branch-format hook
 #

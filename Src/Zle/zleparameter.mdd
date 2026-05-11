@@ -1,8 +1,8 @@
-name=zsh/zleparameter
+name=bsh/zleparameter
 link=either
 load=yes
 
-moddeps="zsh/zle"
+moddeps="bsh/zle"
 
 autofeatures="p:widgets p:keymaps"
 

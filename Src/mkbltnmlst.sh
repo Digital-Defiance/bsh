@@ -42,7 +42,7 @@ for x_mod in $x_mods; do
     if test "x$autofeatures" != x; then
         if test "x$autofeatures_emu" != x; then
             echo "  {"
-	    echo "    char *zsh_features[] = { "
+	    echo "    char *bsh_features[] = { "
 	    for feature in $autofeatures; do
 		echo "      \"$feature\","
 	    done
@@ -54,19 +54,19 @@ for x_mod in $x_mods; do
 	    done
 	    echo "      NULL"
 	    echo "    }; "
-	    echo "    autofeatures(\"zsh\", \"$x_mod\","
-	    echo "       EMULATION(EMULATE_ZSH) ? zsh_features : emu_features,"
+	    echo "    autofeatures(\"bsh\", \"$x_mod\","
+	    echo "       EMULATION(EMULATE_BSH) ? bsh_features : emu_features,"
 	    echo "       0, 1);"
 	    echo "  }"
         else
-	    echo "  if (EMULATION(EMULATE_ZSH)) {"
+	    echo "  if (EMULATION(EMULATE_BSH)) {"
 	    echo "    char *features[] = { "
 	    for feature in $autofeatures; do
 		echo "      \"$feature\","
 	    done
 	    echo "      NULL"
 	    echo "    }; "
-	    echo "    autofeatures(\"zsh\", \"$x_mod\", features, 0, 1);"
+	    echo "    autofeatures(\"bsh\", \"$x_mod\", features, 0, 1);"
 	    echo "  }"
 	fi
     fi

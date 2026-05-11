@@ -2,7 +2,7 @@
 # curcontext must be set to the base context by this point; it
 # will be appended to directly.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local -a worcon bufwords

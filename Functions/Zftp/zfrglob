@@ -16,7 +16,7 @@
 # pattern to be globbed.  We set this back to an array containing
 # all the matches.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local pat dir nondir files i zfrglob
@@ -27,7 +27,7 @@ eval pat=\$$1
 
 # Check if we really need to do anything.  Look for standard
 # globbing characters, and if we are
-# using zsh for the actual pattern matching also look for
+# using bsh for the actual pattern matching also look for
 # extendedglob characters.
 if [[ $pat != *[][*?]* &&
   ( -n $zfrglob || $pat != *[(|)#^]* ) ]]; then

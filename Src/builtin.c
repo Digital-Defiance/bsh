@@ -1,7 +1,7 @@
 /*
  * builtin.c - builtin commands
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -30,8 +30,11 @@
 /* this is defined so we get the prototype for open_memstream */
 #define _GNU_SOURCE 1
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "builtin.pro"
+
+/* BrightDate FFI — converts a Unix time_t (seconds) to a BrightDate value */
+extern double bsh_unix_to_brightdate(double unix_secs);
 
 #include <math.h>
 
@@ -79,7 +82,7 @@ static struct builtin builtins[] =
     BUILTIN("getopts", 0, bin_getopts, 2, -1, 0, "p", NULL),
     BUILTIN("hash", BINF_MAGICEQUALS, bin_hash, 0, -1, 0, "Ldfmrv", NULL),
 
-#ifdef ZSH_HASH_DEBUG
+#ifdef BSH_HASH_DEBUG
     BUILTIN("hashinfo", 0, bin_hashinfo, 0, 0, 0, NULL, NULL),
 #endif
 
@@ -91,11 +94,11 @@ static struct builtin builtins[] =
     BUILTIN("local", BINF_PLUSOPTS | BINF_MAGICEQUALS | BINF_PSPECIAL | BINF_ASSIGN, (HandlerFunc)bin_typeset, 0, -1, 0, "AE:%F:%HL:%R:%TUZ:%ahi:%lnp:%rtux", NULL),
     BUILTIN("logout", 0, bin_break, 0, 1, BIN_LOGOUT, NULL, NULL),
 
-#if defined(ZSH_MEM) & defined(ZSH_MEM_DEBUG)
+#if defined(BSH_MEM) & defined(BSH_MEM_DEBUG)
     BUILTIN("mem", 0, bin_mem, 0, 0, 0, "v", NULL),
 #endif
 
-#if defined(ZSH_PAT_DEBUG)
+#if defined(BSH_PAT_DEBUG)
     BUILTIN("patdebug", 0, bin_patdebug, 1, -1, 0, "p", NULL),
 #endif
 
@@ -164,7 +167,7 @@ createbuiltintable(void)
     builtintab->freenode    = freebuiltinnode;
     builtintab->printnode   = printbuiltinnode;
 
-    (void)addbuiltins("zsh", builtins, sizeof(builtins)/sizeof(*builtins));
+    (void)addbuiltins("bsh", builtins, sizeof(builtins)/sizeof(*builtins));
 }
 
 /* Print a builtin */
@@ -211,7 +214,7 @@ freebuiltinnode(HashNode hn)
 void
 init_builtins(void)
 {
-    if (!EMULATION(EMULATE_ZSH)) {
+    if (!EMULATION(EMULATE_BSH)) {
 	HashNode hn = reswdtab->getnode2(reswdtab, "repeat");
 	if (hn)
 	    reswdtab->disablenode(hn, 0);
@@ -606,7 +609,7 @@ bin_set(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
 
     /* Obsolescent sh compatibility: set - is the same as set +xv *
      * and set - args is the same as set +xv -- args              */
-    if (!EMULATION(EMULATE_ZSH) && *args && **args == '-' && !args[0][1]) {
+    if (!EMULATION(EMULATE_BSH) && *args && **args == '-' && !args[0][1]) {
 	dosetopt(VERBOSE, 0, 0, opts);
 	dosetopt(XTRACE, 0, 0, opts);
 	if (!args[1])
@@ -1074,7 +1077,7 @@ cd_do_chdir(char *cnam, char *dest, int hard)
     }
 
     /* If we got here, it means that we couldn't chdir to any of the
-       multitudinous possible paths allowed by zsh.  We've run out of options!
+       multitudinous possible paths allowed by bsh.  We've run out of options!
        Add more here! */
     zwarnnam(cnam, "%e: %s", eno, dest);
     return NULL;
@@ -1700,7 +1703,7 @@ fcgetcomm(char *s)
     return cmd;
 }
 
-/* Perform old=new substitutions.  Uses the asgment structure from zsh.h, *
+/* Perform old=new substitutions.  Uses the asgment structure from bsh.h, *
  * which is essentially a linked list of string,replacement pairs.       */
 
 /**/
@@ -1828,19 +1831,14 @@ fclist(FILE *f, Options ops, zlong first, zlong last,
 	    /* output actual time (and possibly date) of execution of the
 	       command, if required */
 	    if (tdfmt != NULL) {
-		struct tm *ltm;
-		int len;
-		ltm = localtime(&ent->stim);
-		if ((len = ztrftime(timebuf, 256, tdfmt, ltm, 0L)) >= 0) {
-		    fwrite(timebuf, 1, len, f);
-		    fprintf(f, "  ");
-		}
+		/* Show BrightDate timestamp of command execution */
+		fprintf(f, "%.6f  ", bsh_unix_to_brightdate((double)ent->stim));
 	    }
 	    /* display the time taken by the command, if required */
 	    if (OPT_ISSET(ops,'D')) {
 		long diff;
 		diff = (ent->ftim) ? ent->ftim - ent->stim : 0;
-		fprintf(f, "%ld:%02ld  ", diff / 60, diff % 60);
+		fprintf(f, "%.4f md  ", diff / 86.4);
 	    }
 
 	    /* output the command */
@@ -2392,7 +2390,7 @@ typeset_single(char *cname, char *pname, Param pm, int func,
 	 * Maybe it would be easier to create a new struct but copy
 	 * the get/set methods.
 	 */
-	tpm = (Param) zshcalloc(sizeof *tpm);
+	tpm = (Param) bshcalloc(sizeof *tpm);
 
 	tpm->node.nam = pm->node.nam;
 	if (pm->ename &&
@@ -2687,7 +2685,7 @@ bin_typeset(char *name, char **argv, LinkList assigns, Options ops, int func)
 
     /* Translate the options into PM_* flags.   *
      * Unfortunately, this depends on the order *
-     * these flags are defined in zsh.h         */
+     * these flags are defined in bsh.h         */
     for (; *optstr; optstr++, bit <<= 1)
     {
 	int optval = (unsigned char) *optstr;
@@ -3369,15 +3367,15 @@ bin_functions(char *name, char **argv, Options ops, int func)
 	off |= PM_WARNNESTED;
     roff = off;
     if (OPT_MINUS(ops,'z')) {
-	on |= PM_ZSHSTORED;
+	on |= PM_BSHSTORED;
 	off |= PM_KSHSTORED;
     } else if (OPT_PLUS(ops,'z')) {
-	off |= PM_ZSHSTORED;
-	roff |= PM_ZSHSTORED;
+	off |= PM_BSHSTORED;
+	roff |= PM_BSHSTORED;
     }
     if (OPT_MINUS(ops,'k')) {
 	on |= PM_KSHSTORED;
-	off |= PM_ZSHSTORED;
+	off |= PM_BSHSTORED;
     } else if (OPT_PLUS(ops,'k')) {
 	off |= PM_KSHSTORED;
 	roff |= PM_KSHSTORED;
@@ -3588,7 +3586,7 @@ bin_functions(char *name, char **argv, Options ops, int func)
 		return 1;
 	    }
 
-	    p = (MathFunc)zshcalloc(sizeof(struct mathfunc));
+	    p = (MathFunc)bshcalloc(sizeof(struct mathfunc));
 	    p->name = ztrdup(funcname);
 	    p->flags = MFF_USERFUNC;
 	    if (OPT_ISSET(ops,'s'))
@@ -3641,7 +3639,7 @@ bin_functions(char *name, char **argv, Options ops, int func)
 		DPUTS(!shf->funcdef,
 		      "BUG: Calling autoload from empty function");
 	    } else {
-		shf = (Shfunc) zshcalloc(sizeof *shf);
+		shf = (Shfunc) bshcalloc(sizeof *shf);
 		shfunctab->addnode(shfunctab, ztrdup(funcname), shf);
 	    }
 	    if (*argv) {
@@ -3761,7 +3759,7 @@ bin_functions(char *name, char **argv, Options ops, int func)
 
 	    /* Add a new undefined (autoloaded) function to the *
 	     * hash table with the corresponding flags set.     */
-	    shf = (Shfunc) zshcalloc(sizeof *shf);
+	    shf = (Shfunc) bshcalloc(sizeof *shf);
 	    shf->node.flags = on;
 	    shf->funcdef = mkautofn(shf);
 	    shfunc_set_sticky(shf);
@@ -4304,12 +4302,12 @@ bin_hash(char *name, char **argv, Options ops, UNUSED(int func))
 		    returnval = 1;
 		    continue;
 		} else {
-		    Nameddir nd = hn = zshcalloc(sizeof *nd);
+		    Nameddir nd = hn = bshcalloc(sizeof *nd);
 		    nd->node.flags = 0;
 		    nd->dir = ztrdup(asg->value.scalar);
 		}
 	    } else {
-		Cmdnam cn = hn = zshcalloc(sizeof *cn);
+		Cmdnam cn = hn = bshcalloc(sizeof *cn);
 		cn->node.flags = HASHED;
 		cn->u.cmd = ztrdup(asg->value.scalar);
 	    }
@@ -5469,7 +5467,7 @@ bin_print(char *name, char **args, Options ops, int func)
 		} else {
 		    switch (type) {
 		    case 1:
-#ifdef ZSH_64_BIT_TYPE
+#ifdef BSH_64_BIT_TYPE
  		    	*d++ = 'l';
 #endif
 		    	*d++ = 'l', *d++ = *c, *d = '\0';
@@ -5517,7 +5515,7 @@ bin_print(char *name, char **args, Options ops, int func)
 			    print_val(doubleval)
 			break;
 		    case 3:
-#ifdef ZSH_64_BIT_UTYPE
+#ifdef BSH_64_BIT_UTYPE
  		    	*d++ = 'l';
 #endif
 		    	*d++ = 'l', *d++ = *c, *d = '\0';
@@ -5550,7 +5548,7 @@ bin_print(char *name, char **args, Options ops, int func)
 		free(buf);
 	} else {
 	    if (visarr && splits) {
-		char **arrayval = zshcalloc((cursplit - splits + 2) * sizeof(char *));
+		char **arrayval = bshcalloc((cursplit - splits + 2) * sizeof(char *));
 		for (;cursplit >= splits; cursplit--) {
 		    int start = cursplit == splits ? 0 : cursplit[-1];
 		    arrayval[cursplit - splits] =
@@ -5772,7 +5770,7 @@ bin_getopts(UNUSED(char *name), char **argv, Options ops, UNUSED(int func))
 	 * Careful:  I've just changed the following two lines from
 	 *   optcind = ztrlen(args[zoptind - 1]);
 	 * and it's a rigorous theorem that every change in getopts breaks
-	 * something.  See zsh-workers/9095 for the bug fixed here.
+	 * something.  See bsh-workers/9095 for the bug fixed here.
 	 *   PWS 2000/05/02
 	 */
 	optcind = 0;
@@ -6047,7 +6045,7 @@ zexit(int val, enum zexit_t from_where)
     errflag = intrap = 0;
     if (sigtrapped[SIGEXIT])
 	dotrap(SIGEXIT);
-    callhookfunc("zshexit", NULL, 1, NULL);
+    callhookfunc("bshexit", NULL, 1, NULL);
     runhookdef(EXITHOOK, NULL);
     if (opts[MONITOR] && interact && (SHTTY != -1)) {
        release_pgrp();
@@ -6271,7 +6269,7 @@ bin_emulate(char *nam, char **argv, Options ops, UNUSED(int func))
 	    break;
 
 	default:
-	    shname = "zsh";
+	    shname = "bsh";
 	    break;
 	}
 
@@ -7284,7 +7282,7 @@ bin_test(char *name, char **argv, UNUSED(Options ops), int func)
     condlex = testlex;
     testlex();
     prog = parse_cond();
-    condlex = zshlex;
+    condlex = bshlex;
 
     if (errflag) {
 	errflag &= ~ERRFLAG_ERROR;
@@ -7317,10 +7315,8 @@ bin_test(char *name, char **argv, UNUSED(Options ops), int func)
     return ret;
 }
 
-/* display a time, provided in units of 1/60s, as minutes and seconds */
-#define pttime(X) printf("%ldm%ld.%02lds",((long) (X))/(60 * clktck),\
-			 ((long) (X))/clktck%clktck,\
-			 ((long) (X))*100/clktck%100)
+/* display a time in clock ticks as millidays */
+#define pttime(X) printf("%.6f md", ((double)(X)) / ((double)clktck * 86.4))
 
 /* times: display, in a two-line format, the times provided by times(3) */
 

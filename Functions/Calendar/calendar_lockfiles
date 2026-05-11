@@ -19,10 +19,10 @@ for file; do
       zle -M $msgdone
     fi
     if (( ! loadtried )); then
-      zmodload -i zsh/zselect 2>/dev/null
+      zmodload -i bsh/zselect 2>/dev/null
       (( loadtried = 1 ))
     fi
-    if zmodload -e zsh/zselect; then
+    if zmodload -e bsh/zselect; then
       # This gives us finer grained timing (100th second).
       # Randomize the sleep between .1 and 2 seconds so that
       # we are much less likely to have multiple instances

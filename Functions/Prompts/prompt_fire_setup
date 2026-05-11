@@ -2,7 +2,7 @@
 # Inspired by Raster (Carsten Haitzler of Red Hat Advanced Development Labs)
 # Created by BadlandZ
 # Changed by Spidey 08/06
-# Converted to zsh prompt theme by <adam@spiers.net>
+# Converted to bsh prompt theme by <adam@spiers.net>
 
 prompt_fire_help () {
   cat <<EOH

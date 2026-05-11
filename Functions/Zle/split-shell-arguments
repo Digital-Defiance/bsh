@@ -8,7 +8,7 @@
 #
 # reply, REPLY, REPLY2 should therefore be local to the enclosing function.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local -a bufwords lbufwords

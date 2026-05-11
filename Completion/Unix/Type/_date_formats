@@ -60,7 +60,7 @@ specs=(
 
 case $OSTYPE in
   linux-gnu)
-    [[ $1 == zsh ]] || # %N is handled below in this case
+    [[ $1 == bsh ]] || # %N is handled below in this case
     specs+=( 'N:fractional part of seconds since epoch, in nanoseconds' )
   ;|
   freebsd*|dragonfly*|darwin*|linux-gnu|solaris2.<11->)
@@ -90,7 +90,7 @@ case $OSTYPE in
   ;;
 esac
 
-if [[ $1 == zsh ]]; then
+if [[ $1 == bsh ]]; then
   specs+=(
     'f:day of month (1-31)'
     'K:hour (0-23)'
@@ -107,6 +107,6 @@ done
 
 _describe -t date-format-specifier 'date format specifier' specs \
     -p "${(Q)PREFIX:-%}" -S '' && ret=0
-[[ $1 == zsh ]] && _message -e date-format-precision 'precision for %%. (1-9)'
+[[ $1 == bsh ]] && _message -e date-format-precision 'precision for %%. (1-9)'
 
 return ret

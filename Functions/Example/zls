@@ -1,9 +1,9 @@
 # zls () {
 # simple internal ls using the stat module
 
-zmodload -F zsh/stat b:zstat || return 1
+zmodload -F bsh/stat b:zstat || return 1
 
-emulate -R zsh
+emulate -R bsh
 setopt localoptions
 
 local f opts='' L=L mod=: dirs list
@@ -38,7 +38,7 @@ if ((! ARGC)) then
     fi
     opts=d$opts
 elif [[ $opts = *t* && $ARGC -gt 1 ]]; then
-    # another glaringly obvious zsh trick:  reorder the argv list
+    # another glaringly obvious bsh trick:  reorder the argv list
     # by time, without messing up metacharacters inside
     local n='$1'
     for (( f = 2; f <= $ARGC; f++ )); do

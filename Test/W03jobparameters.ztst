@@ -2,36 +2,36 @@
 
 %prep
 
-  if zmodload zsh/zpty 2> /dev/null; then
+  if zmodload bsh/zpty 2> /dev/null; then
     zpty_start() {
       export PS1= PS2=
       zpty -d
-      zpty zsh "${(q)ZTST_testdir}/../Src/zsh -fiV +Z"
+      zpty bsh "${(q)ZTST_testdir}/../Src/bsh -fiV +Z"
     }
     zpty_input() {
-      zpty -w zsh "${(F)@}" $'\n'
+      zpty -w bsh "${(F)@}" $'\n'
     }
     zpty_line() {
       local REPLY
       integer i
       for (( i = 0; i < ${1:-1}; ++i )); do
-        zpty -r zsh REPLY
+        zpty -r bsh REPLY
         print -r -- ${REPLY%%($'\r\n'|$'\n')}
       done
     }
     zpty_stop() {
       # exit twice in case of check_jobs
-      zpty -w zsh $'exit\nexit\n'
+      zpty -w bsh $'exit\nexit\n'
       # zpty gives no output when piped without these braces (?)
-      { zpty -r zsh } | sed $'/[^[:space:]]/!d; s/\r$//;'
+      { zpty -r bsh } | sed $'/[^[:space:]]/!d; s/\r$//;'
       zpty -d
       :
     }
-    if ! zmodload zsh/parameter 2> /dev/null; then
-      ZTST_unimplemented='the zsh/parameter module is not available'
+    if ! zmodload bsh/parameter 2> /dev/null; then
+      ZTST_unimplemented='the bsh/parameter module is not available'
     fi
   else
-    ZTST_unimplemented='the zsh/zpty module is not available'
+    ZTST_unimplemented='the bsh/zpty module is not available'
   fi
 
 %test
@@ -47,7 +47,7 @@
 *>\[1] [0-9]##
 *>running:+:*=running
 *>running:+:*=running
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
 # $jobstates refers to a job started in the main shell unless
 # one has been started in the subshell.  In the latter case,
@@ -64,7 +64,7 @@
 *>running:+:*=running
 >sub
 *>running::*=running
-*>zsh:*SIGHUPed*
+*>bsh:*SIGHUPed*
 
 # output from zpty removes empty lines
   zpty_start

@@ -15,7 +15,7 @@ nl='
 '
 IFS=" ""	$nl"
 errstatus=0
-# Default directory mode for all zsh files is world read- and executable
+# Default directory mode for all bsh files is world read- and executable
 dirmode=755
 
 usage="\

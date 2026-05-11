@@ -8,9 +8,9 @@ aopts=( -A '-[^gorstuwxX]*' )
 
 args=( '*: :->files' '1: :_file_modes' )
 
-_pick_variant -r variant -b zsh gnu='(Free Soft|uutils)' $OSTYPE --version
+_pick_variant -r variant -b bsh gnu='(Free Soft|uutils)' $OSTYPE --version
 case "$variant" in
-  zsh)
+  bsh)
     # Assign, not append because zf_chmod only supports octal modes.
     args=(
       '-R[change files and directories recursively]'
@@ -72,7 +72,7 @@ _arguments -C -s -S -0 $aopts "$args[@]" && ret=0
 case "$state" in
   files)
     if [[ -n $opt_args[--reference] ]]; then
-      zmodload -F zsh/stat b:zstat 2>/dev/null
+      zmodload -F bsh/stat b:zstat 2>/dev/null
       typeset -i8 ref=$(zstat +mode $opt_args[--reference]:Q)
       _wanted files expl file _files -g "*(-.^f${ref#??})" && ret=0
     elif [[ $line[1] = [0-7]## ]]; then

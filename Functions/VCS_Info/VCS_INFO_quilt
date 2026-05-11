@@ -1,8 +1,8 @@
-## vim:ft=zsh:foldmethod=marker
+## vim:ft=bsh:foldmethod=marker
 
 (( ${+functions[VCS_INFO_quilt-match]} )) ||
 function VCS_INFO_quilt-match() {
-    emulate -L zsh
+    emulate -L bsh
     setopt extendedglob
     local d mode="$1" param="$2"
     local -a list
@@ -23,7 +23,7 @@ function VCS_INFO_quilt-match() {
 
 (( ${+functions[VCS_INFO_quilt-standalone-detect]} )) ||
 function VCS_INFO_quilt-standalone-detect() {
-    emulate -L zsh
+    emulate -L bsh
     setopt extendedglob
     local param
     local -i ret
@@ -66,7 +66,7 @@ function VCS_INFO_quilt-dirfind() {
     # that $vcs_comm[] is unchanged. Currently, changing anything in it
     # should not be an issue, but this makes sure the code can safely
     # be called elsewhere, too - if needed.
-    emulate -L zsh
+    emulate -L bsh
     setopt extendedglob
     local dir="$1" file="$2"; shift $#
     local ret oldfile olddir
@@ -89,7 +89,7 @@ function VCS_INFO_quilt-patch2subject() {
 }
 
 {
-    emulate -L zsh
+    emulate -L bsh
     setopt extendedglob
     local mode="$1"
     local patches pc qstring root

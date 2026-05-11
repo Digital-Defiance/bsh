@@ -92,7 +92,7 @@
   lspath==ls
 
   # If the module fails to load, individual test points will skip.
-  zmodload zsh/zpty 2>/dev/null || true 
+  zmodload bsh/zpty 2>/dev/null || true 
 
 %test
 
@@ -899,7 +899,7 @@
 
 # PRINTEXITVALUE only works if shell input is coming from standard input.
 # Goodness only knows why.
-  $ZTST_testdir/../Src/zsh -f <<<'
+  $ZTST_testdir/../Src/bsh -f <<<'
       setopt printexitvalue
       func() {
 	  false
@@ -907,14 +907,14 @@
       func
   '
 1:PRINT_EXIT_VALUE option
-?zsh: exit 1
+?bsh: exit 1
 
-  $ZTST_testdir/../Src/zsh -f <<<'
+  $ZTST_testdir/../Src/bsh -f <<<'
       setopt printexitvalue
       () { false; }
   '
 1:PRINT_EXIT_VALUE option for anonymous function
-?zsh: exit 1
+?bsh: exit 1
 
   setopt promptbang
   print -P !
@@ -1193,7 +1193,7 @@ F:Regression test for workers/41811
 ?fn3: foo: parameter not set
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     setopt warncreateglobal
     foo1=bar1
     unset foo1
@@ -1219,7 +1219,7 @@ F:Regression test for workers/41811
 ?fn:15: numeric parameter foo5 created globally in function fn
 
   fn() {
-    emulate -L zsh
+    emulate -L bsh
     setopt warncreateglobal
     TZ=UTC date >&/dev/null
     local um=$(TZ=UTC date 2>/dev/null)
@@ -1364,7 +1364,7 @@ F:Regression test for workers/41811
 >2
 
   pipefailfn1() {
-     emulate -L zsh
+     emulate -L bsh
      setopt errreturn pipefail
      false | { true; }
      print "Shouldn't get here, status $?"
@@ -1373,7 +1373,7 @@ F:Regression test for workers/41811
 1:PIPE_FAIL causes ERR_RETURN with complex end of pipeline: braces
 
   pipefailfn2() {
-     emulate -L zsh
+     emulate -L bsh
      setopt errreturn pipefail
      false | if true; then true; fi
      print "Shouldn't get here, status $?"
@@ -1383,7 +1383,7 @@ F:Regression test for workers/41811
 >Function failed, as expected
 
   pipefailfn3() {
-     emulate -L zsh
+     emulate -L bsh
      setopt errreturn pipefail
      false | while true; do break; done
      print "Shouldn't get here, status $?"
@@ -1393,7 +1393,7 @@ F:Regression test for workers/41811
 >Function failed, as expected
 
   pipefailfn4() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn pipefail
       false | true
       print "Shouldn't get here, status $?"
@@ -1402,7 +1402,7 @@ F:Regression test for workers/41811
 1:PIPE_FAIL causes ERR_RETURN in simple case
 
   pipefailfn5() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn pipefail
       false | { true | true; }
       print "Shouldn't get here, status $?"
@@ -1412,7 +1412,7 @@ F:Regression test for workers/41811
 >Function failed as expected
 
   pipefailfn6() {
-      emulate -L zsh
+      emulate -L bsh
       setopt errreturn pipefail
       false | { false | true; }
       print "Shouldn't get here, status $?"
@@ -1431,7 +1431,7 @@ F:Regression test for workers/41811
 >0
 
   () {
-      emulate -L zsh
+      emulate -L bsh
       setopt localloops
       for (( i = 0; i < 10; i++ )); do
 	  () {
@@ -1478,13 +1478,13 @@ F:If this test fails at the first unsetopt, refer to P01privileged.ztst.
   fi
 0:PRIVILEGED sanity check: default value is correct
 
-  if zmodload -e zsh/zpty 2>/dev/null; then
+  if zmodload -e bsh/zpty 2>/dev/null; then
     for target_dir target_pattern in \
       '.' '*' \
       '/' '/*'
     do
       before=`ls -a -- $target_dir`
-      zpty subshell $ZTST_testdir/../Src/zsh -f +Z
+      zpty subshell $ZTST_testdir/../Src/bsh -f +Z
       [[ $PWD == */options.tmp ]] || return 1 # Sanity check before calling rm(1).
       zpty -w subshell 'PS1=PROMPT'
       zpty -r -m subshell REPLY $'*PROMPT'
@@ -1497,12 +1497,12 @@ F:If this test fails at the first unsetopt, refer to P01privileged.ztst.
       [[ $before == $after ]] || return 1
     done
   else
-    ZTST_skip="the zsh/zpty module is not available"
+    ZTST_skip="the bsh/zpty module is not available"
   fi
   BEL=$'\a'
 0q:RM_STAR_SILENT
-*>zsh: sure you want to delete all 15 files in ${PWD:h}/options.tmp \[yn\]\? ${BEL}(|n)
-*>zsh: sure you want to delete (all <->|more than <->) files in / \[yn\]\? ${BEL}(|n)
+*>bsh: sure you want to delete all 15 files in ${PWD:h}/options.tmp \[yn\]\? ${BEL}(|n)
+*>bsh: sure you want to delete (all <->|more than <->) files in / \[yn\]\? ${BEL}(|n)
 
   () {
     local var
@@ -1519,11 +1519,11 @@ F:If this test fails at the first unsetopt, refer to P01privileged.ztst.
 F:compare E03posix.ztst
 >typeset -r var=''
 
-  $ZTST_testdir/../Src/zsh -fc "
+  $ZTST_testdir/../Src/bsh -fc "
   foo(){
       setopt err_return
       source <(echo 'if true; then return 42; fi')
-      echo \"This line is printed by zsh 5.9 (but it shouldn't be).\"
+      echo \"This line is printed by bsh 5.9 (but it shouldn't be).\"
   }
   foo
   "

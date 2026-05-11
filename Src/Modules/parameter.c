@@ -1,7 +1,7 @@
 /*
- * parameter.c - parameter interface to zsh internals
+ * parameter.c - parameter interface to bsh internals
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Sven Wischnowsky or the Zsh Development Group be liable
+ * In no event shall Sven Wischnowsky or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Sven Wischnowsky and the Zsh Development Group have been advised of
+ * even if Sven Wischnowsky and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Sven Wischnowsky and the Zsh Development Group specifically disclaim any
+ * Sven Wischnowsky and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Sven Wischnowsky and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -150,7 +150,7 @@ scanpmparameters(UNUSED(HashTable ht), ScanFunc func, int flags)
 static void
 setpmcommand(Param pm, char *value)
 {
-    Cmdnam cn = zshcalloc(sizeof(*cn));
+    Cmdnam cn = bshcalloc(sizeof(*cn));
 
     cn->node.flags = HASHED;
     cn->u.cmd = value;
@@ -180,7 +180,7 @@ setpmcommands(Param pm, HashTable ht)
 
     for (i = 0; i < ht->hsize; i++)
 	for (hn = ht->nodes[i]; hn; hn = hn->next) {
-	    Cmdnam cn = zshcalloc(sizeof(*cn));
+	    Cmdnam cn = bshcalloc(sizeof(*cn));
 	    struct value v;
 
 	    v.scanflags = v.valflags = v.start = 0;
@@ -297,7 +297,7 @@ setfunction(char *name, char *val, int dis)
 	zsfree(val);
 	return;
     }
-    shf = (Shfunc) zshcalloc(sizeof(*shf));
+    shf = (Shfunc) bshcalloc(sizeof(*shf));
     shf->funcdef = dupeprog(prog, 0);
     shf->node.flags = dis;
     shfunc_set_sticky(shf);
@@ -1521,7 +1521,7 @@ setpmnameddir(Param pm, char *value)
     if (!value)
 	zwarn("invalid value: ''");
     else {
-	Nameddir nd = (Nameddir) zshcalloc(sizeof(*nd));
+	Nameddir nd = (Nameddir) bshcalloc(sizeof(*nd));
 
 	nd->node.flags = 0;
 	nd->dir = value;
@@ -1570,7 +1570,7 @@ setpmnameddirs(Param pm, HashTable ht)
 	    if (!(val = getstrvalue(&v)))
 		zwarn("invalid value: ''");
 	    else {
-		Nameddir nd = (Nameddir) zshcalloc(sizeof(*nd));
+		Nameddir nd = (Nameddir) bshcalloc(sizeof(*nd));
 
 		nd->node.flags = 0;
 		nd->dir = ztrdup(val);
