@@ -1,21 +1,21 @@
 
 %prep
 
-  if ! zmodload zsh/rlimits 2>/dev/null
+  if ! zmodload bsh/rlimits 2>/dev/null
   then
-    ZTST_unimplemented="the zsh/rlimits module was disabled by configure (see config.modules)"
+    ZTST_unimplemented="the bsh/rlimits module was disabled by configure (see config.modules)"
     return 0
   fi
-  zmodload zsh/rlimits
+  zmodload bsh/rlimits
 
 %test
 
  limit | grep UNKNOWN || print OK
 0:Check if there is unknown resource(s) in the system
 >OK
-F:A failure here does not indicate any error in zsh. It just means there
-F:is a resource in your system that is unknown to zsh developers. Please
-F:report this to zsh-workers mailing list.
+F:A failure here does not indicate any error in bsh. It just means there
+F:is a resource in your system that is unknown to bsh developers. Please
+F:report this to bsh-workers mailing list.
 
   () {
     set -- ${(f)"$(ulimit -a)"}

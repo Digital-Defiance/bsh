@@ -1,4 +1,4 @@
-#!/usr/local/bin/zsh -f
+#!/usr/local/bin/bsh -f
 
 setopt kshglob extendedglob
 

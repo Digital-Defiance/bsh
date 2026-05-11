@@ -8,7 +8,7 @@
 # If the widget has the name `kill' in, the text deleted will be
 # saved for future yanking in the normal way.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local curcontext=:zle:$WIDGET

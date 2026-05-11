@@ -1,12 +1,12 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 
 # wrapper around zparseopts which gives it an interface similar to util-linux's
-# getopt(1). see zshcontrib(1) for documentation
+# getopt(1). see bshcontrib(1) for documentation
 
-emulate -L zsh -o extended_glob
-zmodload -i zsh/zutil || return 3
+emulate -L bsh -o extended_glob
+zmodload -i bsh/zutil || return 3
 
-local caller=${funcstack[2]:-${ZSH_ARGZERO:t}}
+local caller=${funcstack[2]:-${BSH_ARGZERO:t}}
 local errname=$caller:${0:t}
 local optspec pat i posix=0
 local -a match mbegin mend optvv argvv
@@ -31,7 +31,7 @@ name=( ${(@)name/#(-n|--name=)/} )
 
 (( $#array )) && array=( "${(@)array/#(-A|--array=)/}" )
 
-if [[ $zsh_eval_context[-1] == shfunc ]]; then
+if [[ $bsh_eval_context[-1] == shfunc ]]; then
   [[ $array == *[^A-Za-z0-9_.]* ]] && {
     print -ru2 - "$errname: invalid array name: $array"
     return 2
@@ -165,7 +165,7 @@ if [[ -n $array ]]; then
   trap "$array=( ${(j< >)${(@q+)optvv}} -- ${(j< >)${(@q+)argvv}} )" EXIT
 
 # called as function, print
-elif [[ $zsh_eval_context[-1] == shfunc ]]; then
+elif [[ $bsh_eval_context[-1] == shfunc ]]; then
   print -r - "${(@q+)optvv}" -- "${(@q+)argvv}"
 
 # called as a script, print. use unconditional single-quoting. this is ugly but

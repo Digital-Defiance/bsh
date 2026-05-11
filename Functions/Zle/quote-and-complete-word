@@ -41,6 +41,6 @@ _force_quote () {
 }
 zstyle ':completion:quote-and-complete-word:*' completer _force_quote
 
-# Handle zsh autoloading conventions
+# Handle bsh autoloading conventions
 
 [[ -o kshautoload ]] || quote-and-complete-word "$@"

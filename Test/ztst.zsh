@@ -1,10 +1,10 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 # The line above is just for convenience.  Normally tests will be run using
-# a specified version of zsh.  With dynamic loading, any required libraries
+# a specified version of bsh.  With dynamic loading, any required libraries
 # must already have been installed in that case.
 #
 # Takes one argument: the name of the test file.  Currently only one such
-# file will be processed each time ztst.zsh is run.  This is slower, but
+# file will be processed each time ztst.bsh is run.  This is slower, but
 # much safer in terms of preserving the correct status.
 # To avoid namespace pollution, all functions and parameters used
 # only by the script begin with ZTST_.
@@ -21,11 +21,11 @@
 : ${ZTST_continue:=0}
 
 # We require all options to be reset, not just emulation options.
-# Unfortunately, due to the crud which may be in /etc/zshenv this might
+# Unfortunately, due to the crud which may be in /etc/bshenv this might
 # still not be good enough.  Maybe we should trick it somehow.
-emulate -R zsh
+emulate -R bsh
 
-# By default tests are run in C locale. LANG must be passed to child zsh.
+# By default tests are run in C locale. LANG must be passed to child bsh.
 unset -m LC_\*
 export LANG=C
 
@@ -45,13 +45,13 @@ ZTST_find_UTF8 () {
 # Don't propagate variables that are set by default in the shell.
 typeset +x WORDCHARS
 
-# Set the module load path to correspond to this build of zsh.
+# Set the module load path to correspond to this build of bsh.
 # This Modules directory should have been created by "make check".
-[[ -d Modules/zsh ]] && module_path=( $PWD/Modules )
+[[ -d Modules/bsh ]] && module_path=( $PWD/Modules )
 
 # We need to be able to save and restore the options used in the test.
 # We use the $options variable of the parameter module for this.
-zmodload zsh/parameter
+zmodload bsh/parameter
 
 # Note that both the following are regular arrays, since we only use them
 # in whole array assignments to/from $options.
@@ -78,7 +78,7 @@ integer ZTST_testfailed=0
 # to using "tail -n NUM" instead of "tail -NUM".  Older versions of
 # tail don't support this.
 tail() {
-  emulate -L zsh
+  emulate -L bsh
 
   if [[ -z $TAIL_SUPPORTS_MINUS_N ]]; then
     local test
@@ -108,12 +108,12 @@ else
 fi
 [[ $ZTST_srcdir = /* ]] || ZTST_srcdir="$ZTST_testdir/$ZTST_srcdir"
 
-# Set the function autoload paths to correspond to this build of zsh.
+# Set the function autoload paths to correspond to this build of bsh.
 fpath=( $ZTST_srcdir/../Functions/*~*/CVS(/)
         $ZTST_srcdir/../Completion
         $ZTST_srcdir/../Completion/*/*~*/CVS(/) )
 
-: ${TMPPREFIX:=/tmp/zsh}
+: ${TMPPREFIX:=/tmp/bsh}
 ZTST_tmp=${TMPPREFIX}.ztst.$$
 if ! rm -f $ZTST_tmp || ! mkdir -p $ZTST_tmp || ! chmod go-w $ZTST_tmp; then
   print "Can't create $ZTST_tmp for exclusive use." >&2
@@ -323,7 +323,7 @@ $ZTST_code"
 
 # diff wrapper
 ZTST_diff() {
-  emulate -L zsh
+  emulate -L bsh
   setopt extendedglob
 
   local -a diff_arg

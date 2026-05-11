@@ -1,7 +1,7 @@
 /*
  * regex.c
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 2007,2012 Phil Pennock
  * All Rights Reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Phil Pennock or the Zsh Development Group be liable
+ * In no event shall Phil Pennock or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Phil Pennock and the Zsh Development Group have been advised of
+ * even if Phil Pennock and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Phil Pennock and the Zsh Development Group specifically disclaim any
+ * Phil Pennock and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Phil Pennock and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -56,17 +56,17 @@ zcond_regex_match(char **a, int id)
     regex_t re;
     regmatch_t *m, *matches = NULL;
     size_t matchessz = 0;
-    char *lhstr, *lhstr_zshmeta, *rhre, *rhre_zshmeta, *s, **arr, **x;
+    char *lhstr, *lhstr_bshmeta, *rhre, *rhre_bshmeta, *s, **arr, **x;
     int r, n, return_value, rcflags, reflags, nelem, start;
 
-    lhstr_zshmeta = cond_str(a,0,0);
-    rhre_zshmeta = cond_str(a,1,0);
+    lhstr_bshmeta = cond_str(a,0,0);
+    rhre_bshmeta = cond_str(a,1,0);
     rcflags = reflags = 0;
     return_value = 0; /* 1 => matched successfully */
 
-    lhstr = ztrdup(lhstr_zshmeta);
+    lhstr = ztrdup(lhstr_bshmeta);
     unmetafy(lhstr, NULL);
-    rhre = ztrdup(rhre_zshmeta);
+    rhre = ztrdup(rhre_bshmeta);
     unmetafy(rhre, NULL);
 
     switch(id) {

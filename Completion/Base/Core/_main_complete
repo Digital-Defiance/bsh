@@ -121,15 +121,15 @@ _last_menu_style=()
 
 if zstyle -s ":completion:${curcontext}:default" list-prompt tmp; then
   LISTPROMPT="$tmp"
-  zmodload -i zsh/complist
+  zmodload -i bsh/complist
 fi
 if zstyle -s ":completion:${curcontext}:default" select-prompt tmp; then
   MENUPROMPT="$tmp"
-  zmodload -i zsh/complist
+  zmodload -i bsh/complist
 fi
 if zstyle -s ":completion:${curcontext}:default" select-scroll tmp; then
   MENUSCROLL="$tmp"
-  zmodload -i zsh/complist
+  zmodload -i bsh/complist
 fi
 
 # Get the names of the completers to use in the positional parameters.
@@ -304,7 +304,7 @@ if [[ $compstate[old_list] = keep || nm -gt 1 ]]; then
       unset MENUSELECT
     elif [[ -n "$_menu_style[(r)select=long*]" ]]; then
       if [[ tmp -gt LINES ]]; then
-        zmodload -i zsh/complist
+        zmodload -i bsh/complist
         MENUSELECT=00
       fi
     fi
@@ -327,7 +327,7 @@ if [[ $compstate[old_list] = keep || nm -gt 1 ]]; then
 	  (( min )) || break
         done
 
-        zmodload -i zsh/complist
+        zmodload -i bsh/complist
         MENUSELECT="$min"
       else
         unset MENUSELECT

@@ -32,7 +32,7 @@ prompt_adam1_setup () {
   base_prompt_no_color="${base_prompt//(%K{[^\\\}]#\}|%k)/}"
   post_prompt_no_color="${post_prompt//(%K{[^\\\}]#\}|%k)/}"
 
-  add-zsh-hook precmd prompt_adam1_precmd
+  add-bsh-hook precmd prompt_adam1_precmd
 }
 
 prompt_adam1_precmd () {

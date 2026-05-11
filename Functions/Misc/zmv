@@ -1,8 +1,8 @@
 # function zmv {
 # zmv, zcp, zln:
 #
-# This is a multiple move based on zsh pattern matching.  To get the full
-# power of it, you need a postgraduate degree in zsh.  However, simple
+# This is a multiple move based on bsh pattern matching.  To get the full
+# power of it, you need a postgraduate degree in bsh.  However, simple
 # tasks work OK, so if that's all you need, here are some basic examples:
 #   zmv '(*).txt' '$1.lis'
 # Rename foo.txt to foo.lis, etc.  The parenthesis is the thing that
@@ -14,7 +14,7 @@
 # '(**/*).txt'.
 #   zmv -w '**/*.txt' '$1$2.lis'
 #   noglob zmv -W **/*.txt **/*.lis
-# These are the lazy version of the one above; with -w, zsh inserts the
+# These are the lazy version of the one above; with -w, bsh inserts the
 # parentheses for you in the search pattern, and with -W it also inserts
 # the numbered variables for you in the replacement pattern.  The catch
 # in the first version is that you don't need the / in the replacement
@@ -30,7 +30,7 @@
 #
 # Here's a more detailed description.
 #
-# Use zsh pattern matching to move, copy or link files, depending on
+# Use bsh pattern matching to move, copy or link files, depending on
 # the last two characters of the function name.  The general syntax is
 #   zmv '<inpat>' '<outstring>'
 # <inpat> is a globbing pattern, so it should be quoted to prevent it from
@@ -46,7 +46,7 @@
 # argument; accidental or deliberate use of other parameters is at owner's
 # risk and is not covered by the (non-existent) guarantee.
 #
-# As usual in zsh, /'s don't work inside parentheses.  There is a special
+# As usual in bsh, /'s don't work inside parentheses.  There is a special
 # case for (**/) and (***/):  these have the expected effect that the
 # entire relevant path will be substituted by the appropriate positional
 # parameter.
@@ -122,7 +122,7 @@
 #   non-positional parameters may not start with a number, although
 #   paranoiacs like the author will probably put them there anyway.
 
-emulate -RL zsh
+emulate -RL bsh
 setopt extendedglob
 
 local f g args match mbegin mend files action myname tmpf opt exec

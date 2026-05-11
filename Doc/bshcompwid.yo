@@ -1,0 +1,3 @@
+manpage(BSHCOMPWID)(1)(date())(bsh version())
+manpagename(bshcompwid)(bsh completion widgets)
+includefile(Bsh/compwid.yo)

@@ -31,7 +31,7 @@ if (( $LINES < 22 || $COLUMNS < 46 )); then
   return
 fi
 
-emulate -L zsh
+emulate -L bsh
 
 typeset -a tetris_shapes
 tetris_shapes=(
@@ -299,7 +299,7 @@ function __tetris-help {
   zcurses refresh stdscr
 }
 
-zmodload zsh/curses && {
+zmodload bsh/curses && {
   zcurses init
   __tetris-remove-wins
   zcurses refresh
@@ -314,7 +314,7 @@ zmodload zsh/curses && {
   local preview_height=6 preview_width=10
   local filled_block active_block 
   local fancygraphics
-  if zmodload zsh/langinfo && [[ $langinfo[CODESET] = UTF-8 ]]; then
+  if zmodload bsh/langinfo && [[ $langinfo[CODESET] = UTF-8 ]]; then
     filled_block=██
     active_block=▒▒
     fancygraphics=${@[(I)--silly]}

@@ -1,7 +1,7 @@
 /*
  * input.c - read and store lines of input
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -72,7 +72,7 @@
 #include <stdio.h>
 #endif
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "input.pro"
 
 /* the shell input fd */
@@ -90,7 +90,7 @@ int strin;
 /**/
 mod_export int inbufct;
 
-/* the flags controlling the input routines in input.c: see INP_* in zsh.h */
+/* the flags controlling the input routines in input.c: see INP_* in bsh.h */
 
 /**/
 int inbufflags;
@@ -355,7 +355,7 @@ ingetc(void)
 	    break;
     }
     if (!lexstop)
-	zshlex_raw_add(lastc);
+	bshlex_raw_add(lastc);
     return lastc;
 }
 
@@ -576,7 +576,7 @@ inungetc(int c)
 	     * can't back up where we want to.  Instead, we just push it
 	     * onto the input stack as an extra character.
 	     */
-	    char *cback = (char *)zshcalloc(2);
+	    char *cback = (char *)bshcalloc(2);
 	    cback[0] = (char) c;
 	    inpush(cback, INP_FREE|INP_CONT, NULL);
 	}
@@ -603,7 +603,7 @@ inungetc(int c)
 	    inbufleft = 0;
 	    inbuf = inbufptr = "";
 	}
-	zshlex_raw_back();
+	bshlex_raw_back();
     }
 }
 
@@ -749,7 +749,7 @@ inpoptop(void)
 	     * the input stack.
 	     */
 	    if ((inbufflags & (INP_ALIAS|INP_HIST|INP_RAW_KEEP)) == INP_ALIAS)
-		zshlex_raw_back();
+		bshlex_raw_back();
 	}
     }
 

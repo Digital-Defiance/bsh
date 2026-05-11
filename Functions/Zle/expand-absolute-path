@@ -2,7 +2,7 @@
 # This is a ZLE widget to expand the absolute path to a file,
 # using directory naming to shorten the path where possible.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases
 
 autoload -Uz modify-current-argument

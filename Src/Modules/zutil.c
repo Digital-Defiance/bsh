@@ -1,7 +1,7 @@
 /*
  * zutil.c - misc utilities
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1999 Sven Wischnowsky
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Sven Wischnowsky or the Zsh Development Group be liable
+ * In no event shall Sven Wischnowsky or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Sven Wischnowsky and the Zsh Development Group have been advised of
+ * even if Sven Wischnowsky and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Sven Wischnowsky and the Zsh Development Group specifically disclaim any
+ * Sven Wischnowsky and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Sven Wischnowsky and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -357,7 +357,7 @@ setstypat(Style s, char *pat, Patprog prog, char **vals, int eval)
      * the number of components, and if that's equal, compare the specificity
      * of the components.
      *
-     * This corresponds to the notion of 'more specific' in the zshmodules(1)
+     * This corresponds to the notion of 'more specific' in the bshmodules(1)
      * documentation of zstyle.
      */
 
@@ -402,7 +402,7 @@ setstypat(Style s, char *pat, Patprog prog, char **vals, int eval)
 static Style
 addstyle(char *name)
 {
-    Style s = (Style) zshcalloc(sizeof(*s));
+    Style s = (Style) bshcalloc(sizeof(*s));
 
     zstyletab->addnode(zstyletab, ztrdup(name), s);
 

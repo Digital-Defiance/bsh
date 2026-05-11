@@ -44,7 +44,7 @@ allargs=(
   w '(-k -z)-w[specify that arguments refer to files compiled with zcompile]'
   W '-+W[turn on WARN_NESTED_VAR for function]'
   x "($fopts -n +n)-+x[export parameter]"
-  z "($popts -k -w)-+z[mark function for zsh-style autoloading]"
+  z "($popts -k -w)-+z[mark function for bsh-style autoloading]"
 )
 allargs[rp]="$allargs[r]"
 

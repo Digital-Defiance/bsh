@@ -40,7 +40,7 @@ case $state in
           '-search=-:topic:(all auctions books cars classical \
             dvd electronics garden kitchen music \
             outlet photo software toys tools \
-            vhs videogames zshops wireless)' && ret=0
+            vhs videogames bshops wireless)' && ret=0
       ;;
       austlii)
         _arguments $args \

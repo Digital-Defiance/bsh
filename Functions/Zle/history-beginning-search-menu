@@ -30,10 +30,10 @@
 # at the start of the line is equivalent to specifying a prefix
 # argument.)
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
-zmodload -i zsh/parameter
+zmodload -i bsh/parameter
 
 local -aU matches
 local -a display

@@ -18,7 +18,7 @@
 # command line to be executed.  If it sets the parameter REPLY to `done',
 # the command line will not then be executed by tcp_spam, else it will.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local cursess=$TCP_SESS sessstr

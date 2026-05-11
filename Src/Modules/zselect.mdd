@@ -1,4 +1,4 @@
-name=zsh/zselect
+name=bsh/zselect
 link=dynamic
 load=no
 

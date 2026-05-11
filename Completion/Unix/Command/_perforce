@@ -255,7 +255,7 @@
 #
 # Much of the information from Perforce is provided by calls to p4
 # commands.  This is done via the _call_program interface, as described
-# in the zshcompsys manual page.  Hence a suitable context with the
+# in the bshcompsys manual page.  Hence a suitable context with the
 # `command' style allows the user to take control of this call.
 # The tags used are the name of the p4 command, or in the case of
 # calls to help subcommands, `help-<subcommand>'.  Note that if the
@@ -767,7 +767,7 @@ _perforce_dates() {
   prefix=${(Q)PREFIX}
   for (( i = 6; i >= 1; i-- )); do
     # Match from the most specific back.
-    # The following is one of those occasions where zsh
+    # The following is one of those occasions where bsh
     # substitution skips to the right answer without ever
     # passing through the real world on the way.
     if [[ $prefix = *${(j.*.)~suffixes[1,i-1]}* ]]; then

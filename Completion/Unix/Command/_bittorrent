@@ -4,7 +4,7 @@
 # Pakkanen, 2004. Most of the command descriptions are from the Debian
 # project's man pages.
 
-# Modified by R.Ramkumar, 2006 to conform to zsh completion standards and
+# Modified by R.Ramkumar, 2006 to conform to bsh completion standards and
 # enhance completion for certain options.
 
 case $service in

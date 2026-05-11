@@ -16,7 +16,7 @@ Makemod.in Makemod
 ansi2knr
 bltinmods.list
 cscope.out
-libzsh.so*
+libbsh.so*
 modules-bltin
 modules.index
 modules.index.tmp
@@ -28,8 +28,8 @@ stamp-modobjs
 stamp-modobjs.tmp
 tags TAGS
 version.h
-zsh
-zshcurses.h
-zshpaths.h
-zshterm.h
-zshxmods.h
+bsh
+bshcurses.h
+bshpaths.h
+bshterm.h
+bshxmods.h

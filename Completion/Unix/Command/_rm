@@ -8,7 +8,7 @@ args=(
   '(-r -R --recursive)'{-r,-R,--recursive}'[remove directories and their contents recursively]'
   '*:: :->file'
 )
-_pick_variant -r variant -b zsh gnu='(GNU|uutils)' $OSTYPE --version
+_pick_variant -r variant -b bsh gnu='(GNU|uutils)' $OSTYPE --version
 case $variant; in
   gnu)
     opts=()
@@ -28,12 +28,12 @@ case $variant; in
   *)
     args=(${args:#*)--*\[*})
     ;|
-  darwin*|dragonfly*|freebsd*|netbsd*|openbsd*|zsh)
+  darwin*|dragonfly*|freebsd*|netbsd*|openbsd*|bsh)
     args+=(
       '-d[remove directories as well]'
     )
     ;|
-  zsh)
+  bsh)
     args+=(
       '-s[enable paranoid behavior]'
     )

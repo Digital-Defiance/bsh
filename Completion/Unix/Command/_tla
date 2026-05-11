@@ -56,7 +56,7 @@ _tla_local_revisions () {
 (( $+functions[_tla_config] )) ||
 _tla_config () {
 
-  # zsh 4.1.1+ is recommended; 4.0.6 gives the error below when doing
+  # bsh 4.1.1+ is recommended; 4.0.6 gives the error below when doing
   # tla build-config e<TAB>
   # _path_files:322: no matches found: configs//e/.(/)
   # whereas 4.1.1 completes correctly

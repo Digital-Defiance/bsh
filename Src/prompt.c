@@ -1,7 +1,7 @@
 /*
- * prompt.c - construct zsh prompts
+ * prompt.c - construct bsh prompts
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,23 +12,25 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "prompt.pro"
+
+extern double bsh_unix_to_brightdate(double unix_secs);
 
 /* current text attributes */
 
@@ -219,7 +221,7 @@ promptexpand(char *s, int ns, const char *marker, char *rs, char *Rs)
     new_vars.Rstring = Rs;
     new_vars.fm = s;
     new_vars.bufspc = 256;
-    new_vars.bp = new_vars.bufline = new_vars.buf = zshcalloc(new_vars.bufspc);
+    new_vars.bp = new_vars.bufline = new_vars.buf = bshcalloc(new_vars.bufspc);
     new_vars.bp1 = NULL;
     new_vars.truncwidth = 0;
 
@@ -264,7 +266,7 @@ zattrescape(zattr atr, int *len)
     new_vars.last = bv;
     bv = &new_vars;
     new_vars.bufspc = 256;
-    new_vars.bp = new_vars.bufline = new_vars.buf = zshcalloc(new_vars.bufspc);
+    new_vars.bp = new_vars.bufline = new_vars.buf = bshcalloc(new_vars.bufspc);
     new_vars.dontcount = 1;
 
     txtunknownattrs = 0;
@@ -700,6 +702,16 @@ putpromptchar(int doprint, int endchar)
 		    *bv->bp++ = Outpar;
 		}
 		break;
+	    case 'P':
+		{
+		    struct timespec bts;
+		    zgettime(&bts);
+		    double bd = bsh_unix_to_brightdate(
+			(double)bts.tv_sec + (double)bts.tv_nsec * 1e-9);
+		    addbufspc(32);
+		    bv->bp += sprintf(bv->bp, "%.6f", bd);
+		    break;
+		}
 	    case 't':
 	    case '@':
 	    case 'T':
@@ -1843,7 +1855,7 @@ mixattrs(zattr primary, zattr mask, zattr secondary)
 			<< (shift + i);
 		}
 		if (!truecolor_terminal() && (!empty(GETCOLORATTR->funcs) ||
-			!load_module("zsh/nearcolor", NULL, 1))) {
+			!load_module("bsh/nearcolor", NULL, 1))) {
 		    struct color_rgb color = {
 			(mix >> (shift + 16)) & 0xff,
 			(mix >> (shift + 8)) & 0xff,
@@ -1988,7 +2000,7 @@ match_colour(const char **teststrp, int is_fg, int colour)
 	    *teststrp = end;
 	    colour = runhookdef(GETCOLORATTR, &color) - 1;
 	    if (colour == -1 && !truecolor_terminal() &&
-		    !load_module("zsh/nearcolor", NULL, 1))
+		    !load_module("bsh/nearcolor", NULL, 1))
 		colour = runhookdef(GETCOLORATTR, &color) - 1;
 	    if (colour == -1) { /* use true color (24-bit) */
 		colour = (((color.red << 8) + color.green) << 8) + color.blue;

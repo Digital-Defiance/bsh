@@ -1,4 +1,4 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local line showline restline REPLY REPLY2 userange nobackup datefmt
@@ -10,9 +10,9 @@ local -a calendar_entries calendar_addlines
 local -a times calopts showprog lockfiles match mbegin mend tmplines
 local -A reply
 
-zmodload -i zsh/datetime || return 1
-zmodload -i zsh/zutil || return 1
-zmodload -F zsh/files b:zf_ln || return 1
+zmodload -i bsh/datetime || return 1
+zmodload -i bsh/zutil || return 1
+zmodload -F bsh/files b:zf_ln || return 1
 
 autoload -Uz calendar_{add,parse,read,scandate,show,lockfiles}
 
@@ -254,7 +254,7 @@ if (( verbose )); then
   fi
 fi
 
-local mycmds="${TMPPREFIX:-/tmp/zsh}.calendar_cmds.$$"
+local mycmds="${TMPPREFIX:-/tmp/bsh}.calendar_cmds.$$"
 zf_ln -fn =(<<<'') $mycmds || return 1
 
 # start of subshell for OS file locking
@@ -266,7 +266,7 @@ zf_ln -fn =(<<<'') $mycmds || return 1
     # Attempt to lock both $donefile and $calendar.
     # Don't lock $newfile; we've tried our best to make
     # the name unique.
-    if zmodload -F zsh/system b:zsystem && zsystem supports flock &&
+    if zmodload -F bsh/system b:zsystem && zsystem supports flock &&
       zsystem flock $calendar 2>/dev/null &&
       zsystem flock $donefile 2>/dev/null; then
       # locked OK
@@ -402,7 +402,7 @@ zf_ln -fn =(<<<'') $mycmds || return 1
   if [[ -n $sched ]]; then
     if [[ $next -ge 0 ]]; then
       # Remove any existing calendar scheduling.
-      i=${"${(@)zsh_scheduled_events#*:*:}"[(I)calendar -s*]}
+      i=${"${(@)bsh_scheduled_events#*:*:}"[(I)calendar -s*]}
       {
         (( i )) && print sched -$i
         print -r -- ${(qq)sched} $next calendar "${calopts[@]}" $next $next

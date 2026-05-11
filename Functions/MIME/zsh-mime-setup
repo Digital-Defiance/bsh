@@ -1,9 +1,9 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases
 
 local opt o_verbose o_list i
 
-autoload -Uz zsh-mime-handler
+autoload -Uz bsh-mime-handler
 
 while getopts "flv" opt; do
   case $opt in
@@ -19,7 +19,7 @@ while getopts "flv" opt; do
 
     # Force; discard any existing settings before reading.
     (f)
-    unset -m zsh_mime_\*
+    unset -m bsh_mime_\*
     ;;
 
     (*)
@@ -39,16 +39,16 @@ if [[ -n $o_list ]]; then
   local list_word
   local -a handlers
   if (( $# )); then
-    handlers=(${(k)zsh_mime_handlers[(I)${(j.|.)*}]})
+    handlers=(${(k)bsh_mime_handlers[(I)${(j.|.)*}]})
   else
-    handlers=(${(k)zsh_mime_handlers})
+    handlers=(${(k)bsh_mime_handlers})
   fi
   for suffix in ${(o)handlers}; do
       zstyle -s ":mime:.$suffix:" handler list_word ||
-        list_word=${zsh_mime_handlers[$suffix]}
+        list_word=${bsh_mime_handlers[$suffix]}
       print ${(r.10.)suffix}$list_word
       zstyle -s ":mime:.$suffix:" flags list_word ||
-        list_word=${zsh_mime_flags[$suffix]}
+        list_word=${bsh_mime_flags[$suffix]}
       if [[ -n $list_word ]]; then
 	print "  flags: $list_word"
       fi
@@ -58,9 +58,9 @@ fi
 
 
 # Handler for each suffix.
-(( ${+zsh_mime_handlers} )) || typeset -gA zsh_mime_handlers
+(( ${+bsh_mime_handlers} )) || typeset -gA bsh_mime_handlers
 # Corresponding flags, if any, for handler
-(( ${+zsh_mime_flags} )) || typeset -gA zsh_mime_flags
+(( ${+bsh_mime_flags} )) || typeset -gA bsh_mime_flags
 
 # Internal maps read from MIME configuration files.
 # Note we don't remember the types, just the mappings from suffixes
@@ -318,7 +318,7 @@ done
 
 # Check for styles which override whatever is in the file.
 # We need to make sure there is a handler set up; for some
-# uses we may need to defer checking styles until zsh-mime-handler.
+# uses we may need to defer checking styles until bsh-mime-handler.
 # How much we need to do here is a moot point.
 zstyle -L | while read line; do
   array=(${(Q)${(z)line}})
@@ -326,9 +326,9 @@ zstyle -L | while read line; do
         $array[2] = (#b):mime:.([^:]##):(*) ]]; then
     suffix=$match[1]
     # Make sure there is a suffix alias set up for this.
-    alias -s $suffix >&/dev/null || alias -s $suffix=zsh-mime-handler
+    alias -s $suffix >&/dev/null || alias -s $suffix=bsh-mime-handler
     # Also for upper case variant
-    alias -s ${(U)suffix} >&/dev/null || alias -s ${(U)suffix}=zsh-mime-handler
+    alias -s ${(U)suffix} >&/dev/null || alias -s ${(U)suffix}=bsh-mime-handler
   fi
 done
 
@@ -339,7 +339,7 @@ done
 
 for suffix line in ${(kv)suffix_type_map}; do
   # Skip if we already have a handler.
-  [[ -n $zsh_mime_handlers[$suffix] ]] && continue
+  [[ -n $bsh_mime_handlers[$suffix] ]] && continue
 
   # Split the space-separated list of types.
   array=(${=line})
@@ -363,13 +363,13 @@ for suffix line in ${(kv)suffix_type_map}; do
 
   if [[ -n $line2 ]]; then
     # Found a type with a handler.
-    # Install the zsh handler as an alias, but never override
+    # Install the bsh handler as an alias, but never override
     # existing suffix handling.
-    alias -s $suffix >&/dev/null || alias -s $suffix=zsh-mime-handler
-    alias -s ${(U)suffix} >&/dev/null || alias -s ${(U)suffix}=zsh-mime-handler
+    alias -s $suffix >&/dev/null || alias -s $suffix=bsh-mime-handler
+    alias -s ${(U)suffix} >&/dev/null || alias -s ${(U)suffix}=bsh-mime-handler
 
-    zsh_mime_handlers[$suffix]=$line2
-    zsh_mime_flags[$suffix]=$type_flags_map[$type]
+    bsh_mime_handlers[$suffix]=$line2
+    bsh_mime_flags[$suffix]=$type_flags_map[$type]
   fi
 done
 

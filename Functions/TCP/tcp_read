@@ -54,11 +54,11 @@
 #        multiple sessions.  Can be a comma-separated list, too.
 # -T TO  This sets an overall timeout, again in seconds.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases
 # set -x
 
-zmodload -i zsh/mathfunc
+zmodload -i bsh/mathfunc
 
 local opt drain line quiet block read_fd all sess key val noprint
 local -A read_fds
@@ -152,7 +152,7 @@ if (( timeout_all )); then
   (( endtime = SECONDS + timeout_all ))
 fi
 
-zmodload -i zsh/zselect
+zmodload -i bsh/zselect
 
 if [[ -n $block ]]; then
   if (( timeout_all )); then

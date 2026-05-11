@@ -1,0 +1,23 @@
+COMMENT(!MOD!bsh/terminfo
+Interface to the terminfo database.
+!MOD!)
+The tt(bsh/terminfo) module makes available one builtin command:
+
+startitem()
+findex(echoti)
+cindex(terminfo value, printing)
+item(tt(echoti) var(cap) [ var(arg) ])(
+Output the terminfo value corresponding to the capability
+var(cap), instantiated with var(arg) if applicable.
+)
+enditem()
+
+The tt(bsh/terminfo) module makes available one parameter:
+
+startitem()
+vindex(terminfo)
+item(tt(terminfo))(
+An associative array that maps terminfo capability names to
+their values.
+)
+enditem()

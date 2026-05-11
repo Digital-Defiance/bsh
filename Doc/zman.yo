@@ -5,7 +5,7 @@ DEFINESYMBOL(zman)()\
 STARTDEF()
 DEFINESYMBOL(zman)
 )
-TYPEOUT(Zsh Yodl-to-man converter)
+TYPEOUT(Bsh Yodl-to-man converter)
 
 INCLUDEFILE(zmacros)
 redef(ifzman)(1)(ARG1)

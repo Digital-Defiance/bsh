@@ -19,7 +19,7 @@
 # Per-session logs are raw output, otherwise $TCP_PROMPT is prepended
 # to each line.
 
-emulate -L zsh
+emulate -L bsh
 setopt cbases extendedglob
 
 local opt append sess close

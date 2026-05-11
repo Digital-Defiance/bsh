@@ -5,7 +5,7 @@
 # and start from the word before last.  Otherwise, it will operate on
 # the current line.
 
-emulate -L zsh
+emulate -L bsh
 setopt typesetsilent
 
 typeset -g __copyword

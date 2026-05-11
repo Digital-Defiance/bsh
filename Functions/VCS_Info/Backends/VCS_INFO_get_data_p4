@@ -1,6 +1,6 @@
-## vim:ft=zsh
+## vim:ft=bsh
 ## perforce support by: Phil Pennock
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 # XXX: This soooo needs to be cached
 setopt localoptions extendedglob

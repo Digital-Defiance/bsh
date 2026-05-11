@@ -1,4 +1,4 @@
-name=zsh/mapfile
+name=bsh/mapfile
 link=dynamic
 load=no
 

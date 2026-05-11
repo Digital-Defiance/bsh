@@ -33,14 +33,14 @@ prompt_clint_setup () {
   p_date="$pc['\[']%F{$pcc[2]}%D{%a %y/%m/%d %R %Z}$pc['\]']"
   p_tty="$pc['\[']%F{$pcc[3]}%l$pc['\]']"
   p_plat="$pc['\[']%F{$pcc[2]}${MACHTYPE}/${OSTYPE}/$(uname -r)$pc['\]']"
-  p_ver="$pc['\[']%F{$pcc[2]}${ZSH_VERSION}$pc['\]']"
+  p_ver="$pc['\[']%F{$pcc[2]}${BSH_VERSION}$pc['\]']"
 
   [[ -n "$WINDOW" ]] && p_win="$pc['\(']%F{$pcc[4]}$WINDOW$pc['\)']"
 
   p_userpwd="$pc['<']%F{$pcc[3]}%n@%m$p_win%F{$pcc[5]}:%F{$pcc[4]}%~$pc['>']"
   local p_vcs="%(2v.%U%2v%u.)"
 
-  p_shlvlhist="%fzsh%(2L./$SHLVL.) %B%h%b "
+  p_shlvlhist="%fbsh%(2L./$SHLVL.) %B%h%b "
   p_rc="%(?..[%?%1v] )"
   p_end="%f%B%#%b "
 
@@ -52,7 +52,7 @@ $p_userpwd
 $p_shlvlhist$p_rc$p_vcs$p_end"
   PS2='%(4_.\.)%3_> %E'
 
-  add-zsh-hook precmd prompt_clint_precmd
+  add-bsh-hook precmd prompt_clint_precmd
 }
 
 prompt_clint_precmd () {

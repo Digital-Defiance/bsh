@@ -1,4 +1,4 @@
-name=zsh/stat
+name=bsh/stat
 link=dynamic
 load=no
 

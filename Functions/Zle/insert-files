@@ -7,7 +7,7 @@
 # expansion at each step.  When you hit return, they will be inserted into
 # the command line.
 
-emulate -L zsh
+emulate -L bsh
 setopt nobadpattern
 
 local key str files

@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bsh
 # zed
 #
 # No other shell could do this.
@@ -51,7 +51,7 @@ local curcontext=zed:::
 	zstyle ":completion:zed:*" insert-tab yes
 }
 
-zmodload zsh/terminfo 2>/dev/null
+zmodload bsh/terminfo 2>/dev/null
 
 __zed_pg_up()
 {

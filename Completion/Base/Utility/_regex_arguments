@@ -14,9 +14,9 @@
 
 # pattern = "/" ( glob | "[]" ) "/" [ "+" | "-" ]
 # lookahead = "%" glob "%"
-# guard = "-" zsh-code-to-eval
-# caction = ":" tag ":" descr ":" zsh-code-to-eval
-# action = "{" zsh-code-to-eval "}"
+# guard = "-" bsh-code-to-eval
+# caction = ":" tag ":" descr ":" bsh-code-to-eval
+# action = "{" bsh-code-to-eval "}"
 
 ## regex word sequence definition:
 

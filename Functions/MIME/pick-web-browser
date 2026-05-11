@@ -19,10 +19,10 @@
 # If no $DISPLAY is set, the function tries to start a terminal-based
 # browser instead.
 
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob cbases nonomatch warncreateglobal
 
-zmodload -i zsh/zutil
+zmodload -i bsh/zutil
 
 local -a xbrowsers ttybrowsers
 

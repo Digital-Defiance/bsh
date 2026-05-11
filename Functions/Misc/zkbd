@@ -1,4 +1,4 @@
-#!/bin/zsh -f
+#!/bin/bsh -f
 
 [[ -o interactive ]] && {
     local -hi ARGC		# local is a no-op outside of a function
@@ -8,7 +8,7 @@
     }
 }
 
-emulate -RL zsh
+emulate -RL bsh
 local zkbd term key seq
 
 zkbd=${ZDOTDIR:-$HOME}/.zkbd
@@ -123,7 +123,7 @@ then
     print $'\n---------\n'
     if [[ -o multibyte ]]
     then cat <<EOF
-You are using zsh in MULTIBYTE mode to support modern character sets (for
+You are using bsh in MULTIBYTE mode to support modern character sets (for
 languages other than English).  To use the Meta or Alt keys, you probably
 need to revert to single-byte mode with a command such as
 
@@ -139,8 +139,8 @@ EOF
     fi
     cat <<EOF
 
-If you want to use these extra keys with zsh, try adding the above command
-to your ${ZDOTDIR:-$HOME}/.zshrc file.
+If you want to use these extra keys with bsh, try adding the above command
+to your ${ZDOTDIR:-$HOME}/.bshrc file.
 
 See also "man stty" or the documentation for your terminal or emulator.
 EOF
@@ -156,7 +156,7 @@ by adding
 
     bindkey -m
 
-to your ${ZDOTDIR:-$HOME}/.zshrc file.
+to your ${ZDOTDIR:-$HOME}/.bshrc file.
 
 EOF
 
@@ -174,9 +174,9 @@ If your keyboard does not have the requested key, press Space to skip to
 the next key.
 
 Do not type ahead!  Wait at least one second after pressing each key for
-zsh to read the entire sequence and prompt for the next key.  If a key
+bsh to read the entire sequence and prompt for the next key.  If a key
 sequence does not echo within 2 seconds after you press it, that key may
-not be sending any sequence at all.  In this case zsh is not able to make
+not be sending any sequence at all.  In this case bsh is not able to make
 use of that key.  Press Space to skip to the next key.
 
 EOF
@@ -259,7 +259,7 @@ cat <<EOF
 Parameter assignments for the keys you typed have been written to the file:
 $termFile
 
-You may read this file into ${ZDOTDIR:-$HOME}/.zshrc or another startup
+You may read this file into ${ZDOTDIR:-$HOME}/.bshrc or another startup
 file with the "source" or "." commands, then reference the \$key parameter
 in bindkey commands, for example like this:
 

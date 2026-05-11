@@ -1,8 +1,8 @@
 %prep
 
-  if ! zmodload zsh/pcre 2>/dev/null
+  if ! zmodload bsh/pcre 2>/dev/null
   then
-    ZTST_unimplemented="the zsh/pcre module was disabled by configure (see config.modules)"
+    ZTST_unimplemented="the bsh/pcre module was disabled by configure (see config.modules)"
     return 0
   fi
   setopt rematch_pcre
@@ -145,7 +145,7 @@
 >1
 >0
 
-# Bash mode; note zsh documents that variables not updated on match failure,
+# Bash mode; note bsh documents that variables not updated on match failure,
 # which remains different from bash
   setopt bash_rematch
   [[ "goo" -pcre-match ^f.+$ ]] ; print $?

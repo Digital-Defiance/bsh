@@ -1,17 +1,17 @@
 
-"" A Vim syntax highlighting file for Doc/Zsh/*.yo
+"" A Vim syntax highlighting file for Doc/Bsh/*.yo
 
 " To try this, run:
-"     cd Doc/Zsh && vim --cmd "source ./.vimrc" zle.yo
-" (This sources the file <Doc/Zsh/.vimrc>.)
+"     cd Doc/Bsh && vim --cmd "source ./.vimrc" zle.yo
+" (This sources the file <Doc/Bsh/.vimrc>.)
 "
 " To install this permanently:
 " 1. Copy this file to ~/.vim/syntax/zyodl.vim
 " 2. Create ~/.vim/filetype.vim as explained in ":help new-filetype" case C.
 " 3. Add the following command to ~/.vim/filetype.vim:
-"      autocmd BufRead,BufNewFile **/Doc/Zsh/*.yo setfiletype zyodl
+"      autocmd BufRead,BufNewFile **/Doc/Bsh/*.yo setfiletype zyodl
 " Or alternatively:
-" 1. Append the contents of Doc/Zsh/.vimrc to your .vimrc, changing «<sfile>» to «%».
+" 1. Append the contents of Doc/Bsh/.vimrc to your .vimrc, changing «<sfile>» to «%».
 "
 " You may also wish to set:
 "     autocmd FileType zyodl setlocal conceallevel=2
@@ -30,7 +30,7 @@
 "   comment(foo)
 "   example(print *.c+LPAR()#q:s/#%+LPAR()#b+RPAR()s+LPAR()*+RPAR().c/'S${match[1]}.C'/+RPAR())
 "   example(zargs -- **/*(.) -- ls -l)
-"   ifzman(zmanref(zshmisc))ifnzman(noderef(Redirection))
+"   ifzman(zmanref(bshmisc))ifnzman(noderef(Redirection))
 "   LPAR()foo 42 foo+RPAR()
 "   chapter(foo (foo) foo)
 "   chapter(foo (foo (foo) foo) foo) bar

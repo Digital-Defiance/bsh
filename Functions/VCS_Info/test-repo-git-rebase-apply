@@ -1,10 +1,10 @@
-#!/usr/local/bin/zsh -f
+#!/usr/local/bin/bsh -f
 #
 # This script creates a test repository for testing the git backend's behaviour during rebase-apply operations.
 #
 # It works in ./vcs-test/.
 #
-# Suggested zshrc settings:
+# Suggested bshrc settings:
 #
 #     autoload vcs_info
 #     precmd() { vcs_info; typeset -pm vcs\* }

@@ -1,6 +1,6 @@
-## vim:ft=zsh
+## vim:ft=bsh
 ## perforce support by: Phil Pennock
-## Distributed under the same BSD-ish license as zsh itself.
+## Distributed under the same BSD-ish license as bsh itself.
 
 # If use-server is true in the :vcs_info:p4:... context, contact the
 # server to decide whether the directory is handled by Perforce.  This can
@@ -18,7 +18,7 @@
 
 (( ${+functions[VCS_INFO_p4_get_server]} )) ||
 VCS_INFO_p4_get_server() {
-  emulate -L zsh
+  emulate -L bsh
   setopt extendedglob
 
   local -a settings

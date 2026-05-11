@@ -1,9 +1,9 @@
-name=zsh/datetime
+name=bsh/datetime
 
 link=either
 load=no
 
 functions='Functions/Calendar/*'
-autofeatures="b:strftime p:EPOCHSECONDS p:EPOCHREALTIME p:epochtime"
+autofeatures="b:strftime p:EPOCHSECONDS p:EPOCHREALTIME p:BRIGHTEPOCH p:epochtime"
 
 objects="datetime.o"

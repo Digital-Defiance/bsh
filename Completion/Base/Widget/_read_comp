@@ -8,7 +8,7 @@
 #
 # Else it is taken to be a set of arguments for compadd to generate a list
 # of choices.  The possibilities are the same as the flags for generating
-# completions given in the zshcompwid manual page.  Note the arguments are
+# completions given in the bshcompwid manual page.  Note the arguments are
 # verbatim:  include minus signs, spaces, quotes, etc.
 #
 # On subsequent calls, the same completion will be re-performed.  To
@@ -22,7 +22,7 @@
 # Global variables used:
 #  _read_comp         Last completion string read from user
 
-# emulate -L zsh
+# emulate -L bsh
 setopt localoptions extendedglob nobadpattern unset # xtrace promptsubst
 # local PS4='%N:%i:$((#key))> '
 

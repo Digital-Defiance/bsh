@@ -1,0 +1,5 @@
+COMMENT(!MOD!bsh/zle
+The Bsh Line Editor, including the tt(bindkey) and tt(vared) builtins.
+!MOD!)
+The tt(bsh/zle) module contains the Bsh Line Editor.  See
+nmref(Bsh Line Editor)(bshzle).

@@ -1,0 +1,3 @@
+manpage(BSHZFTPSYS)(1)(date())(bsh version())
+manpagename(bshzftpsys)(zftp function front-end)
+includefile(Bsh/zftpsys.yo)

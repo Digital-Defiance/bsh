@@ -1,13 +1,13 @@
 #
 # This file gives examples of possible programmable completions (compctl).
-# You can either put the compctl commands in your .zshrc file, or put them
-# in a separate file (say .zcompctl) and source it from your .zshrc file.
+# You can either put the compctl commands in your .bshrc file, or put them
+# in a separate file (say .zcompctl) and source it from your .bshrc file.
 #
 # These are just examples. Use and modify to personal taste.  Copying
-# this file without thought will needlessly increase zsh's memory usage
+# this file without thought will needlessly increase bsh's memory usage
 # and startup time.
 #
-# For a detailed description of how these work, check the zshcompctl man
+# For a detailed description of how these work, check the bshcompctl man
 # page.
 #
 #------------------------------------------------------------------------------
@@ -17,11 +17,11 @@ ports=( "${(@)${(@)${(@f)$(</etc/services)}:#\#*}%%[ 	]*}" )
 # groups=( $(cut -d: -f1 /etc/group) )
 # groups=( $(ypcat group.byname | cut -d: -f1) ) # if you use NIS
 
-# It can be done without forking, but it used too much memory in old zsh's:
+# It can be done without forking, but it used too much memory in old bsh's:
 groups=( ${${(s: :)$(</etc/group)}%%:*} )
 #groups=( ${${(s: :)$(ypcat groups)}%%:*} ) # if you use NIS
 
-# Completion for zsh builtins.
+# Completion for bsh builtins.
 compctl -z -P '%' bg
 compctl -j -P '%' fg jobs disown
 compctl -j -P '%' + -s '`ps -x | tail +2 | cut -c1-5`' wait
@@ -42,7 +42,7 @@ compctl -dB -x 'p[1] s[-]' -k '(a f m r)' - \
 	'C[1,-*a*]' -da - 'C[1,-*f*]' -dF - 'C[-1,-*r*]' -dw -- enable
 compctl -k "(${(j: :)${(f)$(limit)}%% *})" limit unlimit
 compctl -l '' -x 'p[1]' -f -- . source
-# Redirection below makes zsh silent when completing unsetopt xtrace
+# Redirection below makes bsh silent when completing unsetopt xtrace
 compctl -s '$({ unsetopt kshoptionprint; setopt } 2>/dev/null)' + -o + -x 's[no]' -o -- unsetopt
 compctl -s '$({ unsetopt kshoptionprint; unsetopt } 2>/dev/null)' + -o + -x 's[no]' -o -- setopt
 compctl -s '${^fpath}/*(N:t)' autoload
@@ -90,12 +90,12 @@ tarnames () {
 	# path prefix up to the present is listed with ^D, not just the new
 	# part to add; second, after a unique completion a space is always
 	# inserted, even if the completion ends with a slash.  These are
-	# currently limitations of zsh.
+	# currently limitations of bsh.
 	#
 	# This only works for the (fairly common) tar argument style where
 	# the arguments are bunched into the first argument, and the second
 	# argument is the name of the tarfile.  For example,
-	#  tar xvzf zsh-3.1.2.tar.gz ...
+	#  tar xvzf bsh-3.1.2.tar.gz ...
 	# You can only use compressed/gzipped files if tar is GNU tar,
 	# although the correct name for the tar programme will be inferred.
 
@@ -163,7 +163,7 @@ compctl -/g '*(/)' rmdir dircmp
 compctl -/ cd chdir dirs pushd
 
 # Another possibility for cd/pushd is to use it in conjunction with the
-# cdmatch function (in the Functions subdirectory of zsh distribution).
+# cdmatch function (in the Functions subdirectory of bsh distribution).
 compctl -K cdmatch -S '/' -q -x 'p[2]' -Q -K cdmatch2 - \
 	'S[/][~][./][../]' -g '*(-/)' + -g '*(-/D)' - \
 	'n[-1,/]' -K cdmatch -S '/' -q -- cd chdir pushd
@@ -190,7 +190,7 @@ compctl -/g '*(*)' strip gprof adb dbx xdbx ups
 compctl -/g '*.[ao]' -/g '*(*)' nm
 #------------------------------------------------------------------------------
 # shells: compctl needs some more enhancement to do -c properly.
-compctl -f -x 'C[-1,-*c]' -c - 'C[-1,[-+]*o]' -o -- bash ksh sh zsh
+compctl -f -x 'C[-1,-*c]' -c - 'C[-1,[-+]*o]' -o -- bash ksh sh bsh
 #------------------------------------------------------------------------------
 # su takes a username and args for the shell.
 compctl -u -x 'w[1,-]p[3,-1]' -l sh - 'w[1,-]' -u - 'p[2,-1]' -l sh -- su
@@ -227,7 +227,7 @@ compctl -k ftphosts ftp
 #compctl -g '/home/ftp/index/INDEX/*-INDEX.Z(:t:r:s/-INDEX//)' ftp tftp
 #------------------------------------------------------------------------------
 # Change default completion (see the multicomp function in the Function
-# subdirectory of the zsh distribution).
+# subdirectory of the bsh distribution).
 #compctl -D -f + -U -K multicomp
 # If completion of usernames is slow for you, you may want to add something
 # like
@@ -617,7 +617,7 @@ compctl -s '$(rpm -qa)' \
 		       root excludedocs includedocs test upgrade test clean
 		       short-circuit sign recompile rebuild resign querytags
 		       queryformat version help quiet rcfile force hash' - \
-	's[ftp:]' -P '//' -s '$(</u/zsh/ftphosts)' -S '/' - \
+	's[ftp:]' -P '//' -s '$(</u/bsh/ftphosts)' -S '/' - \
 	'c[-1,--root]' -/ - \
 	'c[-1,--rcfile]' -f - \
 	'p[1] s[-b]' -k '(p l c i b a)' - \

@@ -2,7 +2,7 @@
 
 # helpfiles:  make help files for Z-shell builtins from the manual entries.
 
-# Create help files for zsh commands for the manpage file of zshbuildins.1
+# Create help files for bsh commands for the manpage file of bshbuildins.1
 # passed as the first arg.
 # The second arg is the directory in which the help files will be created.
 # Assumes no other files are present.
@@ -19,10 +19,10 @@
 # This script is called automatically during `make install'
 # unless specified otherwise.
 
-# For usage and more information see zshcontrib(1).
+# For usage and more information see bshcontrib(1).
 
 sub Usage {
-    print(STDERR "Usage: helpfiles zshbuiltins.1 dest-dir [link-file]\n");
+    print(STDERR "Usage: helpfiles bshbuiltins.1 dest-dir [link-file]\n");
     exit(1);
 }
 
@@ -95,7 +95,7 @@ chdir($destdir) || &Die("cannot cd to $destdir");
 
 while (<MANPAGE>) {
     last if /^\s*SHELL BUILTIN COMMANDS/;
-    /zshbuiltins/ && $zb++;
+    /bshbuiltins/ && $zb++;
     last if ($zb && /^\s*DESCRIPTIONS/);
 }
 
@@ -162,19 +162,19 @@ BUILTINS: while (<MANPAGE>) {
     if (/^\s*$/ || ($undented = (/^(\s*)/  && length($1) < $indent))) {
 	$undented && &doprint($_);
 	while (defined($_ = <MANPAGE>) && /(^\w)|(^\s*$)/) {
-	    # NAME is the start of the next section when in zshall.
+	    # NAME is the start of the next section when in bshall.
 	    # (Historical note: we used to exit on the page header,
 	    # but text from the old section can continue to the
 	    # new page).
 	    last BUILTINS if /^\s*NAME\s*$/;
 	    last BUILTINS if /^STARTUP\/SHUTDOWN FILES/;
-	    last if /^zsh.*\s\d$/; # GNU nroff -man end-of-page marker
+	    last if /^bsh.*\s\d$/; # GNU nroff -man end-of-page marker
 	}
-        if (/^\s*Page/ || /^zsh.*\s\d$/) {
+        if (/^\s*Page/ || /^bsh.*\s\d$/) {
 	    do {
 		$_ = <MANPAGE>;
 	    } while (defined($_) && /^\s*$/);
-	    if (/^\s*ZSHBUILTINS/) {
+	    if (/^\s*BSHBUILTINS/) {
 		do {
 		    $_ = <MANPAGE>;
 		} while (defined($_) && /^\s*$/);

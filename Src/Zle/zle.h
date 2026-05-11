@@ -1,7 +1,7 @@
 /*
  * zle.h - header file for line editor
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,17 +12,17 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
@@ -469,7 +469,7 @@ struct region_highlight {
  * 3: pasted text
  */
 /* If you change this, update the documentation of zle_highlight/region_highlight
- * interaction in Doc/Zsh/zle.yo. */
+ * interaction in Doc/Bsh/zle.yo. */
 #define N_SPECIAL_HIGHLIGHTS	(4)
 
 /* Terminal cursor contexts */
@@ -539,20 +539,20 @@ typedef REFRESH_ELEMENT *REFRESH_STRING;
  */
 
 /* The start of the private range we use, for 256 characters */
-#define ZSH_INVALID_WCHAR_BASE	(0xe000U)
+#define BSH_INVALID_WCHAR_BASE	(0xe000U)
 /* Detect a wide character within our range */
-#define ZSH_INVALID_WCHAR_TEST(x)			\
-    ((unsigned)(x) >= ZSH_INVALID_WCHAR_BASE &&		\
-     (unsigned)(x) <= (ZSH_INVALID_WCHAR_BASE + 255u))
+#define BSH_INVALID_WCHAR_TEST(x)			\
+    ((unsigned)(x) >= BSH_INVALID_WCHAR_BASE &&		\
+     (unsigned)(x) <= (BSH_INVALID_WCHAR_BASE + 255u))
 /* Turn a wide character in that range back to single byte */
-#define ZSH_INVALID_WCHAR_TO_CHAR(x)			\
-    ((char)((unsigned)(x) - ZSH_INVALID_WCHAR_BASE))
+#define BSH_INVALID_WCHAR_TO_CHAR(x)			\
+    ((char)((unsigned)(x) - BSH_INVALID_WCHAR_BASE))
 /* Turn a wide character in that range to an integer */
-#define ZSH_INVALID_WCHAR_TO_INT(x)			\
-    ((int)((unsigned)(x) - ZSH_INVALID_WCHAR_BASE))
+#define BSH_INVALID_WCHAR_TO_INT(x)			\
+    ((int)((unsigned)(x) - BSH_INVALID_WCHAR_BASE))
 /* Turn a single byte character into a private wide character */
-#define ZSH_CHAR_TO_INVALID_WCHAR(x)			\
-    ((wchar_t)((unsigned char) x + ZSH_INVALID_WCHAR_BASE))
+#define BSH_CHAR_TO_INVALID_WCHAR(x)			\
+    ((wchar_t)((unsigned char) x + BSH_INVALID_WCHAR_BASE))
 #endif
 
 

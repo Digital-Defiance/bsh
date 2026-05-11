@@ -1,7 +1,7 @@
 /*
  * options.c - shell options
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,22 +12,22 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
-#include "zsh.mdh"
+#include "bsh.mdh"
 #include "options.pro"
 
 /* current emulation (used to decide which set of option letters is used) */
@@ -55,13 +55,13 @@ mod_export HashTable optiontab;
 #define OPT_CSH		EMULATE_CSH
 #define OPT_KSH		EMULATE_KSH
 #define OPT_SH		EMULATE_SH
-#define OPT_ZSH		EMULATE_ZSH
+#define OPT_BSH		EMULATE_BSH
 
-#define OPT_ALL		(OPT_CSH|OPT_KSH|OPT_SH|OPT_ZSH)
+#define OPT_ALL		(OPT_CSH|OPT_KSH|OPT_SH|OPT_BSH)
 #define OPT_BOURNE	(OPT_KSH|OPT_SH)
-#define OPT_BSHELL	(OPT_KSH|OPT_SH|OPT_ZSH)
+#define OPT_BSHELL	(OPT_KSH|OPT_SH|OPT_BSH)
 #define OPT_NONBOURNE	(OPT_ALL & ~OPT_BOURNE)
-#define OPT_NONZSH	(OPT_ALL & ~OPT_ZSH)
+#define OPT_NONBSH	(OPT_ALL & ~OPT_BSH)
 
 /* option is relevant to emulation */
 #define OPT_EMULATE	(EMULATE_UNUSED)
@@ -96,7 +96,7 @@ static struct optname optns[] = {
 {{NULL, "autoresume",	      0},			 AUTORESUME},
 {{NULL, "badpattern",	      OPT_EMULATE|OPT_NONBOURNE},BADPATTERN},
 {{NULL, "banghist",	      OPT_NONBOURNE},		 BANGHIST},
-{{NULL, "bareglobqual",       OPT_EMULATE|OPT_ZSH},      BAREGLOBQUAL},
+{{NULL, "bareglobqual",       OPT_EMULATE|OPT_BSH},      BAREGLOBQUAL},
 {{NULL, "bashautolist",	      0},                        BASHAUTOLIST},
 {{NULL, "bashrematch",	      0},			 BASHREMATCH},
 {{NULL, "beep",		      OPT_ALL},			 BEEP},
@@ -107,13 +107,13 @@ static struct optname optns[] = {
 {{NULL, "casematch",	      OPT_ALL},			 CASEMATCH},
 {{NULL, "casepaths",	      0},			 CASEPATHS},
 {{NULL, "cbases",	      0},			 CBASES},
-{{NULL, "cprecedences",	      OPT_EMULATE|OPT_NONZSH},	 CPRECEDENCES},
+{{NULL, "cprecedences",	      OPT_EMULATE|OPT_NONBSH},	 CPRECEDENCES},
 {{NULL, "cdablevars",	      OPT_EMULATE},		 CDABLEVARS},
 {{NULL, "cdsilent",	      0},			 CDSILENT},
 {{NULL, "chasedots",	      OPT_EMULATE},		 CHASEDOTS},
 {{NULL, "chaselinks",	      OPT_EMULATE},		 CHASELINKS},
-{{NULL, "checkjobs",	      OPT_EMULATE|OPT_ZSH},	 CHECKJOBS},
-{{NULL, "checkrunningjobs",   OPT_EMULATE|OPT_ZSH},	 CHECKRUNNINGJOBS},
+{{NULL, "checkjobs",	      OPT_EMULATE|OPT_BSH},	 CHECKJOBS},
+{{NULL, "checkrunningjobs",   OPT_EMULATE|OPT_BSH},	 CHECKRUNNINGJOBS},
 {{NULL, "clobber",	      OPT_EMULATE|OPT_ALL},	 CLOBBER},
 {{NULL, "clobberempty",	      0},			 CLOBBEREMPTY},
 {{NULL, "combiningchars",     0},			 COMBININGCHARS},
@@ -129,24 +129,24 @@ static struct optname optns[] = {
 {{NULL, "cshnullglob",	      OPT_EMULATE|OPT_CSH},	 CSHNULLGLOB},
 {{NULL, "debugbeforecmd",     OPT_ALL},			 DEBUGBEFORECMD},
 {{NULL, "emacs",	      0},			 EMACSMODE},
-{{NULL, "equals",	      OPT_EMULATE|OPT_ZSH},	 EQUALS},
+{{NULL, "equals",	      OPT_EMULATE|OPT_BSH},	 EQUALS},
 {{NULL, "errexit",	      OPT_EMULATE},		 ERREXIT},
 {{NULL, "errreturn",	      OPT_EMULATE},		 ERRRETURN},
 {{NULL, "exec",		      OPT_ALL},			 EXECOPT},
 {{NULL, "extendedglob",	      OPT_EMULATE},		 EXTENDEDGLOB},
 {{NULL, "extendedhistory",    OPT_CSH},			 EXTENDEDHISTORY},
-{{NULL, "evallineno",	      OPT_EMULATE|OPT_ZSH},	 EVALLINENO},
+{{NULL, "evallineno",	      OPT_EMULATE|OPT_BSH},	 EVALLINENO},
 {{NULL, "flowcontrol",	      OPT_ALL},			 FLOWCONTROL},
 {{NULL, "forcefloat",         0},                        FORCEFLOAT},
 {{NULL, "functionargzero",    OPT_EMULATE|OPT_NONBOURNE},FUNCTIONARGZERO},
 {{NULL, "glob",		      OPT_EMULATE|OPT_ALL},	 GLOBOPT},
-{{NULL, "globalexport",       OPT_EMULATE|OPT_ZSH},	 GLOBALEXPORT},
+{{NULL, "globalexport",       OPT_EMULATE|OPT_BSH},	 GLOBALEXPORT},
 {{NULL, "globalrcs",          OPT_ALL},			 GLOBALRCS},
 {{NULL, "globassign",	      OPT_EMULATE|OPT_CSH},	 GLOBASSIGN},
 {{NULL, "globcomplete",	      0},			 GLOBCOMPLETE},
 {{NULL, "globdots",	      OPT_EMULATE},		 GLOBDOTS},
 {{NULL, "globstarshort",      OPT_EMULATE},		 GLOBSTARSHORT},
-{{NULL, "globsubst",	      OPT_EMULATE|OPT_NONZSH},	 GLOBSUBST},
+{{NULL, "globsubst",	      OPT_EMULATE|OPT_NONBSH},	 GLOBSUBST},
 {{NULL, "hashcmds",	      OPT_ALL},			 HASHCMDS},
 {{NULL, "hashdirs",	      OPT_ALL},			 HASHDIRS},
 {{NULL, "hashexecutablesonly", 0},                       HASHEXECUTABLESONLY},
@@ -167,7 +167,7 @@ static struct optname optns[] = {
 {{NULL, "histsavebycopy",     OPT_ALL},			 HISTSAVEBYCOPY},
 {{NULL, "histsavenodups",     0},			 HISTSAVENODUPS},
 {{NULL, "histverify",	      0},			 HISTVERIFY},
-{{NULL, "hup",		      OPT_EMULATE|OPT_ZSH},	 HUP},
+{{NULL, "hup",		      OPT_EMULATE|OPT_BSH},	 HUP},
 {{NULL, "ignorebraces",	      OPT_EMULATE|OPT_SH},	 IGNOREBRACES},
 {{NULL, "ignoreclosebraces",  OPT_EMULATE},		 IGNORECLOSEBRACES},
 {{NULL, "ignoreeof",	      0},			 IGNOREEOF},
@@ -204,10 +204,10 @@ static struct optname optns[] = {
 			      0
 #endif
 			      },			 MULTIBYTE},
-{{NULL, "multifuncdef",	      OPT_EMULATE|OPT_ZSH},	 MULTIFUNCDEF},
-{{NULL, "multios",	      OPT_EMULATE|OPT_ZSH},	 MULTIOS},
+{{NULL, "multifuncdef",	      OPT_EMULATE|OPT_BSH},	 MULTIFUNCDEF},
+{{NULL, "multios",	      OPT_EMULATE|OPT_BSH},	 MULTIOS},
 {{NULL, "nomatch",	      OPT_EMULATE|OPT_NONBOURNE},NOMATCH},
-{{NULL, "notify",	      OPT_ZSH},			 NOTIFY},
+{{NULL, "notify",	      OPT_BSH},			 NOTIFY},
 {{NULL, "nullglob",	      OPT_EMULATE},		 NULLGLOB},
 {{NULL, "numericglobsort",    OPT_EMULATE},		 NUMERICGLOBSORT},
 {{NULL, "octalzeroes",        OPT_EMULATE|OPT_SH},	 OCTALZEROES},
@@ -284,12 +284,12 @@ static struct optname optns[] = {
 
 /* Option letters */
 
-#define optletters (isset(SHOPTIONLETTERS) ? kshletters : zshletters)
+#define optletters (isset(SHOPTIONLETTERS) ? kshletters : bshletters)
 
 #define FIRST_OPT '0'
 #define LAST_OPT 'y'
 
-static short zshletters[LAST_OPT - FIRST_OPT + 1] = {
+static short bshletters[LAST_OPT - FIRST_OPT + 1] = {
     /* 0 */  CORRECT,
     /* 1 */  PRINTEXITVALUE,
     /* 2 */ -BADPATTERN,
@@ -530,22 +530,22 @@ installemulation(int new_emulation, char *new_opts)
 
 /**/
 void
-emulate(const char *zsh_name, int fully, int *new_emulation, char *new_opts)
+emulate(const char *bsh_name, int fully, int *new_emulation, char *new_opts)
 {
-    char ch = *zsh_name;
+    char ch = *bsh_name;
 
     if (ch == 'r')
-	ch = zsh_name[1];
+	ch = bsh_name[1];
 
     /* Work out the new emulation mode */
     if (ch == 'c')
 	*new_emulation = EMULATE_CSH;
     else if (ch == 'k')
 	*new_emulation = EMULATE_KSH;
-    else if (ch == 's' || ch == 'b')
+    else if (ch == 's' || (ch == 'b' && (bsh_name[0] == 'r' ? bsh_name[2] : bsh_name[1]) == 'a'))
 	*new_emulation = EMULATE_SH;
     else
-	*new_emulation = EMULATE_ZSH;
+	*new_emulation = EMULATE_BSH;
 
     if (fully)
 	*new_emulation |= EMULATE_FULLY;

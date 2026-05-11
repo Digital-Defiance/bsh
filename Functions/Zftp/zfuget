@@ -23,7 +23,7 @@
 #                  and that perl is version 5 with the standard library.
 #                  See the function zfrtime for more gory details.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfuget
 local loc rem locstats remstats doit

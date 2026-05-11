@@ -1,4 +1,4 @@
-emulate -L zsh
+emulate -L bsh
 setopt extendedglob
 
 local opt keys

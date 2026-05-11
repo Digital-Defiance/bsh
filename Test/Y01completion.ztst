@@ -1,12 +1,12 @@
 # Tests for completion system.
 
 %prep
-  ZSH_TEST_LANG=$(ZTST_find_UTF8)
-  if ( zmodload zsh/zpty 2>/dev/null ); then
+  BSH_TEST_LANG=$(ZTST_find_UTF8)
+  if ( zmodload bsh/zpty 2>/dev/null ); then
     . $ZTST_srcdir/comptest
     mkdir comp.tmp
     cd comp.tmp
-    comptestinit -z $ZTST_testdir/../Src/zsh &&
+    comptestinit -z $ZTST_testdir/../Src/bsh &&
     {
       comptesteval 'compdef _tst tst'
       mkdir dir1 &&
@@ -15,7 +15,7 @@
       touch file2
     }
   else
-    ZTST_unimplemented="the zsh/zpty module is not available"
+    ZTST_unimplemented="the bsh/zpty module is not available"
   fi
 
 %test
@@ -123,7 +123,7 @@ F:regression test workers/51641
 >line: {: ~zuser2}{}
 >line: {: ~zuser1}{}
 
-  comptesteval 'zsh_directory_name() { compadd "$expl[@]" -- name/1 name2 }'
+  comptesteval 'bsh_directory_name() { compadd "$expl[@]" -- name/1 name2 }'
   comptest $': ~[\t\t\t\t'
 0:dynamic directory names after ~[
 >line: {: ~[name}{}
@@ -172,12 +172,12 @@ F:regression test workers/42164
   comptesteval "path=( $ZTST_srcdir:A )"
   comptest $'zt\t'
 0:command
->line: {ztst.zsh }{}
+>line: {ztst.bsh }{}
 
   comptesteval "path=( $ZTST_srcdir:A )"
   comptest $':;zt\t'
 0:command after separator
->line: {:;ztst.zsh }{}
+>line: {:;ztst.bsh }{}
 F:regression test workers/32182
 
   comptest $'for f in 1; do < x\C-b\C-b\t'
@@ -222,7 +222,7 @@ F:regression test workers/31611
 >line: {tst 1234}{5678}
 >MESSAGE:{'34' '56'}
 
-  if [[ -z $ZSH_TEST_LANG ]]; then
+  if [[ -z $BSH_TEST_LANG ]]; then
     ZTST_skip="no UTF-8 locale for multibyte completion test"
   else
     comptesteval '_tst() { compset -p 1; _message "${(qq)IPREFIX} ${(qq)PREFIX}" }'
@@ -363,7 +363,7 @@ F:regression test workers/31611
   # This test is sensitive to sorting differences across platforms
   comptesteval 'export LC_ALL=C'
   comptest $'tst \C-d'
-  comptesteval "export LC_ALL=${(q)ZSH_TEST_LANG}"
+  comptesteval "export LC_ALL=${(q)BSH_TEST_LANG}"
 0: menu select=long-list starts menu selection for list widgets
 >NO:{<INSERT>menu</INSERT>}
 >NO:{a}
@@ -396,4 +396,4 @@ F:regression test workers/31611
 
 %clean
 
-  zmodload -ui zsh/zpty
+  zmodload -ui bsh/zpty

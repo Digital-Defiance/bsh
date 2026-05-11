@@ -2,7 +2,7 @@
 # Transfer files between two distinct sessions. No remote globbing
 # is done, since only single pairs can be transferred.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zftransfer
 local sess1 sess2 file1 file2 oldsess=${ZFTP_SESSION}

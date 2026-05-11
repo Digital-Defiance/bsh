@@ -10,7 +10,7 @@
 #        and that perl is version 5 with the standard library.
 #        See the function zfrtime for more gory details.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfcget
 local loc rem stat=0 opt opt_G opt_t remlist locst remst

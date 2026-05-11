@@ -1,4 +1,4 @@
-name=zsh/zprof
+name=bsh/zprof
 link=dynamic
 load=no
 

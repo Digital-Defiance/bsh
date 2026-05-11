@@ -1,7 +1,7 @@
 /*
  * sched.c - execute commands at scheduled times
  *
- * This file is part of zsh, the Z shell.
+ * This file is part of bsh, the BrightShell.
  *
  * Copyright (c) 1992-1997 Paul Falstad
  * All rights reserved.
@@ -12,23 +12,28 @@
  * purpose, provided that the above copyright notice and the following
  * two paragraphs appear in all copies of this software.
  *
- * In no event shall Paul Falstad or the Zsh Development Group be liable
+ * In no event shall Paul Falstad or the Bsh Development Group be liable
  * to any party for direct, indirect, special, incidental, or consequential
  * damages arising out of the use of this software and its documentation,
- * even if Paul Falstad and the Zsh Development Group have been advised of
+ * even if Paul Falstad and the Bsh Development Group have been advised of
  * the possibility of such damage.
  *
- * Paul Falstad and the Zsh Development Group specifically disclaim any
+ * Paul Falstad and the Bsh Development Group specifically disclaim any
  * warranties, including, but not limited to, the implied warranties of
  * merchantability and fitness for a particular purpose.  The software
  * provided hereunder is on an "as is" basis, and Paul Falstad and the
- * Zsh Development Group have no obligation to provide maintenance,
+ * Bsh Development Group have no obligation to provide maintenance,
  * support, updates, enhancements, or modifications.
  *
  */
 
 #include "sched.mdh"
 #include "sched.pro"
+
+/* BrightDate FFI - convert a Unix time_t to a BrightDate decimal value */
+extern double bsh_unix_to_brightdate(double unix_secs);
+/* BrightDate FFI - convert an absolute BrightDate value to a Unix timestamp */
+extern double bsh_brightdate_to_unix(double bd);
 
 /* node in sched list */
 
@@ -205,13 +210,10 @@ bin_sched(char *nam, char **argv, UNUSED(Options ops), UNUSED(int func))
     /* given no arguments, display the schedule list */
     if (!*argptr) {
 	for (sn = 1, sch = schedcmds; sch; sch = sch->next, sn++) {
-	    char tbuf[60], *flagstr, *endstr;
-	    time_t t;
-	    struct tm *tmp;
+	    char tbuf[32], *flagstr, *endstr;
 
-	    t = sch->time;
-	    tmp = localtime(&t);
-	    ztrftime(tbuf, 40, "%a %b %e %k:%M:%S", tmp, 0L);
+	    snprintf(tbuf, sizeof(tbuf), "%.6f",
+		     bsh_unix_to_brightdate((double)sch->time));
 	    if (sch->flags & SCHEDFLAG_TRASH_ZLE)
 		flagstr = "-o ";
 	    else
@@ -236,72 +238,100 @@ bin_sched(char *nam, char **argv, UNUSED(Options ops), UNUSED(int func))
     s = *argptr++;
     if (*s == '+') {
 	/*
-	 * + introduces a relative time.  The rest of the argument may be an
-	 * hour:minute offset from the current time.  Once the hour and minute
-	 * numbers have been extracted, and the format verified, the resulting
-	 * offset is simply added to the current time.
+	 * + introduces a relative time.  If the argument contains a decimal
+	 * point and no colon, it is a BrightDate day offset (e.g. +0.5 means
+	 * half a day / 43200 seconds from now).  Otherwise the argument may
+	 * be an HH:MM[:SS] offset or a plain integer number of seconds.
 	 */
-	zlong zl = zstrtol(s + 1, &s, 10);
-	if (*s == ':') {
-	    m = (long)zstrtol(s + 1, &s, 10);
-	    if (*s == ':')
-		sec = (long)zstrtol(s + 1, &s, 10);
-	    else
-		sec = 0;
-	    if (*s) {
+	char *rest = s + 1;
+	if (strchr(rest, '.') && !strchr(rest, ':')) {
+	    char *end;
+	    double days = strtod(rest, &end);
+	    if (*end || days < 0.0) {
 		zwarnnam("sched", "bad time specifier");
 		return 1;
 	    }
-	    t = time(NULL) + (long)zl * 3600 + m * 60 + sec;
-	} else if (!*s) {
-	    /*
-	     * Alternatively, it may simply be a number of seconds.
-	     * This is here for consistency with absolute times.
-	     */
-	    t = time(NULL) + (time_t)zl;
+	    t = time(NULL) + (time_t)(days * 86400.0);
 	} else {
-	    zwarnnam("sched", "bad time specifier");
-	    return 1;
+	    zlong zl = zstrtol(rest, &s, 10);
+	    if (*s == ':') {
+		m = (long)zstrtol(s + 1, &s, 10);
+		if (*s == ':')
+		    sec = (long)zstrtol(s + 1, &s, 10);
+		else
+		    sec = 0;
+		if (*s) {
+		    zwarnnam("sched", "bad time specifier");
+		    return 1;
+		}
+		t = time(NULL) + (long)zl * 3600 + m * 60 + sec;
+	    } else if (!*s) {
+		/*
+		 * Alternatively, it may simply be a number of seconds.
+		 * This is here for consistency with absolute times.
+		 */
+		t = time(NULL) + (time_t)zl;
+	    } else {
+		zwarnnam("sched", "bad time specifier");
+		return 1;
+	    }
 	}
     } else {
 	/*
-	 * If there is no +, an absolute time must have been given.
-	 * This may be in hour:minute format, optionally followed by a string
-	 * starting with `a' or `p' (for a.m. or p.m.).  Characters after the
-	 * `a' or `p' are ignored.
+	 * If there is no +, an absolute time must have been given.  If the
+	 * argument contains a decimal point and no colon it is treated as an
+	 * absolute BrightDate value (e.g. 9628.5) and converted to a Unix
+	 * timestamp via the BrightDate FFI.  Otherwise the argument may be
+	 * in HH:MM[:SS][ap] format or a raw Unix timestamp integer.
 	 */
-	zlong zl = zstrtol(s, &s, 10);
-	if (*s == ':') {
-	    h = (long)zl;
-	    m = (long)zstrtol(s + 1, &s, 10);
-	    if (*s == ':')
-		sec = (long)zstrtol(s + 1, &s, 10);
-	    else
-		sec = 0;
-	    if (*s && *s != 'a' && *s != 'A' && *s != 'p' && *s != 'P') {
+	if (strchr(s, '.') && !strchr(s, ':')) {
+	    char *end;
+	    double bd = strtod(s, &end);
+	    double unix_t;
+	    if (*end) {
 		zwarnnam("sched", "bad time specifier");
 		return 1;
 	    }
-	    t = time(NULL);
-	    tm = localtime(&t);
-	    t -= tm->tm_sec + tm->tm_min * 60 + tm->tm_hour * 3600;
-	    if (*s == 'p' || *s == 'P')
-		h += 12;
-	    t += h * 3600 + m * 60 + sec;
-	    /*
-	     * If the specified time is before the current time, it must refer
-	     * to tomorrow.
-	     */
-	    if (t < time(NULL))
-		t += 3600 * 24;
-	} else if (!*s) {
-	    /*
-	     * Otherwise, it must be a raw time specifier.
-	     */
-	    t = (long)zl;
+	    unix_t = bsh_brightdate_to_unix(bd);
+	    if (unix_t != unix_t) { /* NaN - invalid BrightDate */
+		zwarnnam("sched", "bad time specifier");
+		return 1;
+	    }
+	    t = (time_t)unix_t;
 	} else {
-	    zwarnnam("sched", "bad time specifier");
-	    return 1;
+	    zlong zl = zstrtol(s, &s, 10);
+	    if (*s == ':') {
+		h = (long)zl;
+		m = (long)zstrtol(s + 1, &s, 10);
+		if (*s == ':')
+		    sec = (long)zstrtol(s + 1, &s, 10);
+		else
+		    sec = 0;
+		if (*s && *s != 'a' && *s != 'A' && *s != 'p' && *s != 'P') {
+		    zwarnnam("sched", "bad time specifier");
+		    return 1;
+		}
+		t = time(NULL);
+		tm = localtime(&t);
+		t -= tm->tm_sec + tm->tm_min * 60 + tm->tm_hour * 3600;
+		if (*s == 'p' || *s == 'P')
+		    h += 12;
+		t += h * 3600 + m * 60 + sec;
+		/*
+		 * If the specified time is before the current time, it must
+		 * refer to tomorrow.
+		 */
+		if (t < time(NULL))
+		    t += 3600 * 24;
+	    } else if (!*s) {
+		/*
+		 * Otherwise, it must be a raw Unix time specifier.
+		 */
+		t = (long)zl;
+	    } else {
+		zwarnnam("sched", "bad time specifier");
+		return 1;
+	    }
 	}
     }
     /* The time has been calculated; now add the new entry to the linked list
@@ -379,7 +409,7 @@ static const struct gsu_array sched_gsu =
 { schedgetfn, arrsetfn, stdunsetfn };
 
 static struct paramdef partab[] = {
-    SPECIALPMDEF("zsh_scheduled_events", PM_ARRAY|PM_READONLY,
+    SPECIALPMDEF("bsh_scheduled_events", PM_ARRAY|PM_READONLY,
 		 &sched_gsu, NULL, NULL)
 };
 

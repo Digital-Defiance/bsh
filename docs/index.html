@@ -1,0 +1,1192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-9B44JCDZN5"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-9B44JCDZN5");
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="BSH (BrightShell) — a zsh-compatible shell with BrightDate woven natively into its builtins, parameters, prompt escapes, and timestamps."
+    />
+    <title>BSH — BrightShell</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0f1320;
+        --bg2: #0a0d18;
+        --surface: #182033;
+        --accent: #61afef;
+        --accent2: #c678dd;
+        --green: #98c379;
+        --yellow: #e5c07b;
+        --orange: #d19a66;
+        --text: #abb2bf;
+        --text-bright: #e6e6e6;
+        --border: #25304a;
+        --radius: 10px;
+        --mono:
+          "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(15, 19, 32, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        height: 56px;
+      }
+
+      .nav-brand {
+        font-family: var(--mono);
+        font-size: 1.05rem;
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--text-bright);
+      }
+
+      /* ── HERO ── */
+      .hero {
+        text-align: center;
+        padding: 6rem 1.5rem 5rem;
+        background: radial-gradient(
+          ellipse 80% 50% at 50% 0%,
+          rgba(97, 175, 239, 0.14) 0%,
+          transparent 70%
+        );
+      }
+
+      .hero-eyebrow {
+        display: inline-block;
+        background: rgba(97, 175, 239, 0.15);
+        border: 1px solid rgba(97, 175, 239, 0.35);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.3rem 0.9rem;
+        border-radius: 999px;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 800;
+        color: var(--text-bright);
+        line-height: 1.15;
+        margin-bottom: 1.25rem;
+      }
+
+      h1 span {
+        color: var(--accent);
+      }
+
+      .hero-sub {
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        color: var(--text);
+        max-width: 620px;
+        margin: 0 auto 2.5rem;
+      }
+
+      /* ── TERMINAL BLOCK ── */
+      .terminal {
+        display: inline-flex;
+        flex-direction: column;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        text-align: left;
+        min-width: min(620px, 90vw);
+        max-width: 90vw;
+        overflow: hidden;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+      }
+
+      .terminal-bar {
+        background: var(--surface);
+        padding: 0.55rem 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+      .dot-red {
+        background: #ff5f57;
+      }
+      .dot-yellow {
+        background: #febc2e;
+      }
+      .dot-green {
+        background: #28c840;
+      }
+
+      .terminal-body {
+        padding: 1.25rem 1.5rem;
+      }
+
+      .cmd-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .cmd-tab {
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          color 0.15s,
+          border-color 0.15s;
+      }
+      .cmd-tab:hover {
+        border-color: var(--accent);
+        color: var(--text-bright);
+      }
+      .cmd-tab.active {
+        background: rgba(97, 175, 239, 0.15);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .cmd-panel {
+        display: none;
+      }
+      .cmd-panel.active {
+        display: block;
+      }
+
+      .cmd-line {
+        font-family: var(--mono);
+        font-size: 0.88rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+
+      .prompt {
+        color: var(--green);
+      }
+      .cmd {
+        color: var(--text-bright);
+      }
+      .out {
+        color: var(--yellow);
+      }
+      .cmt {
+        color: #6b7399;
+      }
+
+      .copy-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 0.75rem;
+        gap: 0.5rem;
+      }
+
+      .copy-btn {
+        background: rgba(198, 120, 221, 0.12);
+        border: 1px solid rgba(198, 120, 221, 0.3);
+        color: var(--accent2);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        padding: 0.3rem 0.9rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.15s;
+        white-space: nowrap;
+      }
+      .copy-btn:hover {
+        background: rgba(198, 120, 221, 0.22);
+      }
+
+      /* ── HERO CTA ── */
+      .hero-ctas {
+        display: flex;
+        justify-content: center;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        padding: 0.55rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        transition:
+          background 0.15s,
+          border-color 0.15s;
+      }
+      .btn-primary {
+        background: rgba(97, 175, 239, 0.18);
+        border: 1px solid rgba(97, 175, 239, 0.45);
+        color: var(--accent);
+      }
+      .btn-primary:hover {
+        background: rgba(97, 175, 239, 0.3);
+      }
+      .btn-ghost {
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--text-bright);
+      }
+
+      /* ── SECTIONS ── */
+      section {
+        padding: 5rem 1.5rem;
+      }
+      section + section {
+        border-top: 1px solid var(--border);
+      }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+
+      .section-label {
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+      }
+
+      h2 {
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        color: var(--text-bright);
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      h3 {
+        color: var(--text-bright);
+      }
+
+      p {
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+      p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* ── FEATURE GRID ── */
+      .feature-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.25rem;
+        margin-top: 2.5rem;
+      }
+
+      .feature-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        transition:
+          border-color 0.2s,
+          transform 0.2s;
+      }
+      .feature-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+      }
+
+      .feature-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .feature-card h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-card p {
+        font-size: 0.875rem;
+        margin: 0;
+      }
+
+      /* ── INSTALL STEPS ── */
+      .steps {
+        margin-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .step {
+        display: flex;
+        gap: 1.25rem;
+        align-items: flex-start;
+      }
+
+      .step-num {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(97, 175, 239, 0.15);
+        border: 1px solid rgba(97, 175, 239, 0.4);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .step-body h3 {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+      }
+      .step-body p {
+        font-size: 0.875rem;
+        margin: 0;
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.85em;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.1em 0.4em;
+        color: var(--yellow);
+      }
+
+      pre {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem 1.25rem;
+        overflow-x: auto;
+        margin: 1rem 0;
+      }
+      pre code {
+        background: none;
+        border: none;
+        padding: 0;
+        color: var(--text-bright);
+        font-size: 0.85rem;
+      }
+
+      /* ── SPLIT GRIDS ── */
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2.5rem;
+      }
+      @media (max-width: 760px) {
+        .split {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.75rem;
+      }
+
+      .card h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .card p {
+        font-size: 0.9rem;
+      }
+
+      /* ── BUILTIN LIST ── */
+      .builtins {
+        margin-top: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+      .builtin {
+        display: flex;
+        align-items: baseline;
+        gap: 0.75rem;
+        font-size: 0.85rem;
+      }
+      .builtin code {
+        color: var(--green);
+        flex-shrink: 0;
+      }
+      .builtin span {
+        color: var(--text);
+      }
+
+      /* ── COMPARISON TABLE ── */
+      .bd-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        font-size: 0.85rem;
+      }
+      .bd-table th {
+        text-align: left;
+        color: var(--accent);
+        font-family: var(--mono);
+        font-weight: 600;
+        padding: 0.5rem 0.7rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      .bd-table td {
+        padding: 0.5rem 0.7rem;
+        color: var(--text);
+        border-bottom: 1px solid rgba(46, 49, 80, 0.5);
+        vertical-align: top;
+      }
+      .bd-table tr:last-child td {
+        border-bottom: none;
+      }
+      .bd-table td:first-child {
+        color: var(--yellow);
+        font-family: var(--mono);
+        white-space: nowrap;
+      }
+
+      /* ── MODULE TAGS ── */
+      .modules {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 1rem 0;
+      }
+      .mod-tag {
+        font-family: var(--mono);
+        font-size: 0.78rem;
+        color: var(--accent2);
+        background: rgba(198, 120, 221, 0.1);
+        border: 1px solid rgba(198, 120, 221, 0.3);
+        border-radius: 999px;
+        padding: 0.25rem 0.7rem;
+      }
+
+      /* ── LINKS ── */
+      a.link {
+        color: var(--accent);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: border-color 0.2s;
+      }
+      a.link:hover {
+        border-color: var(--accent);
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 2rem 1.5rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #555c7a;
+      }
+      footer a {
+        color: #6b7399;
+        text-decoration: none;
+      }
+      footer a:hover {
+        color: var(--text);
+      }
+      footer .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 0.75rem;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── NAV ── -->
+    <nav>
+      <a class="nav-brand" href="#">bsh</a>
+      <ul class="nav-links">
+        <li><a href="#why">Why BSH?</a></li>
+        <li><a href="#builtins">Builtins</a></li>
+        <li><a href="#modules">Modules</a></li>
+        <li><a href="#build">Build</a></li>
+        <li><a href="https://github.com/Digital-Defiance/bsh">GitHub</a></li>
+      </ul>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <header class="hero">
+      <div class="hero-eyebrow">🛰️ time, reimagined</div>
+      <h1>B<span>SH</span> — the BrightShell</h1>
+      <p class="hero-sub">
+        A zsh-compatible shell with
+        <a class="link" href="https://brightdate.brightchain.org"
+          ><strong>BrightDate</strong></a
+        >
+        woven natively into its builtins, parameters, prompt escapes, and file
+        timestamps. One sortable, timezone-free scalar — everywhere.
+      </p>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <span class="dot dot-red"></span>
+          <span class="dot dot-yellow"></span>
+          <span class="dot dot-green"></span>
+        </div>
+        <div class="terminal-body">
+          <div class="cmd-line">
+            <span class="cmt"
+              ># date — current BrightDate (universal, no timezone)</span
+            >
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">[9622.841738] %</span>
+            <span class="cmd">date</span>
+          </div>
+          <div class="cmd-line"><span class="out">9622.841738</span></div>
+          <div class="cmd-line" style="margin-top: 0.6rem">
+            <span class="cmt"
+              ># subtract two timestamps — no parsing, no math libs</span
+            >
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">[9622.841738] %</span>
+            <span class="cmd">echo $(( 9700.5 - 9622.84 ))</span>
+          </div>
+          <div class="cmd-line">
+            <span class="out">77.66</span>
+            <span class="cmt"># days, sortable as a float</span>
+          </div>
+          <div class="cmd-line" style="margin-top: 0.6rem">
+            <span class="cmt"
+              ># live read-only param — updates on every access</span
+            >
+          </div>
+          <div class="cmd-line">
+            <span class="prompt">[9622.841738] %</span>
+            <span class="cmd">echo $BRIGHTEPOCH</span>
+          </div>
+          <div class="cmd-line"><span class="out">9622.841739</span></div>
+        </div>
+      </div>
+
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#build">$ Build from source →</a>
+        <a class="btn btn-ghost" href="https://github.com/Digital-Defiance/bsh"
+          >View on GitHub</a
+        >
+      </div>
+    </header>
+
+    <!-- ── WHY BSH ── -->
+    <section id="why">
+      <div class="container">
+        <div class="section-label">The Idea</div>
+        <h2>Why a BrightDate-native shell?</h2>
+        <p>
+          Shell scripts that touch time pay a hidden tax: parsing
+          <code>date</code> output, juggling <code>$TZ</code>, sub-shelling out
+          to <code>gdate</code> on macOS, fighting epoch formats that differ
+          between <code>stat</code> on Linux vs BSD, and re-implementing
+          duration math by hand. BSH replaces all of that with a single decimal
+          scalar — a timezone-free Float64 count of SI days since J2000.0 (the
+          same epoch used by every space agency and observatory).
+        </p>
+        <p>
+          BSH is the <em>living proof</em>: every time-related surface in the
+          shell — prompt, <code>ls -l</code>, <code>stat</code>,
+          <code>history -t</code>, <code>sched</code>, <code>times</code> —
+          emits the same float. No translation. No format mismatch. Duration
+          arithmetic in <code>$(( ))</code> just works.
+        </p>
+        <p
+          style="
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding: 0.9rem 1.1rem;
+            background: rgba(97, 175, 239, 0.07);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 var(--radius) var(--radius) 0;
+          "
+        >
+          <strong style="color: var(--text-bright)"
+            >The BSH <code>chsh</code> challenge:</strong
+          >
+          switch your login shell for a week. Your prompt shows the BrightDate.
+          Your files are stamped in BrightDate. Your history is indexed in
+          BrightDate. Duration arithmetic happens in your head. Once you stop
+          translating, it&apos;s hard to go back — that&apos;s the point.
+        </p>
+
+        <div class="split">
+          <div class="card">
+            <h3>🕰️ One scalar, everywhere</h3>
+            <p>
+              <strong style="color: var(--text-bright)">BrightDate</strong> is a
+              Float64 count of SI days since the astronomical epoch
+              <strong style="color: var(--text-bright)">J2000.0</strong>,
+              computed on a TAI substrate. Trivially sortable, diffable, and
+              storable — <code>b − a = elapsed days</code>, no exceptions.
+            </p>
+            <table class="bd-table">
+              <thead>
+                <tr>
+                  <th>Problem</th>
+                  <th>BrightDate fix</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Timezone soup</td>
+                  <td>Single universal value, no zones</td>
+                </tr>
+                <tr>
+                  <td>Leap-second stutters</td>
+                  <td>TAI substrate — monotonic, no jumps</td>
+                </tr>
+                <tr>
+                  <td>Duration arithmetic</td>
+                  <td><code>b - a</code> in shell <code>$(( … ))</code></td>
+                </tr>
+                <tr>
+                  <td>Sorting timestamps</td>
+                  <td>
+                    Float compare; works in <code>sort -n</code>,
+                    <code>awk</code>, <code>jq</code>
+                  </td>
+                </tr>
+                <tr>
+                  <td>2038 / Y10K</td>
+                  <td>±287,000 years at sub-µs in current era</td>
+                </tr>
+                <tr>
+                  <td><code>date</code> portability</td>
+                  <td>Identical output on macOS, Linux, BSD, WSL</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="card">
+            <h3>🐚 BSH in one line</h3>
+            <p>
+              BSH = zsh 5.10 + a statically-linked Rust core (<a
+                class="link"
+                href="https://github.com/Digital-Defiance/brightdate-rust"
+                ><code>brightdate-rust</code></a
+              >) wired into the shell's C internals through a single FFI entry
+              point:
+            </p>
+            <pre><code>double bsh_unix_to_brightdate(double unix_secs);
+double bsh_brightdate_to_unix(double bd);</code></pre>
+            <p>
+              From those two anchors, every time-related surface — builtins,
+              parameters, prompt escapes, history, file timestamps — speaks
+              BrightDate. Nothing parses strings. Nothing re-derives the epoch.
+              The number that comes out of <code>$BRIGHTEPOCH</code> is the same
+              number that <code>stat</code> prints for <code>mtime</code>, the
+              same number in your prompt, and the same number you can subtract
+              in an arithmetic expansion.
+            </p>
+            <p style="margin-top: 0.75rem; font-size: 0.85rem">
+              BSH stays 100% zsh-compatible: every traditional builtin, option,
+              and module still works. BrightDate is layered on top — you opt in
+              by loading the modules you want.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BUILTINS ── -->
+    <section id="builtins">
+      <div class="container">
+        <div class="section-label">Drop-in replacements</div>
+        <h2>Builtins that speak BrightDate.</h2>
+        <p>
+          BSH bakes BrightDate directly into the classic Unix date/time
+          commands. <code>date</code>, <code>time</code>, <code>uptime</code>,
+          <code>cal</code>, and <code>watch</code> are shell builtins that emit
+          BrightDate values — no fork, no external process, no
+          <code>$TZ</code> dance. The traditional binaries are shadowed
+          transparently, so existing scripts switch over for free.
+        </p>
+
+        <div class="modules">
+          <span class="mod-tag">built-in by default</span>
+        </div>
+
+        <div class="builtins">
+          <div class="builtin">
+            <code>date</code
+            ><span
+              >Current date as BrightDate (replaces system
+              <code>date</code>)</span
+            >
+          </div>
+          <div class="builtin">
+            <code>time</code
+            ><span
+              >Current time of day in BrightDate units (replaces system
+              <code>time</code>)</span
+            >
+          </div>
+          <div class="builtin">
+            <code>uptime</code
+            ><span
+              >System uptime in
+              <strong style="color: var(--text-bright)">millidays</strong> — 1
+              md = 86.4 s (replaces system <code>uptime</code>)</span
+            >
+          </div>
+          <div class="builtin">
+            <code>cal</code
+            ><span
+              >Calendar in BrightDate notation (replaces system
+              <code>cal</code>)</span
+            >
+          </div>
+          <div class="builtin">
+            <code>watch</code
+            ><span
+              >Watch a command; elapsed time reported in millidays (replaces
+              system <code>watch</code>)</span
+            >
+          </div>
+        </div>
+
+        <div
+          class="terminal"
+          style="display: block; margin-top: 1.5rem; max-width: 100%"
+        >
+          <div class="terminal-bar">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="terminal-body">
+            <div class="cmd-line">
+              <span class="prompt">[9622.84] %</span>
+              <span class="cmd">date</span>
+            </div>
+            <div class="cmd-line"><span class="out">9622.841738</span></div>
+            <div class="cmd-line">
+              <span class="prompt">[9622.84] %</span>
+              <span class="cmd">uptime</span>
+            </div>
+            <div class="cmd-line">
+              <span class="out">14.327 md</span>
+              <span class="cmt"># ≈ 20 minutes</span>
+            </div>
+            <div class="cmd-line">
+              <span class="prompt">[9622.84] %</span>
+              <span class="cmd">watch -n 2 'ls | wc -l'</span>
+            </div>
+            <div class="cmd-line">
+              <span class="out">Every 0.023 md: ls | wc -l</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PARAMS, PROMPTS, HISTORY ── -->
+    <section id="modules">
+      <div class="container">
+        <div class="section-label">Throughout the shell</div>
+        <h2>Parameters, prompts, history, files.</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3><code>$BRIGHTEPOCH</code></h3>
+            <p>
+              From <code>bsh/datetime</code>. Read-only Float64 parameter
+              holding the current BrightDate, updated on every access — the
+              analogue of <code>$EPOCHREALTIME</code>. Perfect for elapsed-time
+              arithmetic in scripts.
+            </p>
+            <pre
+              style="margin-top: 0.75rem; font-size: 0.78rem"
+            ><code>start=$BRIGHTEPOCH
+do_work
+echo "elapsed: $(( BRIGHTEPOCH - start )) md"</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">💬</div>
+            <h3>Prompt escape <code>%P</code></h3>
+            <p>
+              In any <code>PROMPT</code>, <code>RPROMPT</code>, or
+              <code>PS4</code>, <code>%P</code> expands to the current
+              BrightDate (6 d.p.).
+              <em>%B is already bold, so BrightDate claims P for "Present."</em>
+            </p>
+            <pre
+              style="margin-top: 0.75rem; font-size: 0.78rem"
+            ><code>PROMPT='[%P] %# '
+# renders as:
+# [9622.841738] %</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📜</div>
+            <h3><code>history -t</code> / <code>fc -D</code></h3>
+            <p>
+              With <code>EXTENDED_HISTORY</code> set, command-execution
+              timestamps appear as BrightDate values.
+              <code>fc -l -D</code> reports command durations in millidays
+              instead of seconds — so log analysis just becomes
+              <code>sort -n</code>.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📁</div>
+            <h3><code>ls -l</code>, <code>stat</code></h3>
+            <p>
+              From <code>bsh/files</code> and <code>bsh/stat</code>.
+              <code>ls -l</code> replaces the timestamp column with a BrightDate
+              decimal, following normal ls flags (<code>-u</code> for atime,
+              <code>-c</code> for ctime, etc.). The <code>stat</code> builtin
+              emits all time fields — <code>atime</code>, <code>mtime</code>,
+              <code>ctime</code>, and the new <code>btime</code> (birth time,
+              from <code>st_birthtimespec</code> on macOS/BSDs) — as BrightDate
+              decimals by default. Use <code>-r</code> for raw Unix seconds,
+              <code>-r -s</code> for both side-by-side, or
+              <code>-F fmt</code> for strftime.
+            </p>
+            <pre
+              style="margin-top: 0.75rem; font-size: 0.72rem"
+            ><code>-rw-r--r--   1 jessica  staff       51186  9627.884852  README.md
+
+$ stat README.md
+  atime   9627.901414
+  mtime   9627.893312
+  btime   9627.884852
+$ stat +mtime README.md
+9627.893312
+$ stat -r -s README.md
+  mtime   1778577913 (9627.893312)</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🗓️</div>
+            <h3><code>sched</code></h3>
+            <p>
+              Schedule commands at future BrightDate times. Accepts traditional
+              <code>HH:MM:SS</code> offsets, BrightDate float offsets (<code
+                >+0.020833</code
+              >
+              ≈ 30 min), and absolute BrightDate values. List pending events
+              with bare <code>sched</code>.
+            </p>
+            <pre
+              style="margin-top: 0.75rem; font-size: 0.72rem"
+            ><code>sched +0.020833 echo hello   # ~30 min from now
+sched 9628.5 echo midnight  # absolute BD
+
+$ sched
+  1 9627.930118 echo hello
+  2 9628.500000 echo midnight</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">⏱️</div>
+            <h3><code>times</code> builtin</h3>
+            <p>
+              Reports user and system CPU time (for the shell and its children)
+              in millidays rather than the traditional <code>m:ss</code> format
+              — uniform units across every time surface in BSH.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🦀</div>
+            <h3>Rust core, C shell</h3>
+            <p>
+              The conversion engine is the
+              <a class="link" href="https://crates.io/crates/brightdate"
+                ><code>brightdate</code></a
+              >
+              Rust crate, statically linked into the <code>bsh</code> binary via
+              a tiny FFI surface. No runtime dependencies. No subprocess
+              overhead. Same TAI/J2000 substrate as the Rust and npm libraries.
+            </p>
+          </div>
+        </div>
+
+        <p style="margin-top: 2rem; font-size: 0.875rem">
+          Module index:
+          <span
+            class="mod-tag"
+            style="display: inline-block; margin-left: 0.4rem"
+            >bsh/brightdate</span
+          >
+          <span
+            class="mod-tag"
+            style="display: inline-block; margin-left: 0.4rem"
+            >bsh/datetime</span
+          >
+          <span
+            class="mod-tag"
+            style="display: inline-block; margin-left: 0.4rem"
+            >bsh/files</span
+          >
+          <span
+            class="mod-tag"
+            style="display: inline-block; margin-left: 0.4rem"
+            >bsh/stat</span
+          >
+        </p>
+      </div>
+    </section>
+
+    <!-- ── BUILD ── -->
+    <section id="build">
+      <div class="container">
+        <div class="section-label">Getting Started</div>
+        <h2>Build from source.</h2>
+        <p>
+          BSH builds with the standard autoconf workflow inherited from zsh,
+          plus a Rust toolchain for the
+          <code>brightdate-rust</code> static library.
+        </p>
+
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h3>Prerequisites</h3>
+              <p>
+                A C compiler (<code>clang</code> or <code>gcc</code>),
+                <code>make</code>, <code>autoconf</code>, and a recent Rust
+                toolchain (<a class="link" href="https://rustup.rs">rustup</a>,
+                stable channel). macOS, Linux, and *BSD are all supported.
+              </p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h3>Clone with submodules</h3>
+              <pre><code>git clone --recursive https://github.com/Digital-Defiance/bsh.git
+cd bsh</code></pre>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h3>Configure &amp; build</h3>
+              <pre><code>./configure
+make -j$(nproc 2>/dev/null || sysctl -n hw.ncpu)
+make check          # optional: run the test suite</code></pre>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h3>Install &amp; switch shell</h3>
+              <pre><code>sudo make install
+echo "$(command -v bsh)" | sudo tee -a /etc/shells
+chsh -s "$(command -v bsh)"</code></pre>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">5</div>
+            <div class="step-body">
+              <h3>Try the BrightDate surface</h3>
+              <pre><code>bsh -c 'date'                                  # BrightDate, baked in
+bsh -c 'echo $BRIGHTEPOCH'
+bsh -c 'PROMPT="[%P] %# "; print -P "$PROMPT"'</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <p style="margin-top: 2rem; font-size: 0.875rem">
+          Looking for a configuration framework? See
+          <a class="link" href="https://github.com/Digital-Defiance/ohmybsh"
+            ><strong>Oh My Bsh</strong></a
+          >
+          — 300+ plugins and 150+ themes layered on top of BSH.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── EXTRAS ── -->
+    <section>
+      <div class="container">
+        <div class="section-label">Related projects</div>
+        <h2>The BrightDate ecosystem.</h2>
+
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>npm — <code>@brightchain/brightdate</code></h3>
+            <p>
+              TypeScript/JavaScript library. Same J2000.0 / TAI semantics.
+              <a
+                class="link"
+                href="https://www.npmjs.com/package/@brightchain/brightdate"
+                >npm</a
+              >
+              ·
+              <a
+                class="link"
+                href="https://github.com/Digital-Defiance/brightdate"
+                >source</a
+              >
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🦀</div>
+            <h3>crates.io — <code>brightdate</code></h3>
+            <p>
+              Rust crate powering BSH internally. Also ships standalone CLI
+              tools (<code>bdate</code>,
+              <code>btime</code>, <code>buptime</code>, <code>bcal</code>,
+              <code>bwatch</code>) — the <code>b-</code> prefixed versions for
+              use outside BSH, where the native <code>date</code>
+              etc. still rule.
+              <a class="link" href="https://crates.io/crates/brightdate"
+                >crates.io</a
+              >
+              ·
+              <a
+                class="link"
+                href="https://github.com/Digital-Defiance/brightdate-rust"
+                >source</a
+              >
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">🍺</div>
+            <h3>Homebrew tap</h3>
+            <p>
+              The CLI tools and BSH itself are available via the Digital
+              Defiance tap:
+            </p>
+            <pre
+              style="margin-top: 0.75rem; font-size: 0.78rem"
+            ><code>brew tap digital-defiance/tap
+brew install bdate btime buptime bcal bwatch bsh</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+      <p>
+        BSH (BrightShell) — a fork of
+        <a href="https://www.zsh.org/">zsh</a> by
+        <a href="https://github.com/Digital-Defiance">Digital Defiance</a>.
+        Released under the
+        <a href="https://github.com/Digital-Defiance/bsh/blob/main/LICENCE"
+          >zsh license</a
+        >.
+      </p>
+      <div class="footer-links">
+        <a href="https://github.com/Digital-Defiance/bsh">Source</a>
+        <a href="https://github.com/Digital-Defiance/bsh/blob/main/README"
+          >README</a
+        >
+        <a href="https://github.com/Digital-Defiance/bsh/blob/main/NEWS"
+          >NEWS</a
+        >
+        <a href="https://github.com/Digital-Defiance/ohmybsh">Oh My Bsh</a>
+        <a href="https://brightdate.brightchain.org">BrightDate</a>
+      </div>
+    </footer>
+  </body>
+</html>

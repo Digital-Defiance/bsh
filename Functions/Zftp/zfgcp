@@ -14,7 +14,7 @@
 # If there is no current connection, try to use the existing set of open
 # parameters to establish one and close it immediately afterwards.
 
-emulate -L zsh
+emulate -L bsh
 
 [[ $curcontext = :zf* ]] || local curcontext=:zfgcp
 local opt remlist rem loc opt_G opt_t
