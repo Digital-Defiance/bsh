@@ -30,7 +30,7 @@
 #include "stat.mdh"
 #include "stat.pro"
 
-/* BrightDate FFI — converts a Unix time_t (seconds) to a BrightDate value */
+/* BrightDate FFI - converts a Unix time_t (seconds) to a BrightDate value */
 extern double bsh_unix_to_brightdate(double unix_secs);
 
 enum statnum { ST_DEV, ST_INO, ST_MODE, ST_NLINK, ST_UID, ST_GID,
@@ -195,22 +195,31 @@ static void
 stattimeprint(time_t tim, long nsecs, char *outbuf, int flags)
 {
     if (flags & STF_RAW) {
+	/* -r: raw unix seconds, optionally followed by the BrightDate value */
 	sprintf(outbuf, "%ld", (long)tim);
-	if (flags & STF_STRING)
+	if (flags & STF_STRING) {
+	    /* -r -s together: "unix_secs (brightdate)" */
 	    strcat(outbuf, " (");
-    }
-    if (flags & STF_STRING) {
-	char *oend = outbuf + strlen(outbuf);
-	if (timefmt_is_custom) {
-	    /* User supplied -F format: use traditional strftime rendering */
-	    ztrftime(oend, 40, timefmt, (flags & STF_GMT) ? gmtime(&tim) :
-			       localtime(&tim), nsecs);
-	} else {
-	    /* Default: emit BrightDate decimal value */
-	    sprintf(oend, "%.6f", bsh_unix_to_brightdate((double)tim));
+	    if (timefmt_is_custom)
+		ztrftime(outbuf + strlen(outbuf), 40, timefmt,
+			 (flags & STF_GMT) ? gmtime(&tim) : localtime(&tim),
+			 nsecs);
+	    else
+		sprintf(outbuf + strlen(outbuf), "%.6f",
+			bsh_unix_to_brightdate((double)tim));
+	    strcat(outbuf, ")");
 	}
-	if (flags & STF_RAW)
-	    strcat(oend, ")");
+    } else if (flags & STF_STRING) {
+	/* -s with custom -F: traditional strftime rendering */
+	if (timefmt_is_custom)
+	    ztrftime(outbuf, 40, timefmt,
+		     (flags & STF_GMT) ? gmtime(&tim) : localtime(&tim),
+		     nsecs);
+	else
+	    sprintf(outbuf, "%.6f", bsh_unix_to_brightdate((double)tim));
+    } else {
+	/* Default (no flags): emit BrightDate decimal */
+	sprintf(outbuf, "%.6f", bsh_unix_to_brightdate((double)tim));
     }
 }
 
@@ -535,10 +544,15 @@ bin_stat(char *name, char **args, Options ops, UNUSED(int func))
 	flags |= STF_GMT;
 	ops->ind['s'] = 1;
     }
-    if (OPT_ISSET(ops,'s') || OPT_ISSET(ops,'r'))
-	flags |= STF_STRING;
-    if (OPT_ISSET(ops,'r') || !OPT_ISSET(ops,'s'))
+    /*
+     * BSH default: always emit BrightDate for time fields.
+     * -r requests raw unix seconds; -r -s emits both.
+     * -s alone or with no flags: BrightDate (or custom strftime via -F).
+     */
+    if (OPT_ISSET(ops,'r'))
 	flags |= STF_RAW;
+    if (OPT_ISSET(ops,'s') || !OPT_ISSET(ops,'r'))
+	flags |= STF_STRING;
     if (OPT_ISSET(ops,'n'))
 	flags |= STF_FILE;
     if (OPT_ISSET(ops,'o'))

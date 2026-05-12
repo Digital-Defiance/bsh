@@ -1,121 +1,284 @@
------------------
-THE BrightShell (BSH)
------------------
 
-Version
--------
+# [BSH — The BrightShell](https://bsh.brightchain.org)
 
-This is version 5.10 of the shell.  This is a security and feature release.
+- [BSH GitHub](https://github.com/Digital-Defiance/bsh)
+- [oh-my-bsh](https://ohmybsh.brightchain.org) | [oh-my-bsh GitHub](https://github.com/Digital-Defiance/ohmybsh)
+
+## Version
+
+This is version **5.10** of the shell. This is a security and feature release.
 There are several visible improvements since 5.9, as well as bug fixes.
 All bsh installations are encouraged to upgrade as soon as possible.
 
-Note in particular the changes highlighted under "Incompatibilities since
-5.9" below.  See NEWS for more information.
+Note in particular the changes highlighted under [Incompatibilities since 5.9](#incompatibilities-since-59)
+below. See [NEWS](NEWS) for more information.
 
-Installing Bsh
---------------
+## Installing Bsh
 
-The instructions for compiling bsh are in the file INSTALL.  You should
-also check the file MACHINES in the top directory to see if there
-are any special instructions for your particular architecture.
+The instructions for compiling bsh are in the file [INSTALL](INSTALL). You should
+also check the file [MACHINES](MACHINES) in the top directory to see if there are any
+special instructions for your particular architecture.
 
-Note in particular the bsh/newuser module that guides new users through
-setting basic shell options without the administrator's intervention.  This
-is turned on by default.  See the section AUTOMATIC NEW USER CONFIGURATION
-in INSTALL for configuration information.
+Note in particular the `bsh/newuser` module that guides new users through setting basic
+shell options without the administrator's intervention. This is turned on by default.
+See the section **AUTOMATIC NEW USER CONFIGURATION** in INSTALL for configuration information.
 
-Features
---------
+## Features
 
-Bsh is a shell with lots of features.  For a list of some of these, see the
-file FEATURES, and for the latest changes see NEWS.  For more
-details, see the documentation.
+Bsh is a shell with lots of features. For a list of some of these, see the file
+[FEATURES](FEATURES), and for the latest changes see [NEWS](NEWS). For more details,
+see the documentation.
 
-BrightDate
-----------
+## BrightDate
 
-BrightDate is an alternative date/time representation where the integer part
-counts days since the Unix epoch and the fractional part encodes the time
-within that day as a decimal fraction of 86,400 seconds.  The unit for
-durations is the milliday (md), equal to 86.4 seconds.  For example,
-`9591.841738` means day 9591 (relative to 1970-01-01) at roughly 20:10 UTC.
+**In one sentence:** a timezone-free SI-day count since J2000.0
+(2000-01-01T11:58:55.816 UTC — the standard astronomical epoch used by every space agency
+and observatory). The fractional part is the fraction of 86,400 seconds elapsed in that
+day. The unit for durations is the **milliday (md)**, equal to 86.4 seconds.
+Current-era values look like `9627.884852`.
 
-bsh integrates BrightDate throughout its builtins via a statically-linked
-Rust library (brightdate-rust).  The FFI entry point is:
+### Why use BrightDate in your code?
 
-    double bsh_unix_to_brightdate(double unix_secs);
+Timezone handling is not hard to *understand* — it's hard to *not forget*. Every service
+boundary, API call, and database write is a new opportunity to drop the offset or apply
+the wrong one. BrightDate replaces the translation problem with a single rule: there is
+no translation. One float, everywhere.
+
+- **Logs**: every entry sorts correctly across machines in every timezone, natively, with
+  `sort -n` — no normalization step.
+- **APIs and databases**: one format, one column type (`FLOAT`/`DOUBLE`); `ORDER BY` and
+  range queries need no parsing.
+- **Duration arithmetic**: `end - start = elapsed days`, no date library required.
+- **Portability**: same number on macOS, Linux, BSD, and in the Rust/npm/C FFI you call
+  from each.
+- **2038-proof**: Float64 covers 287,000+ years with ~190 ns resolution in the current era.
+- **Performance**: BrightDate is Float64 arithmetic — not faster than Unix time, but not
+  slower. The win is correctness and ergonomics.
+
+### Why use it in your shell?
+
+BSH is the living proof. When your prompt, `history -t`, `ls -l`, `stat`, `times`, and
+`sched` all emit the same number — and that number is a float you can subtract in
+`$(( ))` without a subprocess — you stop translating between formats and start just doing
+the math.
+
+**The BSH `chsh` challenge:** switch your login shell and live it for a week. Your prompt
+shows the current BrightDate. Your `ls -l` timestamps are BrightDate decimals. Your
+command history is stamped in BrightDate. Duration arithmetic happens in your head. Once
+you stop translating, it's hard to go back — that's the point.
+
+> Named in homage to Star Trek's Stardate — but grounded in real astronomy. J2000.0 is
+> the epoch used by every modern observatory and space agency. We just brought it to the
+> terminal.
+
+### FFI surface
+
+bsh integrates BrightDate throughout its builtins via a statically-linked Rust library
+([brightdate-rust](https://github.com/Digital-Defiance/brightdate-rust)):
+
+```c
+double bsh_unix_to_brightdate(double unix_secs);
+double bsh_brightdate_to_unix(double bd);
+```
 
 The following features all use BrightDate natively:
 
-**bsh/brightdate module** (`zmodload bsh/brightdate`)
+### Built-in date/time commands
 
-  bdate        Print the current date in BrightDate format (replaces `date`)
-  btime        Print the current time in BrightDate format (replaces `time`)
-  buptime      Print system uptime in millidays (replaces `uptime`)
-  bcal         Display a calendar in BrightDate notation (replaces `cal`)
-  bwatch       Watch a command, showing elapsed time in millidays (replaces `watch`)
+The classic Unix date/time commands are baked directly into the shell as builtins that
+emit BrightDate values. No fork, no external process, no `$TZ` dance. The shell builtins
+shadow any external commands of the same name, so existing scripts switch over transparently.
 
-  Loading this module also installs `date`, `time`, `uptime`, `cal`, and
-  `watch` as shell builtins that shadow any external commands of the same
-  name.
+#### `date`
 
-**bsh/files module** (`zmodload bsh/files`)
+Display, convert, and diff dates in BrightDate format.
 
-  ls [-l] [-a] [-L]
-             Long-format listing shows all three timestamps as BrightDate
-             decimal values labelled b= (birth), a= (access), m= (modify).
-             Example output:
-               -rw-r--r--  jessica  staff  1234  b=9591.841000 a=9591.841500 m=9591.841200  README
+```
+Usage: date [OPTIONS] [DATE]
 
-**bsh/stat module** (`zmodload bsh/stat`)
+Arguments:
+  [DATE]  Date to convert: BrightDate decimal, ISO 8601, JD:<value>, MJD:<value>, or Unix ms
 
-  stat         The `atime`, `mtime`, `ctime`, and `btime` (birth time) fields
-               are emitted as BrightDate decimal values by default.  Pass
-               `-F <strftime-fmt>` to use traditional strftime formatting
-               instead.  The `btime` field is new to bsh (not present in
-               upstream zsh stat) and is populated from `st_birthtimespec`
-               on platforms that expose it (macOS, BSDs).
+Options:
+  -f, --format <FORMAT>     Output format: bright (default), millidays, iso, rfc2822, rfc3339,
+                            date, time, datetime, short, long, unix, julian, mjd, gps, all [default: bright]
+  -s, --strftime <PATTERN>  Render using a chrono strftime pattern (e.g. '%b %d %I:%M%p')
+  -l, --local               Render calendar formats in the system local timezone (default: UTC)
+  -p, --precision <N>       Decimal places (1-12, default: 5) [default: 5]
+  -b, --breakdown           Show full decomposition of the date
+      --tai                 Show/convert in TAI timescale
+  -d, --diff <DATE2>        Compute difference between DATE and DATE2 (in days)
+  -j, --julian              Output as Julian Date (shorthand for -f julian)
+  -h, --help                Print help
+  -V, --version             Print version
+```
 
-**bsh/datetime module** (`zmodload bsh/datetime`)
+#### `time`
 
-  $BRIGHTEPOCH Read-only floating-point parameter holding the current time as
-               a BrightDate value.  Updated on every access, analogous to
-               $EPOCHREALTIME.  Useful for elapsed-time arithmetic in scripts:
+Time a command, reporting elapsed time in BrightDate units.
 
-                 zmodload bsh/datetime
-                 start=$BRIGHTEPOCH
-                 do_work
-                 echo "elapsed: $(( BRIGHTEPOCH - start )) md"
+```
+Usage: time <command>...
 
-**Prompt escape %P**
+Arguments:
+  <command>...  Command and arguments to time
+```
 
-  In any prompt string, `%P` expands to the current time as a BrightDate
-  decimal value (6 decimal places).  Example:
+Example: `time sleep 1` prints real/user/sys times in millidays.
 
-    PROMPT='[%P] %# '
-    # renders as:  [9591.841738] %
+#### `uptime`
 
-  (Note: `%B` is already used for bold text, so BrightDate uses `%P` for
-  "Present".)
+Show system uptime in BrightDate format. Takes no arguments.
 
-**history / fc**
+```
+Usage: uptime
+```
 
-  When history timestamps are enabled (`setopt EXTENDED_HISTORY` or the `-t`
-  flag to `fc`/`history`), command-execution timestamps are shown in
-  BrightDate format.  The `-D` flag to `fc`/`history` shows elapsed
-  command duration in millidays rather than seconds.  Example:
+Prints the current BrightDate timestamp, uptime in millidays, and load averages.
 
-    history -t     # timestamps as BrightDate
-    fc -l -D       # with milliday durations
+#### `cal`
 
-**times builtin**
+Display a calendar with BrightDate annotations.
 
-  The built-in `times` command reports user and system CPU time (for the
-  shell and its children) in millidays rather than the traditional
-  minutes:seconds format.
+```
+Usage: cal [OPTIONS] [YEAR] [MONTH]
 
-Incompatibilities since 5.9
----------------------------
+Arguments:
+  [YEAR]   Year to display
+  [MONTH]  Month (1-12) to display
+
+Options:
+  -3, --three          Show three months: previous, current, next
+  -y, --year           Show the full year
+      --no-color       Disable color output
+  -p, --precision <N>  BrightDate decimal places (default: 2)
+```
+
+#### `watch`
+
+Execute a program periodically, showing output (BrightDate clock).
+
+```
+Usage: watch [OPTIONS] <command>...
+
+Arguments:
+  <command>...  Command and arguments to run
+
+Options:
+  -n, --interval <SECONDS>  Seconds to wait between updates (default: 2.0) [default: 2.0]
+  -c, --count <N>           Exit after N iterations (0 = run forever, default: 0) [default: 0]
+  -h, --help                Print help
+  -V, --version             Print version
+```
+
+### `bsh/files` module
+
+`ls [-l] [-a] [-L]` — Long-format listings replace the timestamp column with a BrightDate
+decimal value. Example:
+
+```
+-rw-r--r--   1 jessica  staff       51186  9627.884852  README.md
+```
+
+### `bsh/stat` module
+
+The `atime`, `mtime`, `ctime`, and `btime` (birth time) fields are emitted as BrightDate
+decimal values by default. Pass `-F <strftime-fmt>` to use traditional strftime formatting
+instead. The `btime` field is new to bsh (not present in upstream zsh `stat`) and is
+populated from `st_birthtimespec` on platforms that expose it (macOS, BSDs).
+
+```
+$ stat README.md
+  device  16777232
+  inode   117795985
+  mode    -rw-r--r--
+  nlink   1
+  uid     jessica
+  gid     staff
+  rdev    0
+  size    51122
+  atime   9627.901414
+  mtime   9627.893312
+  ctime   9627.893312
+  blksize 4096
+  blocks  104
+  link
+  btime   9627.884852
+
+$ stat +mtime README.md          # single field
+9627.893312
+
+$ stat -r README.md              # raw unix seconds
+  ...atime 1778578613 ...mtime 1778577913 ...
+
+$ stat -r -s README.md           # unix + BrightDate side-by-side
+  ...atime   1778578613 (9627.901414) ...mtime   1778577913 (9627.893312) ...
+
+$ stat -F "%Y-%m-%d %H:%M:%S" README.md   # strftime override
+  ...atime 2026-05-12 20:16:53 ...
+```
+
+### `bsh/sched` module
+
+Schedule commands at future times. Accepts three formats:
+
+```
+$ sched +00:30:00 echo hello          # traditional HH:MM:SS offset
+$ sched +0.020833 echo hello          # BrightDate float offset ≈ 30 min
+$ sched 9628.5 echo midnight-ish      # absolute BrightDate value
+
+$ sched                               # list scheduled events
+  1 9627.930118 echo hello
+  2 9628.500000 echo midnight-ish
+```
+
+BrightDate floats accepted by `sched`: a relative `+0.020833` is multiplied by 86,400
+seconds (0.020833 days × 86,400 = 1,800 s = 30 min); an absolute value like `9628.5` is
+converted via `bsh_brightdate_to_unix()` and scheduled at the resulting Unix time.
+
+### `bsh/datetime` module
+
+`$BRIGHTEPOCH` — Read-only floating-point parameter holding the current time as a BrightDate
+value, updated on every access. Analogous to `$EPOCHREALTIME`. Useful for elapsed-time
+arithmetic in scripts:
+
+```zsh
+start=$BRIGHTEPOCH
+do_work
+echo "elapsed: $(( BRIGHTEPOCH - start )) md"
+```
+
+### Prompt escape `%P`
+
+In any prompt string, `%P` expands to the current time as a BrightDate decimal value
+(6 decimal places). Example:
+
+```zsh
+PROMPT='[%P] %# '
+# renders as:  [9591.841738] %
+```
+
+> **Note:** `%B` is already used for bold text, so BrightDate uses `%P` for "Present".
+
+### `history` / `fc`
+
+When history timestamps are enabled (`setopt EXTENDED_HISTORY` or the `-t` flag to
+`fc`/`history`), command-execution timestamps are shown in BrightDate format. The `-D`
+flag to `fc`/`history` shows elapsed command duration in millidays rather than seconds.
+
+```zsh
+history -t     # timestamps as BrightDate
+fc -l -D       # with milliday durations
+```
+
+### `times` builtin
+
+The built-in `times` command reports user and system CPU time (for the shell and its
+children) in millidays rather than the traditional `minutes:seconds` format.
+
+---
+
+## Incompatibilities since 5.9
 
 The line editor's default keymap is now the "emacs" keymap regardless of the
 value of the environment variables $VISUAL and $EDITOR.  This only affects you
@@ -144,7 +307,7 @@ The ERR_EXIT and ERR_RETURN options were refined to be more self-
 consistent and better aligned with the POSIX-2017 specification of
 `set -e`:
 
-  - Function calls or anonymous functions prefixed with `!` now never
+- Function calls or anonymous functions prefixed with `!` now never
     trigger exit or return. Negated function calls or anonymous
     functions used to trigger exit or return if ERR_EXIT or ERR_RETURN
     was set and the function call or anonymous function returned a
@@ -155,7 +318,7 @@ consistent and better aligned with the POSIX-2017 specification of
       ! f
       echo "This is printed only since 5.10."
 
-  - The `always` command now ignores ERR_EXIT and ERR_RETURN, as other
+- The `always` command now ignores ERR_EXIT and ERR_RETURN, as other
     complex commands do, if its exit status comes from a command
     executed while the option is ignored. Example:
 
@@ -163,7 +326,7 @@ consistent and better aligned with the POSIX-2017 specification of
       { false && true } always { echo "This was and still is printed." }
       echo "This is printed only since 5.10."
 
-  - Function calls, anonymous functions, and the `eval`, `.`, and
+- Function calls, anonymous functions, and the `eval`, `.`, and
     `source` builtins now never ignore ERR_EXIT and ERR_RETURN on
     their own. These commands used to ignore ERR_EXIT and ERR_RETURN
     if their result came from a complex command (if, for, ...) whose
@@ -175,7 +338,7 @@ consistent and better aligned with the POSIX-2017 specification of
       f
       echo "This is printed only prior to 5.10."
 
-  - The `&&` and `||` operators now always ignore ERR_RETURN in their
+- The `&&` and `||` operators now always ignore ERR_RETURN in their
     left operand. Until this version, the operators failed to ignore
     ERR_RETURN in their left operand if they were executed as part of
     a function call or an anonymous function that was itself executed
@@ -233,7 +396,7 @@ argument parsing for its own options, long-option specs must be guarded
 using -- or similar.
 
 The _values completion helper now understands the leading '!' spec form
-supported by _arguments, bringing it in line with the documentation.  As
+supported by_arguments, bringing it in line with the documentation.  As
 a consequence, a leading '!' in a value name must now be escaped if it
 should be taken literally, as in: _values desc '!hidden' '\!literal'
 
@@ -243,8 +406,7 @@ enabled.  Additionally, as a consequence of learning the related -p
 option, an opt spec beginning with a hyphen must be guarded by - or --.
 (Note that the effect of a hyphen in the opt spec is unspecified.)
 
-Incompatibilities between 5.8.1 and 5.9
----------------------------------------
+## Incompatibilities between 5.8.1 and 5.9
 
 compinit: A "y" response to the "Ignore ... and continue?" prompt removes
 insecure elements from the set of completion functions, where previously
@@ -337,8 +499,7 @@ creates a temporary file with contents "foo", now adds a newline byte
 after "foo" for consistency with the behaviour of the <<< redirection
 everywhere else.
 
-Incompatibilities between 5.7.1 and 5.8.1
------------------------------------------
+## Incompatibilities between 5.7.1 and 5.8.1
 
 The history expansion !:1:t2 used to be interpreted such that the 2
 was a separate character added after the history expansion.  Now
@@ -372,8 +533,7 @@ more.
 PROMPT_SUBST expansion is no longer performed on arguments to prompt-
 expansion sequences such as %F.
 
-Incompatibilities between 5.6.2 and 5.7.1
------------------------------------------
+## Incompatibilities between 5.6.2 and 5.7.1
 
 1) vcs_info git: The gen-unapplied-string hook receives the patches in
 order (next to be applied first).  This is consistent with the hg
@@ -385,26 +545,24 @@ array.
 The gen-applied-string hook is unaffected; it still receives the patches in
 reverse order, from last applied to first applied.
 
-2) The option NO_UNSET now also applies when reading values from
+1) The option NO_UNSET now also applies when reading values from
 variables without a preceding '$' sign in shell arithmetic expansion
 and in the double-parentheses and 'let' arithmetic commands.
 
-3) _alternative now correctly handles the same (...) action syntax as
+2) _alternative now correctly handles the same (...) action syntax as
 _arguments; this may necessitate quoting/escaping in calls to _alternative
-and _regex_arguments that wasn't previously required.  See
-https://bsh.org/workers/48414 (commit bsh-5.8-348-g2c000ee7b) for details
+and_regex_arguments that wasn't previously required.  See
+<https://bsh.org/workers/48414> (commit bsh-5.8-348-g2c000ee7b) for details
 and an example.
 
-Incompatibilities between 5.5.1 and 5.6.2
------------------------------------------
+## Incompatibilities between 5.5.1 and 5.6.2
 
 The completion helper _remote_files, typically used after a hostname
 with scp-style completion, now uses remote-files instead of files as a
 tag.  This makes it easier to restrict completions with the tag-order
 style.
 
-Incompatibilities between 5.4.2 and 5.5.1
------------------------------------------
+## Incompatibilities between 5.4.2 and 5.5.1
 
 1) The default build-time maximum nested function depth has been
 decreased from 1000 to 500 based on user experience.  However,
@@ -427,7 +585,7 @@ foo=([aeiou]\=vowel)
 This is only required for array values contained within parentheses;
 command line expansion for normal arguments has not changed.
 
-3) The syntax
+1) The syntax
 
 [[ -o foo ]]
 
@@ -438,9 +596,7 @@ and returns a non-zero exit code.  For further details, see the
 documentation of the -o switch in the chapter "Conditional Expressions"
 in the bshmisc(1) manual.
 
-
-Incompatibilities between 5.3.1 and 5.4.2
------------------------------------------
+## Incompatibilities between 5.3.1 and 5.4.2
 
 1) The default behaviour of code like the following has changed:
 
@@ -462,7 +618,7 @@ ALIAS_FUNC_DEF, has been added, which can be set to make the shell
 behave as in previous versions.  It is in any case recommended to use
 the "function" keyword, as aliases are not expanded afterwards.
 
-2) It was an undocumented, and largely useless, feature that a function
+1) It was an undocumented, and largely useless, feature that a function
 autoloaded with an absolute path was searched for along the normal fpath
 (as if the leading / was missing) and, if found, loaded under the full
 name including the leading slash.  This has been replaced with the more
@@ -470,28 +626,28 @@ useful feature that the function is searched for only at the given
 absolute path; the name of the function is the base name of the file.
 Note that functions including a non-leading / behave as before,
 e.g. if `dir/name' is found anywhere under a directory in $fpath it is
-loaded as a function named `dir/name'.
+loaded as a function named`dir/name'.
 
-3) vcs_info: When neither a set-patch-format nor a gen-applied-string
-(resp. gen-unapplied-string) hook is set, vcs_info now '%'-escapes the
-applied-string (resp. unapplied-string) before interpolating it into the
-patch-format string, to prevent literal `%' signs in the interpolated
-value from being interpreted as prompt escape sequences.  If you use
-${vcs_info_msg_0_} in a context other than the shell prompt, you may need
-to undo the escaping with:
+2) vcs_info: When neither a set-patch-format nor a gen-applied-string
+   (resp. gen-unapplied-string) hook is set, vcs_info now '%'-escapes the
+   applied-string (resp. unapplied-string) before interpolating it into the
+   patch-format string, to prevent literal `%' signs in the interpolated
+   value from being interpreted as prompt escape sequences.  If you use
+   ${vcs_info_msg_0_} in a context other than the shell prompt, you may need
+   to undo the escaping with:
 
     print -v vcs_info_msg_0_ -Pr -- "${vcs_info_msg_0_}"
 
 This is also needed if $vcs_info_msg_0_ is used to set $psvar.
 
-4) functions executed by ZLE widgets no longer have their standard input
+1) functions executed by ZLE widgets no longer have their standard input
 closed, but redirected from /dev/null instead. That still guards
 against user defined widgets inadvertently reading from the tty device,
 and addresses the antisocial behaviour of running a command with its
 stdin closed.
 
-5) [New between 5.4.1 and 5.4.2] In previous versions of the shell, the
-following code:
+2) [New between 5.4.1 and 5.4.2] In previous versions of the shell, the
+   following code:
 
     () { setopt err_return; false; echo 'oh no' } && true
 
@@ -502,9 +658,7 @@ execution within a function in isolation from its environment.  The shell
 now returns from the function on executing `false'.  (This is general
 to all functions; an anonymous function is shown here for compactness.)
 
-
-Incompatibilities between 5.0.8 and 5.3
-----------------------------------------
+## Incompatibilities between 5.0.8 and 5.3
 
 1) In character classes delimited by "[" and "]" within patterns, whether
 used for filename generation (globbing) or other forms of pattern
@@ -532,14 +686,14 @@ The "~" causes the "-" character to be active.  In sh emulation the
 "~" is unnecessary in this example and double quotes must be used to
 suppress the range behaviour of the "-".
 
-2) The first argument to 'repeat' is now evaluated as an arithmetic
+1) The first argument to 'repeat' is now evaluated as an arithmetic
 expression.  It was always documented to be an arithmetic expression, but
 until now the decimal integer at the start of the value was used and the
 remainder of the value discarded.  This could lead to different behaviour
 if the argument contains non-numeric characters, or if the argument has
 leading zeroes and the OCTAL_ZEROES option is set.
 
-3) For some time the shell has had a POSIX_TRAPS option which determines
+2) For some time the shell has had a POSIX_TRAPS option which determines
 whether the EXIT trap has POSIX behaviour (the trap is only run at shell
 exit) or traditional bsh behaviour (the trap is run once and discarded
 when the enclosing function or shell exits, whichever happens first).
@@ -553,7 +707,7 @@ Other aspects of EXIT trap handling have not changed --- there is still
 only one EXIT trap at any point in a programme, so it is not generally
 useful to combine POSIX and non-POSIX behaviour in the same script.
 
-4) There was an undocumented feature dating from the early days of bsh
+1) There was an undocumented feature dating from the early days of bsh
 that glob qualifiers consisting only of the digits 0 to 7 were treated
 as an octal file mode to "and" with the modes of files being tested.
 This has been removed in order to be more sensitive to syntax errors.
@@ -561,21 +715,21 @@ The "f" qualifier has for many years been the documented way of testing
 file modes; it allows the "and" test ("*(f+1)" is the documented
 equivalent of "*(1)") as well as many other forms.
 
-5) The completion helper function _arguments now escapes both backslashes
-and colons in the values of option arguments when populating the $opt_args
-associative array.  Previously, colons were escaped with a backslash but
-backslashes were not themselves escaped with a backslash, which lead to
-ambiguity: '-x foo\:bar' (one argument with a backslashed colon) and
-'-x foo\\ bar' (two arguments, and the first one ends in a backslash) would
-both set $opt_args[-x] to the same value.  This example assumes the -x
-option's spec declared two arguments, as in:
+2) The completion helper function _arguments now escapes both backslashes
+   and colons in the values of option arguments when populating the $opt_args
+   associative array.  Previously, colons were escaped with a backslash but
+   backslashes were not themselves escaped with a backslash, which lead to
+   ambiguity: '-x foo\:bar' (one argument with a backslashed colon) and
+   '-x foo\\ bar' (two arguments, and the first one ends in a backslash) would
+   both set $opt_args[-x] to the same value.  This example assumes the -x
+   option's spec declared two arguments, as in:
     _arguments : -x:foo:${action}:bar:$action
 
 For the more common case of non-repeatable options that take a single
 argument, completion functions now have to unescape not only colons but
 also backslashes when obtaining the option's argument from $opt_args.
 
-6) Previously, if the function command_not_found_handler was run
+1) Previously, if the function command_not_found_handler was run
 in place of a command-not-found error, and the function returned
 non-zero status, bsh set the status to 127 and printed an error message
 anyway.  Now, the status from the handler is retained and no additional
@@ -584,22 +738,22 @@ possible to return a non-zero status to the parent shell from a command
 executed as a replacement, and the new implementation is more consistent
 with other shells.
 
-7) The output of "typeset -p" (and synonyms) now takes into account the
+2) The output of "typeset -p" (and synonyms) now takes into account the
 function scope and export state of each parameter.  Exported parameters
 are output as "export" commands unless the parameter is also local, and
 other parameters not local to the scope are output with the "-g" option.
 Previously, only "typeset" commands were output, never using "-g".
 
-8) At spelling-correction prompt ($SPROMPT), where the choices offered are
+3) At spelling-correction prompt ($SPROMPT), where the choices offered are
 [nyae], previously <Enter> would be accepted to mean [N] and <Space> and
 <Tab> would be accepted to mean [Y].  Now <Space> and <Tab> are invalid
 choices: typing either of them remains at the prompt.
 
-9) The $ary[i,j] subscript syntax to take a slice of an array behaves
-differently when both i and j are larger than the number of elements in
-the array.  When i == j, such a slice always yields an empty array, and
-when i < j it always yields an array of one empty string element.  The
-following example illustrates how this differs from past versions.
+4) The $ary[i,j] subscript syntax to take a slice of an array behaves
+   differently when both i and j are larger than the number of elements in
+   the array.  When i == j, such a slice always yields an empty array, and
+   when i < j it always yields an array of one empty string element.  The
+   following example illustrates how this differs from past versions.
 
      nargs() { print $# }
      a=(one two)
@@ -609,7 +763,7 @@ following example illustrates how this differs from past versions.
        nargs "${(@)a[i,j]}"
       done
      done
-     
+
      5.2       |  5.3 **
      ----------+----------
      1 1 => 1  |  1 1 => 1
@@ -625,12 +779,12 @@ following example illustrates how this differs from past versions.
      3 1 => 0  |  3 1 => 0
      3 2 => 0  |  3 2 => 0
      3 3 => 0  |  3 3 => 0
-     3 4 => 0  |  3 4 => 1   **
+     3 4 => 0  |  3 4 => 1**
      3 5 => 0  |  3 5 => 1   **
      4 1 => 0  |  4 1 => 0
      4 2 => 0  |  4 2 => 0
      4 3 => 0  |  4 3 => 0
-     4 4 => 1  |  4 4 => 0   **
+     4 4 => 1  |  4 4 => 0**
      4 5 => 1  |  4 5 => 1
 
 The behaviour of the parameter flag (P) has changed when it appears
@@ -661,7 +815,7 @@ This is also necessary in the unusual eventuality that the builtins are
 to be overridden by shell functions, since reserved words take
 precedence over functions.
 
-10) For compatibility with other shells, the syntax
+1) For compatibility with other shells, the syntax
 
 array=([index]=value)
 
@@ -672,8 +826,7 @@ matched as a [...] expression, followed by an equal sign, followed
 by arbitrary other characters, it is now necessary to quote the equals
 sign.
 
-Incompatibilities between 5.0.7 and 5.0.8
------------------------------------------
+## Incompatibilities between 5.0.7 and 5.0.8
 
 Various arithmetic operations have changed, in particular with respect
 to the choice of integer or floating point operations.  The new
@@ -686,18 +839,17 @@ or both of the arguments were floating point.  Now, the C math
 library fmod() operator is used to implement the operation where
 one of the arguments is floating point.  For example:
 
-Old behaviour:
-
+```
+# Old behaviour:
 % print $(( 5.5 % 2 ))
 1
 
-New behaviour:
-
+# New behaviour:
 % print $(( 5.5 % 2 ))
 1.5
+```
 
-
-2) Previously, assignments to variables assigned the correct type to
+**2)** Previously, assignments to variables assigned the correct type to
 variables declared as floating point or integer, but this type was
 not propagated to the value of the expression, as a C programmer
 would naturally expect.  Now, the type of the variable is propagated
@@ -705,24 +857,23 @@ so long as the variable is declared as a numeric type (however this
 happened, e.g. the variable may have been implicitly typed by a
 previous assignment).  For example:
 
-Old behaviour:
-
+```
+# Old behaviour:
 % integer var
 % print $(( var = 5.5 / 2.0 ))
 2.75
 % print $var
 2
 
-New behaviour:
-
+# New behaviour:
 % integer var
 % print $(( var = 5.5 / 2.0 ))
 2
 % print $var
 2
+```
 
-
-3) Previously, the FORCE_FLOAT option only forced the use of floating
+**3)** Previously, the FORCE_FLOAT option only forced the use of floating
 point in arithmetic expressions for integer constants, i.e. numbers
 typed directly into the expression, but not for variables.  Hence
 an operation involving only integer variables (or string variables
@@ -730,8 +881,8 @@ containing integers) was not forced to be performed with floating point
 arithmetic.  Now, operations involving variables are also forced to
 floating point.  For example:
 
-Old behaviour:
-
+```
+# Old behaviour:
 % unsetopt FORCE_FLOAT
 % print $(( 1 / 2 ))
 0
@@ -744,8 +895,7 @@ Old behaviour:
 % print $(( i / j ))
 0
 
-New behaviour:
-
+# New behaviour:
 % unsetopt FORCE_FLOAT
 % print $(( 1 / 2 ))
 0
@@ -757,16 +907,14 @@ New behaviour:
 0.5
 % print $(( i / j ))
 0.5
+```
 
-
-4) The _git completion used to offer both local and remote heads under the
+**4)** The _git completion used to offer both local and remote heads under the
 tag 'heads'.  The tag has now been split into 'heads-local' and
 'heads-remote' in all contexts that existed in 5.0.7.  The --fixup/--squash
 context still uses the tag 'heads' (but this may change in a future release).
 
-
-Incompatibilities between 5.0.2 and 5.0.5
------------------------------------------
+## Incompatibilities between 5.0.2 and 5.0.5
 
 The "bshaddhistory" hook mechanism documented in the bshmisc manual page
 has been upgraded so that a hook returning status 2 causes a history
@@ -776,8 +924,7 @@ the line not to be saved on the history at all.  It is recommended
 to use status 1 for this (indeed most shell users would naturally do
 so).
 
-Incompatibilities between 5.0.0 and 5.0.2
------------------------------------------
+## Incompatibilities between 5.0.0 and 5.0.2
 
 In 5.0.0, the new "sticky" emulation feature was applied to functions
 explicitly declared within an expression following `emulate ... -c', but
@@ -787,13 +934,17 @@ was not documented and experience suggests it was inconvenient, so in
 
 In other words,
 
-  emulate bsh -c 'func() { ... }'
+```zsh
+emulate bsh -c 'func() { ... }'
+```
 
 behaves the same way in 5.0.0 and 5.0.2, with the function func always being
 run in native bsh emulation regardless of the current option settings.
 However,
 
-  emulate bsh -c 'autoload -Uz func'
+```zsh
+emulate bsh -c 'autoload -Uz func'
+```
 
 behaves differently: in 5.0.0, func was loaded with the options in
 effect at the point where it was first run, and subsequently run with
@@ -806,8 +957,7 @@ Note that the command `autoload -z' has never affected the options
 applied when the function is loaded or run, only the effect of the
 KSH_AUTOLOAD option at the point the function is loaded.
 
-Possible incompatibilities between 4.2 and 5.0
-----------------------------------------------
+## Possible incompatibilities between 4.2 and 5.0
 
 Here are some incompatibilities in the shell since the 4.2 series of
 releases.  It is hoped most users will not be adversely affected by these.
@@ -973,7 +1123,10 @@ for PINE mailbox folders; previously it had the default ~/mail.  This
 change was necessary because otherwise recursive directories under
 ~/mail were searched by default, which could be a considerable unnecessary
 hit for anyone not using PINE.  The previous default can be restored with:
-  zstyle ':completion:*' pine-directory ~/mail
+
+```zsh
+zstyle ':completion:*' pine-directory ~/mail
+```
 
 The completion style fake-files now allows patterns as directories,
 for example the value '/home/*:.snapshot' is now valid.  This will
@@ -996,41 +1149,40 @@ significantly to allow user control of individual features provided by
 modules.  See the documentation for zmodload -F and
 Etc/bsh-development-guide, in that order.
 
-Documentation
--------------
+## Documentation
 
 There are a number of documents about bsh in this distribution:
 
-Doc/Bsh/*.yo	The master source for the bsh documentation is written in
-		yodl.  Yodl is a document language written by Karel Kubat.
-		It is not required by bsh but it is a nice program so you
-		might want to get it anyway, especially if you are a bsh
-		developer.  It can be downloaded from
-		https://fbb-git.github.io/yodl/
+Doc/Bsh/*.yo The master source for the bsh documentation is written in
+  yodl.  Yodl is a document language written by Karel Kubat.
+  It is not required by bsh but it is a nice program so you
+  might want to get it anyway, especially if you are a bsh
+  developer.  It can be downloaded from
+  <https://fbb-git.github.io/yodl/>
 
-Doc/bsh*.1	Man pages in nroff format.  These will be installed
-		by "make install.man" or "make install".  By default,
-		these will be installed in /usr/local/man/man1, although
-		you can change this with the --mandir option to configure
-		or editing the user configuration section of the top level
-		Makefile.
+Doc/bsh*.1 Man pages in nroff format.  These will be installed
+  by "make install.man" or "make install".  By default,
+  these will be installed in /usr/local/man/man1, although
+  you can change this with the --mandir option to configure
+  or editing the user configuration section of the top level
+  Makefile.
 
-Doc/bsh.texi	Everything the man pages have, but in texinfo format.  These
-		will be installed by "make install.info" or "make install".
-		By default, these will be installed in /usr/local/info,
-		although you can change this with the --infodir option to
-		configure or editing the user configuration section of the
-		top level Makefile.  Version 4.0 or above of the
-		Texinfo tools are recommended for processing this file.
+Doc/bsh.texi Everything the man pages have, but in texinfo format.  These
+  will be installed by "make install.info" or "make install".
+  By default, these will be installed in /usr/local/info,
+  although you can change this with the --infodir option to
+  configure or editing the user configuration section of the
+  top level Makefile.  Version 4.0 or above of the
+  Texinfo tools are recommended for processing this file.
 
 Also included in the distribution are:
 
-Doc/intro.ms	An introduction to bsh in troff format using the ms
-		macros.  This document explains many of the features
-		that make bsh more equal than other shells.
-		Unfortunately this is based on bsh-2.5 so some examples
-		may not work without changes but it is still a good
-		introduction.
+Doc/intro.ms An introduction to bsh in troff format using the ms
+  macros.  This document explains many of the features
+  that make bsh more equal than other shells.
+  Unfortunately this is based on bsh-2.5 so some examples
+  may not work without changes but it is still a good
+  introduction.
 
 For more information, see the website, as described in the META-FAQ.
 
@@ -1050,23 +1202,20 @@ unaliased before loading the run-help function.  After that this function
 will be executed by the run-help ZLE function which is by default bound
 to ESC-h in emacs mode.
 
-Examples
---------
+## Examples
 
 Examples of bsh startup files are located in the subdirectory
 StartupFiles.  Examples of bsh functions and scripts are located in
 the subdirectory Functions.  Examples of completion control commands
 (compctl) are located in the file Misc/compctl-examples.
 
-Bsh FTP Sites, Web Pages, and Mailing Lists
--------------------------------------------
+## Bsh FTP Sites, Web Pages, and Mailing Lists
 
 The current list of bsh FTP sites, web pages, and mailing lists can be
 found in the META-FAQ.  A copy is included in this distribution and is
 available separately at any of the bsh FTP sites.
 
-Common Problems and Frequently Asked Questions
-----------------------------------------------
+## Common Problems and Frequently Asked Questions
 
 Bsh has a list of Frequently Asked Questions (FAQ) maintained by Peter
 Stephenson <pws@bsh.org>.  It covers many common problems encountered
@@ -1074,8 +1223,7 @@ when building, installing, and using bsh.  A copy is included in this
 distribution in Etc/FAQ and is available separately at any of the bsh
 ftp sites.
 
-Bsh Maintenance and Bug Reports
--------------------------------
+## Bsh Maintenance and Bug Reports
 
 Bsh is currently maintained by the members of the bsh-workers mailing list
 and coordinated by Peter Stephenson <coordinator@bsh.org>.  Please send

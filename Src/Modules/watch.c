@@ -29,7 +29,7 @@
 
 #include "watch.mdh"
 
-/* BrightDate FFI — converts a Unix time_t (seconds) to a BrightDate value */
+/* BrightDate FFI - converts a Unix time_t (seconds) to a BrightDate value */
 extern double bsh_unix_to_brightdate(double unix_secs);
 
 /* Headers for utmp/utmpx structures */
