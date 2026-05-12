@@ -4,6 +4,22 @@ CHANGES FROM PREVIOUS VERSIONS OF BSH
 
 Note also the list of incompatibilities in the README file.
 
+Changes since 5.9.0.14
+-----------------------
+
+Glob time qualifiers (.a, .m, .c) now accept fractional decimal-day
+("brightdate") values.  For example, *(.m-0.01) lists files modified
+within the last centiday (~14 minutes), and *(.m-0.5) lists files
+modified in the past half-day.  Any unit suffix (d, h, m, s, w, M)
+also accepts a fractional value: *(.ms-90.5) matches files modified
+within the last 90.5 seconds.
+
+A new .b glob qualifier selects files by birth time (creation time)
+on platforms that support it (macOS, FreeBSD, NetBSD).  Fractional
+brightdate values work the same as for the other time qualifiers, e.g.
+*(.b-0.01) lists files born within the last centiday.  The ob sort key
+and the O^ob reversed variant are also available.
+
 Changes since 5.9
 -----------------
 

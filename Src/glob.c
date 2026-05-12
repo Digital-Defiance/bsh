@@ -95,7 +95,7 @@ struct gmatch {
 #define GS_LINKS (GS_SHIFT_BASE << 4)
 #define GS_BTIME (GS_SHIFT_BASE << 5)
 
-#define GS_SHIFT  5
+#define GS_SHIFT  6
 #define GS__SIZE  (GS_SIZE << GS_SHIFT)
 #define GS__ATIME (GS_ATIME << GS_SHIFT)
 #define GS__MTIME (GS_MTIME << GS_SHIFT)
