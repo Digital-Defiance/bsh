@@ -602,6 +602,7 @@
         <li><a href="#why">Why BSH?</a></li>
         <li><a href="#builtins">Builtins</a></li>
         <li><a href="#modules">Modules</a></li>
+        <li><a href="#glob">Glob</a></li>
         <li><a href="#build">Build</a></li>
         <li><a href="https://github.com/Digital-Defiance/bsh">GitHub</a></li>
       </ul>
@@ -928,11 +929,10 @@ echo "elapsed: $(( BRIGHTEPOCH - start )) md"</code></pre>
             <p>
               With <code>EXTENDED_HISTORY</code> set,
               <code>history -d</code> (or <code>-i</code>, <code>-f</code>,
-              <code>-E</code>) prints command-execution timestamps as
-              BrightDate values instead of clock strings.
-              <code>fc -l -D</code> reports command durations in
-              <strong>millidays</strong> instead of seconds — so log analysis
-              just becomes <code>sort -n</code>.
+              <code>-E</code>) prints command-execution timestamps as BrightDate
+              values instead of clock strings. <code>fc -l -D</code> reports
+              command durations in <strong>millidays</strong> instead of seconds
+              — so log analysis just becomes <code>sort -n</code>.
             </p>
           </div>
 
@@ -944,13 +944,12 @@ echo "elapsed: $(( BRIGHTEPOCH - start )) md"</code></pre>
               <code>bsh/stat</code> is statically linked and autoloaded — no
               <code>zmodload</code> required; <code>bsh/files</code> ships as a
               dynamic module (<code>zmodload bsh/files</code>).
-              <code>ls -l</code> replaces the timestamp column with a
-              BrightDate decimal, following normal ls flags (<code>-u</code>
-              for atime, <code>-c</code> for ctime, etc.). The
-              <code>stat</code> builtin emits all time fields —
-              <code>atime</code>, <code>mtime</code>, <code>ctime</code>, and
-              the new <code>btime</code> (birth time, from
-              <code>st_birthtimespec</code> on macOS/BSDs) — as BrightDate
+              <code>ls -l</code> replaces the timestamp column with a BrightDate
+              decimal, following normal ls flags (<code>-u</code> for atime,
+              <code>-c</code> for ctime, etc.). The <code>stat</code> builtin
+              emits all time fields — <code>atime</code>, <code>mtime</code>,
+              <code>ctime</code>, and the new <code>btime</code> (birth time,
+              from <code>st_birthtimespec</code> on macOS/BSDs) — as BrightDate
               decimals by default. Use <code>-r</code> for raw Unix seconds,
               <code>-r -s</code> for both side-by-side, or
               <code>-F fmt</code> for strftime.
@@ -1057,6 +1056,54 @@ $ sched
             style="display: inline-block; margin-left: 0.4rem"
             >bsh/stat</span
           >
+        </p>
+      </div>
+    </section>
+
+    <!-- ── GLOB TIME QUALIFIERS ── -->
+    <section id="glob">
+      <div class="container">
+        <div class="section-label">Filesystem</div>
+        <h2>Glob time qualifiers in BrightDate units.</h2>
+        <p>
+          BSH extends zsh's glob qualifiers so <code>.m</code>, <code>.a</code>,
+          <code>.c</code>, and the new <code>.b</code> (birth time) accept
+          <strong>fractional decimal-day values</strong>. Filter files with
+          centiday precision (0.01 d = 864 s ≈ 14 min) directly in the shell —
+          and with <code>.b</code>, use a timestamp that <code>touch</code>
+          <em>can never fake</em>.
+        </p>
+
+        <p style="margin-top: 1rem">
+          Start with two log files, <code>old.log</code> backdated 2 hours:
+        </p>
+        <pre><code><span style="color:var(--green)">$</span> setopt extendedglob nullglob
+<span style="color:var(--green)">$</span> touch old.log new.log
+<span style="color:var(--green)">$</span> perl -e <span style="color:#e6db74">'utime time()-7200, time()-7200, "old.log"'</span>
+
+<span style="color:var(--green)">$</span> echo *.log(.m-1)    <span style="color:var(--text)"># within 1 day — both match, too broad</span>
+new.log old.log
+
+<span style="color:var(--green)">$</span> echo *.log(.m-0.05) <span style="color:var(--text)"># within 0.05 d (~72 min) — precision cuts through</span>
+new.log
+
+<span style="color:var(--green)">$</span> echo *.log(.m-0.01) <span style="color:var(--text)"># within centiday (~14 min) — only the fresh file</span>
+new.log
+
+<span style="color:var(--green)">$</span> touch old.log       <span style="color:var(--text)"># reset mtime — but birthtime is immutable</span>
+<span style="color:var(--green)">$</span> echo *.log(.m-0.01) <span style="color:var(--text)"># mtime fooled: both match now</span>
+new.log old.log
+
+<span style="color:var(--green)">$</span> echo *.log(.b-0.01) <span style="color:var(--text)"># birthtime never lies — old.log was born 2 h ago</span>
+new.log</code></pre>
+
+        <p style="margin-top: 1.2rem">
+          All unit suffixes accept fractional values: <code>d</code> (days,
+          default), <code>h</code> (hours), <code>m</code> (minutes),
+          <code>s</code> (seconds), <code>w</code> (weeks),
+          <code>M</code> (months). Combine with sort keys —
+          <code>*.log(.b-1On)</code> gives today's logs oldest-first;
+          <code>*(ob)</code> sorts everything by creation time.
         </p>
       </div>
     </section>

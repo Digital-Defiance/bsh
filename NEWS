@@ -1,8 +1,25 @@
 -------------------------------------
+
 CHANGES FROM PREVIOUS VERSIONS OF BSH
 -------------------------------------
 
 Note also the list of incompatibilities in the README file.
+
+Changes since 5.9.0.14
+-----------------------
+
+Glob time qualifiers (.a, .m, .c) now accept fractional decimal-day
+("brightdate") values.  For example, *(.m-0.01) lists files modified
+within the last centiday (~14 minutes), and*(.m-0.5) lists files
+modified in the past half-day.  Any unit suffix (d, h, m, s, w, M)
+also accepts a fractional value: *(.ms-90.5) matches files modified
+within the last 90.5 seconds.
+
+A new .b glob qualifier selects files by birth time (creation time)
+on platforms that support it (macOS, FreeBSD, NetBSD).  Fractional
+brightdate values work the same as for the other time qualifiers, e.g.
+*(.b-0.01) lists files born within the last centiday.  The ob sort key
+and the O^ob reversed variant are also available.
 
 Changes since 5.9
 -----------------
@@ -56,15 +73,15 @@ side effect, some features like $SECONDS and the time keyword gained
 
 The bsh/zutil module's zparseopts builtin learnt the following:
 
-  - a new -G option enables GNU-style argument parsing
+- a new -G option enables GNU-style argument parsing
     ('--opt=arg', etc.)
 
-  - a new -n option sets the program name for usage errors
+- a new -n option sets the program name for usage errors
 
-  - a new -v option specifies the array of arguments to parse instead
+- a new -v option specifies the array of arguments to parse instead
     of $@
 
-  - a single empty option spec signifies that no options are recognised
+- a single empty option spec signifies that no options are recognised
 
 Also, zparseopts now uses standard argument parsing for its own options,
 enabling support for option stacking (-DFG instead of -D -F -G).
@@ -95,8 +112,8 @@ Changes since 5.8.1
 bsh 5.9 is dedicated to the memory of Sven Guckes, who was, amongst other
 things, a long-time bsh advocate.  For more information, see:
 
-  https://linuxnews.de/2022/02/sven-guckes-verstorben/
-  https://groups.google.com/g/vim_announce/c/MJBKVd-xrEE/m/joVNaDgAAgAJ
+  <https://linuxnews.de/2022/02/sven-guckes-verstorben/>
+  <https://groups.google.com/g/vim_announce/c/MJBKVd-xrEE/m/joVNaDgAAgAJ>
 
 When unsetting a hash element, the string enclosed in square brackets is
 interpreted literally after any normal command-line-argument expansions.
@@ -268,7 +285,7 @@ path the leading '/' counts as one component.
 The functions builtin gained a -c option to efficiently copy functions.
 
 The bshmisc(1) manual page incorrectly stated that when 'exit' is used
-in a `try' block inside a function, the corresponding `always' block will
+in a `try' block inside a function, the corresponding`always' block will
 be executed.  The manual page has been corrected.  The shell's behaviour
 has not changed, but code such as the following:
 .
@@ -489,7 +506,7 @@ normally useful: flags that should apply to the value must be in the
 outer substitution.
 
 The GLOB_STAR_SHORT option allows the pattern **/* to be shortened to
-just ** if no / follows. so **.c searches recursively for a file whose
+just **if no / follows. so**.c searches recursively for a file whose
 name has the suffix ".c".
 
 The effect of the WARN_CREATE_GLOBAL option has been significantly
@@ -561,7 +578,6 @@ and an array "array" containing the words "several"
 
 - New builtin sysopen in bsh/system module for detailed control of
   file descriptor modes.
-
 
 Changes from 5.0.0 to 5.0.8
 ---------------------------
@@ -806,7 +822,7 @@ Expansion (parameters, globbing, etc.) and redirection
   as a string, never a pattern, e.g. ${array[(ie)*]} looks for the
   index of the array element containing the literal string "*".
 
-- The operators :| and :* in parameter substitution allow for array
+- The operators :| and :*in parameter substitution allow for array
   subtraction and intersection in the form ${name:|array}. With the :|
   operator, all entries in $name that are also in $array will be removed
   from the substitution. Conversely for the :* operation only the
@@ -1016,7 +1032,6 @@ Add-on functions
   replace-string and replace-string-again to provide regular expression
   replacements in the line editor.
 
-
 Changes in 4.2 since version 4.2.0
 ----------------------------------
 
@@ -1033,7 +1048,7 @@ Changes in 4.2 since version 4.2.0
   `activ*'.
 
 - The glob qualifier F indicates a non-empty directory.  Hence *(F)
-  indicates all subdirectories with entries, *(/^F) means all
+  indicates all subdirectories with entries,*(/^F) means all
   subdirectories with no entries.
 
 - fc -p and fc -P provide push/pop for the status of the shell's
@@ -1042,14 +1057,14 @@ Changes in 4.2 since version 4.2.0
   function.  This has been added to the calculator function zcalc to make
   its internal history work more seamlessly.
 
-- A new `try block' and `always block' syntax has been introduced
+- A new `try block' and`always block' syntax has been introduced
   to make it easier to ensure the shell runs important tidy-up code
   in the event of an error.  It also runs after a break, continue, or
   return, including a return forced by the ERR_RETURN option
   (but not an exit, which is immediate).  The syntax is:
-    `{' try-block-list `}' `always' `{' always-block-list `}'
-  where no newline or semicolon may appear between `}' and `always'.
-  This is compatible with all previous valid bsh syntax as an `always'
+    `{' try-block-list`}' `always'`{' always-block-list `}'
+  where no newline or semicolon may appear between`}' and `always'.
+  This is compatible with all previous valid bsh syntax as an`always'
   at that point used to be a syntax error.  For example,
     { echo Code run in current shell } always { echo Tidy-up code }
 
@@ -1084,16 +1099,17 @@ Changes in 4.2 since version 4.2.0
 - Glob qualifier (+func) is shorthand for (e:func:) (calls a command,
   typically a shell function, with no argument).
 
-
 New features between bsh versions 4.0 and 4.2
 ---------------------------------------------
 
 Configuration:
+
 - upgraded to use autoconf post-2.50
 - improved compatibility with other shells through shell options,
   builtin arguments and improved builtin option parsing
 
 Syntax and builtins:
+
 - new printf builtin
 - `+=' to append to parameters which works for scalars, arrays and (with
   pairs) associative arrays.
@@ -1101,13 +1117,14 @@ Syntax and builtins:
     for key value in key1 value1 key2 value2 ...
   maintaining full compatibility with POSIX syntax.
 - Suffix aliases allow the shell to run a command on a file by suffix,
-  e.g `alias -s ps=gv' makes `foo.ps' execute `gv foo.ps'.  Supplied
+  e.g `alias -s ps=gv' makes`foo.ps' execute `gv foo.ps'.  Supplied
   function bsh-mime-setup uses existing mailcap and mime.types files
   to set up suitable aliases.  Supplied function pick-web-browser is
   suitable for finding a browser to show .html etc. files by suffix alias.
 - new option `no_case_glob' for case-insensitive globbing.
 
 Add-on modules and functions:
+
 - bsh/datetime modules makes date formatting and seconds since EPOCH
   available inside the shell.
 - bsh/net/tcp module provides builtin interface to TCP through ztcp
@@ -1120,6 +1137,7 @@ Add-on modules and functions:
   system call
 
 Completion system:
+
 - general improvements to command and context support, low-level functions,
   display code.
 - in verbose mode, matches with the same description are grouped
@@ -1134,6 +1152,7 @@ Completion system:
   Plus many others.
 
 Line editor:
+
 - special parameters $PREDISPLAY, $POSTDISPLAY available in function
   widgets to configure uneditable text (for narrowing)
 - recursive editing
@@ -1150,6 +1169,7 @@ Line editor:
 - several other contributed widgets
 
 Local internal improvements:
+
 - disowned jobs are automatically restarted
 - \u and \U print escapes for Unicode
 - read -d <delimiter> allows a custom line ending.
@@ -1167,19 +1187,19 @@ Local internal improvements:
   previously in complex completions).
 - many bugfixes
 
-
 New features in bsh version 4.0.1
 ---------------------------------
 
 Compared with 3.1.9, there are mostly incremental improvements to
-  - the new completion system --- more functions, completers, styles...
-  - the line editor
-  - handling of signals and traps
-  - the configuration system, particularly for modules
-  - Cygwin support (now essentially complete)
-  - arithmetic evaluation
-  - the zpty (pseudoterminal handling) module
-  - the test suite
+
+- the new completion system --- more functions, completers, styles...
+- the line editor
+- handling of signals and traps
+- the configuration system, particularly for modules
+- Cygwin support (now essentially complete)
+- arithmetic evaluation
+- the zpty (pseudoterminal handling) module
+- the test suite
 plus various bug fixes and compatibility improvements.
 
 The alias modules (zle.so as an alias for bsh/zle.so, etc.) have been
@@ -1188,158 +1208,171 @@ irrelevant if you are upgrading from 3.0.
 
 Compared with the 3.0 series of releases (the last stable set), the most
 significant of a large number of improvements in the shell are:
-  - Dynamically loadable modules with hierarchical naming system
-  - Shell functions as editor functions, with much additional builtin support
-  - Incredibly rich new completion system; just needs a single
+
+- Dynamically loadable modules with hierarchical naming system
+- Shell functions as editor functions, with much additional builtin support
+- Incredibly rich new completion system; just needs a single
     initialization command to provide completion for all sorts of commands
     and contexts
-  - Associative arrays
-  - Lots of new features in parameter substitution and globbing; more
+- Associative arrays
+- Lots of new features in parameter substitution and globbing; more
     logical handling of nested parameter substitutions
-  - Rewritten pattern-matching (globbing) code supports approximate
+- Rewritten pattern-matching (globbing) code supports approximate
     and case-insensitive matching and backreferences
-  - Various custom modules for pty's, FTP, special parameters, etc.
-  - Rewrites of many internal parts of the code: execution code to
+- Various custom modules for pty's, FTP, special parameters, etc.
+- Rewrites of many internal parts of the code: execution code to
     provide compilation to internal representation, pattern matching
-  - Floating point arithmetic and mathematical functions module
-  - A test suite
-  - Various new options for compatibility with this, that and the other
+- Floating point arithmetic and mathematical functions module
+- A test suite
+- Various new options for compatibility with this, that and the other
 See the 3.1.x changes below for more detail.
-
 
 New features in bsh version 3.1.8 and 3.1.9
 -------------------------------------------
+
 These are primarily bug-fix versions.  There are only a few user-visible
 changes.
- - Array slices ${array[a,b]} with b < a now correctly have zero length.
 
+- Array slices ${array[a,b]} with b < a now correctly have zero length.
 
 New features in bsh version 3.1.7
 ---------------------------------
+
 Further enhancements to new completion system:
- - Comprehensive context-sensitive configuration via `styles', which
+
+- Comprehensive context-sensitive configuration via `styles', which
    can be set by the menu-driven front end in compinstall
- - General mechanism for setting patterns to be ignored in a completion;
+- General mechanism for setting patterns to be ignored in a completion;
    overriding  of patterns to be matched for functions
- - New completers: _prefix to complete word before cursor, _ignored
+- New completers: _prefix to complete word before cursor,_ignored
    to complete using words so far ignored (like $fignore but more
    powerful), _history to complete words from shell history
- - Multiple use of completers with different options, similarly splitting
+- Multiple use of completers with different options, similarly splitting
    of different types of completion (`tags') so they are considered with
    different styles
- - Many more supplied completions for standard commands which work out of
+- Many more supplied completions for standard commands which work out of
    the box, and better handling of command line options/arguments which
    behave in the usual way
- - $fpath now set up to use installed functions by default; functions
+- $fpath now set up to use installed functions by default; functions
    can be loaded just by `autoload -U compinit; compinit'
- - Much improved handling of nested quoting and nested braces
- - New LIST_PACKED and LIST_ROWS_FIRST completion options and corresponding
+- Much improved handling of nested quoting and nested braces
+- New LIST_PACKED and LIST_ROWS_FIRST completion options and corresponding
    styles
- - compctl library separated out (frozen but still supported)
- - User-friendly introduction available at bsh website
-   http://bsh.sourceforge.net/
+- compctl library separated out (frozen but still supported)
+- User-friendly introduction available at bsh website
+   <http://bsh.sourceforge.net/>
 
 Additions to complist listing library (coloured completion and menu
 selection):
- - Listings can be shown page by page (are by default for new completion)
- - Menu selection allows full up and down scrolling of long lists
+
+- Listings can be shown page by page (are by default for new completion)
+- Menu selection allows full up and down scrolling of long lists
 
 Other editing features:
- - new parameters $PENDING, $MARK, $BUFFERLINES
- - Easy display of a prompt from within an editing widget
+
+- new parameters $PENDING, $MARK, $BUFFERLINES
+- Easy display of a prompt from within an editing widget
 
 Code parsing, storing and execution:
- - Completely new system of storing code internally, greatly optimised
- - Much less memory for shell functions etc.
- - Can compile shell functions to .zwc `wordcode' functions for fast
+
+- Completely new system of storing code internally, greatly optimised
+- Much less memory for shell functions etc.
+- Can compile shell functions to .zwc `wordcode' functions for fast
    loading
- - Can create `digest' files of entire directories in .zwc format
+- Can create `digest' files of entire directories in .zwc format
 
 Parameters:
- - Floating point support added, similar to ksh93, `typeset -F' and
+
+- Floating point support added, similar to ksh93, `typeset -F' and
    `typeset -E' declare floating point variables; usual C/Fortran-like
    rules for integer/float conversion
- - Mathematical library bsh/mathfunc contains all the standard mathematical
+- Mathematical library bsh/mathfunc contains all the standard mathematical
    functions for use in arithmetical expressions
- - Improved parsing of arithmetical expressions and better error messages
- - Special parameters can be made local
- - `typeset -h' hides specialness of parameters, either as parameter
+- Improved parsing of arithmetical expressions and better error messages
+- Special parameters can be made local
+- `typeset -h' hides specialness of parameters, either as parameter
    attribute or when declaring new local variable
- - Local parameters can now be exported as in other shells; new option
+- Local parameters can now be exported as in other shells; new option
    GLOBAL_EXPORTS on by default provides old behaviour that `typeset -x'
    referred to global parameters.
- - bsh/parameter module enhanced: now needed for new completion; parameters
-   provided have `-h' flag set so that they are hidden by `typeset', so
+- bsh/parameter module enhanced: now needed for new completion; parameters
+   provided have `-h' flag set so that they are hidden by`typeset', so
    that existing functions don't need to be changed
- - Quotes can be stripped from parameter values with ${(Q)...}, providing
+- Quotes can be stripped from parameter values with ${(Q)...}, providing
    reverse of ${(q...)...} facility
 
 Globbing and pattern matching:
- - Pattern matching rewritten for efficiency
- - Supports `backreferences', i.e. extracting parenthesised chunks of
+
+- Pattern matching rewritten for efficiency
+- Supports `backreferences', i.e. extracting parenthesised chunks of
    matches, e.g.
      [[ $foo = (#b)(*/)[^/]* ]]
    stores the part of $foo up to the last / in $match[1] and the indexes of
    the match in $mbegin[1], $mend[1].  (#m) is also available to set $MATCH
    to the entire match and corresponding $MBEGIN, $MEND:  useful in
    parameter substitutions like ${.../.../...}.
- - (#s) and (#e) match start and end of pattern like ^ and $ in regular
+- (#s) and (#e) match start and end of pattern like ^ and $ in regular
    expression, useful in complex expressions such as ((#s)|/)dirname((#e)|/)
    and in parameter expressions.
 
- - Depth-first/last listing of recursive glob lists
+- Depth-first/last listing of recursive glob lists
 
 Functions etc.:
- - `autoload -X' inside a function body instructs the shell to
+
+- `autoload -X' inside a function body instructs the shell to
    bootstrap the function at that point
- - `autoload +X fn' says load the function fn but don't execute it
- - Prompt `themes' make customization of prompts easier
+- `autoload +X fn' says load the function fn but don't execute it
+- Prompt `themes' make customization of prompts easier
 
 Modules:
- - New hierarchical naming scheme for modules; supplied modules go into
+
+- New hierarchical naming scheme for modules; supplied modules go into
    bsh subdirectory, so zle becomes bsh/zle etc.; aliases supplied for
    compatibility for existing code, but the new format should be used in
    future.
- - zmodload is more consistent between dynamically and statically linked
+- zmodload is more consistent between dynamically and statically linked
    shells
- - bsh/zftp and its function suite support multiple sessions (zfsession
+- bsh/zftp and its function suite support multiple sessions (zfsession
    command); zftransfer allows transfer of files between two ftp sessions
    with no local file; use styles for e.g. progress style; IPv6 supported;
    recursive put `zfput -r' for uploads
- - bsh/zpty module creates pseudoterminal and allows builtin `expect'-like
+- bsh/zpty module creates pseudoterminal and allows builtin `expect'-like
    behaviour
 
 Other:
- - Test suite, not yet complete (`make test')
- - use of Linux task limits
- - Many fixes including output redirection with `setopt xtrace' and
-   other redirection fixes; NIS+ problem.
- - Better null-command behaviour in sh and csh emulation
- - Internal memory usage optimisations
 
+- Test suite, not yet complete (`make test')
+- use of Linux task limits
+- Many fixes including output redirection with `setopt xtrace' and
+   other redirection fixes; NIS+ problem.
+- Better null-command behaviour in sh and csh emulation
+- Internal memory usage optimisations
 
 New features in bsh version 3.1.6 (beta version)
 ------------------------------------------------
+
 Note also the changes for 3.0.6, which include changes between 3.1.5. and
 3.1.6.
 
 New completion system via shell functions; massive degree of
 programmability and configurability:
- - ready-made function suite to use, see bshcompsys(1)
- - approximate completion and spelling correction via completion
- - control over matching for case-independence, partial word completion, etc.
- - menu selection:  choose a completion by moving the cursor
- - coloured completion lists
- - completion of filenames in quotes is now more reliable; splitting
+
+- ready-made function suite to use, see bshcompsys(1)
+- approximate completion and spelling correction via completion
+- control over matching for case-independence, partial word completion, etc.
+- menu selection:  choose a completion by moving the cursor
+- coloured completion lists
+- completion of filenames in quotes is now more reliable; splitting
    quoted strings into command arguments is also possible.
 
 Other editing changes:
-  - enhancements to function/editing interface:  new parameters, numeric
+
+- enhancements to function/editing interface:  new parameters, numeric
     arguments, string argument passing, reading keys from widgets.
-  - the old history-search-{back,for}ward behaviour and bindings have
+- the old history-search-{back,for}ward behaviour and bindings have
     returned (up to minor details).
-  - BASH_AUTO_LIST option to show completion list only on second key press.
-  - the ZBEEP parameter gives a string to output instead of beeping,
+- BASH_AUTO_LIST option to show completion list only on second key press.
+- the ZBEEP parameter gives a string to output instead of beeping,
     allowing you to have a visual bell.
 
 History changes: new options HIST_NO_FUNCTIONS, HIST_EXPIRE_DUPS_FIRST,
@@ -1352,58 +1385,64 @@ Associative arrays plus enhanced parameter substitutions to retrieve keys
 and values.
 
 Globbing changes:
-  - Case-insensitive and approximate globbing.
-  - Ordering and indexing of globbing matches, e.g. *(om[1]) picks
+
+- Case-insensitive and approximate globbing.
+- Ordering and indexing of globbing matches, e.g. *(om[1]) picks
     most recently modified file.
-  - General file mode qualifier with chmod(1)-like syntax, e.g. *(f:u+wx:)
+- General file mode qualifier with chmod(1)-like syntax, e.g. *(f:u+wx:)
 
 New loadable modules:
-  - zftp, plus associated function suite, for turning your bsh session
+
+- zftp, plus associated function suite, for turning your bsh session
     into an FTP session too
-  - parameter, for examining and altering shell hash tables via an
+- parameter, for examining and altering shell hash tables via an
     associative array interface.
-  - mapfile, for reading and writing external files via an associative
+- mapfile, for reading and writing external files via an associative
     array interface.
 
 Debugging and prompt enhancements:
-  - $PS4 can contain %i for $LINENO as well as %N for script or function
+
+- $PS4 can contain %i for $LINENO as well as %N for script or function
     names (default PS4 changed), also %_ for current shell structure
     executing;
-  - Prompt truncation %<...< is now more flexible: it applies to a
+- Prompt truncation %<...< is now more flexible: it applies to a
     whole section of the prompt, not just one escape.  You need to put
     %<< after the truncated escape to get the old behaviour.
-  - %20(l.yes.no) in prompts prints yes if at least 20 characters have
+- %20(l.yes.no) in prompts prints yes if at least 20 characters have
     been output, else no (e.g. for outputting extra newlines).
 
 Parameter and expansion changes
-  - `typeset -t MYPATH mypath' creates tied path/PATH-like variables
-  - `typeset -g' allows operations on parameters without making them local
-  - New expansions
-    - ${(t)param} prints type information for $param
-    - ${(P)param} treats value of $param as the name of a param to
+
+- `typeset -t MYPATH mypath' creates tied path/PATH-like variables
+- `typeset -g' allows operations on parameters without making them local
+- New expansions
+  - ${(t)param} prints type information for $param
+  - ${(P)param} treats value of $param as the name of a param to
       substitute
-    - ${foo:q} can quote replaced parameter text from expansion
-    - ${foo/old/new} substitution, like bash; also (S) flag for shortest
+  - ${foo:q} can quote replaced parameter text from expansion
+  - ${foo/old/new} substitution, like bash; also (S) flag for shortest
       match
-    - $foo[(b.2.i)bar] starts searching $foo for bar starting at 2nd match
+  - $foo[(b.2.i)bar] starts searching $foo for bar starting at 2nd match
 
 Builtin and function changes
-  - stat module: `stat -H hash foo' gives you e.g. $hash[mtime]
-  - `autoload -U' autoloads functions without alias expansion.
+
+- stat module: `stat -H hash foo' gives you e.g. $hash[mtime]
+- `autoload -U' autoloads functions without alias expansion.
 
 Other new options:
-  - LOCAL_TRAPS allows signal traps to be local to functions (as in ksh).
-  - NO_RCS can now be turned on at any point in initialization files.
-  - NO_GLOBAL_RCS can force /etc/z* files after /etc/bshenv to be skipped.
+
+- LOCAL_TRAPS allows signal traps to be local to functions (as in ksh).
+- NO_RCS can now be turned on at any point in initialization files.
+- NO_GLOBAL_RCS can force /etc/z* files after /etc/bshenv to be skipped.
     (Please don't use this as an excuse to stuff more into /etc/bshenv!)
-  - Existing MAGIC_EQUAL_SUBST option is more useful; any argument containing
+- Existing MAGIC_EQUAL_SUBST option is more useful; any argument containing
     ...=~...:~... will perform filename expansion on the ~ (previously,
     the string before `=' had to look like a parameter name).
 
 Configuration changes:
-  - Generation of signal names should be more reliable
-  - Customizable installation of shell functions from distribution.
 
+- Generation of signal names should be more reliable
+- Customizable installation of shell functions from distribution.
 
 New features in bsh version 3.0.6
 ---------------------------------
@@ -1413,54 +1452,60 @@ version 3.1.6, the latest development release.  However, this release also
 fixes all known Year 2000 (Y2K) bugs in bsh 3.0.
 
 History changes:
-  - whitespace between words is ignored in history searches.
-  - new option HIST_REDUCE_BLANKS removes extra whitespace in the stored
+
+- whitespace between words is ignored in history searches.
+- new option HIST_REDUCE_BLANKS removes extra whitespace in the stored
     history.
-  - support for reading (but not writing) version 3.1.6 history files.
+- support for reading (but not writing) version 3.1.6 history files.
 
 Globbing changes:
-  - the a, c, and m glob qualifiers can now test time in seconds.
-  - globbing of number ranges behaves more like character ranges in that
+
+- the a, c, and m glob qualifiers can now test time in seconds.
+- globbing of number ranges behaves more like character ranges in that
     it can match a prefix of a number, e.g. `<1-5>*' matches 1, 2, 3, 4,
     5, 17, 23skiddoo, 5986, etc., but not 6, 7, 8ball, 911, etc.
 
 Parameter and expansion changes:
-  - expansion of ~ and other globbing flags via ${~param} do not depend
+
+- expansion of ~ and other globbing flags via ${~param} do not depend
     upon EXTENDED_GLOB (bug fix).
-  - nested parameter substitutions require braces (this was always the
+- nested parameter substitutions require braces (this was always the
     documented behaviour, but previous parsers didn't enforce it).
-  - quote only nested expansion, e.g. ${(f)"$(<file)"} reads complete
+- quote only nested expansion, e.g. ${(f)"$(<file)"} reads complete
     `file', then splits lines into array.
 
 Builtin and function changes:
-  - `typeset -U' works on the colon-array version of linked parameters.
-  - `typeset +f' and `functions +' output the names (only) of functions.
-  - `emulate -L' has the effect of `setopt localoptions'.
-  - in fn1() { local foo; unset foo; foo=bar; }, foo is restored at local
+
+- `typeset -U' works on the colon-array version of linked parameters.
+- `typeset +f' and`functions +' output the names (only) of functions.
+- `emulate -L' has the effect of`setopt localoptions'.
+- in fn1() { local foo; unset foo; foo=bar; }, foo is restored at local
     level, whereas if the `unset foo' appeared in a nested function it
     would have been restored at global level, which was presumably wrong.
-  - `foo=bar >&file' is a redirection, not a NULLCMD.
-  - any single complex command, such as `case ... esac', parses as if
+- `foo=bar >&file' is a redirection, not a NULLCMD.
+- any single complex command, such as `case ... esac', parses as if
     semicolon-terminated (bug fix).
-  - the shell function `preexec', if defined, is run after parsing each
+- the shell function `preexec', if defined, is run after parsing each
     command line but before executing the command.
 
 Other changes:
-  - the option PRINT_EIGHT_BIT causes bsh to emit raw bytes in prompts
+
+- the option PRINT_EIGHT_BIT causes bsh to emit raw bytes in prompts
     and completion lists even if the system ctype(3) package says that
     those bytes are not "printable."
 
 Debugging enhancements:
-  - LINENO is now very much more useful in scripts and functions and is
+
+- LINENO is now very much more useful in scripts and functions and is
     reported correctly in most error messages.
-  - ERREXIT behaviour is now consistent with newer Bourne-like shells,
+- ERREXIT behaviour is now consistent with newer Bourne-like shells,
     e.g. with respect to `if' tests that fail.
 
 Configuration changes:
-  - Large file and 64-bit integers on 32-bit machines supported where
-    provided by OS.
-  - a few more system features, such as getpwnam/getpwuid, are tested for.
 
+- Large file and 64-bit integers on 32-bit machines supported where
+    provided by OS.
+- a few more system features, such as getpwnam/getpwuid, are tested for.
 
 New features in bsh version 3.1 (beta version)
 ----------------------------------------------
@@ -1494,7 +1539,6 @@ keybindings now work.
 Completion can be performed within a brace expansion.
 
 EMACS-like universal-argument function.
-
 
 New features in bsh version 3.0
 -------------------------------
@@ -1549,7 +1593,7 @@ Explicitly requested word splitting like ${=spec} or ${(s:delim:)spec}
 will be executed even if the substitution is double quoted.
 
 The right-hand side of assignments are no longer globbed by default hence
-assignment foo=* will assign '*' as a value of foo.  Use the foo=( * )
+assignment foo=*will assign '*' as a value of foo.  Use the foo=( * )
 array assignment syntax to get the old behaviour.  Alternatively the
 GLOB_ASSIGN can be set to emulate the old behaviour but the usage of this
 option is strongly discouraged and this option may be completely removed in
@@ -1594,7 +1638,7 @@ digit.
 reading and writing.  To match a number use <->.
 
 Option letters -1 and -C for PRINT_EXIT_VALUE and NO_CLOBBER are swapped:
-`set -C' sets NO_CLOBBER and `set -1' sets PRINT_EXIT_VALUE.
+`set -C' sets NO_CLOBBER and`set -1' sets PRINT_EXIT_VALUE.
 
 AUTO_PUSHD behaviour is changed.  Now cd without arguments will always go
 to the $HOME directory even if AUTO_PUSHD is set and PUSHD_TO_HOME is not
@@ -1604,7 +1648,6 @@ IFS word splitting with SH_WORD_SPLIT and the splitting of the input in the
 read builtin has changed in cases when IFS contains characters other than
 <space>, <tab>, <newline>.  See the description of IFS in the bshparam
 manual page for more details.
-
 
 New features in bsh version 2.5
 -------------------------------

@@ -1,3 +1,12 @@
+2026-05-12  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
+
+        * Src/glob.c, Test/D02glob.ztst: add fractional "brightdate"
+        time values in glob qualifiers (.a, .m, .c, .b).  Values like
+        *(.m-0.01) now match files modified within the last centiday
+        (864 seconds).  Added .b birth-time qualifier (HAVE_STAT_BIRTHTIME
+        platforms).  Fixed GS_BTIME bit collision by increasing GS_SHIFT
+        from 5 to 6.
+
 2026-05-10  Oliver Kiddle  <opk@bsh.org>
 
 	* unposted: Completion/Linux/Command/_selinux: complete files

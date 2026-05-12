@@ -916,6 +916,43 @@
 0:the '*' qualfier enables extended_glob for pattern matching
 >-a A -b B
 
+# Tests for fractional "brightdate" time qualifiers.
+# A centiday is 0.01 days = 864 seconds.  A file just touched must match
+# .m-1 (within 1 day) and .m-0.01 (within 864 s), but not .m+1 (older
+# than 1 day).  The empty last line comes from nullglob eating .m+1.
+  (
+    setopt extendedglob nullglob
+    cd glob.tmp
+    touch brightdate_test
+    print brightdate_test(.m-1)
+    print brightdate_test(.m-0.5)
+    print brightdate_test(.m-0.01)
+    print brightdate_test(.m+1)
+  )
+0:fractional brightdate modification time qualifier (.m)
+>brightdate_test
+>brightdate_test
+>brightdate_test
+>
+
+# Birth time qualifier (.b) -- requires HAVE_STAT_BIRTHTIME (macOS/BSD).
+  if grep -q '#define HAVE_STAT_BIRTHTIME' $ZTST_testdir/../config.h; then
+    (
+      setopt extendedglob nullglob
+      cd glob.tmp
+      touch birthtime_test
+      print birthtime_test(.b-1)
+      print birthtime_test(.b-0.01)
+      print birthtime_test(.b+1)
+    )
+  else
+    ZTST_skip='no birth time support (HAVE_STAT_BIRTHTIME not in config.h)'
+  fi
+0:fractional brightdate birth time qualifier (.b)
+>birthtime_test
+>birthtime_test
+>
+
 %clean
 
  # Fix unreadable-directory permissions so ztst can clean up properly

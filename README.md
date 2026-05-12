@@ -309,6 +309,53 @@ fc -l -D       # with milliday durations
 The built-in `times` command reports user and system CPU time (for the shell and its
 children) in millidays rather than the traditional `minutes:seconds` format.
 
+### Glob time qualifiers in BrightDate units
+
+BSH extends zsh's glob time qualifiers (`.m`, `.a`, `.c`) to accept **fractional
+decimal-day values** — the same scale as BrightDate (1 centiday = 864 s, ~14 min).
+A new `.b` qualifier matches by **birth time** (file creation time) on macOS and BSD,
+which mtime can never impersonate.
+
+**Live demo** — start with two log files, `old.log` backdated 2 hours:
+
+```
+$ setopt extendedglob nullglob
+$ touch old.log new.log
+$ perl -e 'utime time()-7200, time()-7200, "old.log"'  # backdate mtime 2 h
+
+$ echo *.log(.m-1)       # within 1 day — both match, too broad
+new.log old.log
+
+$ echo *.log(.m-0.05)    # within 0.05 d (~72 min) — precision cuts through
+new.log
+
+$ echo *.log(.m-0.01)    # within centiday (~14 min) — only the fresh file
+new.log
+
+$ touch old.log          # reset mtime — but birthtime is immutable
+$ echo *.log(.m-0.01)    # mtime fooled: both match now
+new.log old.log
+
+$ echo *.log(.b-0.01)    # birthtime never lies — old.log was born 2 h ago
+new.log
+```
+
+Other useful patterns:
+
+```
+# files NOT modified in the past day
+echo *(.m+1)
+
+# log files created today, sorted oldest-first
+echo /var/log/*.log(.b-1On)
+
+# sort all files by birth time, newest first
+echo *(ob)
+```
+
+All unit suffixes accept fractional values: `d` (days, default), `h` (hours),
+`m` (minutes), `s` (seconds), `w` (weeks), `M` (months).
+
 ---
 
 ## Incompatibilities since 5.9
