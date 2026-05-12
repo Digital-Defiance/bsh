@@ -1,6 +1,6 @@
 name=bsh/stat
-link=dynamic
-load=no
+link=static
+load=yes
 
 autofeatures="b:stat b:zstat"
 
