@@ -72,6 +72,14 @@ struct gmatch {
     long cnsec;
     long _cnsec;
 #endif
+#ifdef HAVE_STAT_BIRTHTIME
+    long btime;
+    long _btime;
+# ifdef GET_ST_BTIME_NSEC
+    long bnsec;
+    long _bnsec;
+# endif
+#endif
 };
 
 #define GS_NAME   1
@@ -85,6 +93,7 @@ struct gmatch {
 #define GS_MTIME (GS_SHIFT_BASE << 2)
 #define GS_CTIME (GS_SHIFT_BASE << 3)
 #define GS_LINKS (GS_SHIFT_BASE << 4)
+#define GS_BTIME (GS_SHIFT_BASE << 5)
 
 #define GS_SHIFT  5
 #define GS__SIZE  (GS_SIZE << GS_SHIFT)
@@ -92,11 +101,12 @@ struct gmatch {
 #define GS__MTIME (GS_MTIME << GS_SHIFT)
 #define GS__CTIME (GS_CTIME << GS_SHIFT)
 #define GS__LINKS (GS_LINKS << GS_SHIFT)
+#define GS__BTIME (GS_BTIME << GS_SHIFT)
 
 #define GS_DESC  (GS_SHIFT_BASE << (2*GS_SHIFT))
 #define GS_NONE  (GS_SHIFT_BASE << (2*GS_SHIFT+1))
 
-#define GS_NORMAL (GS_SIZE | GS_ATIME | GS_MTIME | GS_CTIME | GS_LINKS)
+#define GS_NORMAL (GS_SIZE | GS_ATIME | GS_MTIME | GS_CTIME | GS_LINKS | GS_BTIME)
 #define GS_LINKED (GS_NORMAL << GS_SHIFT)
 
 /**/
@@ -459,6 +469,12 @@ insert(char *s, int checked)
 #ifdef GET_ST_CTIME_NSEC
 	    matchptr->cnsec = GET_ST_CTIME_NSEC(buf);
 #endif
+#ifdef HAVE_STAT_BIRTHTIME
+	    matchptr->btime = GET_ST_BTIME(buf);
+# ifdef GET_ST_BTIME_NSEC
+	    matchptr->bnsec = GET_ST_BTIME_NSEC(buf);
+# endif
+#endif
 	}
 	if (statted & 2) {
 	    matchptr->_size = buf2.st_size;
@@ -474,6 +490,12 @@ insert(char *s, int checked)
 #endif
 #ifdef GET_ST_CTIME_NSEC
 	    matchptr->_cnsec = GET_ST_CTIME_NSEC(buf2);
+#endif
+#ifdef HAVE_STAT_BIRTHTIME
+	    matchptr->_btime = GET_ST_BTIME(buf2);
+# ifdef GET_ST_BTIME_NSEC
+	    matchptr->_bnsec = GET_ST_BTIME_NSEC(buf2);
+# endif
 #endif
 	}
 	matchptr++;
@@ -837,6 +859,31 @@ qgetnum(char **s)
     return v;
 }
 
+/* get floating-point number after qualifier (for fractional time units) */
+
+/**/
+static double
+qgetfloat(char **s)
+{
+    double v = 0.0;
+    double frac = 0.1;
+
+    if (!idigit(**s)) {
+	zerr("number expected");
+	return 0.0;
+    }
+    while (idigit(**s))
+	v = v * 10.0 + (*(*s)++ - '0');
+    if (**s == '.') {
+	++(*s);
+	while (idigit(**s)) {
+	    v += (*(*s)++ - '0') * frac;
+	    frac *= 0.1;
+	}
+    }
+    return v;
+}
+
 /* get mode spec after qualifier */
 
 /**/
@@ -1006,6 +1053,15 @@ gmatchcmp(Gmatch a, Gmatch b)
               r = a->cnsec - b->cnsec;
 #endif
 	    break;
+#ifdef HAVE_STAT_BIRTHTIME
+	case GS_BTIME:
+	    r = a->btime - b->btime;
+# ifdef GET_ST_BTIME_NSEC
+	    if (!r)
+		r = a->bnsec - b->bnsec;
+# endif
+	    break;
+#endif
 	case GS_LINKS:
 	    r = b->links - a->links;
 	    break;
@@ -1033,6 +1089,15 @@ gmatchcmp(Gmatch a, Gmatch b)
               r = a->_cnsec - b->_cnsec;
 #endif
 	    break;
+#ifdef HAVE_STAT_BIRTHTIME
+	case GS__BTIME:
+	    r = a->_btime - b->_btime;
+# ifdef GET_ST_BTIME_NSEC
+	    if (!r)
+		r = a->_bnsec - b->_bnsec;
+# endif
+	    break;
+#endif
 	case GS__LINKS:
 	    r = b->_links - a->_links;
 	    break;
@@ -1608,6 +1673,13 @@ zglob(LinkList list, LinkNode np, int nountok)
 		    g_amc = 2;
 		    func = qualtime;
 		    goto getrange;
+#ifdef HAVE_STAT_BIRTHTIME
+		case 'b':
+		    /* Birth time in given range */
+		    g_amc = 3;
+		    func = qualtime;
+		    goto getrange;
+#endif
 		case 'L':
 		    /* File size (Length) in given range */
 		    func = qualsize;
@@ -1646,7 +1718,25 @@ zglob(LinkList list, LinkNode np, int nountok)
 		    /* See if it's greater than, equal to, or less than */
 		    if ((g_range = *s == '+' ? 1 : IS_DASH(*s) ? -1 : 0))
 			++s;
-		    data = qgetnum(&s);
+		    if (g_amc >= 0) {
+			/* Time qualifier: parse as float and pre-convert to
+			 * seconds so fractional units like 0.01 days work. */
+			double fval = qgetfloat(&s);
+			long unit_secs;
+			switch (g_units) {
+			case TT_HOURS:   unit_secs = 3600l;    break;
+			case TT_MINS:    unit_secs = 60l;      break;
+			case TT_WEEKS:   unit_secs = 604800l;  break;
+			case TT_MONTHS:  unit_secs = 2592000l; break;
+			case TT_SECONDS: unit_secs = 1l;       break;
+			default: /* TT_DAYS */
+				         unit_secs = 86400l;   break;
+			}
+			data = (off_t)(fval * (double)unit_secs);
+			g_units = TT_SECONDS;
+		    } else {
+			data = qgetnum(&s);
+		    }
 		    break;
 
 		case 'o':
@@ -1690,7 +1780,7 @@ zglob(LinkList list, LinkNode np, int nountok)
 			return;
 		    }
 		    if ((sense & 2) &&
-			(t & (GS_SIZE|GS_ATIME|GS_MTIME|GS_CTIME|GS_LINKS)))
+			(t & (GS_SIZE|GS_ATIME|GS_MTIME|GS_CTIME|GS_LINKS|GS_BTIME)))
 			t <<= GS_SHIFT; /* HERE: GS_EXEC? */
 		    if (t != GS_EXEC) {
 			if (gf_sorts & t) {
@@ -3875,6 +3965,9 @@ qualtime(UNUSED(char *name), struct stat *buf, off_t days, UNUSED(char *dummy))
 
     time(&now);
     diff = now - (g_amc == 0 ? buf->st_atime : g_amc == 1 ? buf->st_mtime :
+#ifdef HAVE_STAT_BIRTHTIME
+		  g_amc == 3 ? GET_ST_BTIME(*buf) :
+#endif
 		  buf->st_ctime);
     /* handle multipliers indicating units */
     switch (g_units) {
