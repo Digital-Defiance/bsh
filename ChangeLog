@@ -1,5 +1,9 @@
 2026-05-12  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
 
+        * brightdate-rust: rebuild bsh against updated brightdate Rust
+        crates v0.1.4 (bcal, bdate, btime, buptime, bwatch,
+        brightdate-ffi).  Bump version to 5.9.0.16.
+
         * Src/glob.c, Test/D02glob.ztst: add fractional "brightdate"
         time values in glob qualifiers (.a, .m, .c, .b).  Values like
         *(.m-0.01) now match files modified within the last centiday

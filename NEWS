@@ -5,6 +5,14 @@ CHANGES FROM PREVIOUS VERSIONS OF BSH
 
 Note also the list of incompatibilities in the README file.
 
+Changes since 5.9.0.15
+-----------------------
+
+Rebuild against updated brightdate Rust crates v0.1.4 (bcal, bdate,
+btime, buptime, bwatch, brightdate-ffi): includes bsh_brightdate_to_unix
+FFI function, fixed bcal BD annotations and clap args, bwatch elapsed
+timing, and corrected version tests.
+
 Changes since 5.9.0.14
 -----------------------
 
