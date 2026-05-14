@@ -40,7 +40,7 @@ INSTALL         = @INSTALL@
 
 # ========== DEPENDENCIES FOR TESTING ==========
 
-# If ZTST_handler is not empty, run that instead of runtests.bsh.
+# If ZTST_handler is not empty, run that instead of runtests.zsh.
 # It's assumed to be found in the source directory.
 check test:
 	if test -n "$(DLLD)"; then \
@@ -48,7 +48,7 @@ check test:
 	  $(MAKE) MODDIR=`pwd`/$(subdir)/Modules install.modules > /dev/null; \
 	fi
 	if test -z "$$ZTST_handler"; then \
-	  ZTST_handler=runtests.bsh; \
+	  ZTST_handler=runtests.zsh; \
 	fi; \
 	if ZTST_testlist="`for f in $(sdir)/$(TESTNUM)*.ztst; \
            do echo $$f; done`" \

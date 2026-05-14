@@ -946,7 +946,7 @@
 >t Swann
 >t wann
 
-  array=(BrightShell sells the brightest shells brighter shells what shore could wish for more)
+  array=(she sells z shells by the z shore)
   (IFS='+'; print ${(s.s.)array})
 0:Rule 7: Forced Joining, and 8: Forced splitting
 >he+ ell +z+ hell +by+the+z+ hore

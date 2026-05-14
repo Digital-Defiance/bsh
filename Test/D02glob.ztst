@@ -107,7 +107,7 @@
 >0:  [[ foobb = (^foo)b* ]]
 >1:  [[ foob = (*~foo)b* ]]
 >0:  [[ foobb = (*~foo)b* ]]
->1:  [[ bsh = ^z* ]]
+>0:  [[ bsh = ^z* ]]
 >0:  [[ a%1X = [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]] ]]
 >1:  [[ a%1 = [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]] ]]
 >0:  [[ [: = [[:]# ]]

@@ -1486,6 +1486,7 @@ F:If this test fails at the first unsetopt, refer to P01privileged.ztst.
       before=`ls -a -- $target_dir`
       zpty subshell $ZTST_testdir/../Src/bsh -f +Z
       [[ $PWD == */options.tmp ]] || return 1 # Sanity check before calling rm(1).
+      zpty -w subshell "module_path=($ZTST_testdir/Modules)"
       zpty -w subshell 'PS1=PROMPT'
       zpty -r -m subshell REPLY $'*PROMPT'
       zpty -w subshell "rm $target_pattern"

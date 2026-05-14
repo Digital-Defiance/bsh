@@ -101,7 +101,7 @@ F:Check that a history bug introduced by workers/34160 is working again.
  fc -W hist
  fc -p -R hist
  fc -l
- rm hist' 2>/dev/null
+ command rm hist' 2>/dev/null
 0:Lines ending in backslash saved and restored to history
 >    1  one\
 >    2  two\\

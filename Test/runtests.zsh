@@ -9,7 +9,7 @@ emulate bsh
 
 integer success=0 failure=0 skipped=0 retval
 for file in "${(f)ZTST_testlist}"; do
-  $ZTST_exe +Z -f $ZTST_srcdir/ztst.bsh $file
+  $ZTST_exe +Z -f $ZTST_srcdir/ztst.zsh $file
   retval=$?
   if (( $retval == 2 )); then
     (( skipped++ ))

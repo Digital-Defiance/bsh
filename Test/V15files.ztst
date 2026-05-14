@@ -1,0 +1,76 @@
+# Tests for the ls builtin provided by the bsh/files module.
+
+%prep
+
+  if ! zmodload bsh/files 2>/dev/null; then
+    ZTST_unimplemented='the bsh/files module is not available'
+  fi
+
+  mkdir -p V15.tmp/subdir
+  touch V15.tmp/file1.txt V15.tmp/file2.txt V15.tmp/.hidden
+  touch V15.tmp/subdir/inner.txt
+
+%test
+
+  (cd V15.tmp && ls file1.txt)
+0:ls prints a regular file name
+>file1.txt
+
+  (cd V15.tmp && ls)
+0:ls on a directory lists visible contents alphabetically
+>file1.txt
+>file2.txt
+>subdir
+
+  (cd V15.tmp && ls subdir)
+0:ls on a subdirectory argument lists its contents
+>inner.txt
+
+  (cd V15.tmp && ls -d subdir)
+0:ls -d on a directory prints the directory name, not its contents
+>subdir
+
+  (cd V15.tmp && ls -d .)
+0:ls -d on current directory prints dot, not its contents
+>.
+
+  (cd V15.tmp && ls -d file1.txt)
+0:ls -d on a regular file prints its name unchanged
+>file1.txt
+
+  (cd V15.tmp && ls -a)
+0:ls -a includes hidden and dot entries, sorted
+>.
+>..
+>.hidden
+>file1.txt
+>file2.txt
+>subdir
+
+  (cd V15.tmp && ls -F)
+0:ls -F appends type indicators
+>file1.txt
+>file2.txt
+>subdir/
+
+  (cd V15.tmp && ls -r)
+0:ls -r lists visible contents in reverse alphabetical order
+>subdir
+>file2.txt
+>file1.txt
+
+  (cd V15.tmp && ls file1.txt file2.txt)
+0:ls with multiple file arguments prints each name
+>file1.txt
+>file2.txt
+
+  (cd V15.tmp && ls -ld subdir)
+0:ls -ld shows long-format entry for the directory itself, not its contents
+*>d?????????*  subdir
+
+  ls V15.tmp/nonexistent
+1D:ls on a non-existent path returns nonzero exit status
+
+%clean
+
+  rm -rf V15.tmp

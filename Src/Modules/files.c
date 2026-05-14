@@ -1012,6 +1012,7 @@ bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
     int long_fmt    = OPT_ISSET(ops, 'l');
     int follow_syms = OPT_ISSET(ops, 'L');
     int show_all    = OPT_ISSET(ops, 'a');
+    int dir_itself  = OPT_ISSET(ops, 'd');
     int err = 0;
     int rv;
     char *dot[] = { ".", NULL };
@@ -1038,7 +1039,7 @@ bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
 	    continue;
 	}
 
-	if (S_ISDIR(st.st_mode)) {
+	if (S_ISDIR(st.st_mode) && !dir_itself) {
 	    dp = opendir(*args);
 	    if (!dp) {
 		zwarnnam(nam, "%s: %e", *args, errno);
@@ -1119,7 +1120,7 @@ static struct builtin bintab[] = {
     BUILTIN("chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
-    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "alLGFhnrstu",   NULL),
+    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "adlLGFhnrstu",  NULL),
     BUILTIN("mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),

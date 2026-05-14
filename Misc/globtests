@@ -104,7 +104,7 @@ f foob          (^foo)b*
 t foobb         (^foo)b*
 f foob          (*~foo)b*
 t foobb         (*~foo)b*
-f bsh           ^z*
+t bsh           ^z*
 t a%1X          [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]]
 f a%1           [[:alpha:][:punct:]]#[[:digit:]][^[:lower:]]
 t [:            [[:]#

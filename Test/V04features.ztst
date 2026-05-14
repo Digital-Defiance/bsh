@@ -19,6 +19,7 @@
 >-b:strftime
 >-p:EPOCHSECONDS
 >-p:EPOCHREALTIME
+>-p:BRIGHTEPOCH
 >-p:epochtime
 
   zmodload -F bsh/datetime b:strftime
@@ -27,6 +28,7 @@
 >+b:strftime
 >-p:EPOCHSECONDS
 >-p:EPOCHREALTIME
+>-p:BRIGHTEPOCH
 >-p:epochtime
 
   zmodload -F bsh/datetime +p:EPOCHSECONDS -b:strftime
@@ -35,6 +37,7 @@
 >-b:strftime
 >+p:EPOCHSECONDS
 >-p:EPOCHREALTIME
+>-p:BRIGHTEPOCH
 >-p:epochtime
 
   zmodload -Fe bsh/datetime p:EPOCHSECONDS b:strftime
@@ -117,6 +120,7 @@
 >+b:strftime
 >-p:EPOCHSECONDS
 >+p:EPOCHREALTIME
+>+p:BRIGHTEPOCH
 >+p:epochtime
 
   zmodload -F bsh/datetime p:EPOCHSECONDS
@@ -169,4 +173,5 @@
 >+b:strftime
 >+p:EPOCHSECONDS
 >+p:EPOCHREALTIME
+>+p:BRIGHTEPOCH
 >+p:epochtime

@@ -172,12 +172,12 @@ F:regression test workers/42164
   comptesteval "path=( $ZTST_srcdir:A )"
   comptest $'zt\t'
 0:command
->line: {ztst.bsh }{}
+>line: {ztst.zsh }{}
 
   comptesteval "path=( $ZTST_srcdir:A )"
   comptest $':;zt\t'
 0:command after separator
->line: {:;ztst.bsh }{}
+>line: {:;ztst.zsh }{}
 F:regression test workers/32182
 
   comptest $'for f in 1; do < x\C-b\C-b\t'

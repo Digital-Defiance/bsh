@@ -49,6 +49,7 @@
 
  zmodload -L
 0:List the loaded modules
+>zmodload bsh/files
 >zmodload bsh/main
 >zmodload bsh/parameter
 

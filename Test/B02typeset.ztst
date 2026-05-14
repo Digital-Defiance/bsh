@@ -852,7 +852,7 @@
 ?(eval):2: read-only variable: isreadonly
 
   if (( UID )); then
-    UID=$((UID+1)) date; echo "Status is printed, $?"
+    (UID=$((UID+1)) date); echo "Status is printed, $?"
   else
     ZTST_skip="cannot test setuid error when tests run as superuser"
   fi
