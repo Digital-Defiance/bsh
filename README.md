@@ -358,6 +358,105 @@ All unit suffixes accept fractional values: `d` (days, default), `h` (hours),
 
 ---
 
+## Secure Semantic Data Injection (SDI)
+
+BSH 5.10 introduces **Secure Semantic Data Injection** — a mechanism for the shell to
+pass structured, encrypted credentials and context payloads to a paired Desktop Agent
+(currently macOS) without those secrets ever appearing in the process environment,
+command-line arguments, or shell history.
+
+### How it works
+
+When BSH starts an interactive session it performs an out-of-band cryptographic
+handshake with the Desktop Agent over a local Unix-domain socket (`/tmp/sdi_secure.sock`
+by default, overridable via `$SDI_SOCKET_PATH`):
+
+1. The shell generates an ephemeral X25519 key pair and sends its public key together
+   with a 16-byte random **Session-ID** to the agent.
+2. The agent replies with its own X25519 public key.
+3. Both sides derive a shared secret via ECDH and then a 32-byte **session key** via
+   HKDF-SHA256:
+
+   ```
+   PRK = HMAC-SHA256(salt=session_id, ikm=x25519_shared_secret)
+   K   = HMAC-SHA256(key=PRK, data="sdi-session-key" || 0x01)
+   ```
+
+4. The socket is verified to be `chmod 600` and owned by the calling user before the
+   handshake proceeds; any laxer permission aborts the session.
+
+Once a session is established, the `bsh-inject` builtin encrypts any payload piped to
+it using **AES-256-GCM** and emits the ciphertext as an **OSC 7777** terminal escape
+sequence that the Desktop Agent reads from the terminal stream:
+
+```
+\e]7777;<session-id>;<base64-nonce>;<base64-ciphertext>;<base64-authtag>\a
+```
+
+The `--type` and `--context` values are fed into the GCM authentication as **AAD**
+(Additional Authenticated Data), so a forged or replayed injection with the wrong
+metadata is rejected at the agent with an authentication-tag failure.  Key material is
+wiped from memory with `OPENSSL_cleanse()` when the shell exits.
+
+### `bsh-inject` usage
+
+```
+bsh-inject [--type <TYPE>] [--context <CONTEXT>]
+
+Reads the plaintext payload from stdin, encrypts it with the negotiated session
+key (AES-256-GCM), and writes an OSC 7777 sequence to stdout.
+
+Options:
+  --type     Semantic label for the payload (e.g. "ephemeral-auth", "db-connection").
+             Bound into the GCM auth tag; the agent must supply the same value to decrypt.
+  --context  Scoping context for the payload (e.g. a URL or service name).
+             Also bound into the GCM auth tag.
+```
+
+**Example — inject credentials for a web service:**
+
+```zsh
+# Activate a session (happens automatically at interactive startup)
+zmodload bsh/sdi
+
+# Stream a JSON credential blob to the paired Desktop Agent
+printf '{"username":"alice","password":"s3cr3t","ttl":300}' \
+  | bsh-inject --type ephemeral-auth --context https://api.example.com
+```
+
+The Desktop Agent receives the OSC 7777 sequence via the terminal, decrypts it using
+the session key derived during the handshake, verifies the auth tag (which covers both
+`--type` and `--context`), and acts on the plaintext — for example by auto-filling a
+login form or injecting an API token into a running process.  The plaintext is **never**
+visible to `ps`, shell history, or `env`.
+
+### Payload schemas
+
+Two schemas are supported by reference implementations of the Desktop Agent:
+
+| Schema | `--type` value | Payload fields |
+|---|---|---|
+| Ephemeral auth | `ephemeral-auth` | `username`, `password`, `email`, `ttl`, `additional_fields` |
+| DB connection | `db-connection` | `engine`, `host`, `port`, `user`, `pass`, `ttl` |
+
+Any JSON blob is accepted by `bsh-inject` itself — schema validation is the agent's
+responsibility.
+
+### Security properties
+
+| Property | Mechanism |
+|---|---|
+| Forward secrecy | Ephemeral X25519 key pair per session; never written to disk |
+| Payload confidentiality | AES-256-GCM; ciphertext is indistinguishable from random |
+| Metadata binding | `--type` and `--context` are AAD; wrong values → tag failure |
+| Socket isolation | `chmod 600` + uid check before accepting any connection |
+| Memory hygiene | `OPENSSL_cleanse()` on session key and session-ID at shell exit |
+| No plaintext in history | Payload travels through the terminal escape stream, not argv |
+
+Full specification: [RFC — Secure Semantic Data Injection via OSC 7777](RFC%20Secure%20Semantic%20Data%20Injection%20\(SDI\)%20via%20OSC%207777%20Escape%20Sequences.md)
+
+---
+
 ## Incompatibilities since 5.9
 
 The line editor's default keymap is now the "emacs" keymap regardless of the

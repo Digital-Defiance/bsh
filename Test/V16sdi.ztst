@@ -1,0 +1,282 @@
+# Tests for the bsh/sdi module (Secure Data Injection)
+#
+# Covers:
+#   - module loads and registers the bsh-inject builtin
+#   - error cases that require no active session
+#   - option-parsing error cases
+#   - socket security gate-checks (not-a-socket, wrong owner, bad perms)
+#   - full round-trip encrypt/emit with a Python agent stub (skipped when
+#     the 'cryptography' package is unavailable)
+#   - AAD permutations (--type only, --context only, neither, both)
+#   - stdin buffer growth (payload > 4096 bytes)
+#   - empty stdin
+#   - nonce uniqueness across sessions
+
+%prep
+
+  if ! zmodload bsh/sdi 2>/dev/null; then
+    ZTST_unimplemented='the bsh/sdi module is not available'
+  fi
+
+  # Temporary directory for socket and helper files.
+  sdi_tmp=${ZTST_testdir}/V16sdi.tmp
+  mkdir -p -- $sdi_tmp
+
+  # Probe for the Python agent dependencies once; record result.
+  if python3 -c \
+       'from cryptography.hazmat.primitives.asymmetric.x25519 import X25519PrivateKey' \
+       2>/dev/null; then
+    sdi_have_agent=1
+  else
+    sdi_have_agent=0
+  fi
+
+  # Helper: start the agent stub on a given socket path and wait for it.
+  # Usage: _sdi_start_agent <socket> <ready_file> <out_file>
+  # Sets $agent_pid on return.
+  _sdi_start_agent() {
+    local sock=$1 ready=$2 out=$3 i
+    python3 ${ZTST_srcdir}/sdi_test_agent.py $sock $ready >$out 2>/dev/null &
+    agent_pid=$!
+    for i in {1..50}; do
+      [[ -f $ready ]] && return 0
+      sleep 0.1
+    done
+    kill $agent_pid 2>/dev/null; wait $agent_pid 2>/dev/null
+    return 1
+  }
+
+%test
+
+# ---------------------------------------------------------------------------
+# 1. Builtin is registered
+# ---------------------------------------------------------------------------
+
+  whence -w bsh-inject
+0:bsh-inject is registered as a builtin after module load
+>bsh-inject: builtin
+
+# ---------------------------------------------------------------------------
+# 2. Without an active session, bsh-inject must refuse immediately
+# ---------------------------------------------------------------------------
+
+  echo test | bsh-inject
+1:bsh-inject fails with no active SDI session
+?(eval):bsh-inject:1: no active SDI session (is the Desktop Agent running?)
+
+# ---------------------------------------------------------------------------
+# 3. Option-parsing errors (session-independent; checked before session test)
+# ---------------------------------------------------------------------------
+
+  echo x | bsh-inject --type
+1:--type requires an argument
+?(eval):bsh-inject:1: missing argument to --type
+
+  echo x | bsh-inject --context
+1:--context requires an argument
+?(eval):bsh-inject:1: missing argument to --context
+
+  echo x | bsh-inject --bogus-flag
+1:unknown long option is rejected
+?(eval):bsh-inject:1: unknown option: --bogus-flag
+
+  echo x | bsh-inject positional-arg
+1:positional argument is rejected
+?(eval):bsh-inject:1: unexpected argument: positional-arg
+
+  echo x | bsh-inject -- extra
+1:positional arg after -- is rejected
+?(eval):bsh-inject:1: unexpected argument: extra
+
+# ---------------------------------------------------------------------------
+# 4. Socket security checks in sdi_session_init()
+#    (these all cause a silent failure: session stays inactive)
+# ---------------------------------------------------------------------------
+
+  # 4a. Socket path points to a regular file (not a socket).
+  local _f=$sdi_tmp/notsock
+  : >$_f
+  SDI_SOCKET_PATH=$_f $ZTST_testdir/../Src/bsh -c 'zmodload bsh/sdi; echo -n | bsh-inject'
+1:regular file at socket path: session stays inactive, inject fails
+?bsh:bsh-inject:1: no active SDI session (is the Desktop Agent running?)
+
+  # 4b. Socket has group-readable permission (S_IRGRP set).
+  local _s=$sdi_tmp/grp.sock
+  python3 -c "import socket,os; s=socket.socket(socket.AF_UNIX); s.bind('$_s'); os.chmod('$_s',0o640); s.close()"
+  SDI_SOCKET_PATH=$_s $ZTST_testdir/../Src/bsh -c 'zmodload bsh/sdi; echo -n | bsh-inject'
+1:group-readable socket is rejected: session stays inactive
+?bsh:bsh-inject:1: no active SDI session (is the Desktop Agent running?)
+
+# ---------------------------------------------------------------------------
+# 5. Full round-trip tests (require Python 'cryptography' package)
+# ---------------------------------------------------------------------------
+
+  # 5a. Both --type and --context (full AAD).
+  if [[ $sdi_have_agent -eq 0 ]]; then
+    ZTST_skip="python3 'cryptography' package not available"
+  fi
+  _sdi_start_agent $sdi_tmp/rt1.sock $sdi_tmp/rt1.ready $sdi_tmp/rt1.out \
+    || { ZTST_skip="agent stub did not start"; false }
+0dD:round-trip agent started (both AAD fields)
+
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  osc_out=$(
+    export SDI_SOCKET_PATH=$sdi_tmp/rt1.sock
+    $ZTST_testdir/../Src/bsh -c '
+      zmodload bsh/sdi
+      printf "%s" "hello SDI world" | bsh-inject --type ephemeral-auth --context http://localhost:3005
+    ' 2>/dev/null
+  )
+  wait $agent_pid 2>/dev/null || true
+  expected_sid=$(head -1 $sdi_tmp/rt1.out)
+  # Check OSC envelope
+  [[ $osc_out == $'\033]7777;'* ]] || { print "bad OSC prefix" >&2; false }
+  [[ $osc_out == *$'\007' ]]       || { print "bad OSC terminator" >&2; false }
+  # Parse fields
+  inner=${osc_out#$'\033]7777;'}; inner=${inner%$'\007'}
+  sid=${inner%%\;*};       rest=${inner#*\;}
+  b64_nonce=${rest%%\;*};  rest=${rest#*\;}
+  b64_ct=${rest%%\;*};     b64_tag=${rest#*\;}
+  # Validate session-ID: 32 lowercase hex chars
+  [[ $sid == $expected_sid ]]  || { print "session_id mismatch: $sid vs $expected_sid" >&2; false }
+  [[ ${#sid} -eq 32 ]]         || { print "bad sid length: ${#sid}" >&2; false }
+  [[ $sid == [0-9a-f]## ]]     || { print "non-hex chars in sid" >&2; false }
+  # Nonce: 12 bytes → 16 base64 chars
+  [[ ${#b64_nonce} -eq 16 ]]   || { print "nonce b64 length ${#b64_nonce} != 16" >&2; false }
+  # Tag: 16 bytes → 24 base64 chars
+  [[ ${#b64_tag} -eq 24 ]]     || { print "tag b64 length ${#b64_tag} != 24" >&2; false }
+  # Ciphertext: "hello SDI world" is 15 bytes; AES-GCM produces same length
+  # base64(15) = ceil(15/3)*4 = 20 chars
+  [[ ${#b64_ct} -eq 20 ]]      || { print "ciphertext b64 length ${#b64_ct} != 20" >&2; false }
+0D:round-trip with --type and --context: OSC 7777 output is well-formed
+
+  # 5a-ii. Decrypt the ciphertext and verify it equals the original plaintext.
+  #        The agent wrote the derived session key (hex) as the second line of rt1.out.
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  session_key_hex=$(sed -n 2p $sdi_tmp/rt1.out)
+  decrypted=$(SDI_KEY=$session_key_hex SDI_NONCE=$b64_nonce SDI_CT=$b64_ct SDI_TAG=$b64_tag SDI_AAD="ephemeral-authhttp://localhost:3005" python3 ${ZTST_srcdir}/sdi_decrypt_helper.py 2>/dev/null)
+  [[ $decrypted == "hello SDI world" ]] || \
+    { print "decrypted payload mismatch: '$decrypted'" >&2; false }
+0D:ciphertext decrypts to the original plaintext with the correct session key and AAD
+
+  # 5a-iii. RFC §5 rogue injection defense: wrong AAD must cause tag verification failure.
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  SDI_KEY=$session_key_hex SDI_NONCE=$b64_nonce SDI_CT=$b64_ct SDI_TAG=$b64_tag SDI_WRONG_AAD="WRONG_TYPEhttp://localhost:3005" python3 ${ZTST_srcdir}/sdi_verify_wrong_aad.py 2>/dev/null
+0D:wrong AAD causes GCM authentication failure (rogue injection defense per RFC §5)
+
+  # 5b. --type only (no --context).
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  _sdi_start_agent $sdi_tmp/rt2.sock $sdi_tmp/rt2.ready $sdi_tmp/rt2.out \
+    || { ZTST_skip="agent stub did not start"; false }
+0dD:round-trip agent started (--type only)
+
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  export SDI_SOCKET_PATH=$sdi_tmp/rt2.sock
+  $ZTST_testdir/../Src/bsh -c '
+    zmodload bsh/sdi
+    printf "payload" | bsh-inject --type ephemeral-auth
+  ' 2>/dev/null | grep -q $'^\033]7777;'
+  wait $agent_pid 2>/dev/null || true
+0D:round-trip with --type only succeeds
+
+  # 5c. --context only (no --type).
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  _sdi_start_agent $sdi_tmp/rt3.sock $sdi_tmp/rt3.ready $sdi_tmp/rt3.out \
+    || { ZTST_skip="agent stub did not start"; false }
+0dD:round-trip agent started (--context only)
+
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  export SDI_SOCKET_PATH=$sdi_tmp/rt3.sock
+  $ZTST_testdir/../Src/bsh -c '
+    zmodload bsh/sdi
+    printf "payload" | bsh-inject --context http://localhost:3005
+  ' 2>/dev/null | grep -q $'^\033]7777;'
+  wait $agent_pid 2>/dev/null || true
+0D:round-trip with --context only succeeds
+
+  # 5d. No options at all (AAD-less encryption).
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  _sdi_start_agent $sdi_tmp/rt4.sock $sdi_tmp/rt4.ready $sdi_tmp/rt4.out \
+    || { ZTST_skip="agent stub did not start"; false }
+0dD:round-trip agent started (no options)
+
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  export SDI_SOCKET_PATH=$sdi_tmp/rt4.sock
+  $ZTST_testdir/../Src/bsh -c '
+    zmodload bsh/sdi
+    printf "payload" | bsh-inject
+  ' 2>/dev/null | grep -q $'^\033]7777;'
+  wait $agent_pid 2>/dev/null || true
+0D:round-trip with no options (AAD-less) succeeds
+
+  # 5e. Empty stdin (0-byte plaintext).
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  _sdi_start_agent $sdi_tmp/rt5.sock $sdi_tmp/rt5.ready $sdi_tmp/rt5.out \
+    || { ZTST_skip="agent stub did not start"; false }
+0dD:round-trip agent started (empty stdin)
+
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  export SDI_SOCKET_PATH=$sdi_tmp/rt5.sock
+  osc_empty=$(
+    $ZTST_testdir/../Src/bsh -c '
+      zmodload bsh/sdi
+      printf "" | bsh-inject --type test
+    ' 2>/dev/null
+  )
+  wait $agent_pid 2>/dev/null || true
+  # 0-byte plaintext: ciphertext is 0 bytes → base64 is empty string
+  inner=${osc_empty#$'\033]7777;'}; inner=${inner%$'\007'}
+  sid=${inner%%\;*};      rest=${inner#*\;}
+  b64_nonce=${rest%%\;*}; rest=${rest#*\;}
+  b64_ct=${rest%%\;*};    b64_tag=${rest#*\;}
+  [[ -z $b64_ct ]] || { print "expected empty ciphertext, got: $b64_ct" >&2; false }
+  [[ ${#b64_tag} -eq 24 ]] || { print "tag length wrong for empty payload: ${#b64_tag}" >&2; false }
+0D:round-trip with empty stdin produces empty ciphertext and valid tag
+
+  # 5f. Large stdin: payload > initial 4096-byte buffer triggers growth loop.
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  _sdi_start_agent $sdi_tmp/rt6.sock $sdi_tmp/rt6.ready $sdi_tmp/rt6.out \
+    || { ZTST_skip="agent stub did not start"; false }
+0dD:round-trip agent started (large payload)
+
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  export SDI_SOCKET_PATH=$sdi_tmp/rt6.sock
+  # 8001 bytes forces at least one buffer doubling (initial cap = 4096)
+  python3 -c "import sys; sys.stdout.buffer.write(b'A' * 8001)" | \
+    $ZTST_testdir/../Src/bsh -c '
+      zmodload bsh/sdi
+      cat | bsh-inject --type large-test
+    ' 2>/dev/null | grep -q $'^\033]7777;'
+  wait $agent_pid 2>/dev/null || true
+0D:round-trip with large payload (> 4096 bytes) succeeds
+
+# ---------------------------------------------------------------------------
+# 6. Nonce uniqueness across independent sessions
+# ---------------------------------------------------------------------------
+
+  if [[ $sdi_have_agent -eq 0 ]]; then ZTST_skip="python3 'cryptography' package not available"; fi
+  _sdi_start_agent $sdi_tmp/nu1.sock $sdi_tmp/nu1.ready /dev/null \
+    || { ZTST_skip="agent stub did not start"; false }
+  osc1=$(
+    export SDI_SOCKET_PATH=$sdi_tmp/nu1.sock
+    $ZTST_testdir/../Src/bsh -c 'zmodload bsh/sdi; printf "x" | bsh-inject' 2>/dev/null
+  )
+  wait $agent_pid 2>/dev/null || true
+  _sdi_start_agent $sdi_tmp/nu2.sock $sdi_tmp/nu2.ready /dev/null \
+    || { ZTST_skip="agent stub did not start"; false }
+  osc2=$(
+    export SDI_SOCKET_PATH=$sdi_tmp/nu2.sock
+    $ZTST_testdir/../Src/bsh -c 'zmodload bsh/sdi; printf "x" | bsh-inject' 2>/dev/null
+  )
+  wait $agent_pid 2>/dev/null || true
+  # Extract nonce (second semicolon-delimited field)
+  n1=${${osc1#*;}%%\;*}
+  n2=${${osc2#*;}%%\;*}
+  [[ -n $n1 && -n $n2 && $n1 != $n2 ]] || \
+    { print "nonces identical across sessions: $n1" >&2; false }
+0D:nonces differ across independent sessions
+
+%clean
+
+  rm -rf ${ZTST_testdir}/V16sdi.tmp
+

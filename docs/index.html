@@ -603,6 +603,7 @@
         <li><a href="#builtins">Builtins</a></li>
         <li><a href="#modules">Modules</a></li>
         <li><a href="#glob">Glob</a></li>
+        <li><a href="#sdi">SDI</a></li>
         <li><a href="#build">Build</a></li>
         <li><a href="https://github.com/Digital-Defiance/bsh">GitHub</a></li>
       </ul>
@@ -1056,6 +1057,11 @@ $ sched
             style="display: inline-block; margin-left: 0.4rem"
             >bsh/stat</span
           >
+          <span
+            class="mod-tag"
+            style="display: inline-block; margin-left: 0.4rem"
+            >bsh/sdi</span
+          >
         </p>
       </div>
     </section>
@@ -1104,6 +1110,197 @@ new.log</code></pre>
           <code>M</code> (months). Combine with sort keys —
           <code>*.log(.b-1On)</code> gives today's logs oldest-first;
           <code>*(ob)</code> sorts everything by creation time.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── SDI ── -->
+    <section id="sdi">
+      <div class="container">
+        <div class="section-label">BSH 5.10 · macOS Desktop Agent</div>
+        <h2>Secure Semantic Data Injection.</h2>
+        <p>
+          <strong style="color: var(--text-bright)">bsh-inject</strong> is a
+          builtin that encrypts a credential payload read from stdin and emits
+          it as an
+          <strong style="color: var(--text-bright)">OSC 7777</strong> terminal
+          escape sequence. The plaintext never appears in
+          <code>ps</code>, the shell environment, or command history. The paired
+          macOS Desktop Agent reads the escape from the terminal stream,
+          decrypts it with the session key it negotiated at login, and acts on
+          the plaintext — auto-filling credentials, injecting API tokens, or
+          forwarding to a keychain.
+        </p>
+
+        <div class="split" style="margin-top: 2rem">
+          <!-- Protocol steps -->
+          <div>
+            <div class="steps">
+              <div class="step">
+                <div
+                  class="step-num"
+                  style="
+                    background: rgba(229, 192, 123, 0.15);
+                    border-color: rgba(229, 192, 123, 0.4);
+                    color: var(--yellow);
+                  "
+                >
+                  1
+                </div>
+                <div class="step-body">
+                  <h3>X25519 handshake at login</h3>
+                  <p>
+                    BSH opens a <code>chmod 600</code> Unix socket and performs
+                    an ephemeral Diffie-Hellman exchange with the Desktop Agent.
+                    A 32-byte session key is derived via
+                    <strong style="color: var(--text-bright)">HKDF-SHA256</strong>
+                    — never written to disk, wiped with
+                    <code>OPENSSL_cleanse()</code> on exit.
+                  </p>
+                </div>
+              </div>
+              <div class="step">
+                <div
+                  class="step-num"
+                  style="
+                    background: rgba(229, 192, 123, 0.15);
+                    border-color: rgba(229, 192, 123, 0.4);
+                    color: var(--yellow);
+                  "
+                >
+                  2
+                </div>
+                <div class="step-body">
+                  <h3>Encrypt in the shell</h3>
+                  <p>
+                    <code>bsh-inject</code> reads stdin and encrypts it with
+                    <strong style="color: var(--text-bright)">AES-256-GCM</strong>.
+                    The <code>--type</code> and <code>--context</code> values
+                    are passed as GCM
+                    <abbr title="Additional Authenticated Data">AAD</abbr> —
+                    bound into the auth tag so tampering with the metadata
+                    invalidates the ciphertext.
+                  </p>
+                </div>
+              </div>
+              <div class="step">
+                <div
+                  class="step-num"
+                  style="
+                    background: rgba(229, 192, 123, 0.15);
+                    border-color: rgba(229, 192, 123, 0.4);
+                    color: var(--yellow);
+                  "
+                >
+                  3
+                </div>
+                <div class="step-body">
+                  <h3>Deliver over the terminal</h3>
+                  <p>
+                    The ciphertext is emitted as an
+                    <strong style="color: var(--text-bright)">OSC 7777</strong>
+                    escape — invisible in the terminal, invisible to
+                    <code>ps</code>, absent from shell history.
+                  </p>
+                </div>
+              </div>
+              <div class="step">
+                <div
+                  class="step-num"
+                  style="
+                    background: rgba(229, 192, 123, 0.15);
+                    border-color: rgba(229, 192, 123, 0.4);
+                    color: var(--yellow);
+                  "
+                >
+                  4
+                </div>
+                <div class="step-body">
+                  <h3>Agent decrypts and acts</h3>
+                  <p>
+                    The macOS Desktop Agent reads the escape from the terminal
+                    stream, verifies the GCM auth tag, and acts on the plaintext
+                    — auto-filling a login form, injecting an API token, or
+                    forwarding to the system keychain.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="modules" style="margin-top: 1.5rem">
+              <span class="mod-tag">X25519 ECDH</span>
+              <span class="mod-tag">AES-256-GCM</span>
+              <span class="mod-tag">HKDF-SHA256</span>
+              <span class="mod-tag">OSC 7777</span>
+              <span class="mod-tag">chmod 600 socket</span>
+              <span class="mod-tag">AAD-bound auth tag</span>
+            </div>
+          </div>
+
+          <!-- Terminal demo -->
+          <div
+            class="terminal"
+            style="display: block; align-self: start"
+          >
+            <div class="terminal-bar">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
+            </div>
+            <div class="terminal-body">
+              <div class="cmd-line">
+                <span class="cmt"># load the SDI module</span>
+              </div>
+              <div class="cmd-line">
+                <span class="prompt">[9628.42] %</span>
+                <span class="cmd">zmodload bsh/sdi</span>
+              </div>
+              <div class="cmd-line" style="margin-top: 0.6rem">
+                <span class="cmt"># inject an ephemeral auth payload</span>
+              </div>
+              <div class="cmd-line">
+                <span class="prompt">[9628.42] %</span>
+                <span class="cmd"
+                  >printf '{"user":"alice","pass":"s3cr3t","ttl":300}'</span
+                >
+              </div>
+              <div class="cmd-line">
+                <span class="prompt">  &gt;</span>
+                <span class="cmd"
+                  >| bsh-inject --type ephemeral-auth \
+                    --context https://app.example.com</span
+                >
+              </div>
+              <div class="cmd-line" style="margin-top: 0.6rem">
+                <span class="cmt">
+                  # OSC 7777 emitted to terminal stream:
+                </span>
+              </div>
+              <div class="cmd-line">
+                <span class="out"
+                  >\e]7777;&lt;sid&gt;;&lt;nonce&gt;;&lt;ct&gt;;&lt;tag&gt;\a</span
+                >
+              </div>
+              <div class="cmd-line" style="margin-top: 0.6rem">
+                <span class="cmt"># plaintext never in history</span>
+              </div>
+              <div class="cmd-line">
+                <span class="cmt"># auth tag covers type + context</span>
+              </div>
+              <div class="cmd-line">
+                <span class="cmt"># agent decrypts, acts, discards</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p style="margin-top: 1.5rem; font-size: 0.875rem">
+          Full specification:
+          <a
+            class="link"
+            href="https://github.com/Digital-Defiance/bsh/blob/main/RFC%20Secure%20Semantic%20Data%20Injection%20(SDI)%20via%20OSC%207777%20Escape%20Sequences.md"
+            >RFC — Secure Semantic Data Injection via OSC 7777</a
+          >
         </p>
       </div>
     </section>

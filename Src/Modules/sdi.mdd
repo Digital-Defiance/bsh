@@ -1,0 +1,8 @@
+name=bsh/sdi
+
+link=static
+load=yes
+
+autofeatures="b:bsh-inject"
+
+objects="sdi.o"

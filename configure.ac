@@ -854,6 +854,12 @@ fi
 AC_CHECK_LIB(socket, socket)
 AC_SEARCH_LIBS(gethostbyname2, bind network)
 
+dnl ----------------
+dnl CHECK FOR OPENSSL  (required by bsh/sdi — X25519 ECDH + AES-256-GCM)
+dnl ----------------
+AC_CHECK_LIB(crypto, EVP_PKEY_keygen, [],
+  [AC_MSG_WARN([libcrypto not found — bsh/sdi module will not link correctly])])
+
 case $LIBS in
   *-lbind*)
   AC_CHECK_HEADERS(bind/netdb.h)
