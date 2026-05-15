@@ -349,6 +349,7 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     char          *b64_nonce   = NULL;
     char          *b64_ct      = NULL;
     char          *b64_tag     = NULL;
+    char          *b64_context = NULL;
     char           sid_hex[SDI_SESSION_ID_LEN * 2 + 1];
 
     unsigned char *plaintext   = NULL;
@@ -512,6 +513,10 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     b64_ct    = sdi_b64enc(ciphertext, outlen);
     b64_tag   = sdi_b64enc(tag, SDI_TAG_LEN);
 
+    if (context_val && *context_val)
+        b64_context = sdi_b64enc((const unsigned char *)context_val,
+                                 strlen(context_val));
+
     if (!b64_nonce || !b64_ct || !b64_tag)
         goto done;
 
@@ -526,11 +531,17 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
      * Emit the OSC 7777 escape sequence to stdout.
      *
      * Format:
-     *   ESC ] 7777 ; <session_id_hex> ; <b64nonce> ;
-     *         <b64ciphertext> ; <b64tag> BEL
+     *   ESC ] 7777 ; <session_id_hex> ; <type> ; <b64context> ;
+     *               <b64nonce> ; <b64ciphertext> ; <b64tag> BEL
+     *
+     * <type> and <b64context> are also the AAD fed into AES-GCM,
+     * so the receiver must supply them for decryption.
      * ----------------------------------------------------------- */
-    printf("\033]7777;%s;%s;%s;%s\007",
-           sid_hex, b64_nonce, b64_ct, b64_tag);
+    printf("\033]7777;%s;%s;%s;%s;%s;%s\007",
+           sid_hex,
+           type_val    ? type_val    : "",
+           b64_context ? b64_context : "",
+           b64_nonce, b64_ct, b64_tag);
     fflush(stdout);
 
     ret = 0;
@@ -552,9 +563,10 @@ done:
         zfree(plaintext, (int)bufcap);
     }
 
-    if (b64_nonce) zsfree(b64_nonce);
-    if (b64_ct)    zsfree(b64_ct);
-    if (b64_tag)   zsfree(b64_tag);
+    if (b64_nonce)   zsfree(b64_nonce);
+    if (b64_ct)      zsfree(b64_ct);
+    if (b64_tag)     zsfree(b64_tag);
+    if (b64_context) zsfree(b64_context);
 
     return ret;
 }
