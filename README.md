@@ -369,31 +369,50 @@ command-line arguments, or shell history.
 
 When BSH starts an interactive session it performs an out-of-band cryptographic
 handshake with the Desktop Agent over a local Unix-domain socket (`/tmp/sdi_secure.sock`
-by default, overridable via `$SDI_SOCKET_PATH`):
+by default, overridable via `$SDI_SOCKET_PATH`). The handshake uses a compact binary
+framing — **no JSON, no length prefix**:
 
-1. The shell generates an ephemeral X25519 key pair and sends its public key together
-   with a 16-byte random **Session-ID** to the agent.
-2. The agent replies with its own X25519 public key.
-3. Both sides derive a shared secret via ECDH and then a 32-byte **session key** via
-   HKDF-SHA256:
+1. The shell generates a 16-byte random **Session-ID** and an ephemeral X25519 key pair,
+   then sends **48 bytes** atomically to the agent:
+   - bytes 0–15: `session_id` (16 random bytes)
+   - bytes 16–47: `shell_pub` (X25519 public key, raw 32-byte little-endian)
+2. The agent replies with **32 bytes**: its ephemeral X25519 public key (`agent_pub`).
+3. Both sides independently derive the 32-byte **session key** via HKDF-SHA256:
 
    ```
-   PRK = HMAC-SHA256(salt=session_id, ikm=x25519_shared_secret)
-   K   = HMAC-SHA256(key=PRK, data="sdi-session-key" || 0x01)
+   K_session = HKDF-SHA256(
+     IKM  = X25519(priv, peer_pub),
+     salt = session_id,
+     info = "sdi-session-key",
+     L    = 32
+   )
    ```
 
-4. The socket is verified to be `chmod 600` and owned by the calling user before the
-   handshake proceeds; any laxer permission aborts the session.
+   `K_session` is never transmitted; the socket connection is closed immediately after.
+   The **Session-ID** is encoded as 32 lowercase hex characters in the OSC sequence.
+
+4. The socket is verified to be `chmod 600` and owned by the calling user
+   (`stat.st_uid == getuid()`) before the handshake proceeds; any laxer permission
+   aborts the session.
 
 Once a session is established, the `bsh-inject` builtin encrypts any payload piped to
 it using **AES-256-GCM** and emits the ciphertext as an **OSC 7777** terminal escape
 sequence that the Desktop Agent reads from the terminal stream:
 
 ```
-\e]7777;<session-id>;<base64-nonce>;<base64-ciphertext>;<base64-authtag>\a
+\e]7777;<session-id-hex>;<type>;<base64-context>;<base64-nonce>;<base64-ciphertext>;<base64-auth-tag>\a
 ```
 
-The `--type` and `--context` values are fed into the GCM authentication as **AAD**
+| Field | Encoding | Description |
+|---|---|---|
+| `session-id-hex` | 32-char lowercase hex | Maps the sequence to a registered session key |
+| `type` | plaintext ASCII | Payload schema (e.g. `ephemeral-auth`) |
+| `base64-context` | standard Base64 | Routing context (e.g. URL); Base64-encoded to avoid semicolon collisions |
+| `base64-nonce` | standard Base64 | 12-byte AES-GCM IV |
+| `base64-ciphertext` | standard Base64 | AES-256-GCM encrypted JSON payload |
+| `base64-auth-tag` | standard Base64 | 16-byte GCM authentication tag |
+
+The `--type` and `--context` values are bound into the GCM auth tag as **AAD**
 (Additional Authenticated Data), so a forged or replayed injection with the wrong
 metadata is rejected at the agent with an authentication-tag failure.  Key material is
 wiped from memory with `OPENSSL_cleanse()` when the shell exits.

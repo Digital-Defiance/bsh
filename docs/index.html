@@ -1124,12 +1124,12 @@ new.log</code></pre>
           builtin that encrypts a credential payload read from stdin and emits
           it as an
           <strong style="color: var(--text-bright)">OSC 7777</strong> terminal
-          escape sequence. The plaintext never appears in
-          <code>ps</code>, the shell environment, or command history. The paired
-          macOS Desktop Agent reads the escape from the terminal stream,
-          decrypts it with the session key it negotiated at login, and acts on
-          the plaintext — auto-filling credentials, injecting API tokens, or
-          forwarding to a keychain.
+          escape sequence. The plaintext never appears in <code>ps</code>, the
+          shell environment, or command history. The paired macOS Desktop Agent
+          reads the escape from the terminal stream, decrypts it with the
+          session key it negotiated at login, and acts on the plaintext —
+          auto-filling credentials, injecting API tokens, or forwarding to a
+          keychain.
         </p>
 
         <div class="split" style="margin-top: 2rem">
@@ -1153,7 +1153,9 @@ new.log</code></pre>
                     BSH opens a <code>chmod 600</code> Unix socket and performs
                     an ephemeral Diffie-Hellman exchange with the Desktop Agent.
                     A 32-byte session key is derived via
-                    <strong style="color: var(--text-bright)">HKDF-SHA256</strong>
+                    <strong style="color: var(--text-bright)"
+                      >HKDF-SHA256</strong
+                    >
                     — never written to disk, wiped with
                     <code>OPENSSL_cleanse()</code> on exit.
                   </p>
@@ -1174,8 +1176,9 @@ new.log</code></pre>
                   <h3>Encrypt in the shell</h3>
                   <p>
                     <code>bsh-inject</code> reads stdin and encrypts it with
-                    <strong style="color: var(--text-bright)">AES-256-GCM</strong>.
-                    The <code>--type</code> and <code>--context</code> values
+                    <strong style="color: var(--text-bright)"
+                      >AES-256-GCM</strong
+                    >. The <code>--type</code> and <code>--context</code> values
                     are passed as GCM
                     <abbr title="Additional Authenticated Data">AAD</abbr> —
                     bound into the auth tag so tampering with the metadata
@@ -1238,10 +1241,7 @@ new.log</code></pre>
           </div>
 
           <!-- Terminal demo -->
-          <div
-            class="terminal"
-            style="display: block; align-self: start"
-          >
+          <div class="terminal" style="display: block; align-self: start">
             <div class="terminal-bar">
               <span class="dot dot-red"></span>
               <span class="dot dot-yellow"></span>
@@ -1265,10 +1265,10 @@ new.log</code></pre>
                 >
               </div>
               <div class="cmd-line">
-                <span class="prompt">  &gt;</span>
+                <span class="prompt"> &gt;</span>
                 <span class="cmd"
-                  >| bsh-inject --type ephemeral-auth \
-                    --context https://app.example.com</span
+                  >| bsh-inject --type ephemeral-auth \ --context
+                  https://app.example.com</span
                 >
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
@@ -1278,7 +1278,7 @@ new.log</code></pre>
               </div>
               <div class="cmd-line">
                 <span class="out"
-                  >\e]7777;&lt;sid&gt;;&lt;nonce&gt;;&lt;ct&gt;;&lt;tag&gt;\a</span
+                  >\e]7777;&lt;sid&gt;;&lt;type&gt;;&lt;ctx&gt;;&lt;nonce&gt;;&lt;ct&gt;;&lt;tag&gt;\a</span
                 >
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
@@ -1298,7 +1298,7 @@ new.log</code></pre>
           Full specification:
           <a
             class="link"
-            href="https://github.com/Digital-Defiance/bsh/blob/main/RFC%20Secure%20Semantic%20Data%20Injection%20(SDI)%20via%20OSC%207777%20Escape%20Sequences.md"
+            href="https://github.com/Digital-Defiance/bsh/blob/main/docs/rfc-sdi-osc7777.md"
             >RFC — Secure Semantic Data Injection via OSC 7777</a
           >
         </p>
