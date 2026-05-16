@@ -1,8 +1,8 @@
 
-# [BSH — The BrightShell](https://bsh.brightchain.org)
+# [BSH — The BrightShell](https://bsh.digitaldefiance.org)
 
 - [BSH GitHub](https://github.com/Digital-Defiance/bsh)
-- [oh-my-bsh](https://ohmybsh.brightchain.org) | [oh-my-bsh GitHub](https://github.com/Digital-Defiance/ohmybsh)
+- [oh-my-bsh](https://ohmybsh.digitaldefiance.org) | [oh-my-bsh GitHub](https://github.com/Digital-Defiance/ohmybsh)
 
 ## Version
 
