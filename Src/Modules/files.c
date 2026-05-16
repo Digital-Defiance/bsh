@@ -904,12 +904,14 @@ ls_color_str(struct stat *st, int color)
  * by default, or atime when o->use_atime is set — matching standard ls.
  */
 static void
-ls_print_long(struct stat *st, const char *name, const struct ls_opts *o)
+ls_print_long(struct stat *st, const char *name, const char *path,
+	      const struct ls_opts *o)
 {
     char modestr[11];
     char owner[64] = "", grp[64] = "";
     char sizebuf[32];
     char indic[3] = "";
+    char linktgt[PATH_MAX] = "";
     double bd_ts;
     const char *col, *rst;
 
@@ -946,16 +948,24 @@ ls_print_long(struct stat *st, const char *name, const struct ls_opts *o)
     col = ls_color_str(st, o->color);
     rst = (col[0] != '\0') ? COL_RST : "";
 
+    if (S_ISLNK(st->st_mode)) {
+	ssize_t n = readlink(path, linktgt, sizeof(linktgt) - 1);
+	if (n >= 0) linktgt[n] = '\0';
+	else        linktgt[0] = '\0';
+    }
+
     if (o->blocks)
 	printf("%llu ", (unsigned long long)st->st_blocks);
 
-    printf("%s %3lu %-8s %-8s %8s  %.6f  %s%s%s%s\n",
+    printf("%s %3lu %-8s %-8s %8s  %.6f  %s%s%s%s%s%s\n",
 	   modestr,
 	   (unsigned long)st->st_nlink,
 	   owner, grp,
 	   sizebuf,
 	   bd_ts,
-	   col, name, indic, rst);
+	   col, name, indic, rst,
+	   linktgt[0] ? " -> " : "",
+	   linktgt);
 }
 
 /* Print a short (name-only) entry. */
@@ -1092,14 +1102,14 @@ bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
 	    for (i = 0; i < nents; i++) {
 		idx = o.reverse ? (nents - 1 - i) : i;
 		if (long_fmt)
-		    ls_print_long(&ents[idx].st, ents[idx].name, &o);
+		    ls_print_long(&ents[idx].st, ents[idx].name, ents[idx].path, &o);
 		else
 		    ls_print_short(ents[idx].name, &ents[idx].st, &o);
 	    }
 	    free(ents);
 	} else {
 	    if (long_fmt)
-		ls_print_long(&st, *args, &o);
+		ls_print_long(&st, *args, *args, &o);
 	    else
 		ls_print_short(*args, &st, &o);
 	}
