@@ -32,6 +32,8 @@
 #include <string.h>
 #include <errno.h>
 
+#include <stdint.h>
+
 #include <openssl/evp.h>
 #include <openssl/hmac.h>
 #include <openssl/rand.h>
@@ -58,6 +60,8 @@
 static unsigned char sdi_session_id[SDI_SESSION_ID_LEN];
 static unsigned char sdi_session_key[SDI_SESSION_KEY_LEN];
 static int           sdi_session_active = 0;
+static uint64_t      sdi_session_counter = 0;  /* per-session monotonic counter (RFC §3.5) */
+static int           sdi_sockfd = -1;           /* persistent socket kept open for OSC relay  */
 
 /* ------------------------------------------------------------------ */
 /*  Low-level I/O helpers                                               */
@@ -308,6 +312,16 @@ sdi_session_init(void)
                      sdi_session_key, SDI_SESSION_KEY_LEN))
         goto cleanup;
 
+    sdi_session_counter = 0;  /* reset counter on every new session */
+
+    /* Clear the 5-second handshake timeout — the socket is now kept open
+     * indefinitely for OSC relay (RFC §3.6, Option B). */
+    {
+        struct timeval zero = { 0, 0 };
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &zero, sizeof(zero));
+        setsockopt(sockfd, SOL_SOCKET, SO_SNDTIMEO, &zero, sizeof(zero));
+    }
+
     sdi_session_active = 1;
 
 cleanup:
@@ -320,8 +334,12 @@ cleanup:
     if (our_key)    EVP_PKEY_free(our_key);
     if (kgen_ctx)   EVP_PKEY_CTX_free(kgen_ctx);
 
-    if (sockfd >= 0)
-        close(sockfd);
+    if (sockfd >= 0) {
+        if (sdi_session_active)
+            sdi_sockfd = sockfd;  /* keep open — relay will use it */
+        else
+            close(sockfd);        /* handshake failed — discard    */
+    }
 
     if (!sdi_session_active) {
         /* Wipe partial state so it is never left in a half-initialised form. */
@@ -340,12 +358,15 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
 {
     const char    *type_val    = NULL;
     const char    *context_val = NULL;
+    int            emit_stdout = 0;  /* --emit-stdout: write OSC to fd 1 instead of /dev/tty */
 
     unsigned char  nonce[SDI_NONCE_LEN];
     unsigned char  tag[SDI_TAG_LEN];
     unsigned char *ciphertext  = NULL;
     size_t         cipher_alloc = 0;
 
+    unsigned char  counter_bytes[8];  /* 8-byte big-endian counter (RFC §3.5) */
+    char          *b64_counter = NULL;
     char          *b64_nonce   = NULL;
     char          *b64_ct      = NULL;
     char          *b64_tag     = NULL;
@@ -383,6 +404,9 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
                 return 1;
             }
             context_val = *args++;
+        } else if (strcmp(*args, "--emit-stdout") == 0) {
+            ++args;
+            emit_stdout = 1;
         } else if (strcmp(*args, "--") == 0) {
             ++args;
             break;
@@ -403,9 +427,36 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     if (!sdi_session_active)
         sdi_session_init();
 
+    /* Socket was lost (e.g. agent restarted, or previous ack failure closed it)
+     * but session state is stale-active.  Re-initialise so we reconnect. */
+    if (sdi_session_active && sdi_sockfd < 0) {
+        sdi_session_active = 0;
+        OPENSSL_cleanse(sdi_session_key, sizeof(sdi_session_key));
+        OPENSSL_cleanse(sdi_session_id,  sizeof(sdi_session_id));
+        sdi_session_counter = 0;
+        sdi_session_init();
+    }
+
     if (!sdi_session_active) {
         zerrnam(nam, "no active SDI session (is the Desktop Agent running?)");
         return 1;
+    }
+
+    /* -----------------------------------------------------------
+     * Snapshot the current per-session counter and encode it as an
+     * 8-byte big-endian unsigned integer (RFC §3.5).
+     * The counter is incremented only after a successful emit.
+     * ----------------------------------------------------------- */
+    {
+        uint64_t c = sdi_session_counter;
+        counter_bytes[0] = (unsigned char)((c >> 56) & 0xFF);
+        counter_bytes[1] = (unsigned char)((c >> 48) & 0xFF);
+        counter_bytes[2] = (unsigned char)((c >> 40) & 0xFF);
+        counter_bytes[3] = (unsigned char)((c >> 32) & 0xFF);
+        counter_bytes[4] = (unsigned char)((c >> 24) & 0xFF);
+        counter_bytes[5] = (unsigned char)((c >> 16) & 0xFF);
+        counter_bytes[6] = (unsigned char)((c >>  8) & 0xFF);
+        counter_bytes[7] = (unsigned char)( c        & 0xFF);
     }
 
     /* -----------------------------------------------------------
@@ -477,18 +528,45 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     if (EVP_EncryptInit_ex(ctx, NULL, NULL, sdi_session_key, nonce) != 1)
         goto done;
 
-    /* Feed AAD (Additional Authenticated Data). */
-    if (type_val) {
-        if (EVP_EncryptUpdate(ctx, NULL, &tmplen,
+    /* Feed length-prefixed AAD (RFC §3.4).
+     * Format: LE32(len) || bytes, for each of: counter, type, context.
+     * LE32(0) is emitted even when a field is absent/empty. */
+    {
+        unsigned char len_buf[4];
+        size_t type_len = type_val    ? strlen(type_val)    : 0;
+        size_t ctx_len  = context_val ? strlen(context_val) : 0;
+
+#define SDI_FEED_LE32(n) do { \
+    uint32_t _v = (uint32_t)(n); \
+    len_buf[0] = (unsigned char)(_v        & 0xFF); \
+    len_buf[1] = (unsigned char)((_v >>  8) & 0xFF); \
+    len_buf[2] = (unsigned char)((_v >> 16) & 0xFF); \
+    len_buf[3] = (unsigned char)((_v >> 24) & 0xFF); \
+    if (EVP_EncryptUpdate(ctx, NULL, &tmplen, len_buf, 4) != 1) goto done; \
+} while (0)
+
+        /* counter — always 8 bytes */
+        SDI_FEED_LE32(8);
+        if (EVP_EncryptUpdate(ctx, NULL, &tmplen, counter_bytes, 8) != 1)
+            goto done;
+
+        /* type */
+        SDI_FEED_LE32(type_len);
+        if (type_len > 0 &&
+            EVP_EncryptUpdate(ctx, NULL, &tmplen,
                               (const unsigned char *)type_val,
-                              (int)strlen(type_val)) != 1)
+                              (int)type_len) != 1)
             goto done;
-    }
-    if (context_val) {
-        if (EVP_EncryptUpdate(ctx, NULL, &tmplen,
+
+        /* context (raw bytes, not base64-encoded) */
+        SDI_FEED_LE32(ctx_len);
+        if (ctx_len > 0 &&
+            EVP_EncryptUpdate(ctx, NULL, &tmplen,
                               (const unsigned char *)context_val,
-                              (int)strlen(context_val)) != 1)
+                              (int)ctx_len) != 1)
             goto done;
+
+#undef SDI_FEED_LE32
     }
 
     /* Encrypt the payload. */
@@ -509,15 +587,16 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     /* -----------------------------------------------------------
      * Base64-encode the three binary components.
      * ----------------------------------------------------------- */
-    b64_nonce = sdi_b64enc(nonce, SDI_NONCE_LEN);
-    b64_ct    = sdi_b64enc(ciphertext, outlen);
-    b64_tag   = sdi_b64enc(tag, SDI_TAG_LEN);
+    b64_counter = sdi_b64enc(counter_bytes, 8);
+    b64_nonce   = sdi_b64enc(nonce, SDI_NONCE_LEN);
+    b64_ct      = sdi_b64enc(ciphertext, outlen);
+    b64_tag     = sdi_b64enc(tag, SDI_TAG_LEN);
 
     if (context_val && *context_val)
         b64_context = sdi_b64enc((const unsigned char *)context_val,
                                  strlen(context_val));
 
-    if (!b64_nonce || !b64_ct || !b64_tag)
+    if (!b64_counter || !b64_nonce || !b64_ct || !b64_tag)
         goto done;
 
     /* -----------------------------------------------------------
@@ -528,26 +607,96 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     sid_hex[SDI_SESSION_ID_LEN * 2] = '\0';
 
     /* -----------------------------------------------------------
-     * Emit the OSC 7777 escape sequence to stdout.
+     * Build the OSC 7777 string once, write it to /dev/tty, then
+     * relay the exact same bytes to SDIAgent over the persistent
+     * registration socket (RFC §3.6, Option B).
      *
-     * Format:
-     *   ESC ] 7777 ; <session_id_hex> ; <type> ; <b64context> ;
-     *               <b64nonce> ; <b64ciphertext> ; <b64tag> BEL
+     * Protocol after ECDH:
+     *   bsh → agent:  0x02 | LE32(len) | OSC bytes
+     *   agent → bsh:  0x01 (ok) | 0x00 (fail)
      *
-     * <type> and <b64context> are also the AAD fed into AES-GCM,
-     * so the receiver must supply them for decryption.
+     * Counter is incremented only on confirmed delivery (RFC §3.5).
+     * --emit-stdout is retained as a testing escape hatch only.
      * ----------------------------------------------------------- */
-    printf("\033]7777;%s;%s;%s;%s;%s;%s\007",
-           sid_hex,
-           type_val    ? type_val    : "",
-           b64_context ? b64_context : "",
-           b64_nonce, b64_ct, b64_tag);
-    fflush(stdout);
+    {
+        char *osc_buf;
+        int   osc_len;
 
-    ret = 0;
+        osc_len = snprintf(NULL, 0, "\033]7777;%s;%s;%s;%s;%s;%s;%s\007",
+                           sid_hex,
+                           b64_counter ? b64_counter : "",
+                           type_val    ? type_val    : "",
+                           b64_context ? b64_context : "",
+                           b64_nonce, b64_ct, b64_tag);
+        if (osc_len <= 0)
+            goto done;
+
+        osc_buf = (char *)zalloc((size_t)osc_len + 1);
+        if (!osc_buf)
+            goto done;
+
+        snprintf(osc_buf, (size_t)osc_len + 1,
+                 "\033]7777;%s;%s;%s;%s;%s;%s;%s\007",
+                 sid_hex,
+                 b64_counter ? b64_counter : "",
+                 type_val    ? type_val    : "",
+                 b64_context ? b64_context : "",
+                 b64_nonce, b64_ct, b64_tag);
+
+        /* Write to /dev/tty so the terminal emulator sees the sequence.
+         * With --emit-stdout (testing only) write to fd 1 instead.     */
+        if (!emit_stdout) {
+            int tty_fd = open("/dev/tty", O_WRONLY | O_NOCTTY);
+            if (tty_fd >= 0) {
+                write_all(tty_fd, osc_buf, (size_t)osc_len);
+                fsync(tty_fd);
+                close(tty_fd);
+            }
+        } else {
+            write_all(STDOUT_FILENO, osc_buf, (size_t)osc_len);
+            fsync(STDOUT_FILENO);
+        }
+
+        /* Relay to SDIAgent via the persistent socket (RFC §3.6).
+         * Fail closed: any error or non-0x01 ack is treated as failure. */
+        if (sdi_sockfd >= 0) {
+            unsigned char op   = 0x02;
+            uint32_t      slen = (uint32_t)osc_len;
+            unsigned char lbuf[4];
+            unsigned char ack  = 0;
+
+            lbuf[0] = (unsigned char)( slen        & 0xFF);
+            lbuf[1] = (unsigned char)((slen >>  8) & 0xFF);
+            lbuf[2] = (unsigned char)((slen >> 16) & 0xFF);
+            lbuf[3] = (unsigned char)((slen >> 24) & 0xFF);
+
+            if (write_all(sdi_sockfd, &op,    1)                == 1  &&
+                write_all(sdi_sockfd, lbuf,   4)                == 4  &&
+                write_all(sdi_sockfd, osc_buf, (size_t)osc_len) == (ssize_t)osc_len &&
+                read_all (sdi_sockfd, &ack,    1)                == 1  &&
+                ack == 0x01) {
+                /* Confirmed delivery — advance the counter (RFC §3.5). */
+                sdi_session_counter++;
+                ret = 0;
+            } else {
+                close(sdi_sockfd);
+                sdi_sockfd = -1;
+                zerrnam(nam, "SDIAgent did not confirm delivery");
+            }
+        } else if (emit_stdout) {
+            /* Testing path: no socket required, just count success. */
+            sdi_session_counter++;
+            ret = 0;
+        } else {
+            zerrnam(nam, "no active SDIAgent socket (is the Desktop Agent running?)");
+        }
+
+        zsfree(osc_buf);
+    }
 
 done:
     /* Wipe sensitive intermediate values before releasing memory. */
+    OPENSSL_cleanse(counter_bytes, sizeof(counter_bytes));
     OPENSSL_cleanse(nonce, sizeof(nonce));
     OPENSSL_cleanse(tag,   sizeof(tag));
 
@@ -563,6 +712,7 @@ done:
         zfree(plaintext, (int)bufcap);
     }
 
+    if (b64_counter) zsfree(b64_counter);
     if (b64_nonce)   zsfree(b64_nonce);
     if (b64_ct)      zsfree(b64_ct);
     if (b64_tag)     zsfree(b64_tag);
@@ -638,6 +788,13 @@ cleanup_(Module m)
 int
 finish_(UNUSED(Module m))
 {
+    /* Notify SDIAgent of clean shutdown, then close the persistent socket. */
+    if (sdi_sockfd >= 0) {
+        unsigned char op = 0x03;  /* UNREGISTER */
+        write(sdi_sockfd, &op, 1);  /* best-effort — ignore errors */
+        close(sdi_sockfd);
+        sdi_sockfd = -1;
+    }
     /* Securely erase key material before the module is unloaded. */
     OPENSSL_cleanse(sdi_session_key, sizeof(sdi_session_key));
     OPENSSL_cleanse(sdi_session_id,  sizeof(sdi_session_id));
