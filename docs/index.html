@@ -1318,6 +1318,63 @@ new.log</code></pre>
           </div>
         </div>
 
+        <!-- ── SDI media ── -->
+        <div style="margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.5rem;">
+          <figure style="margin: 0;">
+            <img
+              src="screenshot.png"
+              alt="BSH SDI Agent — macOS menu-bar app showing a decrypted ephemeral-auth payload"
+              style="
+                width: 100%;
+                border-radius: var(--radius);
+                border: 1px solid var(--border);
+                display: block;
+              "
+            />
+            <figcaption
+              style="
+                margin-top: 0.5rem;
+                font-size: 0.78rem;
+                color: #555c7a;
+                text-align: center;
+              "
+            >
+              BSH SDI Agent — macOS menu-bar app receiving and acting on a
+              decrypted <code style="font-size:0.78rem">ephemeral-auth</code> payload
+            </figcaption>
+          </figure>
+
+          <figure style="margin: 0;">
+            <video
+              src="recording.mov"
+              controls
+              muted
+              loop
+              playsinline
+              style="
+                width: 100%;
+                border-radius: var(--radius);
+                border: 1px solid var(--border);
+                display: block;
+                background: var(--bg2);
+              "
+            >
+              Your browser does not support the video tag.
+            </video>
+            <figcaption
+              style="
+                margin-top: 0.5rem;
+                font-size: 0.78rem;
+                color: #555c7a;
+                text-align: center;
+              "
+            >
+              End-to-end demo: <code style="font-size:0.78rem">bsh-inject</code> sending
+              an encrypted OSC 7777 payload and the SDI Agent auto-filling a login form
+            </figcaption>
+          </figure>
+        </div>
+
         <p style="margin-top: 1.5rem; font-size: 0.875rem">
           Full specification:
           <a
