@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Privacy Policy for BSH (BrightShell) and the BSH SDI Agent macOS app."
+    />
+    <title>Privacy Policy — BSH &amp; BSH SDI Agent</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --bg: #0f1320;
+        --bg2: #0a0d18;
+        --surface: #182033;
+        --accent: #61afef;
+        --accent2: #c678dd;
+        --green: #98c379;
+        --yellow: #e5c07b;
+        --orange: #d19a66;
+        --text: #abb2bf;
+        --text-bright: #e6e6e6;
+        --border: #25304a;
+        --radius: 10px;
+        --mono:
+          "JetBrains Mono", "Fira Code", "Cascadia Code", Consolas, monospace;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+          sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      /* ── NAV ── */
+      nav {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        background: rgba(15, 19, 32, 0.92);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        height: 56px;
+      }
+
+      .nav-brand {
+        font-family: var(--mono);
+        font-size: 1.05rem;
+        color: var(--accent);
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1.5rem;
+        list-style: none;
+      }
+      .nav-links a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.875rem;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--text-bright);
+      }
+
+      /* ── CONTENT ── */
+      .page {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 4rem 1.5rem 6rem;
+      }
+
+      .eyebrow {
+        display: inline-block;
+        background: rgba(97, 175, 239, 0.15);
+        border: 1px solid rgba(97, 175, 239, 0.35);
+        color: var(--accent);
+        font-family: var(--mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 0.3rem 0.8rem;
+        border-radius: 999px;
+        margin-bottom: 1.25rem;
+      }
+
+      h1 {
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        font-weight: 800;
+        color: var(--text-bright);
+        line-height: 1.15;
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        color: var(--text);
+        font-size: 0.9rem;
+        margin-bottom: 3rem;
+        opacity: 0.75;
+      }
+
+      h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-bright);
+        margin-top: 2.5rem;
+        margin-bottom: 0.6rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      p {
+        margin-top: 0.75rem;
+        color: var(--text);
+      }
+
+      ul {
+        margin-top: 0.75rem;
+        padding-left: 1.5rem;
+        color: var(--text);
+      }
+
+      li {
+        margin-top: 0.4rem;
+      }
+
+      .highlight-box {
+        background: rgba(152, 195, 121, 0.08);
+        border: 1px solid rgba(152, 195, 121, 0.3);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .highlight-box p {
+        color: var(--green);
+        font-weight: 600;
+        font-size: 1rem;
+      }
+
+      .highlight-box p + p {
+        margin-top: 0.4rem;
+        font-weight: 400;
+        color: var(--text);
+        font-size: 0.9rem;
+      }
+
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+
+      code {
+        font-family: var(--mono);
+        font-size: 0.85em;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 0.1em 0.4em;
+        color: var(--orange);
+      }
+
+      /* ── FOOTER ── */
+      footer {
+        border-top: 1px solid var(--border);
+        padding: 2rem 1.5rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #555c7a;
+      }
+      footer a {
+        color: #6b7399;
+        text-decoration: none;
+      }
+      footer a:hover {
+        color: var(--text);
+      }
+      footer .footer-links {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 0.75rem;
+        flex-wrap: wrap;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ── NAV ── -->
+    <nav>
+      <a class="nav-brand" href="/">bsh</a>
+      <ul class="nav-links">
+        <li><a href="/#why">Why BSH?</a></li>
+        <li><a href="/#sdi">SDI</a></li>
+        <li><a href="/#build">Build</a></li>
+        <li><a href="https://github.com/Digital-Defiance/bsh">GitHub</a></li>
+      </ul>
+    </nav>
+
+    <!-- ── CONTENT ── -->
+    <main class="page">
+      <div class="eyebrow">Privacy Policy</div>
+      <h1>We collect nothing.</h1>
+      <p class="subtitle">
+        Effective date: May 17, 2026 &nbsp;·&nbsp; Applies to: BSH SDI Agent (macOS app) and the BSH shell
+      </p>
+
+      <div class="highlight-box">
+        <p>Neither the BSH SDI Agent app nor the BSH shell collects, stores, transmits, or reports any personal data, usage data, telemetry, diagnostics, or analytics — ever.</p>
+        <p>No account is required. No network connection is made by the app or shell. Nothing leaves your device.</p>
+      </div>
+
+      <h2>BSH SDI Agent — macOS App</h2>
+      <p>
+        The BSH SDI Agent is a local menu-bar daemon that listens on a
+        user-owned Unix domain socket and decrypts structured payloads sent
+        by BSH via the OSC 7777 protocol. It operates entirely on-device:
+      </p>
+      <ul>
+        <li>No network connections are made by the agent.</li>
+        <li>No data is written to disk beyond what you explicitly direct it to do (e.g. filling a form field you have open).</li>
+        <li>Decrypted payloads are held in memory only for their declared <code>ttl</code> and then purged.</li>
+        <li>Session keys are ephemeral — derived in memory per shell session and never written to disk.</li>
+        <li>No crash reports, analytics, or usage metrics are collected or transmitted.</li>
+        <li>The app does not request access to contacts, location, camera, microphone, or any other sensitive system resource beyond the terminal socket it serves.</li>
+      </ul>
+
+      <h2>BSH (BrightShell)</h2>
+      <p>
+        BSH is an open-source shell distributed as source code and compiled
+        locally on your machine. It inherits the privacy characteristics of
+        the upstream <a href="https://www.zsh.org/">zsh</a> shell:
+      </p>
+      <ul>
+        <li>No telemetry, analytics, or update-check pings are built into the shell.</li>
+        <li>No data about your commands, environment, or system is transmitted anywhere.</li>
+        <li>History files, if enabled, are stored locally on your machine under your control.</li>
+        <li>The SDI module (<code>bsh/sdi</code>) communicates only with the local BSH SDI Agent over a local Unix socket — no traffic leaves the machine.</li>
+      </ul>
+
+      <h2>This Website</h2>
+      <p>
+        The BSH project website (<a href="https://bsh.digitaldefiance.org">bsh.digitaldefiance.org</a>)
+        uses <a href="https://marketingplatform.google.com/about/analytics/">Google Analytics</a>
+        (tag <code>G-9B44JCDZN5</code>) to collect aggregate, anonymised page-view statistics
+        (pages visited, approximate region, browser type). This data is governed by
+        <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.
+        No personally identifiable information is collected by the website itself.
+        Website analytics are entirely separate from the BSH shell and the BSH SDI Agent —
+        neither of those products has any connection to this website or its analytics.
+      </p>
+
+      <h2>Third-Party Services</h2>
+      <p>
+        The BSH SDI Agent and BSH shell do not integrate with any third-party
+        analytics, crash-reporting, advertising, or data-collection services.
+        There are no in-app purchases, subscriptions, or accounts.
+      </p>
+
+      <h2>Children's Privacy</h2>
+      <p>
+        Because no data is collected at all, BSH and the BSH SDI Agent are
+        safe for users of any age under applicable data-protection laws
+        including COPPA and GDPR.
+      </p>
+
+      <h2>Changes to This Policy</h2>
+      <p>
+        If this policy ever changes, the updated version will be posted at
+        this URL with a new effective date. Given that our policy is "collect
+        nothing", we do not anticipate substantive changes.
+      </p>
+
+      <h2>Contact</h2>
+      <p>
+        Questions about privacy can be directed to the project via
+        <a href="https://github.com/Digital-Defiance/bsh/issues">GitHub Issues</a>
+        or the
+        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent">BSH SDI Agent repository</a>.
+      </p>
+    </main>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+      <p>
+        BSH (BrightShell) — a fork of
+        <a href="https://www.zsh.org/">zsh</a> by
+        <a href="https://github.com/Digital-Defiance">Digital Defiance</a>.
+        Released under the
+        <a href="https://github.com/Digital-Defiance/bsh/blob/main/LICENCE"
+          >zsh license</a
+        >.
+      </p>
+      <div class="footer-links">
+        <a href="/">Home</a>
+        <a href="https://github.com/Digital-Defiance/bsh">Source</a>
+        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent">SDI Agent</a>
+        <a href="https://brightdate.org">BrightDate</a>
+      </div>
+    </footer>
+  </body>
+</html>
