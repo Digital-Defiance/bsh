@@ -370,6 +370,7 @@ or shell history.
 
 The companion **BSH SDI Agent** macOS app receives and acts on SDI payloads:
 
+- **Website:** <https://sdiagent.digitaldefiance.org>
 - **GitHub:** <https://github.com/Digital-Defiance/bsh-sdi-agent>
 - **Mac App Store:** coming soon
 

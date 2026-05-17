@@ -227,52 +227,95 @@
       <div class="eyebrow">Privacy Policy</div>
       <h1>We collect nothing.</h1>
       <p class="subtitle">
-        Effective date: May 17, 2026 &nbsp;·&nbsp; Applies to: BSH SDI Agent (macOS app) and the BSH shell
+        Effective date: May 17, 2026 &nbsp;·&nbsp; Applies to: BSH SDI Agent
+        (macOS app) and the BSH shell
       </p>
 
       <div class="highlight-box">
-        <p>Neither the BSH SDI Agent app nor the BSH shell collects, stores, transmits, or reports any personal data, usage data, telemetry, diagnostics, or analytics — ever.</p>
-        <p>No account is required. No network connection is made by the app or shell. Nothing leaves your device.</p>
+        <p>
+          Neither the BSH SDI Agent app nor the BSH shell collects, stores,
+          transmits, or reports any personal data, usage data, telemetry,
+          diagnostics, or analytics — ever.
+        </p>
+        <p>
+          No account is required. No network connection is made by the app or
+          shell. Nothing leaves your device.
+        </p>
       </div>
 
       <h2>BSH SDI Agent — macOS App</h2>
       <p>
         The BSH SDI Agent is a local menu-bar daemon that listens on a
-        user-owned Unix domain socket and decrypts structured payloads sent
-        by BSH via the OSC 7777 protocol. It operates entirely on-device:
+        user-owned Unix domain socket and decrypts structured payloads sent by
+        BSH via the OSC 7777 protocol. It operates entirely on-device:
       </p>
       <ul>
         <li>No network connections are made by the agent.</li>
-        <li>No data is written to disk beyond what you explicitly direct it to do (e.g. filling a form field you have open).</li>
-        <li>Decrypted payloads are held in memory only for their declared <code>ttl</code> and then purged.</li>
-        <li>Session keys are ephemeral — derived in memory per shell session and never written to disk.</li>
-        <li>No crash reports, analytics, or usage metrics are collected or transmitted.</li>
-        <li>The app does not request access to contacts, location, camera, microphone, or any other sensitive system resource beyond the terminal socket it serves.</li>
+        <li>
+          No data is written to disk beyond what you explicitly direct it to do
+          (e.g. filling a form field you have open).
+        </li>
+        <li>
+          Decrypted payloads are held in memory only for their declared
+          <code>ttl</code> and then purged.
+        </li>
+        <li>
+          Session keys are ephemeral — derived in memory per shell session and
+          never written to disk.
+        </li>
+        <li>
+          No crash reports, analytics, or usage metrics are collected or
+          transmitted.
+        </li>
+        <li>
+          The app does not request access to contacts, location, camera,
+          microphone, or any other sensitive system resource beyond the terminal
+          socket it serves.
+        </li>
       </ul>
 
       <h2>BSH (BrightShell)</h2>
       <p>
         BSH is an open-source shell distributed as source code and compiled
-        locally on your machine. It inherits the privacy characteristics of
-        the upstream <a href="https://www.zsh.org/">zsh</a> shell:
+        locally on your machine. It inherits the privacy characteristics of the
+        upstream <a href="https://www.zsh.org/">zsh</a> shell:
       </p>
       <ul>
-        <li>No telemetry, analytics, or update-check pings are built into the shell.</li>
-        <li>No data about your commands, environment, or system is transmitted anywhere.</li>
-        <li>History files, if enabled, are stored locally on your machine under your control.</li>
-        <li>The SDI module (<code>bsh/sdi</code>) communicates only with the local BSH SDI Agent over a local Unix socket — no traffic leaves the machine.</li>
+        <li>
+          No telemetry, analytics, or update-check pings are built into the
+          shell.
+        </li>
+        <li>
+          No data about your commands, environment, or system is transmitted
+          anywhere.
+        </li>
+        <li>
+          History files, if enabled, are stored locally on your machine under
+          your control.
+        </li>
+        <li>
+          The SDI module (<code>bsh/sdi</code>) communicates only with the local
+          BSH SDI Agent over a local Unix socket — no traffic leaves the
+          machine.
+        </li>
       </ul>
 
       <h2>This Website</h2>
       <p>
-        The BSH project website (<a href="https://bsh.digitaldefiance.org">bsh.digitaldefiance.org</a>)
-        uses <a href="https://marketingplatform.google.com/about/analytics/">Google Analytics</a>
-        (tag <code>G-9B44JCDZN5</code>) to collect aggregate, anonymised page-view statistics
-        (pages visited, approximate region, browser type). This data is governed by
-        <a href="https://policies.google.com/privacy">Google's Privacy Policy</a>.
-        No personally identifiable information is collected by the website itself.
-        Website analytics are entirely separate from the BSH shell and the BSH SDI Agent —
-        neither of those products has any connection to this website or its analytics.
+        The BSH project website (<a href="https://bsh.digitaldefiance.org"
+          >bsh.digitaldefiance.org</a
+        >) uses
+        <a href="https://marketingplatform.google.com/about/analytics/"
+          >Google Analytics</a
+        >
+        (tag <code>G-9B44JCDZN5</code>) to collect aggregate, anonymised
+        page-view statistics (pages visited, approximate region, browser type).
+        This data is governed by
+        <a href="https://policies.google.com/privacy">Google's Privacy Policy</a
+        >. No personally identifiable information is collected by the website
+        itself. Website analytics are entirely separate from the BSH shell and
+        the BSH SDI Agent — neither of those products has any connection to this
+        website or its analytics.
       </p>
 
       <h2>Third-Party Services</h2>
@@ -284,24 +327,28 @@
 
       <h2>Children's Privacy</h2>
       <p>
-        Because no data is collected at all, BSH and the BSH SDI Agent are
-        safe for users of any age under applicable data-protection laws
-        including COPPA and GDPR.
+        Because no data is collected at all, BSH and the BSH SDI Agent are safe
+        for users of any age under applicable data-protection laws including
+        COPPA and GDPR.
       </p>
 
       <h2>Changes to This Policy</h2>
       <p>
-        If this policy ever changes, the updated version will be posted at
-        this URL with a new effective date. Given that our policy is "collect
+        If this policy ever changes, the updated version will be posted at this
+        URL with a new effective date. Given that our policy is "collect
         nothing", we do not anticipate substantive changes.
       </p>
 
       <h2>Contact</h2>
       <p>
         Questions about privacy can be directed to the project via
-        <a href="https://github.com/Digital-Defiance/bsh/issues">GitHub Issues</a>
+        <a href="https://github.com/Digital-Defiance/bsh/issues"
+          >GitHub Issues</a
+        >
         or the
-        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent">BSH SDI Agent repository</a>.
+        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent"
+          >BSH SDI Agent repository</a
+        >.
       </p>
     </main>
 
@@ -319,7 +366,9 @@
       <div class="footer-links">
         <a href="/">Home</a>
         <a href="https://github.com/Digital-Defiance/bsh">Source</a>
-        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent">SDI Agent</a>
+        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent"
+          >SDI Agent</a
+        >
         <a href="https://brightdate.org">BrightDate</a>
       </div>
     </footer>
