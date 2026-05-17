@@ -6,7 +6,7 @@
 
 ## Version
 
-This is version **5.10** of the shell. This is a security and feature release.
+This is version **5.11**, equivalent to ZSH 5.10 of the shell. This is a security and feature release.
 There are several visible improvements since 5.9, as well as bug fixes.
 All bsh installations are encouraged to upgrade as soon as possible.
 
@@ -360,17 +360,27 @@ All unit suffixes accept fractional values: `d` (days, default), `h` (hours),
 
 ## Secure Semantic Data Injection (SDI)
 
-BSH 5.10 introduces **Secure Semantic Data Injection** — a mechanism for the shell to
+> **BSH-exclusive feature.** SDI and the OSC 7777 protocol were designed and implemented
+> by the BSH project. There is no upstream zsh equivalent.
+
+BSH 5.11.2 introduces **Secure Semantic Data Injection** — a mechanism for the shell to
 pass structured, encrypted credentials and context payloads to a paired Desktop Agent
-(currently macOS) without those secrets ever appearing in the process environment,
-command-line arguments, or shell history.
+without those secrets ever appearing in the process environment, command-line arguments,
+or shell history.
+
+The companion **BSH SDI Agent** macOS app receives and acts on SDI payloads:
+
+- **GitHub:** <https://github.com/Digital-Defiance/bsh-sdi-agent>
+- **Mac App Store:** coming soon
 
 ### How it works
 
 When BSH starts an interactive session it performs an out-of-band cryptographic
-handshake with the Desktop Agent over a local Unix-domain socket (`/tmp/sdi_secure.sock`
-by default, overridable via `$SDI_SOCKET_PATH`). The handshake uses a compact binary
-framing — **no JSON, no length prefix**:
+handshake with the Desktop Agent over a randomized, user-restricted Unix-domain socket.
+The agent generates a per-boot random socket path (e.g.
+`/run/user/<uid>/sdi-agent-<16-random-hex>.sock`) and communicates it to child shells
+via the `$SDI_AGENT_SOCK` environment variable, preventing socket-path squatting. The
+handshake uses a compact binary framing — **no JSON, no length prefix**:
 
 1. The shell generates a 16-byte random **Session-ID** and an ephemeral X25519 key pair,
    then sends **48 bytes** atomically to the agent:
@@ -390,46 +400,55 @@ framing — **no JSON, no length prefix**:
 
    `K_session` is never transmitted; the socket connection is closed immediately after.
    The **Session-ID** is encoded as 32 lowercase hex characters in the OSC sequence.
+   Sessions expire after **8 hours** regardless of activity.
 
-4. The socket is verified to be `chmod 600` and owned by the calling user
-   (`stat.st_uid == getuid()`) before the handshake proceeds; any laxer permission
-   aborts the session.
+4. The socket is `chmod 600` and owned exclusively by the calling user
+   (`stat.st_uid == getuid()`). The agent enforces a rate limit of **10 failed
+   authentication attempts per minute per PID** to mitigate local brute-force attacks.
 
 Once a session is established, the `bsh-inject` builtin encrypts any payload piped to
 it using **AES-256-GCM** and emits the ciphertext as an **OSC 7777** terminal escape
-sequence that the Desktop Agent reads from the terminal stream:
+sequence written directly to `/dev/tty` (not stdout, to prevent ciphertext from
+accidentally reaching log sinks or pipes). The Desktop Agent reads the escape from the
+terminal stream:
 
 ```
-\e]7777;<session-id-hex>;<type>;<base64-context>;<base64-nonce>;<base64-ciphertext>;<base64-auth-tag>\a
+\e]7777;<session-id-hex>;<base64-counter>;<type>;<base64-context>;<base64-nonce>;<base64-ciphertext>;<base64-auth-tag>\a
 ```
 
 | Field | Encoding | Description |
 |---|---|---|
 | `session-id-hex` | 32-char lowercase hex | Maps the sequence to a registered session key |
+| `base64-counter` | standard Base64 | 8-byte big-endian monotonic sequence counter |
 | `type` | plaintext ASCII | Payload schema (e.g. `ephemeral-auth`) |
 | `base64-context` | standard Base64 | Routing context (e.g. URL); Base64-encoded to avoid semicolon collisions |
 | `base64-nonce` | standard Base64 | 12-byte AES-GCM IV |
 | `base64-ciphertext` | standard Base64 | AES-256-GCM encrypted JSON payload |
 | `base64-auth-tag` | standard Base64 | 16-byte GCM authentication tag |
 
-The `--type` and `--context` values are bound into the GCM auth tag as **AAD**
-(Additional Authenticated Data), so a forged or replayed injection with the wrong
-metadata is rejected at the agent with an authentication-tag failure.  Key material is
-wiped from memory with `OPENSSL_cleanse()` when the shell exits.
+The `counter`, `type`, and `context` values are all bound into the GCM auth tag as
+**AAD** (Additional Authenticated Data) using length-prefixed encoding, so tampering
+with any of them — or replaying a captured sequence — is rejected at the agent with
+an authentication-tag failure. The counter is monotonically increasing per session;
+the agent rejects any sequence with a counter ≤ the last accepted value.
+
+Key material is wiped from memory with `OPENSSL_cleanse()` when the shell exits.
 
 ### `bsh-inject` usage
 
 ```
-bsh-inject [--type <TYPE>] [--context <CONTEXT>]
+bsh-inject [--type <TYPE>] [--context <CONTEXT>] [--emit-stdout]
 
 Reads the plaintext payload from stdin, encrypts it with the negotiated session
-key (AES-256-GCM), and writes an OSC 7777 sequence to stdout.
+key (AES-256-GCM), and writes the OSC 7777 sequence directly to /dev/tty.
+Fails closed if the agent is unavailable — never falls back to plaintext.
 
 Options:
-  --type     Semantic label for the payload (e.g. "ephemeral-auth", "db-connection").
-             Bound into the GCM auth tag; the agent must supply the same value to decrypt.
-  --context  Scoping context for the payload (e.g. a URL or service name).
-             Also bound into the GCM auth tag.
+  --type         Semantic label for the payload (e.g. "ephemeral-auth", "db-connection").
+                 Bound into the GCM auth tag; the agent must supply the same value to decrypt.
+  --context      Scoping context for the payload (e.g. a URL or service name).
+                 Also bound into the GCM auth tag.
+  --emit-stdout  Write the OSC 7777 sequence to stdout instead of /dev/tty (testing only).
 ```
 
 **Example — inject credentials for a web service:**
@@ -439,15 +458,15 @@ Options:
 zmodload bsh/sdi
 
 # Stream a JSON credential blob to the paired Desktop Agent
-printf '{"username":"alice","password":"s3cr3t","ttl":300}' \
+printf '{"username":"alice","password":"s3cr3t","ttl":300,"issued_at":1748000000}' \
   | bsh-inject --type ephemeral-auth --context https://api.example.com
 ```
 
 The Desktop Agent receives the OSC 7777 sequence via the terminal, decrypts it using
-the session key derived during the handshake, verifies the auth tag (which covers both
-`--type` and `--context`), and acts on the plaintext — for example by auto-filling a
-login form or injecting an API token into a running process.  The plaintext is **never**
-visible to `ps`, shell history, or `env`.
+the session key derived during the handshake, verifies the auth tag (which covers the
+counter, `--type`, and `--context`), and acts on the plaintext — for example by
+auto-filling a login form or injecting an API token into a running process. The
+plaintext is **never** visible to `ps`, shell history, or `env`.
 
 ### Payload schemas
 
@@ -455,11 +474,13 @@ Two schemas are supported by reference implementations of the Desktop Agent:
 
 | Schema | `--type` value | Payload fields |
 |---|---|---|
-| Ephemeral auth | `ephemeral-auth` | `username`, `password`, `email`, `ttl`, `additional_fields` |
-| DB connection | `db-connection` | `engine`, `host`, `port`, `user`, `pass`, `ttl` |
+| Ephemeral auth | `ephemeral-auth` | `username`, `password`, `email`, `ttl`, `issued_at`, `additional_fields` |
+| DB connection | `db-connection` | `engine`, `host`, `port`, `user`, `pass`, `ttl`, `issued_at` |
 
-Any JSON blob is accepted by `bsh-inject` itself — schema validation is the agent's
-responsibility.
+The `issued_at` field (Unix timestamp, seconds) is **required** in all schemas. Agents
+reject payloads whose `issued_at` is more than `ttl` seconds in the past or more than
+60 seconds in the future. Any JSON blob is accepted by `bsh-inject` itself — schema
+validation is the agent's responsibility.
 
 ### Security properties
 
@@ -467,12 +488,16 @@ responsibility.
 |---|---|
 | Forward secrecy | Ephemeral X25519 key pair per session; never written to disk |
 | Payload confidentiality | AES-256-GCM; ciphertext is indistinguishable from random |
-| Metadata binding | `--type` and `--context` are AAD; wrong values → tag failure |
-| Socket isolation | `chmod 600` + uid check before accepting any connection |
+| Replay protection | Monotonic per-session counter bound into AAD; replayed sequences rejected |
+| Metadata binding | `counter`, `type`, and `context` are length-prefixed AAD; wrong values → tag failure |
+| Socket isolation | Randomized socket path + pre-bind existence check prevents squatting |
+| Session expiry | 8-hour maximum session lifetime; expired sessions rejected and logged |
+| Rate limiting | 10 failed auth attempts/min/PID before agent closes connection |
+| Fail-closed injection | `bsh-inject` writes to `/dev/tty`; aborts if agent is unavailable |
 | Memory hygiene | `OPENSSL_cleanse()` on session key and session-ID at shell exit |
 | No plaintext in history | Payload travels through the terminal escape stream, not argv |
 
-Full specification: [RFC — Secure Semantic Data Injection via OSC 7777](RFC%20Secure%20Semantic%20Data%20Injection%20\(SDI\)%20via%20OSC%207777%20Escape%20Sequences.md)
+Full specification: [RFC — Secure Semantic Data Injection via OSC 7777](docs/rfc-sdi-osc7777.md)
 
 ---
 

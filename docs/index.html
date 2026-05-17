@@ -1117,12 +1117,16 @@ new.log</code></pre>
     <!-- ── SDI ── -->
     <section id="sdi">
       <div class="container">
-        <div class="section-label">BSH 5.10 · macOS Desktop Agent</div>
+        <div class="section-label">BSH-exclusive</div>
         <h2>Secure Semantic Data Injection.</h2>
         <p>
-          <strong style="color: var(--text-bright)">bsh-inject</strong> is a
-          builtin that encrypts a credential payload read from stdin and emits
-          it as an
+          <strong style="color: var(--text-bright)"
+            >SDI and the OSC 7777 protocol are original BSH inventions</strong
+          >
+          — there is no upstream zsh equivalent.
+          <strong style="color: var(--text-bright)">bsh-inject</strong>
+          is a BSH-unique builtin that encrypts a credential payload read from
+          stdin and emits it as an
           <strong style="color: var(--text-bright)">OSC 7777</strong> terminal
           escape sequence. The plaintext never appears in <code>ps</code>, the
           shell environment, or command history. The paired macOS Desktop Agent
@@ -1130,6 +1134,16 @@ new.log</code></pre>
           session key it negotiated at login, and acts on the plaintext —
           auto-filling credentials, injecting API tokens, or forwarding to a
           keychain.
+        </p>
+        <p style="margin-top: 0.75rem; font-size: 0.875rem">
+          <strong>BSH SDI Agent for macOS:</strong>
+          <a
+            class="link"
+            href="https://github.com/Digital-Defiance/bsh-sdi-agent"
+            >GitHub</a
+          >
+          &nbsp;·&nbsp;
+          <span style="opacity: 0.7">Mac App Store — coming soon</span>
         </p>
 
         <div class="split" style="margin-top: 2rem">
@@ -1150,14 +1164,16 @@ new.log</code></pre>
                 <div class="step-body">
                   <h3>X25519 handshake at login</h3>
                   <p>
-                    BSH opens a <code>chmod 600</code> Unix socket and performs
-                    an ephemeral Diffie-Hellman exchange with the Desktop Agent.
-                    A 32-byte session key is derived via
+                    BSH connects to a randomized, user-owned Unix socket (path
+                    in <code>$SDI_AGENT_SOCK</code>) and performs an ephemeral
+                    Diffie-Hellman exchange with the Desktop Agent. A 32-byte
+                    session key is derived via
                     <strong style="color: var(--text-bright)"
                       >HKDF-SHA256</strong
                     >
                     — never written to disk, wiped with
-                    <code>OPENSSL_cleanse()</code> on exit.
+                    <code>OPENSSL_cleanse()</code> on exit. Sessions expire
+                    after 8 hours.
                   </p>
                 </div>
               </div>
@@ -1178,11 +1194,12 @@ new.log</code></pre>
                     <code>bsh-inject</code> reads stdin and encrypts it with
                     <strong style="color: var(--text-bright)"
                       >AES-256-GCM</strong
-                    >. The <code>--type</code> and <code>--context</code> values
-                    are passed as GCM
+                    >. The <code>--type</code>, <code>--context</code>, and a
+                    monotonic sequence <strong>counter</strong> are passed as
+                    length-prefixed GCM
                     <abbr title="Additional Authenticated Data">AAD</abbr> —
-                    bound into the auth tag so tampering with the metadata
-                    invalidates the ciphertext.
+                    bound into the auth tag so tampering with metadata or
+                    replaying a captured sequence invalidates the ciphertext.
                   </p>
                 </div>
               </div>
@@ -1202,8 +1219,11 @@ new.log</code></pre>
                   <p>
                     The ciphertext is emitted as an
                     <strong style="color: var(--text-bright)">OSC 7777</strong>
-                    escape — invisible in the terminal, invisible to
-                    <code>ps</code>, absent from shell history.
+                    escape written directly to <code>/dev/tty</code> — invisible
+                    in the terminal, invisible to <code>ps</code>, absent from
+                    shell history. If the agent is unavailable
+                    <code>bsh-inject</code> fails closed rather than falling
+                    back to plaintext.
                   </p>
                 </div>
               </div>
@@ -1222,9 +1242,12 @@ new.log</code></pre>
                   <h3>Agent decrypts and acts</h3>
                   <p>
                     The macOS Desktop Agent reads the escape from the terminal
-                    stream, verifies the GCM auth tag, and acts on the plaintext
-                    — auto-filling a login form, injecting an API token, or
-                    forwarding to the system keychain.
+                    stream, verifies the GCM auth tag (covering counter, type,
+                    and context), checks the monotonic counter for replays, and
+                    acts on the plaintext — auto-filling a login form, injecting
+                    an API token, or forwarding to the system keychain.
+                    Decrypted state is purged after <code>ttl</code>
+                    seconds.
                   </p>
                 </div>
               </div>
@@ -1235,8 +1258,10 @@ new.log</code></pre>
               <span class="mod-tag">AES-256-GCM</span>
               <span class="mod-tag">HKDF-SHA256</span>
               <span class="mod-tag">OSC 7777</span>
-              <span class="mod-tag">chmod 600 socket</span>
+              <span class="mod-tag">monotonic counter</span>
+              <span class="mod-tag">randomized socket</span>
               <span class="mod-tag">AAD-bound auth tag</span>
+              <span class="mod-tag">fail-closed</span>
             </div>
           </div>
 
@@ -1261,7 +1286,8 @@ new.log</code></pre>
               <div class="cmd-line">
                 <span class="prompt">[9628.42] %</span>
                 <span class="cmd"
-                  >printf '{"user":"alice","pass":"s3cr3t","ttl":300}'</span
+                  >printf
+                  '{"user":"alice","pass":"s3cr3t","ttl":300,"issued_at":1748000000}'</span
                 >
               </div>
               <div class="cmd-line">
@@ -1272,20 +1298,18 @@ new.log</code></pre>
                 >
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
-                <span class="cmt">
-                  # OSC 7777 emitted to terminal stream:
-                </span>
+                <span class="cmt"> # OSC 7777 emitted to /dev/tty: </span>
               </div>
               <div class="cmd-line">
                 <span class="out"
-                  >\e]7777;&lt;sid&gt;;&lt;type&gt;;&lt;ctx&gt;;&lt;nonce&gt;;&lt;ct&gt;;&lt;tag&gt;\a</span
+                  >\e]7777;&lt;sid&gt;;&lt;ctr&gt;;&lt;type&gt;;&lt;ctx&gt;;&lt;nonce&gt;;&lt;ct&gt;;&lt;tag&gt;\a</span
                 >
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
                 <span class="cmt"># plaintext never in history</span>
               </div>
               <div class="cmd-line">
-                <span class="cmt"># auth tag covers type + context</span>
+                <span class="cmt"># counter + type + context = AAD</span>
               </div>
               <div class="cmd-line">
                 <span class="cmt"># agent decrypts, acts, discards</span>
