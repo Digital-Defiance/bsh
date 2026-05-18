@@ -1285,21 +1285,37 @@ new.log</code></pre>
                 <span class="cmd">zmodload bsh/sdi</span>
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
+                <span class="cmt"># read password without echoing it</span>
+              </div>
+              <div class="cmd-line">
+                <span class="prompt">[9628.42] %</span>
+                <span class="cmd">IFS= read -rs BSH_PASS</span>
+              </div>
+              <div class="cmd-line" style="margin-top: 0.6rem">
                 <span class="cmt"># inject an ephemeral auth payload</span>
               </div>
               <div class="cmd-line">
                 <span class="prompt">[9628.42] %</span>
                 <span class="cmd"
                   >printf
-                  '{"user":"alice","pass":"s3cr3t","ttl":300,"issued_at":1748000000}'</span
+                  '{"username":"alice","password":"%s","ttl":300,"issued_at":%d}'
+                  \</span
                 >
               </div>
               <div class="cmd-line">
                 <span class="prompt"> &gt;</span>
+                <span class="cmd">"$BSH_PASS" "$(/bin/date +%s)" \</span>
+              </div>
+              <div class="cmd-line">
+                <span class="prompt"> &gt;</span>
                 <span class="cmd"
-                  >| bsh-inject --type ephemeral-auth \ --context
+                  >| bsh-inject --type ephemeral-auth --context
                   https://app.example.com</span
                 >
+              </div>
+              <div class="cmd-line">
+                <span class="prompt">[9628.42] %</span>
+                <span class="cmd">unset BSH_PASS</span>
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
                 <span class="cmt"> # OSC 7777 emitted to /dev/tty: </span>
