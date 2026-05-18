@@ -368,6 +368,16 @@ pass structured, encrypted credentials and context payloads to a paired Desktop 
 without those secrets ever appearing in the process environment, command-line arguments,
 or shell history.
 
+> **Scope — what this is (and isn't).** SDI is designed for **short-lived developer
+> credentials**: database passwords for local services, ephemeral API tokens, throwaway
+> login creds — the secrets you'd otherwise paste into a terminal, export into `$ENV`,
+> or stash in a `.env` file. It is **not** a password manager. There is no vault, no
+> master-password unlock, no browser autofill, no sync between machines, no long-term
+> storage; payloads live in the agent's memory only, are gated by a TTL (default 300 s),
+> and vanish on session expiry. For long-term credential storage use
+> **1Password / Bitwarden / Keychain**. Use SDI for the moment you'd otherwise leak a
+> secret into shell history or `ps`.
+
 The companion **BSH SDI Agent** macOS app receives and acts on SDI payloads:
 
 - **Website:** <https://sdiagent.digitaldefiance.org>

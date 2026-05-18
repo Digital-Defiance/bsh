@@ -1135,6 +1135,33 @@ new.log</code></pre>
           auto-filling credentials, injecting API tokens, or forwarding to a
           keychain.
         </p>
+        <p
+          style="
+            font-size: 0.9rem;
+            margin-top: 1rem;
+            padding: 0.9rem 1.1rem;
+            background: rgba(97, 175, 239, 0.07);
+            border-left: 3px solid var(--accent);
+            border-radius: 0 var(--radius) var(--radius) 0;
+          "
+        >
+          <strong style="color: var(--text-bright)"
+            >Scope — what this is (and isn't).</strong
+          >
+          SDI is designed for
+          <strong>short-lived developer credentials</strong>: database passwords
+          for local services, ephemeral API tokens, throwaway login creds — the
+          secrets you'd otherwise paste into a terminal, export into
+          <code>$ENV</code>, or stash in a <code>.env</code> file. It is
+          <strong>not a password manager</strong>: there is no vault, no
+          master-password unlock, no browser autofill, no sync between machines,
+          no long-term storage. Payloads live in the agent's memory only, are
+          gated by a <code>ttl</code> (default 300&nbsp;s), and vanish on
+          session expiry. For long-term credential storage use
+          <strong>1Password / Bitwarden / Keychain</strong>. Use SDI for the
+          moment you'd otherwise leak a secret into shell history or
+          <code>ps</code>.
+        </p>
         <p style="margin-top: 0.75rem; font-size: 0.875rem">
           <strong>BSH SDI Agent for macOS:</strong>
           <a class="link" href="https://sdiagent.digitaldefiance.org"
