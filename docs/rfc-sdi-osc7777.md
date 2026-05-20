@@ -5,6 +5,8 @@
 **Status:** Proposal / Draft Standard  
 **Date:** May 2026
 
+> **Superseded for new implementations.** This document is v1 of the SDI / OSC 7777 protocol. It remains valid and unchanged for any deployment that does not require agent-to-shell traffic. New implementations should target the v2 fork at `rfc-sdi-osc7777-v2.md`, which defines bidirectional traffic over the same envelope. v1 and v2 sessions are distinguishable on the wire and are not interoperable; choose one per deployment.
+
 ---
 
 ## 1. Abstract
