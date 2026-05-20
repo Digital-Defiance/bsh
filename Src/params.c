@@ -219,6 +219,8 @@ static const struct gsu_float millidays_gsu =
 { millidaysgetfn, millidayssetfn, stdunsetfn };
 static const struct gsu_float brightdate_gsu =
 { brightdategetfn, nullfloatsetfn, stdunsetfn };
+static const struct gsu_integer brightdate_int_gsu =
+{ brightdateintgetfn, nullintsetfn, stdunsetfn };
 static const struct gsu_integer uid_gsu =
 { uidgetfn, uidsetfn, stdunsetfn };
 static const struct gsu_integer euid_gsu =
@@ -445,6 +447,8 @@ IPDEF10("pipestatus", pipestatus_gsu),
 #define IPDEF_FLOAT(A,B,C) {{NULL,A,PM_FFLOAT|PM_SPECIAL|C},BR(NULL),GSU(B),0,0,NULL,NULL,NULL,0}
 IPDEF_FLOAT("MILLIDAYS", millidays_gsu, 0),
 IPDEF_FLOAT("BRIGHTDATE", brightdate_gsu, PM_READONLY_SPECIAL),
+#define IPDEF_INTEGER(A,B,C) {{NULL,A,PM_INTEGER|PM_SPECIAL|C},BR(NULL),GSU(B),10,0,NULL,NULL,NULL,0}
+IPDEF_INTEGER("BRIGHTDATE_INT", brightdate_int_gsu, PM_READONLY_SPECIAL),
 
 {{NULL,NULL,0},BR(NULL),NULL_GSU,0,0,NULL,NULL,NULL,0},
 };
@@ -4658,6 +4662,21 @@ double
 brightdategetfn(UNUSED(Param pm))
 {
     return bsh_brightdate_now();
+}
+
+/*
+ * $BRIGHTDATE_INT: floor of the current BrightDate as an integer (whole
+ * BrightDays since the J2000.0 epoch).  Useful for scripts that want a
+ * monotonically-increasing integer day counter without parsing the
+ * floating-point $BRIGHTDATE value.  Read-only.
+ */
+
+/**/
+zlong
+brightdateintgetfn(UNUSED(Param pm))
+{
+    double bd = bsh_brightdate_now();
+    return (zlong)floor(bd);
 }
 
 /**/

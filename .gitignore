@@ -159,3 +159,9 @@ Test/*.tmp
 
 #Ignore vscode AI rules
 .github/instructions/codacy.instructions.md
+
+# Local one-off release scripts
+/publish-*.sh
+
+# Local docs symlink (the canonical paper lives in BrightChain/docs/papers/)
+/docs/bsh.md

@@ -5,6 +5,31 @@ CHANGES FROM PREVIOUS VERSIONS OF BSH
 
 Note also the list of incompatibilities in the README file.
 
+Changes since 5.11.2
+---------------------
+
+A new read-only special parameter $BRIGHTDATE_INT exposes the floor of
+$BRIGHTDATE as an integer.  It is the whole-day counter — the number of
+complete BrightDays since the J2000.0 epoch — which is convenient for
+scripts that want a monotonic integer day index without parsing the
+floating-point $BRIGHTDATE value.  Read-only.
+
+Rebuild against updated brightdate Rust crates v0.5.0 (brightdate, bcal,
+bdate, btime, buptime, bwatch, brightdate-ffi).  The brightdate library
+crate gains three new modules:
+
+  * `spacetime` — the c = 1 unit hierarchy (BrightMeter, Bright-Second,
+    Light-Day) with the full conversion API and unit catalogues.
+  * `relativity` — special-relativistic operations in Bright units:
+    SpacetimeEvent, IntervalKind, interval/proper-time/proper-distance
+    ops, Lorentz boost, Doppler factor, velocity addition, rapidity.
+  * `geodesy` — WGS84/GRS80 constants, geodetic <-> ECEF (Bowring 1985),
+    chord/arc/great-circle distances, gps_distance and
+    bright_space_distance one-shot helpers.
+
+These modules are reachable from bsh via the FFI shim and through the
+companion bdate/btime/bwatch/etc. command-line tools.
+
 Changes since 5.9.0.15
 -----------------------
 
