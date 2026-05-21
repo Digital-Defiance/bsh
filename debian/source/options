@@ -1,0 +1,8 @@
+# Override the default diff-ignore pattern to stop dpkg-source from
+# stripping *.orig files.  cargo vendor places Cargo.toml.orig in every
+# vendored crate directory and lists it in .cargo-checksum.json; if the
+# file is absent at build time cargo fails the checksum verification.
+#
+# The default pattern (from dpkg-source(1)) is reproduced below with the
+# "\.orig$" clause removed.
+diff-ignore = (?:^|/)\.(?:svn|git|gitignore|gitattributes|hg|hg-v0|bzr)(?:/|$)|^\./debian/(?:files$|.*\.substvars$)

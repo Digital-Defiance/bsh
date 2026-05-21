@@ -30,4 +30,15 @@ override_dh_auto_build:
 				> brightdate-rust/.cargo/config.toml; \
 		fi; \
 	fi
+	# dpkg-source 3.0 (quilt) may strip *.orig files even with the
+	# diff-ignore override in debian/source/options.  Remove any
+	# Cargo.toml.orig entries from .cargo-checksum.json manifests so
+	# cargo does not abort when it cannot find the absent files.
+	@for f in brightdate-rust/vendor/*/.cargo-checksum.json; do \
+		[ -f "$$f" ] || continue; \
+		python3 -c "import json; \
+f='$$f'; d=json.load(open(f)); \
+d['files']={k:v for k,v in d.get('files',{}).items() if not k.endswith('.orig')}; \
+json.dump(d, open(f,'w'))" ; \
+	done
 	dh_auto_build
