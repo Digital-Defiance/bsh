@@ -11,6 +11,7 @@ Build-Depends: debhelper-compat (= 13),
                cargo,
                rustc,
                python3,
+               yodl,
                texinfo
 Standards-Version: 4.6.2
 Homepage: https://bsh.digitaldefiance.org
