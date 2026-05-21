@@ -1,0 +1,16 @@
+<services>
+  <service name="obs_scm">
+    <param name="url">https://github.com/Digital-Defiance/bsh.git</param>
+    <param name="scm">git</param>
+    <param name="revision">main</param>
+    <param name="version">5.12.0</param>
+    <param name="submodules">enable</param>
+    <param name="filename">bsh</param>
+  </service>
+  <service name="tar"/>
+  <service name="recompress">
+    <param name="compression">gz</param>
+    <param name="file">*.tar</param>
+  </service>
+  <service name="set_version"/>
+</services>

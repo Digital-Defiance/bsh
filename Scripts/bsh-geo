@@ -1,0 +1,57 @@
+#!/usr/bin/env swift
+// bsh-geo: Query the SDIAgent geo context socket and print the current location/zone.
+// Usage: bsh-geo [--json]
+
+import Foundation
+
+let geoQueryPath = ProcessInfo.processInfo.environment["SDI_GEO_SOCK"] ?? "/tmp/sdi_geo_query.sock"
+let jsonMode = CommandLine.arguments.contains("--json")
+
+// Connect to geo query socket
+let sockfd = socket(AF_UNIX, SOCK_STREAM, 0)
+guard sockfd >= 0 else {
+    fputs("bsh-geo: socket() failed\n", stderr)
+    exit(1)
+}
+var addr = sockaddr_un()
+addr.sun_family = sa_family_t(AF_UNIX)
+_ = withUnsafeMutablePointer(to: &addr.sun_path) {
+    $0.withMemoryRebound(to: CChar.self, capacity: 104) {
+        strncpy($0, geoQueryPath, 104)
+    }
+}
+let len = socklen_t(MemoryLayout<sockaddr_un>.size)
+let rc = withUnsafePointer(to: &addr) {
+    $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+        connect(sockfd, $0, len)
+    }
+}
+guard rc == 0 else {
+    fputs("bsh-geo: connect() failed: \(String(cString: strerror(errno)))\n", stderr)
+    exit(1)
+}
+
+// Read response
+var buf = [UInt8](repeating: 0, count: 4096)
+let n = read(sockfd, &buf, buf.count)
+close(sockfd)
+guard n > 0 else {
+    fputs("bsh-geo: no response from agent\n", stderr)
+    exit(1)
+}
+let data = Data(buf[0..<n])
+
+if jsonMode {
+    print(String(data: data, encoding: .utf8) ?? "")
+} else {
+    if let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+        let lat = dict["lat"] ?? "?"
+        let lon = dict["lon"] ?? "?"
+        let zone = dict["zone"] ?? "?"
+        let city = dict["city"] ?? "?"
+        let country = dict["country"] ?? "?"
+        print("lat=\(lat) lon=\(lon) zone=\(zone) city=\(city) country=\(country)")
+    } else {
+        print(String(data: data, encoding: .utf8) ?? "")
+    }
+}

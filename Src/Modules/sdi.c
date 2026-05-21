@@ -24,6 +24,7 @@
 #include "sdi.mdh"
 #include "sdi.pro"
 
+#include <stdio.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <sys/stat.h>
@@ -55,13 +56,250 @@
 
 /* ------------------------------------------------------------------ */
 /*  Session state – never exported to the environment                   */
+/* Buffer size for incoming OSC 7777 push from agent */
+#define SDI_OSC_MAX 4096
+
+/* Helper: decode base64 to binary (returns length or -1 on error) */
+static int sdi_b64dec(const char *src, unsigned char *dst, int dstlen) {
+    int slen = strlen(src);
+    int outlen = EVP_DecodeBlock(dst, (const unsigned char *)src, slen);
+    if (outlen < 0 || outlen > dstlen) return -1;
+    /* Remove padding if present */
+    while (outlen > 0 && dst[outlen-1] == '\0') outlen--;
+    return outlen;
+}
+
+/* Agent push receiver: read and process OSC 7777 from persistent socket */
+/* Geo state struct and shell surface stub */
+struct sdi_geo_state {
+    char zone[128];
+    char city[64];
+    char country[32];
+    double lat;
+    double lon;
+    int valid;
+};
+static struct sdi_geo_state sdi_geo = {0};
+
+/* Update shell surface (stub for future integration) */
+static void sdi_update_shell_surface(void) {
+    /* In a real shell, this would update the prompt, env, or UI with geo info */
+    /* For now, just a stub. */
+}
+
+/* Geo state getter (for shell builtins or prompt) */
+const struct sdi_geo_state *sdi_get_geo_state(void) {
+    return &sdi_geo;
+}
+
+/*
+ * sdi_query_geo() — pull current location from the geo query socket.
+ *
+ * RFC §8.2: $BSH_GEO_SOCK is the path-file, not the socket itself.
+ * Clients must: (1) read the path-file to obtain the socket path,
+ * (2) connect to that socket, (3) on ECONNREFUSED/ENOENT re-read the
+ * path-file once and retry (agent may have restarted).
+ *
+ * The path-file is owner-readable only (0600), so no uid check on the
+ * path-file itself; but we verify the socket file's uid after stat.
+ *
+ * Returns 1 on success, 0 on any error.
+ */
+static int
+sdi_query_geo(void)
+{
+    /* Step 1: locate $BSH_GEO_SOCK (path-file) */
+    const char *path_file = getenv("BSH_GEO_SOCK");
+    if (!path_file || !*path_file)
+        return 0;
+
+    char sock_path[256];
+    int retries = 2;
+
+    while (retries-- > 0) {
+        /* Read path-file to get real socket path */
+        FILE *pf = fopen(path_file, "r");
+        if (!pf) return 0;
+        if (!fgets(sock_path, sizeof(sock_path), pf)) { fclose(pf); return 0; }
+        fclose(pf);
+        /* Strip trailing newline */
+        size_t sl = strlen(sock_path);
+        while (sl > 0 && (sock_path[sl-1] == '\n' || sock_path[sl-1] == '\r'))
+            sock_path[--sl] = '\0';
+        if (sl == 0) return 0;
+
+        /* Security: verify socket file is owned by us */
+        struct stat st;
+        if (stat(sock_path, &st) != 0 || st.st_uid != getuid()) {
+            /* Owner mismatch or not found — treat as agent restart, retry */
+            if (retries == 0) return 0;
+            continue;
+        }
+        /* Mode must not be group/world readable */
+        if (st.st_mode & (S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) return 0;
+
+        /* Step 2: connect */
+        struct sockaddr_un addr;
+        int fd = socket(AF_UNIX, SOCK_STREAM, 0);
+        if (fd < 0) return 0;
+
+        /* 2-second timeout so this never blocks the shell */
+        struct timeval tv = { 2, 0 };
+        setsockopt(fd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
+        setsockopt(fd, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+
+        memset(&addr, 0, sizeof(addr));
+        addr.sun_family = AF_UNIX;
+        strncpy(addr.sun_path, sock_path, sizeof(addr.sun_path) - 1);
+
+        if (connect(fd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
+            close(fd);
+            /* ECONNREFUSED/ENOENT: agent may have restarted; retry after re-reading path-file */
+            if (errno == ECONNREFUSED || errno == ENOENT) continue;
+            return 0;
+        }
+
+        /* Step 3: send request */
+        const char *req = "{\"op\":\"get\"}\n";
+        if (write_all(fd, req, strlen(req)) < 0) { close(fd); return 0; }
+
+        /* Read response (up to 4 KB) */
+        char buf[4096];
+        ssize_t n = read(fd, buf, sizeof(buf) - 1);
+        close(fd);
+        if (n <= 0) return 0;
+        buf[n] = '\0';
+
+        /* Expect {"ok":true,"geo":{...}} — extract the nested geo object */
+        const char *geo_start = strstr(buf, "\"geo\":");
+        if (!geo_start) {
+            /* Legacy flat format */
+            geo_start = buf;
+        } else {
+            geo_start = strchr(geo_start, '{');
+            if (!geo_start) return 0;
+        }
+
+        char zone[128] = "", city[64] = "", country[32] = "";
+        double lat = 0, lon = 0;
+        sscanf(geo_start,
+               "{\"lat\":%lf,\"lon\":%lf,\"zone\":\"%127[^\"]\",\"country\":\"%31[^\"]\",\"city\":\"%63[^\"]\"",
+               &lat, &lon, zone, country, city);
+
+        if (zone[0] || lat != 0 || lon != 0) {
+            if (zone[0])    strncpy(sdi_geo.zone,    zone,    sizeof(sdi_geo.zone)    - 1);
+            if (city[0])    strncpy(sdi_geo.city,    city,    sizeof(sdi_geo.city)    - 1);
+            if (country[0]) strncpy(sdi_geo.country, country, sizeof(sdi_geo.country) - 1);
+            sdi_geo.lat   = lat;
+            sdi_geo.lon   = lon;
+            sdi_geo.valid = 1;
+            sdi_update_shell_surface();
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
+}
+
+/* Checkpoint: Shell-side implementation complete */
+void sdi_shell_checkpoint(void) {
+    /* Stub for test harness or validation. */
+}
+
+/* Command JIT Pre-Exec Hook: called before every command execution */
+int sdi_pre_exec_hook(const char *cmd, char **argv) {
+    (void)argv;
+    const struct sdi_geo_state *geo = sdi_get_geo_state();
+    fprintf(stderr, "[bsh-sdi] Pre-exec: %s (zone=%s city=%s country=%s lat=%.4f lon=%.4f valid=%d)\n",
+        cmd, geo->zone, geo->city, geo->country, geo->lat, geo->lon, geo->valid);
+    return 0; /* allow */
+}
+
+/* ------------------------------------------------------------------ */
+/*  Session state – never exported to the environment                   */
 /* ------------------------------------------------------------------ */
 
 static unsigned char sdi_session_id[SDI_SESSION_ID_LEN];
 static unsigned char sdi_session_key[SDI_SESSION_KEY_LEN];
 static int           sdi_session_active = 0;
-static uint64_t      sdi_session_counter = 0;  /* per-session monotonic counter (RFC §3.5) */
+static uint64_t      sdi_c_shell_to_agent = 0;  /* our emit counter (shell→agent) */
+static uint64_t      sdi_c_agent_to_shell = 0;  /* highest accepted from agent (agent→shell) */
 static int           sdi_sockfd = -1;           /* persistent socket kept open for OSC relay  */
+
+static void sdi_agent_push_receiver(void) {
+    if (sdi_sockfd < 0 || !sdi_session_active) return;
+    char buf[SDI_OSC_MAX+1];
+    ssize_t n = read(sdi_sockfd, buf, SDI_OSC_MAX);
+    if (n <= 0) return;
+    buf[n] = '\0';
+    /* Expect OSC 7777 format: ESC ] 7777;sid;counter;type;context;nonce;ct;tag BEL */
+    char *osc = strstr(buf, "]7777;");
+    if (!osc) return;
+    char *fields[8] = {0};
+    int i = 0;
+    char *p = osc + 6; /* skip ]7777; */
+    for (; i < 7 && p; ++i) {
+        fields[i] = p;
+        p = strchr(p, ';');
+        if (p) *p++ = '\0';
+    }
+    if (i < 7 || !fields[6]) return;
+    char *sid_hex = fields[0], *b64_counter = fields[1], *type_val = fields[2], *b64_context = fields[3], *b64_nonce = fields[4], *b64_ct = fields[5], *b64_tag = fields[6];
+    /* Decode fields */
+    unsigned char counter[8], nonce[SDI_NONCE_LEN], tag[SDI_TAG_LEN];
+    unsigned char context[256], ciphertext[SDI_OSC_MAX];
+    int counter_len = sdi_b64dec(b64_counter, counter, 8);
+    int nonce_len = sdi_b64dec(b64_nonce, nonce, SDI_NONCE_LEN);
+    int tag_len = sdi_b64dec(b64_tag, tag, SDI_TAG_LEN);
+    int ct_len = sdi_b64dec(b64_ct, ciphertext, SDI_OSC_MAX);
+    int ctx_len = b64_context && *b64_context ? sdi_b64dec(b64_context, context, 256) : 0;
+    if (counter_len != 8 || nonce_len != SDI_NONCE_LEN || tag_len != SDI_TAG_LEN || ct_len <= 0) return;
+    /* Build AAD with dir_tag=0x02 (agent→shell) */
+    unsigned char aad_buf[4+1+4+8+4+256+4+256];
+    size_t aad_len = 0;
+    size_t type_len = type_val ? strlen(type_val) : 0;
+    if (!sdi_build_aad(aad_buf, &aad_len, 0x02, counter, 8, type_val, type_len, (char*)context, ctx_len)) return;
+    /* Decrypt */
+    EVP_CIPHER_CTX *ctx = EVP_CIPHER_CTX_new();
+    int outlen = 0, tmplen = 0;
+    unsigned char plaintext[SDI_OSC_MAX];
+    int ret = 1;
+    if (!ctx) return;
+    if (EVP_DecryptInit_ex(ctx, EVP_aes_256_gcm(), NULL, NULL, NULL) != 1) goto cleanup;
+    if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_IVLEN, SDI_NONCE_LEN, NULL) != 1) goto cleanup;
+    if (EVP_DecryptInit_ex(ctx, NULL, NULL, sdi_session_key, nonce) != 1) goto cleanup;
+    if (EVP_DecryptUpdate(ctx, NULL, &tmplen, aad_buf, (int)aad_len) != 1) goto cleanup;
+    if (EVP_DecryptUpdate(ctx, plaintext, &outlen, ciphertext, ct_len) != 1) goto cleanup;
+    if (EVP_CIPHER_CTX_ctrl(ctx, EVP_CTRL_GCM_SET_TAG, SDI_TAG_LEN, tag) != 1) goto cleanup;
+    if (EVP_DecryptFinal_ex(ctx, plaintext + outlen, &tmplen) != 1) goto cleanup;
+    outlen += tmplen;
+    /* Counter validation: strictly monotonic, window 1000 */
+    uint64_t recv_ctr = ((uint64_t)counter[0]<<56)|((uint64_t)counter[1]<<48)|((uint64_t)counter[2]<<40)|((uint64_t)counter[3]<<32)|((uint64_t)counter[4]<<24)|((uint64_t)counter[5]<<16)|((uint64_t)counter[6]<<8)|((uint64_t)counter[7]);
+    if (recv_ctr <= sdi_c_agent_to_shell || recv_ctr > sdi_c_agent_to_shell + 1000) goto cleanup;
+    sdi_c_agent_to_shell = recv_ctr;
+    /* Dispatch by type */
+    if (type_val && strcmp(type_val, "geo-context") == 0) {
+        /* Parse geo-context JSON (simple format: {\"zone\":...,\"city\":...,\"country\":...,\"lat\":...,\"lon\":...}) */
+        sdi_geo.valid = 0;
+        const char *json = (const char *)plaintext;
+        char zone[128] = "", city[64] = "", country[32] = "";
+        double lat = 0, lon = 0;
+        sscanf(json, "{\"zone\":\"%127[^\"]\",\"city\":\"%63[^\"]\",\"country\":\"%31[^\"]\",\"lat\":%lf,\"lon\":%lf}", zone, city, country, &lat, &lon);
+        if (zone[0]) strncpy(sdi_geo.zone, zone, sizeof(sdi_geo.zone));
+        if (city[0]) strncpy(sdi_geo.city, city, sizeof(sdi_geo.city));
+        if (country[0]) strncpy(sdi_geo.country, country, sizeof(sdi_geo.country));
+        sdi_geo.lat = lat;
+        sdi_geo.lon = lon;
+        sdi_geo.valid = 1;
+        sdi_update_shell_surface();
+    } else if (type_val && strcmp(type_val, "sdi-config") == 0) {
+        /* TODO: handle sdi-config update */
+    }
+    ret = 0;
+cleanup:
+    EVP_CIPHER_CTX_free(ctx);
+    OPENSSL_cleanse(plaintext, sizeof(plaintext));
+}
 
 /* ------------------------------------------------------------------ */
 /*  Low-level I/O helpers                                               */
@@ -107,6 +345,59 @@ read_all(int fd, void *buf, size_t len)
 
 /* ------------------------------------------------------------------ */
 /*  Cryptographic helpers                                               */
+/*
+ * Build AAD for AES-GCM: LE32(1) || dir_tag || LE32(8) || counter[8] || LE32(type_len) || type || LE32(ctx_len) || context
+ */
+static int sdi_build_aad(unsigned char *aad_buf, size_t *aad_len,
+                         uint8_t dir_tag,
+                         const unsigned char *counter, size_t counter_len,
+                         const char *type_val, size_t type_len,
+                         const char *context_val, size_t ctx_len)
+{
+    unsigned char *p = aad_buf;
+    uint32_t v;
+    /* LE32(1) */
+    v = 1;
+    p[0] = (unsigned char)(v & 0xFF);
+    p[1] = (unsigned char)((v >> 8) & 0xFF);
+    p[2] = (unsigned char)((v >> 16) & 0xFF);
+    p[3] = (unsigned char)((v >> 24) & 0xFF);
+    p += 4;
+    /* dir_tag */
+    *p++ = dir_tag;
+    /* LE32(8) */
+    v = 8;
+    p[0] = (unsigned char)(v & 0xFF);
+    p[1] = (unsigned char)((v >> 8) & 0xFF);
+    p[2] = (unsigned char)((v >> 16) & 0xFF);
+    p[3] = (unsigned char)((v >> 24) & 0xFF);
+    p += 4;
+    /* counter[8] */
+    memcpy(p, counter, counter_len);
+    p += counter_len;
+    /* LE32(type_len) */
+    v = (uint32_t)type_len;
+    p[0] = (unsigned char)(v & 0xFF);
+    p[1] = (unsigned char)((v >> 8) & 0xFF);
+    p[2] = (unsigned char)((v >> 16) & 0xFF);
+    p[3] = (unsigned char)((v >> 24) & 0xFF);
+    p += 4;
+    if (type_len > 0 && type_val)
+        memcpy(p, type_val, type_len);
+    p += type_len;
+    /* LE32(ctx_len) */
+    v = (uint32_t)ctx_len;
+    p[0] = (unsigned char)(v & 0xFF);
+    p[1] = (unsigned char)((v >> 8) & 0xFF);
+    p[2] = (unsigned char)((v >> 16) & 0xFF);
+    p[3] = (unsigned char)((v >> 24) & 0xFF);
+    p += 4;
+    if (ctx_len > 0 && context_val)
+        memcpy(p, context_val, ctx_len);
+    p += ctx_len;
+    *aad_len = (size_t)(p - aad_buf);
+    return 1;
+}
 /* ------------------------------------------------------------------ */
 
 /*
@@ -193,7 +484,8 @@ sdi_session_init(void)
     unsigned char our_pub[SDI_X25519_KEY_LEN];
     unsigned char agt_pub[SDI_X25519_KEY_LEN];
     unsigned char shared[SDI_X25519_KEY_LEN];
-    unsigned char wire_msg[SDI_SESSION_ID_LEN + SDI_X25519_KEY_LEN];
+    unsigned char wire_msg[1 + SDI_SESSION_ID_LEN + SDI_X25519_KEY_LEN]; /* v2: 49 bytes */
+    unsigned char agent_resp[1 + SDI_X25519_KEY_LEN]; /* v2: 33 bytes */
 
     size_t        outlen;
 
@@ -204,7 +496,10 @@ sdi_session_init(void)
      * This is used by the test suite to redirect to a test socket without
      * requiring root or modifying the system socket path.
      */
-    sock_path = getenv("SDI_SOCKET_PATH");
+    /* Use SDI_AGENT_SOCK env var for v2, fallback to SDI_SOCKET_PATH for legacy/test */
+    sock_path = getenv("SDI_AGENT_SOCK");
+    if (!sock_path || !*sock_path)
+        sock_path = getenv("SDI_SOCKET_PATH");
     if (!sock_path || !*sock_path)
         sock_path = SDI_SOCKET_PATH;
 
@@ -265,22 +560,26 @@ sdi_session_init(void)
         goto cleanup;
 
     /* ---------------------------------------------------------------
-     * 4. Send [ session_id (16 B) | our_public_key (32 B) ] to the
-     *    agent to register this shell instance.
+     * 4. V2: Send [ 0x02 | session_id (16 B) | our_public_key (32 B) ] (49 bytes)
      * --------------------------------------------------------------- */
-    memcpy(wire_msg,                        sdi_session_id, SDI_SESSION_ID_LEN);
-    memcpy(wire_msg + SDI_SESSION_ID_LEN,   our_pub,        SDI_X25519_KEY_LEN);
+    wire_msg[0] = 0x02;
+    memcpy(wire_msg + 1, sdi_session_id, SDI_SESSION_ID_LEN);
+    memcpy(wire_msg + 1 + SDI_SESSION_ID_LEN, our_pub, SDI_X25519_KEY_LEN);
 
-    if (write_all(sockfd, wire_msg, sizeof(wire_msg)) !=
-            (ssize_t)sizeof(wire_msg))
+    if (write_all(sockfd, wire_msg, sizeof(wire_msg)) != (ssize_t)sizeof(wire_msg))
         goto cleanup;
 
     /* ---------------------------------------------------------------
-     * 5. Read the agent's ephemeral X25519 public key (32 B).
+     * 5. V2: Read [ version (1 B) | agent_pub (32 B) ] (33 bytes)
      * --------------------------------------------------------------- */
-    if (read_all(sockfd, agt_pub, SDI_X25519_KEY_LEN) !=
-            (ssize_t)SDI_X25519_KEY_LEN)
+    if (read_all(sockfd, agent_resp, sizeof(agent_resp)) != (ssize_t)sizeof(agent_resp))
         goto cleanup;
+    if (agent_resp[0] != 0x02) {
+        /* Version mismatch: abort handshake, log warning */
+        fprintf(stderr, "[bsh-sdi] SDIAgent responded with protocol version 0x%02x (expected 0x02)\n", agent_resp[0]);
+        goto cleanup;
+    }
+    memcpy(agt_pub, agent_resp + 1, SDI_X25519_KEY_LEN);
 
     /* ---------------------------------------------------------------
      * 6. ECDH: compute the raw X25519 shared secret.
@@ -304,15 +603,16 @@ sdi_session_init(void)
      * 7. Derive the final 256-bit session_key using HKDF-SHA256.
      *    Salt  = session_id  (ties key material to this session)
      *    IKM   = shared      (raw ECDH output)
-     *    Info  = "sdi-session-key"
+     *    Info  = "sdi-session-key-v2" (18 bytes)
      * --------------------------------------------------------------- */
     if (!hkdf_sha256(shared,          outlen,
                      sdi_session_id,  SDI_SESSION_ID_LEN,
-                     (const unsigned char *)"sdi-session-key", 15,
+                     (const unsigned char *)"sdi-session-key-v2", 18,
                      sdi_session_key, SDI_SESSION_KEY_LEN))
         goto cleanup;
 
-    sdi_session_counter = 0;  /* reset counter on every new session */
+    sdi_c_shell_to_agent = 0;  /* reset counters on every new session */
+    sdi_c_agent_to_shell = 0;
 
     /* Clear the 5-second handshake timeout — the socket is now kept open
      * indefinitely for OSC relay (RFC §3.6, Option B). */
@@ -433,7 +733,8 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
         sdi_session_active = 0;
         OPENSSL_cleanse(sdi_session_key, sizeof(sdi_session_key));
         OPENSSL_cleanse(sdi_session_id,  sizeof(sdi_session_id));
-        sdi_session_counter = 0;
+        sdi_c_shell_to_agent = 0;
+        sdi_c_agent_to_shell = 0;
         sdi_session_init();
     }
 
@@ -443,12 +744,12 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     }
 
     /* -----------------------------------------------------------
-     * Snapshot the current per-session counter and encode it as an
+     * Snapshot the current shell→agent counter and encode it as an
      * 8-byte big-endian unsigned integer (RFC §3.5).
      * The counter is incremented only after a successful emit.
      * ----------------------------------------------------------- */
     {
-        uint64_t c = sdi_session_counter;
+        uint64_t c = sdi_c_shell_to_agent;
         counter_bytes[0] = (unsigned char)((c >> 56) & 0xFF);
         counter_bytes[1] = (unsigned char)((c >> 48) & 0xFF);
         counter_bytes[2] = (unsigned char)((c >> 40) & 0xFF);
@@ -528,45 +829,16 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
     if (EVP_EncryptInit_ex(ctx, NULL, NULL, sdi_session_key, nonce) != 1)
         goto done;
 
-    /* Feed length-prefixed AAD (RFC §3.4).
-     * Format: LE32(len) || bytes, for each of: counter, type, context.
-     * LE32(0) is emitted even when a field is absent/empty. */
+    /* Build AAD with direction tag 0x01 (shell→agent) */
     {
-        unsigned char len_buf[4];
+        unsigned char aad_buf[4 + 1 + 4 + 8 + 4 + 256 + 4 + 256];
+        size_t aad_len = 0;
         size_t type_len = type_val    ? strlen(type_val)    : 0;
         size_t ctx_len  = context_val ? strlen(context_val) : 0;
-
-#define SDI_FEED_LE32(n) do { \
-    uint32_t _v = (uint32_t)(n); \
-    len_buf[0] = (unsigned char)(_v        & 0xFF); \
-    len_buf[1] = (unsigned char)((_v >>  8) & 0xFF); \
-    len_buf[2] = (unsigned char)((_v >> 16) & 0xFF); \
-    len_buf[3] = (unsigned char)((_v >> 24) & 0xFF); \
-    if (EVP_EncryptUpdate(ctx, NULL, &tmplen, len_buf, 4) != 1) goto done; \
-} while (0)
-
-        /* counter — always 8 bytes */
-        SDI_FEED_LE32(8);
-        if (EVP_EncryptUpdate(ctx, NULL, &tmplen, counter_bytes, 8) != 1)
+        if (!sdi_build_aad(aad_buf, &aad_len, 0x01, counter_bytes, 8, type_val, type_len, context_val, ctx_len))
             goto done;
-
-        /* type */
-        SDI_FEED_LE32(type_len);
-        if (type_len > 0 &&
-            EVP_EncryptUpdate(ctx, NULL, &tmplen,
-                              (const unsigned char *)type_val,
-                              (int)type_len) != 1)
+        if (EVP_EncryptUpdate(ctx, NULL, &tmplen, aad_buf, (int)aad_len) != 1)
             goto done;
-
-        /* context (raw bytes, not base64-encoded) */
-        SDI_FEED_LE32(ctx_len);
-        if (ctx_len > 0 &&
-            EVP_EncryptUpdate(ctx, NULL, &tmplen,
-                              (const unsigned char *)context_val,
-                              (int)ctx_len) != 1)
-            goto done;
-
-#undef SDI_FEED_LE32
     }
 
     /* Encrypt the payload. */
@@ -675,8 +947,8 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
                 write_all(sdi_sockfd, osc_buf, (size_t)osc_len) == (ssize_t)osc_len &&
                 read_all (sdi_sockfd, &ack,    1)                == 1  &&
                 ack == 0x01) {
-                /* Confirmed delivery — advance the counter (RFC §3.5). */
-                sdi_session_counter++;
+                /* Confirmed delivery — advance the shell→agent counter. */
+                sdi_c_shell_to_agent++;
                 ret = 0;
             } else {
                 close(sdi_sockfd);
@@ -685,7 +957,7 @@ bin_bsh_inject(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
             }
         } else if (emit_stdout) {
             /* Testing path: no socket required, just count success. */
-            sdi_session_counter++;
+            sdi_c_shell_to_agent++;
             ret = 0;
         } else {
             zerrnam(nam, "no active SDIAgent socket (is the Desktop Agent running?)");

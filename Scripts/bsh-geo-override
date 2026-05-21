@@ -1,0 +1,41 @@
+#!/usr/bin/env swift
+// bsh-geo-override: Write a geo override file so the SDI geo engine uses a fixed location.
+// Usage: bsh-geo-override --lat <lat> --lon <lon> [--zone <zone>] [--city <city>] [--country <country>]
+//        bsh-geo-override --clear
+
+import Foundation
+
+let overridePath = ProcessInfo.processInfo.environment["SDI_GEO_OVERRIDE"] ?? "/tmp/sdi_geo_override.json"
+let args = CommandLine.arguments
+
+func usage() {
+    fputs("Usage: bsh-geo-override --lat <lat> --lon <lon> [--zone <zone>] [--city <city>] [--country <country>]\n", stderr)
+    fputs("       bsh-geo-override --clear\n", stderr)
+    exit(1)
+}
+
+if args.contains("--clear") {
+    try? FileManager.default.removeItem(atPath: overridePath)
+    print("bsh-geo-override: cleared override at \(overridePath)")
+    exit(0)
+}
+
+func arg(after flag: String) -> String? {
+    guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
+    return args[i + 1]
+}
+
+guard let latStr = arg(after: "--lat"), let lonStr = arg(after: "--lon"),
+      let lat = Double(latStr), let lon = Double(lonStr) else { usage() }
+
+var override: [String: Any] = ["lat": lat, "lon": lon]
+if let zone = arg(after: "--zone") { override["zone"] = zone }
+if let city = arg(after: "--city") { override["city"] = city }
+if let country = arg(after: "--country") { override["country"] = country }
+
+guard let data = try? JSONSerialization.data(withJSONObject: override, options: [.prettyPrinted]) else {
+    fputs("bsh-geo-override: JSON serialization failed\n", stderr)
+    exit(1)
+}
+try? data.write(to: URL(fileURLWithPath: overridePath), options: .atomic)
+print("bsh-geo-override: wrote override to \(overridePath)")

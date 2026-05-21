@@ -12,8 +12,8 @@ Build-Depends: debhelper-compat (= 13),
                texinfo
 Standards-Version: 4.6.2
 Homepage: https://bsh.digitaldefiance.org
-Vcs-Git: https://git.launchpad.net/~YOUR_LP_USERNAME/+git/bsh
-Vcs-Browser: https://code.launchpad.net/~YOUR_LP_USERNAME/+git/bsh
+Vcs-Git: https://git.launchpad.net/~jmulein/bsh/+git/bsh
+Vcs-Browser: https://code.launchpad.net/~jmulein/bsh/+git/bsh
 
 Package: bsh
 Architecture: any
