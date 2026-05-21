@@ -1,0 +1,3 @@
+[submodule "brightdate-rust"]
+	path = brightdate-rust
+	url = https://github.com/Digital-Defiance/brightdate-rust.git
