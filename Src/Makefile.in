@@ -41,6 +41,14 @@ LN		= @LN@
 
 BRIGHTDATE_WORKSPACE = $(sdir_top)/brightdate-rust
 BRIGHTDATE_FFI_LIB   = $(BRIGHTDATE_WORKSPACE)/target/release/libbrightdate_ffi.a
+# -framework CoreFoundation is required on macOS (iana-time-zone) but
+# is not a valid GCC option on Linux.
+UNAME_S := $(shell uname -s)
+ifeq ($(UNAME_S),Darwin)
+    BRIGHTDATE_EXTRA_LDFLAGS := -framework CoreFoundation
+else
+    BRIGHTDATE_EXTRA_LDFLAGS :=
+endif
 
 .PHONY: brightdate-ffi-build
 brightdate-ffi-build:
@@ -91,7 +99,7 @@ EXTRABSHOBJS = @EXTRABSHOBJS@
 
 bsh$(EXEEXT): $(@L@IBBSH) $(@L@STMP) $(MAIN_OBJS) bsh.export $(EXTRABSHOBJS) $(BRIGHTDATE_FFI_LIB)
 	rm -f $@
-	$(@L@DRUNPATH) $(LINK) $(MAIN_OBJS) $(EXTRABSHOBJS) $(@L@LIST) $(BSH_@E@XPORT) $(@L@IBBSH) $(LIBS) $(BRIGHTDATE_FFI_LIB) -framework CoreFoundation
+	$(@L@DRUNPATH) $(LINK) $(MAIN_OBJS) $(EXTRABSHOBJS) $(@L@LIST) $(BSH_@E@XPORT) $(@L@IBBSH) $(LIBS) $(BRIGHTDATE_FFI_LIB) $(BRIGHTDATE_EXTRA_LDFLAGS)
 
 $(LIBBSH): $(LIBOBJS) $(NSTMP)
 	rm -f $@
