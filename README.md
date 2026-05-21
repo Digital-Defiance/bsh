@@ -20,7 +20,7 @@ below. See [NEWS](NEWS) for more information.
 ```bash
 sudo add-apt-repository ppa:digital-defiance/ppa
 sudo apt update
-sudo apt install bsh
+sudo apt install bsh-shell
 chsh -s /usr/bin/bsh
 ```
 
