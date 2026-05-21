@@ -7,6 +7,7 @@ Build-Depends: debhelper-compat (= 13),
                libncursesw5-dev | libncurses-dev,
                libpcre2-dev,
                libcap-dev,
+               libssl-dev,
                cargo,
                rustc,
                texinfo
