@@ -23,6 +23,26 @@
     />
     <title>BSH — BrightShell</title>
     <style>
+      .feature-card.span-double {
+        grid-column: 1 / 3;
+      }
+      .feature-icon {
+        display: inline-flex;
+      }
+      .feature-heading {
+        display: inline-flex;
+      }
+      .feature-icon img {
+        height: 24px;
+        display: inline-block;
+      }
+      .feature-icon span.feature-emoji {
+        font-size: 1.5rem;
+        display: inline-flex;
+      }
+      .build-from-source .feature-heading h3 {
+        margin-top: 1.75rem; margin-bottom: 0.5rem; margin-left: 0.5rem;
+      }
       *,
       *::before,
       *::after {
@@ -1449,73 +1469,97 @@ new.log</code></pre>
         <div class="section-label">Getting Started</div>
         <h2>Install BSH.</h2>
 
-        <!-- ── Ubuntu / Debian PPA ── -->
-        <h3 style="margin-top: 0; margin-bottom: 0.5rem">
-          Ubuntu &amp; Debian — PPA
-          <span style="font-size: 0.75rem; font-weight: 400; opacity: 0.6"
-            >(recommended)</span
-          >
-        </h3>
-        <pre><code>sudo add-apt-repository ppa:digital-defiance/ppa
+        <div class="feature-card">
+          <div class="feature-icon">
+            <img src="Homebrew_logo.png" height="24" alt="Homebrew logo" />
+          </div>
+          <div class="feature-heading"><h3>Mac Homebrew tap</h3></div>
+          <p>
+            The CLI tools and BSH itself are available via the Digital Defiance
+            tap:
+          </p>
+          <pre
+            style="margin-top: 0.75rem; font-size: 0.78rem"
+          ><code>brew tap digital-defiance/tap
+brew install bdate btime buptime bcal bwatch bsh</code></pre>
+        </div>
+        <br />
+        <div class="feature-card">
+          <!-- ── Ubuntu / Debian PPA ── -->
+          <div class="feature-icon">
+            <img src="UbuntuCoF.svg" height="24" alt="Ubuntu & Debian logo" />
+          </div>
+          <div class="feature-heading">
+          <h3 style="margin-top: 0; margin-bottom: 0.5rem"></div>
+            Ubuntu &amp; Debian — PPA
+          </h3>
+          <pre><code>sudo add-apt-repository ppa:digital-defiance/ppa
 sudo apt update
 sudo apt install bsh
 chsh -s /usr/bin/bsh</code></pre>
-
-        <h3 style="margin-top: 1.75rem; margin-bottom: 0.5rem">
+        </div>
+        <br />
+        <div class="feature-card build-from-source">
+          <div class="feature-icon">
+                <span class="feature-emoji">🛠️</span>
+          </div>
+          <div class="feature-heading">
+        <h3>
           Build from source
-        </h3>
-        <p>
-          BSH builds with the standard autoconf workflow inherited from zsh,
-          plus a Rust toolchain for the
-          <code>brightdate-rust</code> static library.
-        </p>
+        </h3></div>
+          <p>
+            BSH builds with the standard autoconf workflow inherited from zsh,
+            plus a Rust toolchain for the
+            <code>brightdate-rust</code> static library.
+          </p>
 
-        <div class="steps">
-          <div class="step">
-            <div class="step-num">1</div>
-            <div class="step-body">
-              <h3>Prerequisites</h3>
-              <p>
-                A C compiler (<code>clang</code> or <code>gcc</code>),
-                <code>make</code>, <code>autoconf</code>, and a recent Rust
-                toolchain (<a class="link" href="https://rustup.rs">rustup</a>,
-                stable channel). macOS, Linux, and *BSD are all supported.
-              </p>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div class="step-body">
+                <h3>Prerequisites</h3>
+                <p>
+                  A C compiler (<code>clang</code> or <code>gcc</code>),
+                  <code>make</code>, <code>autoconf</code>, and a recent Rust
+                  toolchain (<a class="link" href="https://rustup.rs">rustup</a>,
+                  stable channel). macOS, Linux, and *BSD are all supported.
+                </p>
+              </div>
             </div>
-          </div>
-          <div class="step">
-            <div class="step-num">2</div>
-            <div class="step-body">
-              <h3>Clone with submodules</h3>
-              <pre><code>git clone --recursive https://github.com/Digital-Defiance/bsh.git
-cd bsh</code></pre>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div class="step-body">
+                <h3>Clone with submodules</h3>
+                <pre><code>git clone --recursive https://github.com/Digital-Defiance/bsh.git
+  cd bsh</code></pre>
+              </div>
             </div>
-          </div>
-          <div class="step">
-            <div class="step-num">3</div>
-            <div class="step-body">
-              <h3>Configure &amp; build</h3>
-              <pre><code>./configure
-make -j$(nproc 2>/dev/null || sysctl -n hw.ncpu)
-make check          # optional: run the test suite</code></pre>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div class="step-body">
+                <h3>Configure &amp; build</h3>
+                <pre><code>./configure
+  make -j$(nproc 2>/dev/null || sysctl -n hw.ncpu)
+  make check          # optional: run the test suite</code></pre>
+              </div>
             </div>
-          </div>
-          <div class="step">
-            <div class="step-num">4</div>
-            <div class="step-body">
-              <h3>Install &amp; switch shell</h3>
-              <pre><code>sudo make install
-echo "$(command -v bsh)" | sudo tee -a /etc/shells
-chsh -s "$(command -v bsh)"</code></pre>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div class="step-body">
+                <h3>Install &amp; switch shell</h3>
+                <pre><code>sudo make install
+  echo "$(command -v bsh)" | sudo tee -a /etc/shells
+  chsh -s "$(command -v bsh)"</code></pre>
+              </div>
             </div>
-          </div>
-          <div class="step">
-            <div class="step-num">5</div>
-            <div class="step-body">
-              <h3>Try the BrightDate surface</h3>
-              <pre><code>bsh -c 'date'                                  # BrightDate, baked in
-bsh -c 'echo $BRIGHTEPOCH'
-bsh -c 'PROMPT="[%P] %# "; print -P "$PROMPT"'</code></pre>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div class="step-body">
+                <h3>Try the BrightDate surface</h3>
+                <pre><code>bsh -c 'date'                                  # BrightDate, baked in
+  bsh -c 'echo $BRIGHTEPOCH'
+  bsh -c 'PROMPT="[%P] %# "; print -P "$PROMPT"'</code></pre>
+              </div>
             </div>
           </div>
         </div>
@@ -1576,8 +1620,8 @@ bsh -c 'PROMPT="[%P] %# "; print -P "$PROMPT"'</code></pre>
               >
             </p>
           </div>
-          <div class="feature-card">
-            <div class="feature-icon">🍺</div>
+          <div class="feature-card span-double">
+            <div class="feature-icon"><img src="Homebrew_logo.png" alt="Homebrew logo" /></div>
             <h3>Homebrew tap</h3>
             <p>
               The CLI tools and BSH itself are available via the Digital
@@ -1587,6 +1631,17 @@ bsh -c 'PROMPT="[%P] %# "; print -P "$PROMPT"'</code></pre>
               style="margin-top: 0.75rem; font-size: 0.78rem"
             ><code>brew tap digital-defiance/tap
 brew install bdate btime buptime bcal bwatch bsh</code></pre>
+          </div>
+          <div class="feature-card span-double">
+            <div class="feature-icon"><img src="UbuntuCoF.svg" alt="Ubuntu CoF logo" /></div>
+            <h3>Ubuntu &amp; Debian — PPA</h3>
+            <p>
+                BSH is available on Ubuntu and Debian via a Personal Package Archive:
+                <pre><code>sudo add-apt-repository ppa:digital-defiance/ppa
+  sudo apt update
+  sudo apt install bsh
+  chsh -s /usr/bin/bsh</code></pre>
+            </p>
           </div>
         </div>
       </div>
