@@ -1,4 +1,4 @@
-Source: bsh
+Source: bsh-shell
 Section: shells
 Priority: optional
 Maintainer: Jessica Mulein <jessica@digitaldefiance.org>
@@ -18,10 +18,13 @@ Homepage: https://bsh.digitaldefiance.org
 Vcs-Git: https://git.launchpad.net/~jmulein/bsh/+git/bsh
 Vcs-Browser: https://code.launchpad.net/~jmulein/bsh/+git/bsh
 
-Package: bsh
+Package: bsh-shell
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: BrightShell — a zsh-based shell with BrightDate and AI features
+Conflicts: bsh
+Provides: bsh
+Replaces: bsh
+Description: High-performance spacetime-aware custom shell (BrightShell)
  Bsh (BrightShell) is an interactive shell derived from zsh, extended with
  BrightDate (a timezone-free SI-day timestamp system), AI-assisted
  completions, and other enhancements suited for modern development workflows.
@@ -29,3 +32,5 @@ Description: BrightShell — a zsh-based shell with BrightDate and AI features
  BrightDate replaces timezone-aware timestamps with a single floating-point
  SI-day count since J2000.0, making log correlation and time arithmetic
  trivially correct across machines and timezones.
+ .
+ Note: This package replaces the legacy Java BeanShell (bsh) package.
