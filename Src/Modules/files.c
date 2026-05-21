@@ -814,6 +814,7 @@ struct ls_opts {
     int blocks;     /* -s: show block count */
     int sort_time;  /* -t: sort by time */
     int reverse;    /* -r: reverse sort */
+    int no_group;   /* -o: long format without group column (implies -l) */
 };
 
 /* ── collected directory entry (for sorting) ───────────────── */
@@ -960,15 +961,26 @@ ls_print_long(struct stat *st, const char *name, const char *path,
     if (o->blocks)
 	printf("%llu ", (unsigned long long)st->st_blocks);
 
-    printf("%s %3lu %-8s %-8s %8s  %.6f  %s%s%s%s%s%s\n",
-	   modestr,
-	   (unsigned long)st->st_nlink,
-	   owner, grp,
-	   sizebuf,
-	   bd_ts,
-	   col, name, indic, rst,
-	   linktgt[0] ? " -> " : "",
-	   linktgt);
+    if (o->no_group)
+	printf("%s %3lu %-8s %8s  %.6f  %s%s%s%s%s%s\n",
+	       modestr,
+	       (unsigned long)st->st_nlink,
+	       owner,
+	       sizebuf,
+	       bd_ts,
+	       col, name, indic, rst,
+	       linktgt[0] ? " -> " : "",
+	       linktgt);
+    else
+	printf("%s %3lu %-8s %-8s %8s  %.6f  %s%s%s%s%s%s\n",
+	       modestr,
+	       (unsigned long)st->st_nlink,
+	       owner, grp,
+	       sizebuf,
+	       bd_ts,
+	       col, name, indic, rst,
+	       linktgt[0] ? " -> " : "",
+	       linktgt);
 }
 
 /* Print a short (name-only) entry. */
@@ -1032,7 +1044,7 @@ bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
     struct dirent *de;
     DIR *dp;
     size_t nents, cap, i, idx;
-    int long_fmt    = OPT_ISSET(ops, 'l');
+    int long_fmt    = OPT_ISSET(ops, 'l') || OPT_ISSET(ops, 'o');
     int follow_syms = OPT_ISSET(ops, 'L');
     int show_all    = OPT_ISSET(ops, 'a');
     int dir_itself  = OPT_ISSET(ops, 'd');
@@ -1049,6 +1061,7 @@ bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
     o.sort_time = OPT_ISSET(ops, 't') || o.use_ctime;
     o.reverse   = OPT_ISSET(ops, 'r');
     o.color     = OPT_ISSET(ops, 'G') || isatty(STDOUT_FILENO);
+    o.no_group  = OPT_ISSET(ops, 'o');
     ls_sort_use_atime = o.use_atime;
     ls_sort_use_ctime = o.use_ctime;
 
@@ -1145,7 +1158,7 @@ static struct builtin bintab[] = {
     BUILTIN("chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
-    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnrstu", NULL),
+    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnorstu", NULL),
     BUILTIN("mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),
@@ -1156,7 +1169,7 @@ static struct builtin bintab[] = {
     BUILTIN("zf_chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("zf_chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("zf_ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
-    BUILTIN("zf_ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnrstu", NULL),
+    BUILTIN("zf_ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnorstu", NULL),
     BUILTIN("zf_mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("zf_mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("zf_rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),
