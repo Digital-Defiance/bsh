@@ -38,4 +38,20 @@ override_dh_auto_build:
 		[ -f "$$f" ] || continue; \
 		sed -i 's/,"Cargo\.toml\.orig":"[^"]*"//g; s/"Cargo\.toml\.orig":"[^"]*",//g' "$$f"; \
 	done
+	# Noble / Rust < 1.85 compatibility: clap_lex 1.1.0 and assert_cmd 2.2.1
+	# declare edition = "2024" which requires rustc 1.85.  If the system
+	# rustc is older, re-stamp both vendored Cargo.toml files to edition 2021,
+	# drop the rust-version constraint, and refresh the per-file SHA-256 entry
+	# in .cargo-checksum.json so cargo does not reject the modified manifest.
+	@RUSTC_VER=$$(rustc --version | awk '{print $$2}'); \
+	if dpkg --compare-versions "$$RUSTC_VER" lt "1.85"; then \
+		echo "rustc $$RUSTC_VER < 1.85: patching vendored crates to edition 2021"; \
+		for crate in brightdate-rust/vendor/clap_lex brightdate-rust/vendor/assert_cmd; do \
+			[ -f "$$crate/Cargo.toml" ] || continue; \
+			sed -i 's/^edition = "2024"/edition = "2021"/' "$$crate/Cargo.toml"; \
+			sed -i '/^rust-version = "1\.85"/d' "$$crate/Cargo.toml"; \
+			NEW_HASH=$$(sha256sum "$$crate/Cargo.toml" | awk '{print $$1}'); \
+			python3 -c "import json; fn='$$crate/.cargo-checksum.json'; d=json.load(open(fn)); d['files']['Cargo.toml']='$$NEW_HASH'; open(fn,'w').write(json.dumps(d, separators=(',',':')))" ; \
+		done; \
+	fi
 	dh_auto_build
