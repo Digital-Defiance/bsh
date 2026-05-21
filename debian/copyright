@@ -1,7 +1,7 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: <https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/>
 Upstream-Name: bsh
 Upstream-Contact: Jessica Mulein <jessica@digitaldefiance.org>
-Source: https://bsh.digitaldefiance.org
+Source: <https://bsh.digitaldefiance.org>
 
 Files: *
 Copyright: 1992-2026 Paul Falstad, Richard Coleman, Zoltán Hidvégi, Andrew Main,

@@ -15,6 +15,17 @@ below. See [NEWS](NEWS) for more information.
 
 ## Installing Bsh
 
+### Ubuntu / Debian — PPA (recommended)
+
+```bash
+sudo add-apt-repository ppa:digital-defiance/ppa
+sudo apt update
+sudo apt install bsh
+chsh -s /usr/bin/bsh
+```
+
+### Build from source
+
 The instructions for compiling bsh are in the file [INSTALL](INSTALL). You should
 also check the file [MACHINES](MACHINES) in the top directory to see if there are any
 special instructions for your particular architecture.

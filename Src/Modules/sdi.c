@@ -59,6 +59,15 @@
 /* Buffer size for incoming OSC 7777 push from agent */
 #define SDI_OSC_MAX 4096
 
+/* Forward declarations for static helpers defined later in this file.
+ * Required by GCC -Werror=implicit-function-declaration (Linux/PPA builds). */
+static ssize_t write_all(int fd, const void *buf, size_t len);
+static int sdi_build_aad(unsigned char *aad_buf, size_t *aad_len,
+                         uint8_t dir_tag,
+                         const unsigned char *counter, size_t counter_len,
+                         const char *type_val, size_t type_len,
+                         const char *context_val, size_t ctx_len);
+
 /* Helper: decode base64 to binary (returns length or -1 on error) */
 static int sdi_b64dec(const char *src, unsigned char *dst, int dstlen) {
     int slen = strlen(src);
@@ -1063,7 +1072,7 @@ finish_(UNUSED(Module m))
     /* Notify SDIAgent of clean shutdown, then close the persistent socket. */
     if (sdi_sockfd >= 0) {
         unsigned char op = 0x03;  /* UNREGISTER */
-        write(sdi_sockfd, &op, 1);  /* best-effort — ignore errors */
+        (void)write(sdi_sockfd, &op, 1);  /* best-effort — ignore errors */
         close(sdi_sockfd);
         sdi_sockfd = -1;
     }
