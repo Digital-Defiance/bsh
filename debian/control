@@ -1,0 +1,28 @@
+Source: bsh
+Section: shells
+Priority: optional
+Maintainer: Jessica Mulein <jessica@digitaldefiance.org>
+Build-Depends: debhelper-compat (= 13),
+               autoconf,
+               libncursesw5-dev | libncurses-dev,
+               libpcre2-dev,
+               libcap-dev,
+               cargo,
+               rustc,
+               texinfo
+Standards-Version: 4.6.2
+Homepage: https://bsh.digitaldefiance.org
+Vcs-Git: https://git.launchpad.net/~YOUR_LP_USERNAME/+git/bsh
+Vcs-Browser: https://code.launchpad.net/~YOUR_LP_USERNAME/+git/bsh
+
+Package: bsh
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: BrightShell — a zsh-based shell with BrightDate and AI features
+ Bsh (BrightShell) is an interactive shell derived from zsh, extended with
+ BrightDate (a timezone-free SI-day timestamp system), AI-assisted
+ completions, and other enhancements suited for modern development workflows.
+ .
+ BrightDate replaces timezone-aware timestamps with a single floating-point
+ SI-day count since J2000.0, making log correlation and time arithmetic
+ trivially correct across machines and timezones.

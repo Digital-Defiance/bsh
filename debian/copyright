@@ -1,0 +1,32 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: bsh
+Upstream-Contact: Jessica Mulein <jessica@digitaldefiance.org>
+Source: https://bsh.digitaldefiance.org
+
+Files: *
+Copyright: 1992-2026 Paul Falstad, Richard Coleman, Zoltán Hidvégi, Andrew Main,
+           Peter Stephenson, Sven Wischnowsky, Digital Defiance, Jessica Mulein,
+           and others.
+License: MIT-bsh
+
+Files: debian/*
+Copyright: 2026 Jessica Mulein <jessica@digitaldefiance.org>
+License: MIT-bsh
+
+License: MIT-bsh
+ Permission is hereby granted, without written agreement and without
+ licence or royalty fees, to use, copy, modify, and distribute this
+ software and to distribute modified versions of this software for any
+ purpose, provided that the above copyright notice and the following
+ two paragraphs appear in all copies of this software.
+ .
+ In no event shall the Bsh Development Group be liable to any party for
+ direct, indirect, special, incidental, or consequential damages arising
+ out of the use of this software and its documentation, even if the Bsh
+ Development Group has been advised of the possibility of such damage.
+ .
+ The Bsh Development Group specifically disclaim any warranties,
+ including, but not limited to, the implied warranties of merchantability
+ and fitness for a particular purpose. The software provided hereunder is
+ on an "as is" basis, and the Bsh Development Group have no obligation to
+ provide maintenance, support, updates, enhancements, or modifications.

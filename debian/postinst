@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "configure" ]; then
+    # Register bsh as a valid login shell
+    if ! grep -qx '/usr/bin/bsh' /etc/shells 2>/dev/null; then
+        echo '/usr/bin/bsh' >> /etc/shells
+    fi
+fi
+
+#DEBHELPER#

@@ -1,0 +1,33 @@
+#!/usr/bin/make -f
+
+# Prevent cargo from trying to reach the network and isolate its home dir
+export CARGO_HOME = $(CURDIR)/debian/.cargo-home
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	# dh will auto-run autoreconf; pass bsh-specific configure flags
+	dh_auto_configure -- \
+		--enable-etcdir=/etc \
+		--enable-bshenv=/etc/bsh/bshenv \
+		--enable-bshrc=/etc/bsh/bshrc \
+		--enable-zprofile=/etc/bsh/zprofile \
+		--enable-zlogin=/etc/bsh/zlogin \
+		--enable-zlogout=/etc/bsh/zlogout \
+		--enable-function-subdirs \
+		--enable-multibyte \
+		--enable-pcre \
+		--enable-cap
+
+override_dh_auto_build:
+	# Wire up vendored Rust deps if present (run `make vendor-rust` first).
+	# Launchpad builders are network-isolated; vendoring is required.
+	@if [ -d brightdate-rust/vendor ]; then \
+		mkdir -p brightdate-rust/.cargo; \
+		if [ ! -f brightdate-rust/.cargo/config.toml ]; then \
+			printf '[source.crates-io]\nreplace-with = "vendored-sources"\n\n[source.vendored-sources]\ndirectory = "vendor"\n' \
+				> brightdate-rust/.cargo/config.toml; \
+		fi; \
+	fi
+	dh_auto_build

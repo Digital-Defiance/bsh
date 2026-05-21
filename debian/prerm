@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "remove" ] || [ "$1" = "purge" ]; then
+    # Remove bsh from the list of valid login shells
+    if [ -f /etc/shells ]; then
+        sed -i '\|^/usr/bin/bsh$|d' /etc/shells
+    fi
+fi
+
+#DEBHELPER#
