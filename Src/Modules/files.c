@@ -810,6 +810,7 @@ struct ls_opts {
     int numeric;    /* -n: numeric uid/gid */
     int type_ind;   /* -F: append type indicator */
     int use_atime;  /* -u: show/sort by atime instead of mtime */
+    int use_ctime;  /* -c: show/sort by ctime instead of mtime */
     int blocks;     /* -s: show block count */
     int sort_time;  /* -t: sort by time */
     int reverse;    /* -r: reverse sort */
@@ -917,6 +918,8 @@ ls_print_long(struct stat *st, const char *name, const char *path,
 
     bd_ts = o->use_atime
 	? bsh_unix_to_brightdate((double)st->st_atime)
+	: o->use_ctime
+	? bsh_unix_to_brightdate((double)st->st_ctime)
 	: bsh_unix_to_brightdate((double)st->st_mtime);
 
     ls_modestr(st->st_mode, modestr);
@@ -983,8 +986,9 @@ ls_print_short(const char *name, struct stat *st, const struct ls_opts *o)
     printf("%s%s%s%s\n", col, name, indic, rst);
 }
 
-/* Sort comparators — sort_use_atime set by bin_ls before calling qsort. */
+/* Sort comparators — set by bin_ls before calling qsort. */
 static int ls_sort_use_atime;
+static int ls_sort_use_ctime;
 
 static int
 ls_cmp_name(const void *a, const void *b)
@@ -998,8 +1002,17 @@ ls_cmp_time(const void *a, const void *b)
 {
     const struct ls_ent *ea = (const struct ls_ent *)a;
     const struct ls_ent *eb = (const struct ls_ent *)b;
-    time_t ta = ls_sort_use_atime ? ea->st.st_atime : ea->st.st_mtime;
-    time_t tb = ls_sort_use_atime ? eb->st.st_atime : eb->st.st_mtime;
+    time_t ta, tb;
+    if (ls_sort_use_atime) {
+	ta = ea->st.st_atime;
+	tb = eb->st.st_atime;
+    } else if (ls_sort_use_ctime) {
+	ta = ea->st.st_ctime;
+	tb = eb->st.st_ctime;
+    } else {
+	ta = ea->st.st_mtime;
+	tb = eb->st.st_mtime;
+    }
     /* newer first, matching standard ls -t */
     if (tb > ta) return  1;
     if (tb < ta) return -1;
@@ -1028,14 +1041,16 @@ bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
     char *dot[] = { ".", NULL };
 
     o.use_atime = OPT_ISSET(ops, 'u');
+    o.use_ctime = OPT_ISSET(ops, 'c') && !o.use_atime; /* -u takes precedence */
     o.human     = OPT_ISSET(ops, 'h');
     o.numeric   = OPT_ISSET(ops, 'n');
     o.type_ind  = OPT_ISSET(ops, 'F');
     o.blocks    = OPT_ISSET(ops, 's');
-    o.sort_time = OPT_ISSET(ops, 't');
+    o.sort_time = OPT_ISSET(ops, 't') || o.use_ctime;
     o.reverse   = OPT_ISSET(ops, 'r');
     o.color     = OPT_ISSET(ops, 'G') || isatty(STDOUT_FILENO);
     ls_sort_use_atime = o.use_atime;
+    ls_sort_use_ctime = o.use_ctime;
 
     if (!*args)
 	args = dot;
@@ -1130,7 +1145,7 @@ static struct builtin bintab[] = {
     BUILTIN("chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
-    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "adlLGFhnrstu",  NULL),
+    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnrstu", NULL),
     BUILTIN("mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),
@@ -1141,7 +1156,7 @@ static struct builtin bintab[] = {
     BUILTIN("zf_chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("zf_chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("zf_ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
-    BUILTIN("zf_ls",    0, bin_ls,    0, -1, 0,         "alLGFhnrstu",   NULL),
+    BUILTIN("zf_ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnrstu", NULL),
     BUILTIN("zf_mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("zf_mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("zf_rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),

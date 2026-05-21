@@ -953,7 +953,7 @@ You can:
   print -r "
 (1)  Continue to the main menu.
 "
-  if [[ -f /etc/bsh/newuser.bshrc.recommended ]]; then
+  if [[ -r /etc/bsh/newuser.bshrc.recommended ]]; then
     print -r "(2)  Populate your $zdmsg/.bshrc with the configuration recommended
      by the system administrator and exit (you will need to edit
      the file by hand, if so desired).
@@ -977,7 +977,15 @@ You can:
     ;;
 
     (2)
-    cp /etc/bsh/newuser.bshrc.recommended $zd/.bshrc
+    if [[ ! -r /etc/bsh/newuser.bshrc.recommended ]]; then
+      print -r "No recommended configuration file is available on this system."
+      print -r "Aborting."
+      return 1
+    fi
+    cp /etc/bsh/newuser.bshrc.recommended $zd/.bshrc || {
+      print -r "Failed to copy recommended configuration. Aborting."
+      return 1
+    }
     source $zd/.bshrc
     return 0
     ;;
@@ -1090,6 +1098,24 @@ You should not edit anything between these lines if you intend to
 run $myname again.  You may, however, edit any other part
 of the file."
     fi
+    print -r "
+─────────────────────────────────────────────
+ Take BSH further:
+
+ Oh My Bsh — plugins, themes, and completions
+   https://ohmybsh.digitaldefiance.org
+   sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/Digital-Defiance/ohmybsh/main/tools/install.sh)\"
+
+ BSH iputils — BrightDate-aware networking tools
+ (bping with light-floor, milliday RTT, spacetime efficiency scoring)
+   sudo add-apt-repository ppa:digital-defiance/ppa
+   sudo apt install bsh-iputils
+
+ BSH findutils — BrightDate-aware find/locate/xargs
+ (bfind -after/-before BD predicates, %Wt printf, BD-aligned -daystart)
+   sudo add-apt-repository ppa:digital-defiance/ppa
+   sudo apt install bsh-findutils
+─────────────────────────────────────────────"
     break
     ;;
 
