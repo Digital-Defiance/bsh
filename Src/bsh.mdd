@@ -54,7 +54,9 @@ patchlevel.h: FORCE
 	@if [ -f $(sdir)/$@.release ]; then \
 	  cp -f $(sdir)/$@.release $@; \
 	else \
-	  echo '#define BSH_PATCHLEVEL "'`cd $(sdir) && git describe --tags --long --abbrev=7`'"' > $@.tmp; \
+	  patchlevel=`cd $(sdir) && git describe --tags --long --abbrev=7 2>/dev/null` || patchlevel=""; \
+	  if [ -z "$$patchlevel" ]; then patchlevel="$(VERSION)-release"; fi; \
+	  echo '#define BSH_PATCHLEVEL "'$$patchlevel'"' > $@.tmp; \
 	  cmp $@ $@.tmp >/dev/null 2>&1 && rm -f $@.tmp || mv -f $@.tmp $@; \
 	fi
 FORCE:

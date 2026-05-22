@@ -3,6 +3,6 @@ name=bsh/brightlink
 link=static
 load=yes
 
-autofeatures="b:bsh-inject"
+autofeatures="b:bsh-inject b:link-geo"
 
 objects="brightlink.o"
