@@ -1,3 +1,17 @@
+bsh-shell (5.14.1-1) noble; urgency=medium
+
+  * link-geo builtin: autoload alongside bsh-inject so it is available
+    immediately on shell startup without an explicit `zmodload bsh/brightlink`.
+  * patchlevel.h: fall back to "$(VERSION)-release" when git is unavailable
+    (e.g. inside the Launchpad build chroot). Removes the noisy
+    "/bin/sh: 1: git: not found" message and produces a meaningful
+    BSH_PATCHLEVEL string for production builds.
+  * debian/control: add libsecp256k1-dev to Build-Depends so the
+    bsh/brightlink module compiles on Launchpad. Runtime dep is
+    auto-discovered through ${shlibs:Depends}.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 22 May 2026 17:00:00 +0000
+
 bsh-shell (5.14.0-1) noble; urgency=medium
 
   * BrightLink v1.1: ship the geo + push surface end-to-end.
