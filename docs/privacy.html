@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Privacy Policy for BSH (BrightShell) and the BSH SDI Agent macOS app."
+      content="Privacy Policy for BSH (BrightShell) and BrightNexus."
     />
-    <title>Privacy Policy — BSH &amp; BSH SDI Agent</title>
+    <title>Privacy Policy — BSH &amp; BrightNexus</title>
     <style>
       *,
       *::before,
@@ -216,7 +216,7 @@
       <a class="nav-brand" href="/">bsh</a>
       <ul class="nav-links">
         <li><a href="/#why">Why BSH?</a></li>
-        <li><a href="/#sdi">SDI</a></li>
+        <li><a href="/#brightlink">BrightLink</a></li>
         <li><a href="/#build">Build</a></li>
         <li><a href="https://github.com/Digital-Defiance/bsh">GitHub</a></li>
       </ul>
@@ -227,13 +227,13 @@
       <div class="eyebrow">Privacy Policy</div>
       <h1>We collect nothing.</h1>
       <p class="subtitle">
-        Effective date: May 17, 2026 &nbsp;·&nbsp; Applies to: BSH SDI Agent
+        Effective date: May 22, 2026 &nbsp;·&nbsp; Applies to: BrightNexus
         (macOS app) and the BSH shell
       </p>
 
       <div class="highlight-box">
         <p>
-          Neither the BSH SDI Agent app nor the BSH shell collects, stores,
+          Neither the BrightNexus app nor the BSH shell collects, stores,
           transmits, or reports any personal data, usage data, telemetry,
           diagnostics, or analytics — ever.
         </p>
@@ -243,14 +243,15 @@
         </p>
       </div>
 
-      <h2>BSH SDI Agent — macOS App</h2>
+      <h2>BrightNexus — macOS App</h2>
       <p>
-        The BSH SDI Agent is a local menu-bar daemon that listens on a
-        user-owned Unix domain socket and decrypts structured payloads sent by
-        BSH via the OSC 7777 protocol. It operates entirely on-device:
+        BrightNexus is a local menu-bar app that listens on a user-owned Unix
+        domain socket and decrypts structured credential payloads delivered by
+        BSH (or any other BrightLink v1 client) via JSON over the local
+        socket. It operates entirely on-device:
       </p>
       <ul>
-        <li>No network connections are made by the agent.</li>
+        <li>No network connections are made by the app.</li>
         <li>
           No data is written to disk beyond what you explicitly direct it to do
           (e.g. filling a form field you have open).
@@ -268,9 +269,10 @@
           transmitted.
         </li>
         <li>
-          The app does not request access to contacts, location, camera,
-          microphone, or any other sensitive system resource beyond the terminal
-          socket it serves.
+          The app does not request access to contacts, camera, microphone, or
+          any other sensitive system resource beyond the local socket it
+          serves. Location access, when enabled, is mediated by per-binary
+          ACL prompts under your control.
         </li>
       </ul>
 
@@ -294,9 +296,9 @@
           your control.
         </li>
         <li>
-          The SDI module (<code>bsh/sdi</code>) communicates only with the local
-          BSH SDI Agent over a local Unix socket — no traffic leaves the
-          machine.
+          The BrightLink module (<code>bsh/brightlink</code>) communicates only
+          with the local BrightNexus app over a local Unix socket — no traffic
+          leaves the machine.
         </li>
       </ul>
 
@@ -314,20 +316,20 @@
         <a href="https://policies.google.com/privacy">Google's Privacy Policy</a
         >. No personally identifiable information is collected by the website
         itself. Website analytics are entirely separate from the BSH shell and
-        the BSH SDI Agent — neither of those products has any connection to this
+        BrightNexus — neither of those products has any connection to this
         website or its analytics.
       </p>
 
       <h2>Third-Party Services</h2>
       <p>
-        The BSH SDI Agent and BSH shell do not integrate with any third-party
+        BrightNexus and the BSH shell do not integrate with any third-party
         analytics, crash-reporting, advertising, or data-collection services.
         There are no in-app purchases, subscriptions, or accounts.
       </p>
 
       <h2>Children's Privacy</h2>
       <p>
-        Because no data is collected at all, BSH and the BSH SDI Agent are safe
+        Because no data is collected at all, BSH and BrightNexus are safe
         for users of any age under applicable data-protection laws including
         COPPA and GDPR.
       </p>
@@ -346,8 +348,8 @@
           >GitHub Issues</a
         >
         or the
-        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent"
-          >BSH SDI Agent repository</a
+        <a href="https://github.com/Digital-Defiance/BrightNexus"
+          >BrightNexus repository</a
         >.
       </p>
     </main>
@@ -366,8 +368,8 @@
       <div class="footer-links">
         <a href="/">Home</a>
         <a href="https://github.com/Digital-Defiance/bsh">Source</a>
-        <a href="https://github.com/Digital-Defiance/bsh-sdi-agent"
-          >SDI Agent</a
+        <a href="https://github.com/Digital-Defiance/BrightNexus"
+          >BrightNexus</a
         >
         <a href="https://brightdate.org">BrightDate</a>
       </div>

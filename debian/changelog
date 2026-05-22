@@ -1,3 +1,23 @@
+bsh-shell (5.14.0-1) noble; urgency=medium
+
+  * BrightLink v1.1: ship the geo + push surface end-to-end.
+    - New `link-geo` shell builtin in the bsh/brightlink module with
+      five subcommands (status, proximity, zone, get, refresh)
+      mapping 1:1 to RFC §9 LINK_GEO_* commands. Supports `--json`
+      for machine-readable output and `--format wgs84|brightspace|both`
+      for LINK_GEO_GET.
+    - WGS84 ↔ ECEF ↔ BrightSpace coordinate pipeline (RFC §6.3) with
+      exact-by-definition constants. Verified against the BrightSpace
+      doc's published GODE (NASA GSFC, ITRF2020 epoch 2015.0) anchor.
+    - Drops the legacy Scripts/bsh-geo and Scripts/bsh-geo-override
+      stub scripts (functionally replaced by the new builtin).
+  * Drop all SDI / OSC 7777 references throughout the tree.
+    BrightLink is the protocol; clean slate. Removes Test/V16sdi.ztst
+    and the three Test/sdi_*.py helpers; no functional change to the
+    shell itself.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 22 May 2026 12:00:00 +0000
+
 bsh-shell (5.13.0-1) noble; urgency=medium
 
   * ls builtin: support GNU-style long options, in particular

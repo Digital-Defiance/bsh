@@ -1,8 +1,8 @@
-name=bsh/sdi
+name=bsh/brightlink
 
 link=static
 load=yes
 
 autofeatures="b:bsh-inject"
 
-objects="sdi.o"
+objects="brightlink.o"

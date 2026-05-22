@@ -855,10 +855,18 @@ AC_CHECK_LIB(socket, socket)
 AC_SEARCH_LIBS(gethostbyname2, bind network)
 
 dnl ----------------
-dnl CHECK FOR OPENSSL  (required by bsh/sdi — X25519 ECDH + AES-256-GCM)
+dnl CHECK FOR OPENSSL  (required by bsh/brightlink — AES-256-GCM, HKDF-SHA256, ECDSA-P256-DER verify)
 dnl ----------------
 AC_CHECK_LIB(crypto, EVP_PKEY_keygen, [],
-  [AC_MSG_WARN([libcrypto not found — bsh/sdi module will not link correctly])])
+  [AC_MSG_WARN([libcrypto not found — bsh/brightlink module will not link correctly])])
+
+dnl ----------------
+dnl CHECK FOR LIBSECP256K1  (required by bsh/brightlink — secp256k1 ECDH for ECIES envelopes)
+dnl ----------------
+AC_CHECK_LIB(secp256k1, secp256k1_context_create, [],
+  [AC_MSG_WARN([libsecp256k1 not found — bsh/brightlink module will not link correctly. Install via 'brew install secp256k1' or your distro's package manager.])])
+AC_CHECK_HEADER([secp256k1.h], [],
+  [AC_MSG_WARN([secp256k1.h not found — bsh/brightlink module will not compile. Make sure libsecp256k1 development headers are installed.])])
 
 case $LIBS in
   *-lbind*)

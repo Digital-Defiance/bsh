@@ -369,157 +369,163 @@ All unit suffixes accept fractional values: `d` (days, default), `h` (hours),
 
 ---
 
-## Secure Semantic Data Injection (SDI)
+## BrightLink — Hardware-Anchored Credential Delivery
 
-> **BSH-exclusive feature.** SDI and the OSC 7777 protocol were designed and implemented
-> by the BSH project. There is no upstream zsh equivalent.
+> **BSH-exclusive feature.** BrightLink is a developer-credential delivery protocol
+> designed and implemented by the BSH project. There is no upstream zsh equivalent.
 
-BSH 5.11.2 introduces **Secure Semantic Data Injection** — a mechanism for the shell to
-pass structured, encrypted credentials and context payloads to a paired Desktop Agent
-without those secrets ever appearing in the process environment, command-line arguments,
-or shell history.
+BSH 5.11.2 ships a `bsh/brightlink` module that delivers structured, encrypted
+credentials to a paired desktop agent over a Unix socket. Secrets never appear in the
+process environment, command-line arguments, shell history, or terminal scrollback.
 
-> **Scope — what this is (and isn't).** SDI is designed for **short-lived developer
-> credentials**: database passwords for local services, ephemeral API tokens, throwaway
-> login creds — the secrets you'd otherwise paste into a terminal, export into `$ENV`,
-> or stash in a `.env` file. It is **not** a password manager. There is no vault, no
-> master-password unlock, no browser autofill, no sync between machines, no long-term
-> storage; payloads live in the agent's memory only, are gated by a TTL (default 300 s),
-> and vanish on session expiry. For long-term credential storage use
-> **1Password / Bitwarden / Keychain**. Use SDI for the moment you'd otherwise leak a
-> secret into shell history or `ps`.
+> **Scope — what this is (and isn't).** BrightLink is designed for **short-lived
+> developer credentials**: database passwords for local services, ephemeral API
+> tokens, throwaway login creds, STS sessions — the secrets you'd otherwise paste
+> into a terminal, export into `$ENV`, or stash in a `.env` file. It is **not** a
+> password manager. There is no vault, no master-password unlock, no browser
+> autofill, no sync between machines, no long-term storage; payloads live in the
+> agent's memory only, are gated by a TTL (default 300s, configurable up to 1h
+> ceiling), and vanish on session expiry. For long-term credential storage use
+> **1Password / Bitwarden / Keychain**. Use BrightLink for the moment you'd
+> otherwise leak a secret into shell history or `ps`.
 
-The companion **BSH SDI Agent** macOS app receives and acts on SDI payloads:
+The companion **BrightNexus** macOS app receives and acts on BrightLink payloads:
 
-- **Website:** <https://sdiagent.digitaldefiance.org>
-- **GitHub:** <https://github.com/Digital-Defiance/bsh-sdi-agent>
-- **Mac App Store:** coming soon
+- **Website:** <https://brightnexus.brightdate.org>
+- **GitHub:** <https://github.com/Digital-Defiance/BrightNexus>
+
+> [rfc]: docs/rfc-brightlink.md
 
 ### How it works
 
-When BSH starts an interactive session it performs an out-of-band cryptographic
-handshake with the Desktop Agent over a randomized, user-restricted Unix-domain socket.
-The agent generates a per-boot random socket path (e.g.
-`/run/user/<uid>/sdi-agent-<16-random-hex>.sock`) and communicates it to child shells
-via the `$SDI_AGENT_SOCK` environment variable, preventing socket-path squatting. The
-handshake uses a compact binary framing — **no JSON, no length prefix**:
+BrightLink establishes a hardware-anchored session against BrightNexus's Apple
+Secure Enclave key, then delivers credentials as authenticated JSON requests on the
+same Unix socket.
 
-1. The shell generates a 16-byte random **Session-ID** and an ephemeral X25519 key pair,
-   then sends **48 bytes** atomically to the agent:
-   - bytes 0–15: `session_id` (16 random bytes)
-   - bytes 16–47: `shell_pub` (X25519 public key, raw 32-byte little-endian)
-2. The agent replies with **32 bytes**: its ephemeral X25519 public key (`agent_pub`).
-3. Both sides independently derive the 32-byte **session key** via HKDF-SHA256:
+#### 1. Session establishment (`LINK_REGISTER`, RFC §4.5)
 
-   ```
-   K_session = HKDF-SHA256(
-     IKM  = X25519(priv, peer_pub),
-     salt = session_id,
-     info = "sdi-session-key",
-     L    = 32
-   )
-   ```
+When the shell first needs to inject (lazy registration), it connects to the bridge
+socket at `~/.brightchain/brightnexus/brightnexus.sock` and exchanges a single
+EBP/1 round-trip:
 
-   `K_session` is never transmitted; the socket connection is closed immediately after.
-   The **Session-ID** is encoded as 32 lowercase hex characters in the OSC sequence.
-   Sessions expire after **8 hours** regardless of activity.
+- The shell generates a 16-byte `clientNonce`, an ephemeral secp256k1 keypair, and a
+  32-byte `clientShare`. It ECIES-encrypts the plaintext (clientPub, clientShare,
+  BrightDate timestamp, requested TTL, agent identifier) to BrightNexus's persistent
+  secp256k1 public key and sends it as `LINK_REGISTER`.
+- BrightNexus generates a 16-byte `sessionId` and a 32-byte `bridgeShare`,
+  ECIES-encrypts the bridgeShare to the shell's ephemeral public key, signs a
+  238-byte canonical transcript with its **Apple SEP P-256** key, and returns
+  `{sessionId, responseEnvelope, transcriptSig, bridgeIssuedAtUnix, ttlSeconds}`.
+- Both sides derive `K_session` via bilateral HKDF-SHA256:
 
-4. The socket is `chmod 600` and owned exclusively by the calling user
-   (`stat.st_uid == getuid()`). The agent enforces a rate limit of **10 failed
-   authentication attempts per minute per PID** to mitigate local brute-force attacks.
+  ```
+  K_session = HKDF-SHA256(
+    IKM  = clientShare ‖ bridgeShare,
+    salt = clientNonce ‖ sessionId,
+    info = "brightlink-session-key-v1",
+    L    = 32
+  )
+  ```
 
-Once a session is established, the `bsh-inject` builtin encrypts any payload piped to
-it using **AES-256-GCM** and emits the ciphertext as an **OSC 7777** terminal escape
-sequence written directly to `/dev/tty` (not stdout, to prevent ciphertext from
-accidentally reaching log sinks or pipes). The Desktop Agent reads the escape from the
-terminal stream:
+- The shell verifies the transcript signature against a **TOFU-pinned** SEP public
+  key. An impostor bridge cannot forge the signature without the SEP. Sessions
+  expire after **8 hours** (configurable below the cap).
 
+#### 2. Credential delivery (`LINK_DELIVER`, RFC §4.6)
+
+After registration, `bsh-inject` reads a JSON payload from stdin, AES-256-GCM-seals
+it under `K_session`, and sends a `LINK_DELIVER` request:
+
+```json
+{
+  "cmd": "LINK_DELIVER",
+  "counter": <uint64>,
+  "type": "<schema id>",
+  "context": "<routing context>",
+  "iv": "<base64 12 bytes>",
+  "ciphertext": "<base64>",
+  "authTag": "<base64 16 bytes>"
+}
 ```
-\e]7777;<session-id-hex>;<base64-counter>;<type>;<base64-context>;<base64-nonce>;<base64-ciphertext>;<base64-auth-tag>\a
-```
 
-| Field | Encoding | Description |
-|---|---|---|
-| `session-id-hex` | 32-char lowercase hex | Maps the sequence to a registered session key |
-| `base64-counter` | standard Base64 | 8-byte big-endian monotonic sequence counter |
-| `type` | plaintext ASCII | Payload schema (e.g. `ephemeral-auth`) |
-| `base64-context` | standard Base64 | Routing context (e.g. URL); Base64-encoded to avoid semicolon collisions |
-| `base64-nonce` | standard Base64 | 12-byte AES-GCM IV |
-| `base64-ciphertext` | standard Base64 | AES-256-GCM encrypted JSON payload |
-| `base64-auth-tag` | standard Base64 | 16-byte GCM authentication tag |
-
-The `counter`, `type`, and `context` values are all bound into the GCM auth tag as
-**AAD** (Additional Authenticated Data) using length-prefixed encoding, so tampering
-with any of them — or replaying a captured sequence — is rejected at the agent with
-an authentication-tag failure. The counter is monotonically increasing per session;
-the agent rejects any sequence with a counter ≤ the last accepted value.
-
-Key material is wiped from memory with `OPENSSL_cleanse()` when the shell exits.
+The `dir_tag` (0x01 for shell→agent), `counter`, `type`, and `context` are bound
+into the GCM AAD using length-prefixed encoding (RFC §4.6.2). A captured ciphertext
+cannot be replayed in the opposite direction (GCM tag mismatch from `dir_tag` flip)
+and cannot be replayed within the same direction (counter ≤ `lastInboundCounter` is
+rejected). Key material is wiped on shell exit and on `LINK_REGISTER` re-registration.
 
 ### `bsh-inject` usage
 
 ```
-bsh-inject [--type <TYPE>] [--context <CONTEXT>] [--emit-stdout]
+bsh-inject [--type <TYPE>] [--context <CONTEXT>]
 
-Reads the plaintext payload from stdin, encrypts it with the negotiated session
-key (AES-256-GCM), and writes the OSC 7777 sequence directly to /dev/tty.
-Fails closed if the agent is unavailable — never falls back to plaintext.
+Reads the plaintext payload from stdin, encrypts it under K_session (AES-256-GCM),
+and sends LINK_DELIVER to BrightNexus over the EBP/1 socket. Fails closed if the
+bridge is unavailable — never falls back to plaintext.
 
 Options:
-  --type         Semantic label for the payload (e.g. "ephemeral-auth", "db-connection").
-                 Bound into the GCM auth tag; the agent must supply the same value to decrypt.
-  --context      Scoping context for the payload (e.g. a URL or service name).
-                 Also bound into the GCM auth tag.
-  --emit-stdout  Write the OSC 7777 sequence to stdout instead of /dev/tty (testing only).
+  --type     Semantic label for the payload (e.g. "ephemeral-auth", "db-connection").
+             Bound into the GCM AAD; the bridge must supply the same value to decrypt.
+  --context  Scoping context for the payload (e.g. a URL or service name).
+             Also bound into the GCM AAD.
 ```
 
 **Example — inject credentials for a web service:**
 
-```zsh
-# Activate a session (happens automatically at interactive startup)
-zmodload bsh/sdi
+```bsh
+# Lazy session registration happens on first inject.
+zmodload bsh/brightlink
 
-# Stream a JSON credential blob to the paired Desktop Agent
+# Stream a JSON credential blob to BrightNexus.
 printf '{"username":"alice","password":"s3cr3t","ttl":300,"issued_at":1748000000}' \
   | bsh-inject --type ephemeral-auth --context https://api.example.com
 ```
 
-The Desktop Agent receives the OSC 7777 sequence via the terminal, decrypts it using
-the session key derived during the handshake, verifies the auth tag (which covers the
-counter, `--type`, and `--context`), and acts on the plaintext — for example by
-auto-filling a login form or injecting an API token into a running process. The
-plaintext is **never** visible to `ps`, shell history, or `env`.
+BrightNexus decrypts the payload, verifies the AAD/tag, drops the entry into its
+`EphemeralStore`, and surfaces it in the menu-bar Credentials submenu and the
+Dashboard Credentials view with click-to-copy and a live TTL countdown. The
+plaintext is never visible to `ps`, shell history, `env`, or the user's terminal
+scrollback.
 
 ### Payload schemas
 
-Two schemas are supported by reference implementations of the Desktop Agent:
+The BrightLink v1 RFC defines nine schemas; agents MAY accept additional types under
+their own namespace and MUST ignore unknown types.
 
 | Schema | `--type` value | Payload fields |
 |---|---|---|
-| Ephemeral auth | `ephemeral-auth` | `username`, `password`, `email`, `ttl`, `issued_at`, `additional_fields` |
-| DB connection | `db-connection` | `engine`, `host`, `port`, `user`, `pass`, `ttl`, `issued_at` |
+| Ephemeral auth      | `ephemeral-auth`     | `username`, `password`, `email`, `ttl`, `issued_at` |
+| DB connection       | `db-connection`      | `engine`, `host`, `port`, `user`, `pass`, `ttl` |
+| API token           | `api-token`          | `token`, `scope`, `ttl` |
+| Cloud session       | `cloud-session`      | `provider`, `accessKeyId`, `secretAccessKey`, `sessionToken`, `region`, `ttl` |
+| SSH credential      | `ssh-credential`     | `host`, `user`, `privateKey`, `passphrase`, `ttl` |
+| Kubeconfig context  | `kubeconfig-context` | `cluster`, `server`, `caCert`, `user`, `clientCert`, `clientKey`, `ttl` |
+| TOTP seed           | `totp-seed`          | `label`, `issuer`, `secret`, `algorithm`, `digits`, `period`, `ttl` |
+| mTLS cert bundle    | `mtls-cert`          | `cert`, `key`, `caCert`, `ttl` |
+| Plaintext           | `plaintext`          | `label`, `value`, `masked`, `ttl` |
 
-The `issued_at` field (Unix timestamp, seconds) is **required** in all schemas. Agents
-reject payloads whose `issued_at` is more than `ttl` seconds in the past or more than
-60 seconds in the future. Any JSON blob is accepted by `bsh-inject` itself — schema
-validation is the agent's responsibility.
+The bridge rejects payloads whose `issued_at` is more than `ttl` seconds in the past
+or more than 60 seconds in the future. Any JSON blob is accepted by `bsh-inject`
+itself — schema validation is the bridge's responsibility.
 
 ### Security properties
 
 | Property | Mechanism |
 |---|---|
-| Forward secrecy | Ephemeral X25519 key pair per session; never written to disk |
-| Payload confidentiality | AES-256-GCM; ciphertext is indistinguishable from random |
-| Replay protection | Monotonic per-session counter bound into AAD; replayed sequences rejected |
-| Metadata binding | `counter`, `type`, and `context` are length-prefixed AAD; wrong values → tag failure |
-| Socket isolation | Randomized socket path + pre-bind existence check prevents squatting |
-| Session expiry | 8-hour maximum session lifetime; expired sessions rejected and logged |
-| Rate limiting | 10 failed auth attempts/min/PID before agent closes connection |
-| Fail-closed injection | `bsh-inject` writes to `/dev/tty`; aborts if agent is unavailable |
-| Memory hygiene | `OPENSSL_cleanse()` on session key and session-ID at shell exit |
-| No plaintext in history | Payload travels through the terminal escape stream, not argv |
+| Bridge identity | Apple Secure Enclave P-256 signs the registration transcript; client TOFU-pins |
+| Forward secrecy | Per-session ephemeral secp256k1 keypair; bilateral HKDF-derived `K_session` never transmitted |
+| Payload confidentiality | AES-256-GCM under `K_session`; ciphertext is indistinguishable from random |
+| Replay protection | Per-direction monotonic counters bound into AAD; replayed deliveries rejected with a 1000-counter window |
+| Direction binding | `dir_tag` bound into AAD; cross-direction replay produces tag failure |
+| Metadata binding | `counter`, `type`, and `context` length-prefixed in AAD; tampering produces tag failure |
+| Session isolation | One session per shell instance; re-registration wipes prior `K_session` |
+| Session expiry | Up to 8-hour TTL; expired sessions rejected and logged |
+| Rate limiting | 30 failed `LINK_DELIVER` attempts in 60s tear down the session at the bridge |
+| Fail-closed injection | `bsh-inject` aborts if the bridge is unavailable; never falls back to plaintext |
+| Memory hygiene | `OPENSSL_cleanse()` on `K_session` and ephemeral private key at shell exit |
+| No plaintext in history | Payload travels through the bridge socket, not argv |
 
-Full specification: [RFC — Secure Semantic Data Injection via OSC 7777](docs/rfc-sdi-osc7777.md)
+Full specification: [RFC — BrightLink Protocol v1][rfc].
 
 ---
 

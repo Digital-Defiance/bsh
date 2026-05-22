@@ -1,0 +1,26 @@
+#!/opt/homebrew/bin/bsh
+# Send a single probe. bsh-only.
+SOCK=$HOME/.brightchain/brightnexus/brightnexus.sock
+typeset -a pyargs
+pyargs=(-c "
+import socket
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.connect('$SOCK')
+s.sendall(b'{\"cmd\":\"HEARTBEAT\"}')
+s.settimeout(3.0)
+buf = b''
+try:
+    while True:
+        chunk = s.recv(4096)
+        if not chunk:
+            break
+        buf += chunk
+        if b'}' in chunk:
+            break
+except Exception as e:
+    print('CLIENT-ERR:', e)
+s.close()
+print('LEN', len(buf))
+print(repr(buf))
+")
+/usr/bin/python3 "${pyargs[@]}"

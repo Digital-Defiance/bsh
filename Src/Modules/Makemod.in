@@ -1,0 +1,25 @@
+##### Makemod.in generated automatically by mkmakemod.sh
+##### DO NOT EDIT!
+
+##### ===== DEFINITIONS ===== #####
+
+makefile = Makemod
+dir_top = ..
+subdir = Modules
+
+MODOBJS =
+MODULES =
+MDDS    =
+MDHS    =
+PROTOS  =
+SUBDIRS =
+
+ENTRYOBJ = $(dir_src)/modentry..o
+NNTRYOBJ =
+ENTRYOPT = -emodentry
+NNTRYOPT =
+
+##### ===== INCLUDING Makemod.in.in ===== #####
+
+
+##### End of Makemod.in

@@ -1,0 +1,44 @@
+#!/opt/homebrew/bin/bsh
+# Probe the running BrightNexus over its unix socket.
+# Brace-terminator framed JSON (EBP/1 §3.2).
+
+SOCK="$HOME/.brightchain/brightnexus/brightnexus.sock"
+
+probe() {
+    local cmd="$1"
+    local payload="$2"
+    print -- "----- $cmd -----"
+    /usr/bin/python3 -c "
+import socket
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.connect('$SOCK')
+s.sendall(b'''$payload''')
+s.settimeout(2.0)
+buf = b''
+try:
+    while True:
+        chunk = s.recv(4096)
+        if not chunk:
+            break
+        buf += chunk
+        if b'}' in chunk:
+            break
+except socket.timeout:
+    pass
+s.close()
+print(buf.decode('utf-8', errors='replace'))
+"
+    print
+}
+
+probe "HEARTBEAT"        '{\"cmd\":\"HEARTBEAT\"}'
+probe "GET_PUBLIC_KEY"   '{\"cmd\":\"GET_PUBLIC_KEY\"}'
+probe "LINK_GEO_STATUS"  '{\"cmd\":\"LINK_GEO_STATUS\"}'
+probe "LINK_GEO_GET"     '{\"cmd\":\"LINK_GEO_GET\",\"scope\":\"proximity\"}'
+probe "LINK_GEO_PROXIMITY" '{\"cmd\":\"LINK_GEO_PROXIMITY\"}'
+probe "LINK_GEO_ZONE"    '{\"cmd\":\"LINK_GEO_ZONE\"}'
+probe "LINK_GEO_REFRESH" '{\"cmd\":\"LINK_GEO_REFRESH\"}'
+probe "LINK_GEO_AUDIT"   '{\"cmd\":\"LINK_GEO_AUDIT\"}'
+probe "LINK_PUSH"        '{\"cmd\":\"LINK_PUSH\",\"subscribe\":[\"zone-transition\"]}'
+probe "LINK_AUDIT_EMIT"  '{\"cmd\":\"LINK_AUDIT_EMIT\",\"event\":\"test\"}'
+probe "FAKE_CMD"         '{\"cmd\":\"FAKE_CMD\"}'

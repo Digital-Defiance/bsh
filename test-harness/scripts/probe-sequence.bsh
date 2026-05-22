@@ -1,0 +1,52 @@
+#!/opt/homebrew/bin/bsh
+# Probe Nexus one command at a time, sleeping between, checking aliveness.
+# bsh-only.
+
+SOCK=$HOME/.brightchain/brightnexus/brightnexus.sock
+
+send_one() {
+    local label=$1
+    local payload=$2
+    print -- "----- $label -----"
+    typeset -a pyargs
+    pyargs=(-c "
+import socket
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.connect('$SOCK')
+s.sendall(b'$payload')
+s.settimeout(3.0)
+buf = b''
+try:
+    while True:
+        chunk = s.recv(4096)
+        if not chunk:
+            break
+        buf += chunk
+        if b'}' in chunk:
+            break
+except Exception as e:
+    print('CLIENT-ERR:', e)
+s.close()
+print(buf.decode('utf-8', errors='replace'))
+")
+    /usr/bin/python3 "${pyargs[@]}"
+    if pgrep -f BrightNexus.app >/dev/null; then
+        print -- "  [Nexus still alive]"
+    else
+        print -- "  [Nexus DIED after $label]"
+        return 1
+    fi
+    sleep 0.5
+}
+
+send_one HEARTBEAT          '{\"cmd\":\"HEARTBEAT\"}'
+send_one GET_PUBLIC_KEY     '{\"cmd\":\"GET_PUBLIC_KEY\"}'
+send_one LINK_GEO_STATUS    '{\"cmd\":\"LINK_GEO_STATUS\"}'
+send_one LINK_GEO_PROXIMITY '{\"cmd\":\"LINK_GEO_PROXIMITY\"}'
+send_one LINK_GEO_ZONE      '{\"cmd\":\"LINK_GEO_ZONE\"}'
+send_one LINK_GEO_GET       '{\"cmd\":\"LINK_GEO_GET\",\"scope\":\"proximity\"}'
+send_one LINK_GEO_REFRESH   '{\"cmd\":\"LINK_GEO_REFRESH\"}'
+send_one LINK_GEO_AUDIT     '{\"cmd\":\"LINK_GEO_AUDIT\"}'
+send_one LINK_PUSH          '{\"cmd\":\"LINK_PUSH\",\"subscribe\":[\"zone-transition\"]}'
+send_one LINK_AUDIT_EMIT    '{\"cmd\":\"LINK_AUDIT_EMIT\",\"event\":\"test\"}'
+send_one FAKE_CMD           '{\"cmd\":\"FAKE_CMD\"}'

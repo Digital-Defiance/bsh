@@ -1,0 +1,30 @@
+{
+  "name": "@digitaldefiance/brightchain-test-harness",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Mocks, executable spec, and known-answer test vectors for the BrightNexus + bsh + BrightLink v1 stack.",
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:interop": "vitest run tests/interop",
+    "test:against-real-brightnexus": "vitest run --config vitest.against-real.config.ts",
+    "test:against-real-client": "vitest run --config vitest.against-real-client.config.ts",
+    "test:against-real-bsh": "vitest run --config vitest.against-real-bsh.config.ts",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@digitaldefiance/node-ecies-lib": "^4.19.13",
+    "@noble/curves": "^1.4.0",
+    "@noble/hashes": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}

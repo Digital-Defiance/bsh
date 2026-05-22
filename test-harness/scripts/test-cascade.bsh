@@ -1,0 +1,64 @@
+#!/opt/homebrew/bin/bsh
+# Verify the §7.1 cascade fix: one Allow Always at scope=precise should
+# implicitly grant always for status, proximity, zone, precise (NOT
+# trajectory). Subsequent calls to those four scopes must NOT re-prompt.
+#
+# Manual step: when LINK_GEO_GET fires, click "Allow Always" in the
+# NSAlert that pops up.
+#
+# bsh-only.
+
+SOCK=$HOME/.brightchain/brightnexus/brightnexus.sock
+
+send() {
+    local label=$1
+    local payload=$2
+    print -- "----- $label -----"
+    typeset -a pyargs
+    pyargs=(-c "
+import socket
+s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+s.connect('$SOCK')
+s.sendall(b'$payload')
+s.settimeout(60.0)
+buf = b''
+try:
+    while True:
+        chunk = s.recv(4096)
+        if not chunk:
+            break
+        buf += chunk
+        if b'}' in chunk:
+            break
+except Exception as e:
+    print('CLIENT-ERR:', e)
+s.close()
+print(buf.decode('utf-8', errors='replace'))
+")
+    /usr/bin/python3 "${pyargs[@]}"
+}
+
+print "STEP 1: triggering LINK_GEO_GET (precise scope) — please click Allow Always in the modal that pops up..."
+send LINK_GEO_GET '{\"cmd\":\"LINK_GEO_GET\",\"format\":\"wgs84\"}'
+print
+
+print "STEP 2: ACL state after Allow Always click:"
+if [[ -f ~/.brightchain/brightnexus/geo-acl.json ]]; then
+    /usr/bin/python3 -m json.tool < ~/.brightchain/brightnexus/geo-acl.json
+else
+    print "  (no geo-acl.json — prompt was probably denied or timed out)"
+    return 1
+fi
+print
+
+print "STEP 3: rapid-fire all five scopes — should NOT re-prompt (except trajectory)"
+for cmd in 'LINK_GEO_STATUS' 'LINK_GEO_PROXIMITY' 'LINK_GEO_ZONE' 'LINK_GEO_GET' 'LINK_GEO_REFRESH'; do
+    case $cmd in
+        LINK_GEO_PROXIMITY) payload='{\"cmd\":\"LINK_GEO_PROXIMITY\",\"zone\":\"any\"}' ;;
+        LINK_GEO_GET)       payload='{\"cmd\":\"LINK_GEO_GET\",\"format\":\"wgs84\"}'   ;;
+        LINK_GEO_REFRESH)   payload='{\"cmd\":\"LINK_GEO_REFRESH\"}'                    ;;
+        *)                  payload="{\\\"cmd\\\":\\\"$cmd\\\"}"                        ;;
+    esac
+    send $cmd $payload
+    sleep 0.3
+done

@@ -1,0 +1,5 @@
+#!/opt/homebrew/bin/bsh
+# Dump recent BrightNexus log lines, bsh-only.
+# bsh has a `log` builtin that shadows /usr/bin/log, so call the system binary
+# by absolute path.
+/usr/bin/log show --process BrightNexus --last 15m --style compact 2>&1 | tail -200

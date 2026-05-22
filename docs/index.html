@@ -23,6 +23,10 @@
     />
     <title>BSH — BrightShell</title>
     <style>
+      .brightlink .brightlink-logo {
+        text-align: center;
+        height: 75px;
+      }
       .feature-card.span-double {
         grid-column: 1 / 3;
       }
@@ -623,7 +627,7 @@
         <li><a href="#builtins">Builtins</a></li>
         <li><a href="#modules">Modules</a></li>
         <li><a href="#glob">Glob</a></li>
-        <li><a href="#sdi">SDI</a></li>
+        <li><a href="#brightlink">BrightLink</a></li>
         <li><a href="#build">Build</a></li>
         <li><a href="https://github.com/Digital-Defiance/bsh">GitHub</a></li>
       </ul>
@@ -1080,7 +1084,7 @@ $ sched
           <span
             class="mod-tag"
             style="display: inline-block; margin-left: 0.4rem"
-            >bsh/sdi</span
+            >bsh/brightlink</span
           >
         </p>
       </div>
@@ -1134,26 +1138,29 @@ new.log</code></pre>
       </div>
     </section>
 
-    <!-- ── SDI ── -->
-    <section id="sdi">
+    <!-- ── BrightLink ── -->
+    <section id="brightlink">
       <div class="container">
         <div class="section-label">BSH-exclusive</div>
-        <h2>Secure Semantic Data Injection.</h2>
+        <div class="brightlink-logo"><img src="brightlink.png" alt="BrightLink" title="BrightLink" height="75" /></div>
         <p>
           <strong style="color: var(--text-bright)"
-            >SDI and the OSC 7777 protocol are original BSH inventions</strong
+            >BrightLink is an original BSH invention</strong
           >
           — there is no upstream zsh equivalent.
           <strong style="color: var(--text-bright)">bsh-inject</strong>
           is a BSH-unique builtin that encrypts a credential payload read from
-          stdin and emits it as an
-          <strong style="color: var(--text-bright)">OSC 7777</strong> terminal
-          escape sequence. The plaintext never appears in <code>ps</code>, the
-          shell environment, or command history. The paired macOS Desktop Agent
-          reads the escape from the terminal stream, decrypts it with the
-          session key it negotiated at login, and acts on the plaintext —
-          auto-filling credentials, injecting API tokens, or forwarding to a
-          keychain.
+          stdin and delivers it as a
+          <strong style="color: var(--text-bright)">LINK_DELIVER</strong>
+          JSON request over a Unix socket to the
+          <a class="link" href="https://nexus.digitaldefiance.org"
+            >BrightNexus</a
+          >
+          bridge. The plaintext never appears in <code>ps</code>, the shell
+          environment, command history, or terminal scrollback. BrightNexus
+          decrypts the payload with the session key it negotiated at
+          registration and surfaces the credential in its menu-bar dropdown
+          and Dashboard view, gated by a TTL after which it disappears.
         </p>
         <p
           style="
@@ -1168,33 +1175,31 @@ new.log</code></pre>
           <strong style="color: var(--text-bright)"
             >Scope — what this is (and isn't).</strong
           >
-          SDI is designed for
+          BrightLink is designed for
           <strong>short-lived developer credentials</strong>: database passwords
-          for local services, ephemeral API tokens, throwaway login creds — the
-          secrets you'd otherwise paste into a terminal, export into
-          <code>$ENV</code>, or stash in a <code>.env</code> file. It is
-          <strong>not a password manager</strong>: there is no vault, no
+          for local services, ephemeral API tokens, throwaway login creds,
+          STS sessions — the secrets you'd otherwise paste into a terminal,
+          export into <code>$ENV</code>, or stash in a <code>.env</code> file.
+          It is <strong>not a password manager</strong>: there is no vault, no
           master-password unlock, no browser autofill, no sync between machines,
           no long-term storage. Payloads live in the agent's memory only, are
-          gated by a <code>ttl</code> (default 300&nbsp;s), and vanish on
-          session expiry. For long-term credential storage use
-          <strong>1Password / Bitwarden / Keychain</strong>. Use SDI for the
-          moment you'd otherwise leak a secret into shell history or
-          <code>ps</code>.
+          gated by a <code>ttl</code> (default 300&nbsp;s, configurable up to a
+          1h ceiling), and vanish on session expiry. For long-term credential
+          storage use <strong>1Password / Bitwarden / Keychain</strong>. Use
+          BrightLink for the moment you'd otherwise leak a secret into shell
+          history or <code>ps</code>.
         </p>
         <p style="margin-top: 0.75rem; font-size: 0.875rem">
-          <strong>BSH SDI Agent for macOS:</strong>
-          <a class="link" href="https://sdiagent.digitaldefiance.org"
+          <strong>BrightNexus for macOS:</strong>
+          <a class="link" href="https://nexus.digitaldefiance.org"
             >Website</a
           >
           &nbsp;·&nbsp;
           <a
             class="link"
-            href="https://github.com/Digital-Defiance/bsh-sdi-agent"
+            href="https://github.com/Digital-Defiance/BrightNexus"
             >GitHub</a
           >
-          &nbsp;·&nbsp;
-          <span style="opacity: 0.7">Mac App Store — coming soon</span>
         </p>
 
         <div class="split" style="margin-top: 2rem">
@@ -1213,18 +1218,21 @@ new.log</code></pre>
                   1
                 </div>
                 <div class="step-body">
-                  <h3>X25519 handshake at login</h3>
+                  <h3>LINK_REGISTER over the bridge socket</h3>
                   <p>
-                    BSH connects to a randomized, user-owned Unix socket (path
-                    in <code>$SDI_AGENT_SOCK</code>) and performs an ephemeral
-                    Diffie-Hellman exchange with the Desktop Agent. A 32-byte
-                    session key is derived via
+                    bsh connects to BrightNexus on
+                    <code>~/.brightchain/brightnexus/brightnexus.sock</code> and
+                    registers via <code>LINK_REGISTER</code>. The bridge signs a
+                    238-byte canonical transcript with its
                     <strong style="color: var(--text-bright)"
-                      >HKDF-SHA256</strong
+                      >Apple Secure Enclave P-256</strong
                     >
-                    — never written to disk, wiped with
-                    <code>OPENSSL_cleanse()</code> on exit. Sessions expire
-                    after 8 hours.
+                    key; bsh verifies against a TOFU-pinned SEP public key.
+                    Both sides derive the 32-byte
+                    <code>K_session</code> via bilateral HKDF-SHA256 over
+                    <code>clientShare ‖ bridgeShare</code>. The key is never
+                    transmitted and is wiped with
+                    <code>OPENSSL_cleanse()</code> on shell exit.
                   </p>
                 </div>
               </div>
@@ -1245,12 +1253,16 @@ new.log</code></pre>
                     <code>bsh-inject</code> reads stdin and encrypts it with
                     <strong style="color: var(--text-bright)"
                       >AES-256-GCM</strong
-                    >. The <code>--type</code>, <code>--context</code>, and a
-                    monotonic sequence <strong>counter</strong> are passed as
+                    >
+                    under <code>K_session</code>. The
+                    <code>dir_tag</code>, <code>--type</code>,
+                    <code>--context</code>, and a monotonic
+                    <code>c_shell_to_agent</code> counter are passed as
                     length-prefixed GCM
                     <abbr title="Additional Authenticated Data">AAD</abbr> —
-                    bound into the auth tag so tampering with metadata or
-                    replaying a captured sequence invalidates the ciphertext.
+                    cross-direction replay produces tag failure, captured
+                    requests cannot be re-submitted, and counters within a
+                    1000-step window enforce strict monotonicity.
                   </p>
                 </div>
               </div>
@@ -1266,15 +1278,17 @@ new.log</code></pre>
                   3
                 </div>
                 <div class="step-body">
-                  <h3>Deliver over the terminal</h3>
+                  <h3>LINK_DELIVER on the EBP/1 socket</h3>
                   <p>
-                    The ciphertext is emitted as an
-                    <strong style="color: var(--text-bright)">OSC 7777</strong>
-                    escape written directly to <code>/dev/tty</code> — invisible
-                    in the terminal, invisible to <code>ps</code>, absent from
-                    shell history. If the agent is unavailable
-                    <code>bsh-inject</code> fails closed rather than falling
-                    back to plaintext.
+                    bsh-inject sends a
+                    <strong style="color: var(--text-bright)">LINK_DELIVER</strong>
+                    JSON request — <code>{cmd, counter, type, context, iv,
+                    ciphertext, authTag}</code> — to the bridge over the
+                    same Unix socket the registration handshake travelled on.
+                    Nothing is written to stdout, the user's terminal
+                    scrollback, or any other byte stream. If the bridge is
+                    unavailable, <code>bsh-inject</code> fails closed and
+                    refuses to fall back to plaintext.
                   </p>
                 </div>
               </div>
@@ -1290,28 +1304,30 @@ new.log</code></pre>
                   4
                 </div>
                 <div class="step-body">
-                  <h3>Agent decrypts and acts</h3>
+                  <h3>BrightNexus decrypts and surfaces</h3>
                   <p>
-                    The macOS Desktop Agent reads the escape from the terminal
-                    stream, verifies the GCM auth tag (covering counter, type,
-                    and context), checks the monotonic counter for replays, and
-                    acts on the plaintext — auto-filling a login form, injecting
-                    an API token, or forwarding to the system keychain.
-                    Decrypted state is purged after <code>ttl</code>
-                    seconds.
+                    BrightNexus verifies the GCM auth tag (covering
+                    <code>dir_tag</code>, counter, type, context), checks the
+                    counter for replays, decodes the JSON body, and drops the
+                    payload into its in-memory
+                    <code>EphemeralStore</code>. Active credentials appear in
+                    the menu-bar Credentials submenu and the Dashboard
+                    Credentials view with click-to-copy and a live TTL
+                    countdown. Entries auto-evict after their declared
+                    <code>ttl</code>; nothing persists to disk.
                   </p>
                 </div>
               </div>
             </div>
 
             <div class="modules" style="margin-top: 1.5rem">
-              <span class="mod-tag">X25519 ECDH</span>
+              <span class="mod-tag">SEP-signed transcript</span>
+              <span class="mod-tag">bilateral HKDF</span>
               <span class="mod-tag">AES-256-GCM</span>
-              <span class="mod-tag">HKDF-SHA256</span>
-              <span class="mod-tag">OSC 7777</span>
-              <span class="mod-tag">monotonic counter</span>
-              <span class="mod-tag">randomized socket</span>
-              <span class="mod-tag">AAD-bound auth tag</span>
+              <span class="mod-tag">JSON on socket</span>
+              <span class="mod-tag">per-direction counters</span>
+              <span class="mod-tag">AAD-bound dir_tag</span>
+              <span class="mod-tag">TOFU pin</span>
               <span class="mod-tag">fail-closed</span>
             </div>
           </div>
@@ -1324,13 +1340,6 @@ new.log</code></pre>
               <span class="dot dot-green"></span>
             </div>
             <div class="terminal-body">
-              <div class="cmd-line">
-                <span class="cmt"># load the SDI module</span>
-              </div>
-              <div class="cmd-line">
-                <span class="prompt">[9628.42] %</span>
-                <span class="cmd">zmodload bsh/sdi</span>
-              </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
                 <span class="cmt"># read password without echoing it</span>
               </div>
@@ -1365,27 +1374,36 @@ new.log</code></pre>
                 <span class="cmd">unset BSH_PASS</span>
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
-                <span class="cmt"> # OSC 7777 emitted to /dev/tty: </span>
+                <span class="cmt"
+                  > # bsh-inject sends LINK_DELIVER to BrightNexus on the
+                  socket — no terminal output:</span
+                >
               </div>
               <div class="cmd-line">
                 <span class="out"
-                  >\e]7777;&lt;sid&gt;;&lt;ctr&gt;;&lt;type&gt;;&lt;ctx&gt;;&lt;nonce&gt;;&lt;ct&gt;;&lt;tag&gt;\a</span
+                  >{"cmd":"LINK_DELIVER","counter":1,"type":"ephemeral-auth",
+                  "iv":"...","ciphertext":"...","authTag":"..."}</span
                 >
               </div>
               <div class="cmd-line" style="margin-top: 0.6rem">
-                <span class="cmt"># plaintext never in history</span>
+                <span class="cmt"># plaintext never in history or env</span>
               </div>
               <div class="cmd-line">
-                <span class="cmt"># counter + type + context = AAD</span>
+                <span class="cmt"
+                  ># dir_tag + counter + type + context = AAD</span
+                >
               </div>
               <div class="cmd-line">
-                <span class="cmt"># agent decrypts, acts, discards</span>
+                <span class="cmt"
+                  ># BrightNexus decrypts, surfaces in the menu bar, evicts
+                  after ttl</span
+                >
               </div>
             </div>
           </div>
         </div>
 
-        <!-- ── SDI media ── -->
+        <!-- ── BrightLink media ──
         <div
           style="
             margin-top: 2.5rem;
@@ -1397,7 +1415,7 @@ new.log</code></pre>
           <figure style="margin: 0">
             <img
               src="screenshot.png"
-              alt="BSH SDI Agent — macOS menu-bar app showing a decrypted ephemeral-auth payload"
+              alt="BrightNexus — macOS menu-bar app showing a decrypted ephemeral-auth payload"
               style="
                 width: 100%;
                 border-radius: var(--radius);
@@ -1413,9 +1431,9 @@ new.log</code></pre>
                 text-align: center;
               "
             >
-              BSH SDI Agent — macOS menu-bar app receiving and acting on a
+              BrightNexus — macOS menu-bar app receiving and acting on a
               decrypted
-              <code style="font-size: 0.78rem">ephemeral-auth</code> payload
+              <code style="font-size: 0.78rem">ephemeral-auth</code> payload.
             </figcaption>
           </figure>
 
@@ -1445,19 +1463,18 @@ new.log</code></pre>
               "
             >
               End-to-end demo:
-              <code style="font-size: 0.78rem">bsh-inject</code> sending an
-              encrypted OSC 7777 payload and the SDI Agent auto-filling a login
-              form
+              <code style="font-size: 0.78rem">bsh-inject</code> delivering a
+              credential and BrightNexus auto-filling a login form.
             </figcaption>
           </figure>
-        </div>
+        </div> -->
 
         <p style="margin-top: 1.5rem; font-size: 0.875rem">
           Full specification:
           <a
             class="link"
-            href="https://github.com/Digital-Defiance/bsh/blob/main/docs/rfc-sdi-osc7777.md"
-            >RFC — Secure Semantic Data Injection via OSC 7777</a
+            href="https://github.brightchain.org/docs/papers/brightlink/"
+            >RFC — BrightLink Protocol v1</a
           >
         </p>
       </div>
