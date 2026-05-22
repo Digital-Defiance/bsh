@@ -113,6 +113,80 @@ If this option is used with multiple filenames and the target
 is a symbolic link pointing to a directory then the result is
 an error.
 )
+findex(ls)
+item(tt(ls) [ tt(-acdFGhLlnorstu) ] [ tt(-)tt(-color)[tt(=)var(when)] ] [ var(file) ... ])(
+Lists files and the contents of directories.  Without arguments tt(ls)
+lists the current directory.  Each var(file) that is itself a directory
+is listed by its contents (one entry per line in short form, or in long
+form with tt(-l)); other var(file)s are printed individually.
+
+Note that this is a bsh built-in convenience implementation rather than
+a full POSIX or GNU tt(ls).  It supports the options below and nothing
+else.
+
+startsitem()
+sitem(tt(-a))(Include entries whose name begins with `tt(.)'.  Without
+this option such entries are skipped.)
+sitem(tt(-c))(Use the inode change time (ctime) for sorting and for the
+timestamp shown by tt(-l), instead of the modification time.  Implies
+tt(-t) for sorting purposes.  tt(-u) takes precedence over tt(-c) when
+both are given.)
+sitem(tt(-d))(Treat directory arguments like ordinary files: list the
+directory entry itself, not its contents.)
+sitem(tt(-F))(Append a single-character indicator to each entry name:
+`tt(/)' for directories, `tt(@)' for symbolic links, `tt(|)' for FIFOs,
+`tt(=)' for sockets, and `tt(*)' for files that are executable by some
+class of user.)
+sitem(tt(-G))(Force colourised output even when standard output is not a
+terminal.  Equivalent to `tt(-)tt(-color=always)'.  Setting either tt(-G)
+or running with stdout attached to a tty selects ANSI colour codes for
+directories, symbolic links, and executable files.  An explicit
+`tt(-)tt(-color)' option always overrides tt(-G).)
+sitem(tt(-h))(With tt(-l)/tt(-o), print sizes in a human-readable form,
+using a binary suffix (tt(K), tt(M), tt(G), tt(T), tt(P)) so that values
+fit in at most four characters.  Without tt(-l) this option has no
+effect.)
+sitem(tt(-L))(Dereference symbolic links: stat the target instead of the
+link itself, both when listing arguments and when listing directory
+entries.)
+sitem(tt(-l))(Use the long listing format: mode string, link count,
+owner, group, size, BrightDate timestamp, and name (followed by
+` -> var(target)' for symbolic links).)
+sitem(tt(-n))(With tt(-l)/tt(-o), show numeric user and group IDs
+instead of looking up names.)
+sitem(tt(-o))(Long listing format like tt(-l), but omit the group
+column.  Implies tt(-l); combine with tt(-n) to produce a fully numeric
+form.)
+sitem(tt(-r))(Reverse the sort order.  Applies to both name- and
+time-based sorts.)
+sitem(tt(-s))(With tt(-l)/tt(-o), print the file's allocated block count
+in front of each long-format line.)
+sitem(tt(-t))(Sort entries by modification time, newest first, instead
+of alphabetically by name.  Combine with tt(-c) or tt(-u) to sort by
+ctime or atime respectively, and with tt(-r) to reverse.)
+sitem(tt(-u))(Use the access time (atime) for sorting and for the
+timestamp shown by tt(-l), instead of the modification time.  Takes
+precedence over tt(-c).)
+sitem(tt(-)tt(-color)[tt(=)var(when)])(Control whether file names are
+colourised.  var(when) may be one of tt(always) (synonyms: tt(yes),
+tt(force)), tt(auto) (synonyms: tt(tty), tt(if-tty)), or tt(never)
+(synonyms: tt(no), tt(none)).  If var(when) is omitted, `tt(auto)' is
+assumed.  When `tt(auto)' is in effect, output is colourised only when
+standard output is a terminal.  This option, when given, overrides the
+tt(-G) flag and the default tty detection.)
+endsitem()
+
+A `tt(-)tt(-)' argument terminates option processing; everything that
+follows is treated as a file name.  Other GNU-style long options are not
+recognised.
+
+Output is sorted alphabetically by name unless tt(-t) is in effect, in
+which case it is sorted by the relevant timestamp (mtime, atime, or
+ctime).  tt(-r) reverses whichever sort is active.
+
+Long-format timestamps are produced using bsh's BrightDate formatter
+rather than the locale-dependent format used by traditional tt(ls).
+)
 findex(mkdir)
 item(tt(mkdir) [ tt(-p) ] [ tt(-m) var(mode) ] var(dir) ...)(
 Creates directories.  With the tt(-p) option, non-existing parent

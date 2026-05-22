@@ -803,9 +803,16 @@ extern double bsh_unix_to_brightdate(double unix_secs);
 #define COL_EXE  "\033[1;32m"
 #define COL_RST  "\033[0m"
 
+/* When to colorize output. */
+enum ls_color_when {
+    LS_COLOR_AUTO = 0,  /* colorize iff stdout is a tty (default) */
+    LS_COLOR_ALWAYS,    /* always colorize */
+    LS_COLOR_NEVER      /* never colorize */
+};
+
 /* ── display options passed through to print helpers ───────── */
 struct ls_opts {
-    int color;      /* -G or isatty(stdout) */
+    int color;      /* resolved bool: should we emit colour escapes? */
     int human;      /* -h: human-readable sizes */
     int numeric;    /* -n: numeric uid/gid */
     int type_ind;   /* -F: append type indicator */
@@ -1033,9 +1040,30 @@ ls_cmp_time(const void *a, const void *b)
 
 /* ls builtin — list files with BrightDate timestamps */
 
+/*
+ * Parse a --color[=WHEN] argument value into an enum.  Accepts the
+ * usual GNU-ish vocabulary; "tty"/"if-tty" map to auto.  Returns -1
+ * on an unrecognised value.
+ */
+static int
+ls_parse_color_when(const char *val)
+{
+    if (!val || !*val
+	|| !strcmp(val, "auto")    || !strcmp(val, "tty")
+	|| !strcmp(val, "if-tty"))
+	return LS_COLOR_AUTO;
+    if (!strcmp(val, "always")  || !strcmp(val, "yes")
+	|| !strcmp(val, "force"))
+	return LS_COLOR_ALWAYS;
+    if (!strcmp(val, "never")   || !strcmp(val, "no")
+	|| !strcmp(val, "none"))
+	return LS_COLOR_NEVER;
+    return -1;
+}
+
 /**/
 static int
-bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
+bin_ls(char *nam, char **args, UNUSED(Options ops), UNUSED(int func))
 {
     struct ls_opts o;
     struct stat st;
@@ -1044,24 +1072,102 @@ bin_ls(char *nam, char **args, Options ops, UNUSED(int func))
     struct dirent *de;
     DIR *dp;
     size_t nents, cap, i, idx;
-    int long_fmt    = OPT_ISSET(ops, 'l') || OPT_ISSET(ops, 'o');
-    int follow_syms = OPT_ISSET(ops, 'L');
-    int show_all    = OPT_ISSET(ops, 'a');
-    int dir_itself  = OPT_ISSET(ops, 'd');
+    int long_fmt    = 0;
+    int follow_syms = 0;
+    int show_all    = 0;
+    int dir_itself  = 0;
+    int got_G       = 0;
+    int color_when  = LS_COLOR_AUTO;
     int err = 0;
     int rv;
     char *dot[] = { ".", NULL };
 
-    o.use_atime = OPT_ISSET(ops, 'u');
-    o.use_ctime = OPT_ISSET(ops, 'c') && !o.use_atime; /* -u takes precedence */
-    o.human     = OPT_ISSET(ops, 'h');
-    o.numeric   = OPT_ISSET(ops, 'n');
-    o.type_ind  = OPT_ISSET(ops, 'F');
-    o.blocks    = OPT_ISSET(ops, 's');
-    o.sort_time = OPT_ISSET(ops, 't') || o.use_ctime;
-    o.reverse   = OPT_ISSET(ops, 'r');
-    o.color     = OPT_ISSET(ops, 'G') || isatty(STDOUT_FILENO);
-    o.no_group  = OPT_ISSET(ops, 'o');
+    memset(&o, 0, sizeof(o));
+
+    /*
+     * We handle option parsing ourselves (BINF_HANDLES_OPTS) so that
+     * we can support GNU-style long options like --color=auto in
+     * addition to the traditional short options.
+     */
+    while (*args && **args == '-' && (*args)[1]) {
+	char *arg = *args;
+
+	/* "--" terminates options. */
+	if (arg[1] == '-' && arg[2] == '\0') {
+	    args++;
+	    break;
+	}
+
+	/* Long option: --name or --name=value */
+	if (arg[1] == '-') {
+	    char *name = arg + 2;
+	    char *eq   = strchr(name, '=');
+	    size_t nlen = eq ? (size_t)(eq - name) : strlen(name);
+	    const char *val = eq ? eq + 1 : NULL;
+
+	    if (nlen == 5 && !strncmp(name, "color", 5)) {
+		int w = ls_parse_color_when(val);
+		if (w < 0) {
+		    zwarnnam(nam, "invalid argument `%s' for --color", val);
+		    return 1;
+		}
+		color_when = w;
+	    } else {
+		/*
+		 * Unknown long option: we don't currently accept
+		 * "--" prefixes for the short options, so just bail.
+		 */
+		zwarnnam(nam, "bad option: %s", arg);
+		return 1;
+	    }
+	    args++;
+	    continue;
+	}
+
+	/* Short option cluster: -abc */
+	for (arg++; *arg; arg++) {
+	    switch (*arg) {
+	    case 'a': show_all = 1;       break;
+	    case 'c': o.use_ctime = 1;    break;
+	    case 'd': dir_itself = 1;     break;
+	    case 'l': long_fmt = 1;       break;
+	    case 'L': follow_syms = 1;    break;
+	    case 'G': got_G = 1;          break;
+	    case 'F': o.type_ind = 1;     break;
+	    case 'h': o.human = 1;        break;
+	    case 'n': o.numeric = 1;      break;
+	    case 'o': o.no_group = 1; long_fmt = 1; break;
+	    case 'r': o.reverse = 1;      break;
+	    case 's': o.blocks = 1;       break;
+	    case 't': o.sort_time = 1;    break;
+	    case 'u': o.use_atime = 1;    break;
+	    default:
+		zwarnnam(nam, "bad option: -%c", *arg);
+		return 1;
+	    }
+	}
+	args++;
+    }
+
+    /* -u takes precedence over -c, mirroring previous behaviour. */
+    if (o.use_atime)
+	o.use_ctime = 0;
+    if (o.use_ctime)
+	o.sort_time = 1;
+
+    /*
+     * Resolve colour mode.  If --color was given it wins outright;
+     * otherwise -G forces colour and the default is auto (isatty).
+     */
+    switch (color_when) {
+    case LS_COLOR_ALWAYS: o.color = 1; break;
+    case LS_COLOR_NEVER:  o.color = 0; break;
+    case LS_COLOR_AUTO:
+    default:
+	o.color = got_G || isatty(STDOUT_FILENO);
+	break;
+    }
+
     ls_sort_use_atime = o.use_atime;
     ls_sort_use_ctime = o.use_ctime;
 
@@ -1158,7 +1264,7 @@ static struct builtin bintab[] = {
     BUILTIN("chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
-    BUILTIN("ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnorstu", NULL),
+    BUILTIN("ls",    BINF_HANDLES_OPTS, bin_ls, 0, -1, 0, NULL, NULL),
     BUILTIN("mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),
@@ -1169,7 +1275,7 @@ static struct builtin bintab[] = {
     BUILTIN("zf_chmod", 0, bin_chmod, 2, -1, 0,         "Rs",    NULL),
     BUILTIN("zf_chown", 0, bin_chown, 2, -1, BIN_CHOWN, "hRs",    NULL),
     BUILTIN("zf_ln",    0, bin_ln,    1, -1, BIN_LN,    LN_OPTS, NULL),
-    BUILTIN("zf_ls",    0, bin_ls,    0, -1, 0,         "acdlLGFhnorstu", NULL),
+    BUILTIN("zf_ls",    BINF_HANDLES_OPTS, bin_ls, 0, -1, 0, NULL, NULL),
     BUILTIN("zf_mkdir", 0, bin_mkdir, 1, -1, 0,         "pm:",   NULL),
     BUILTIN("zf_mv",    0, bin_ln,    2, -1, BIN_MV,    "fi",    NULL),
     BUILTIN("zf_rm",    0, bin_rm,    1, -1, 0,         "dfiRrs", NULL),

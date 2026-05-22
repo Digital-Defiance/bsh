@@ -1,10 +1,15 @@
+bsh-shell (5.13.0-1) noble; urgency=medium
+
+  * ls builtin: support GNU-style long options, in particular
+    --color[=WHEN] with WHEN in {auto,always,never,tty,if-tty,
+    yes,no,none,force}.  --color overrides -G and the default
+    isatty() detection.
+  * Document the ls builtin in Doc/Bsh/mod_files.yo, covering all
+    supported short options (-acdFGhLlnorstu) plus --color.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Thu, 21 May 2026 12:00:00 +0000
+
 bsh-shell (5.12.2-1) noble; urgency=medium
-
-  * Add ls -o long format without group column (implies -l)
-
- -- Jessica Mulein <jessica@digitaldefiance.org>  Wed, 21 May 2026 12:00:00 +0000
-
-bsh-shell (5.12.1-1) noble; urgency=medium
 
   * Add ls -c (ctime sort and display) to the bsh files module builtin.
   * Fix bsh-newuser-install option (2): guard cp with -r readability check.
