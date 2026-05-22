@@ -1,3 +1,9 @@
+bsh-shell (5.12.2-1) noble; urgency=medium
+
+  * Add ls -o long format without group column (implies -l)
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Wed, 21 May 2026 12:00:00 +0000
+
 bsh-shell (5.12.1-1) noble; urgency=medium
 
   * Add ls -c (ctime sort and display) to the bsh files module builtin.
