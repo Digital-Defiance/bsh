@@ -1,7 +1,7 @@
 /**
- * `mock-bsh-client` — a BrightLink v1-aware bsh shell, in TypeScript, in-process.
+ * `mock-bsh-client` — a BrightLink-aware bsh shell, in TypeScript, in-process.
  *
- * Speaks EBP/1 + BrightLink v1 to a BrightNexus (real or `mock-brightnexus`).
+ * Speaks EBP/1 + BrightLink to a BrightNexus (real or `mock-brightnexus`).
  * Generates fresh client material per registration, performs the
  * LINK_REGISTER handshake, derives K_session, verifies the bridge's
  * SEP-anchored transcript signature, and exposes the LINK_DELIVER

@@ -1,5 +1,5 @@
 /**
- * BrightLink Protocol v1 — executable spec.
+ * BrightLink Protocol — executable spec.
  *
  * Source of truth: docs/rfc-brightlink.md.
  *
@@ -44,7 +44,7 @@ export const LINK_COMMANDS = {
 export type LinkCommandName = (typeof LINK_COMMANDS)[keyof typeof LINK_COMMANDS];
 
 /** Stable error-message suffix for "this command is reserved but not yet
- *  implemented." Lets v1-aware clients distinguish a future-aware bridge
+ *  implemented." Lets BrightLink-aware clients distinguish a future-aware bridge
  *  from a stale EBP/1-only one (which returns "Unknown command"). */
 export const LINK_ERROR_NOT_IMPLEMENTED_SUFFIX = ' not implemented in this build';
 

@@ -15,12 +15,12 @@
 export const EBP1_SERVICE_NAME = 'enclave-bridge';
 
 /** Application identity returned by VERSION/INFO under the new `app` field.
- *  v1-aware clients SHOULD pin on this rather than on `service`.
+ *  BrightLink-aware clients SHOULD pin on this rather than on `service`.
  *  See README of BrightNexus. */
 export const BRIGHTNEXUS_APP_NAME = 'brightnexus';
 
 /** EBP/1 command names (the alphabet defined in §4). The set is fixed; new
- *  commands are added by the BrightLink v1 extension defined in `brightlink.ts`. */
+ *  commands are added by the BrightLink extension defined in `brightlink.ts`. */
 export const EBP1_COMMANDS = {
   HEARTBEAT: 'HEARTBEAT',
   VERSION: 'VERSION',

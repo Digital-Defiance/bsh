@@ -145,7 +145,7 @@ It reserves five more for future drafts:
 - `LINK_AUDIT_EMIT` — bulk audit export. Compliance hook.
 
 These reserved commands return a stable
-`"<command> not implemented in this build"` error string so v1-aware
+`"<command> not implemented in this build"` error string so BrightLink-aware
 clients can detect a bridge that knows the surface but hasn't shipped
 the implementation. v1.x will fill them in.
 
@@ -177,7 +177,7 @@ ecosystem.
   https://brightnexus.brightdate.org · https://github.com/Digital-Defiance/BrightNexus
 - **enclave-bridge-client** (the TypeScript client for non-bsh integrations):
   https://github.com/Digital-Defiance/enclave-bridge-client
-- **BrightLink v1 RFC**:
+- **BrightLink RFC**:
   https://github.com/Digital-Defiance/bsh/blob/main/docs/rfc-brightlink.md
 - **Test harness with conformance vectors and mock bridge/client**:
   https://github.com/Digital-Defiance/bsh/tree/main/test-harness

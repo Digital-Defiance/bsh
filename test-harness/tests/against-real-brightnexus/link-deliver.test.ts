@@ -1,5 +1,5 @@
 /**
- * Real-BrightNexus integration tests for `LINK_DELIVER` (RFC §4.9, BrightLink v1).
+ * Real-BrightNexus integration tests for `LINK_DELIVER` (RFC §4.9, BrightLink).
  *
  * Drives the running BrightNexus.app via `mock-bsh-client.ingestCredential()`.
  * Each test:
@@ -268,7 +268,7 @@ describe('real BrightNexus LINK_DELIVER — error surface', () => {
 
   it('rejects a replayed sequence (same counter twice)', async () => {
     if (skipIfNoBridge()) return;
-    // BrightLink v1: the bridge's replay defense rejects a re-submit at
+    // BrightLink: the bridge's replay defense rejects a re-submit at
     // counter ≤ lastAcceptedCounter. Build a deliver request manually
     // (not via ingestCredential, which auto-increments), send it twice.
     // The first one is accepted; the second is rejected.

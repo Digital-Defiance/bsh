@@ -1,7 +1,7 @@
 /**
  * mock-brightnexus unit tests.
  *
- * These exercise the EBP/1 surface and the BrightLink v1 LINK_REGISTER + LINK_PUSH
+ * These exercise the EBP/1 surface and the BrightLink LINK_REGISTER + LINK_PUSH
  * surface against the in-process mock. They do NOT involve any real Apple
  * hardware, the real Swift bridge, or the real enclave-bridge-client.
  *

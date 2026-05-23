@@ -1,14 +1,14 @@
 # BrightChain test harness
 
 Mocks, executable spec, and known-answer test vectors for the
-**bsh + BrightNexus + BrightLink v1** stack.
+**bsh + BrightNexus + BrightLink** stack.
 
 This package isn't shipped to npm. It exists so we can independently test
 each layer of the protocol without booting the entire BrightChain ecosystem.
 
 ## What this validates
 
-The BrightLink v1 architecture has three independent participants:
+The BrightLink architecture has three independent participants:
 
 - **bsh** — the reference shell. Owns the BrightLink session and the
   bridge connection. Sends `LINK_DELIVER` for credentials it captures
@@ -29,7 +29,7 @@ src/
 │   ├── ebp1.ts                 an RFC §X.Y citation. Single source of
 │   ├── ecies.ts                truth that all three mocks consult.
 │   ├── geo.ts                  (geo is reserved in v1)
-│   ├── brightlink.ts           BrightLink v1 — protocol constants,
+│   ├── brightlink.ts           BrightLink — protocol constants,
 │   │                           transcript builder, deriveSessionKey,
 │   │                           buildDeliverAad.
 │   └── index.ts
@@ -46,7 +46,7 @@ src/
 │   │                           framing.
 │   ├── types.ts                Public interfaces.
 │   └── index.ts                Public surface (MockBrightNexus class).
-└── mock-bsh-client/            In-process mock of a v1-aware shell.
+└── mock-bsh-client/            In-process mock of a BrightLink-aware shell.
     ├── discovery.ts            Bridge socket discovery.
     ├── types.ts                Public interfaces.
     └── index.ts                MockBshClient — register, ingestCredential
@@ -82,7 +82,7 @@ a helper, they share its bugs. Independent re-derivation catches drift.
 
 ## What v1 looks like on the wire
 
-BrightLink v1 is JSON on a Unix domain socket, with a hardware-anchored
+BrightLink is JSON on a Unix domain socket, with a hardware-anchored
 handshake that derives a per-session AES-256-GCM key. Three properties
 matter:
 
@@ -143,14 +143,14 @@ Byte-exact deterministic vectors any conforming implementation MUST match:
 - **DD-ECIES §18.5** — AES-256-GCM standalone encrypt/decrypt round-trip.
 - **DD-ECIES §18.6** — Basic-mode (0x21) full envelope (94 bytes).
 - **DD-ECIES §18.7** — WithLength-mode (0x42) full envelope (102 bytes).
-- **BrightLink v1 §4.5.2** — bilateral-HKDF K_session derivation.
-- **BrightLink v1 §4.5.3** — canonical 238-byte transcript layout.
+- **BrightLink §4.5.2** — bilateral-HKDF K_session derivation.
+- **BrightLink §4.5.3** — canonical 238-byte transcript layout.
 
 A future Swift, Rust, or other-language implementation can run these
 vectors as a known-answer test before being declared interoperable.
 
 ## Reference documents
 
-- `docs/rfc-brightlink.md` — BrightLink v1 RFC.
+- `docs/rfc-brightlink.md` — BrightLink RFC.
 - `docs/papers/enclave-bridge-protocol.md` — EBP/1 specification.
 - `docs/papers/dd-ecies-specification.md` — DD-ECIES wire format.

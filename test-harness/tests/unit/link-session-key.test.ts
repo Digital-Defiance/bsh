@@ -1,5 +1,5 @@
 /**
- * BrightLink Protocol v1 — session-key derivation known-answer test.
+ * BrightLink Protocol — session-key derivation known-answer test.
  *
  * The §4.5.2 bilateral-HKDF derivation has no published canonical answer.
  * We compute it once for fixed deterministic inputs (held in
@@ -30,7 +30,7 @@ import { LINK_V1_TEST_INPUTS } from '../../src/shared/known-answer-vectors.js';
 
 const hex = (s: string): Buffer => Buffer.from(s, 'hex');
 
-describe('BrightLink v1 §4.5.2 — bilateral HKDF for K_session', () => {
+describe('BrightLink §4.5.2 — bilateral HKDF for K_session', () => {
   const i = LINK_V1_TEST_INPUTS;
 
   it('inputs are well-formed', () => {
@@ -66,7 +66,7 @@ describe('BrightLink v1 §4.5.2 — bilateral HKDF for K_session', () => {
     // and the inputs in `LINK_V1_TEST_INPUTS`.
     //
     // To regenerate after a deliberate spec change, run:
-    //   yarn test:unit -t 'BrightLink v1 §4.5.2'
+    //   yarn test:unit -t 'BrightLink §4.5.2'
     // observe the failure's "received" value, paste here, commit.
     const pinnedHex = computeSessionKeyForFixture();
     expect(Buffer.from(sessionKey).toString('hex')).toBe(pinnedHex);
@@ -107,7 +107,7 @@ describe('BrightLink v1 §4.5.2 — bilateral HKDF for K_session', () => {
   });
 });
 
-describe('BrightLink v1 §4.5.3 — canonical transcript layout', () => {
+describe('BrightLink §4.5.3 — canonical transcript layout', () => {
   const i = LINK_V1_TEST_INPUTS;
   const fakeClientPub = Buffer.alloc(65, 0x04);
   fakeClientPub[0] = 0x04;
@@ -126,7 +126,7 @@ describe('BrightLink v1 §4.5.3 — canonical transcript layout', () => {
     expect(t.length).toBe(LINK_TRANSCRIPT_TOTAL_LENGTH);
   });
 
-  it('header is "BrightLink v1 transcript\\0" verbatim', () => {
+  it('header is "BrightLink transcript\\0" verbatim', () => {
     const t = buildTranscript({
       clientNonce: hex(i.clientNonceHex),
       clientPub: fakeClientPub,

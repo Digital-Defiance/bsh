@@ -1,7 +1,7 @@
 /*
- * brightlink.c — bsh's BrightLink Protocol v1 client module.
+ * brightlink.c — bsh's BrightLink Protocol client module.
  *
- * Implements the shell side of BrightLink Protocol v1, defined in
+ * Implements the shell side of BrightLink Protocol, defined in
  * docs/rfc-brightlink.md.
  *
  * What this module provides:
@@ -24,7 +24,7 @@
  *
  *   - HKDF info string:                 RFC §4.5.2 ("brightlink-session-key-v1")
  *   - canonical transcript layout:      RFC §4.5.3 (238 bytes)
- *   - LINK_DELIVER JSON request:        RFC §4.9.1
+ *   - LINK_DELIVER JSON request:        RFC §4.6.1
  *   - length-prefixed AAD construction: RFC §4.6.3
  *   - per-direction monotonic counters: RFC §4.6.4
  *
@@ -1328,7 +1328,7 @@ link_register_if_needed(char **errmsg)
 }
 
 /* ------------------------------------------------------------------ */
-/*  LINK_DELIVER (RFC §4.9) — encrypt + JSON wire emit + send           */
+/*  LINK_DELIVER (RFC §4.6) — encrypt + JSON wire emit + send           */
 /* ------------------------------------------------------------------ */
 
 static int

@@ -196,7 +196,7 @@ describe('BrightLink v1 spec internal consistency', () => {
     // Recompute from the field layout described in RFC §4.5.3 to catch
     // arithmetic drift in the constant.
     const expected =
-      25 + // header (was 21 in BrightLink v1)
+      25 + // header (was 21 in BrightLink)
       4 + 16 + // clientNonce
       4 + 65 + // clientPub (uncompressed)
       4 + 32 + // clientShare

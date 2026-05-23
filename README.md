@@ -489,7 +489,7 @@ scrollback.
 
 ### Payload schemas
 
-The BrightLink v1 RFC defines nine schemas; agents MAY accept additional types under
+The BrightLink RFC defines nine schemas; agents MAY accept additional types under
 their own namespace and MUST ignore unknown types.
 
 | Schema | `--type` value | Payload fields |
@@ -525,7 +525,7 @@ itself — schema validation is the bridge's responsibility.
 | Memory hygiene | `OPENSSL_cleanse()` on `K_session` and ephemeral private key at shell exit |
 | No plaintext in history | Payload travels through the bridge socket, not argv |
 
-Full specification: [RFC — BrightLink Protocol v1][rfc].
+Full specification: [RFC — BrightLink Protocol][rfc].
 
 ---
 

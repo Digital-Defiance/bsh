@@ -2,7 +2,7 @@
   "name": "@digitaldefiance/brightchain-test-harness",
   "version": "0.1.0",
   "private": true,
-  "description": "Mocks, executable spec, and known-answer test vectors for the BrightNexus + bsh + BrightLink v1 stack.",
+  "description": "Mocks, executable spec, and known-answer test vectors for the BrightNexus + bsh + BrightLink stack.",
   "type": "module",
   "engines": {
     "node": ">=18.0.0"

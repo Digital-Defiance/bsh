@@ -4,7 +4,7 @@
  * These values are normatively pinned by:
  *   - DD-ECIES-SPEC-v1.0 (the canonical specification of `@digitaldefiance/ecies-lib`
  *     and `@digitaldefiance/node-ecies-lib`)
- *   - BrightLink v1 RFC §4.5.0 (which restates the subset that affects BrightLink)
+ *   - BrightLink RFC §4.5.0 (which restates the subset that affects BrightLink)
  *
  * If DD-ECIES and the live `node-ecies-lib` source disagree, the source wins
  * and DD-ECIES is the bug to fix. We import the live `ECIES` constants object
@@ -102,7 +102,7 @@ export const ECIES_ENCRYPTION_TYPE = {
   BASIC: 0x21,
   /** WithLength single-recipient mode. 8-byte big-endian length after tag. §10.3 */
   WITH_LENGTH: 0x42,
-  /** Multiple-recipient mode. §11. NOT supported by the BrightLink v1 surface. */
+  /** Multiple-recipient mode. §11. NOT supported by the BrightLink surface. */
   MULTIPLE: 0x63,
 } as const;
 

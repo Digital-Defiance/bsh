@@ -275,7 +275,7 @@ export async function handleMessage(
     case EBP1_COMMANDS.EXPORT_KEY:
       return handleExportKey(req, bridge);
 
-    // BrightLink v1 — credential delivery
+    // BrightLink — credential delivery
     case LINK_COMMANDS.REGISTER:
       return handleLinkRegister(req, bridge, conn);
     case LINK_COMMANDS.DELIVER:
@@ -675,7 +675,7 @@ function encryptBasicEnvelopeToClient(
 
 /**
  * Decode + verify one `LINK_DELIVER` request from a registered shell.
- * BrightLink v1 §4.9: payload arrives as a JSON object with `counter`,
+ * BrightLink §4.9: payload arrives as a JSON object with `counter`,
  * `type`, `context`, `iv`, `ciphertext`, `authTag`. The bridge reconstructs
  * the AAD with `dir_tag = 0x01`, decrypts under K_session, advances the
  * inbound counter, and records an audit event.

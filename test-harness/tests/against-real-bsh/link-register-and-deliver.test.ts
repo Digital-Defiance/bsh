@@ -179,13 +179,13 @@ describe('bsh BrightLink — bsh-inject + LINK_DELIVER', () => {
       // and emit something explanatory". The specific phrase varies by where
       // the failure surfaces.
       expect(r.stderr).toMatch(/bridge|unavailable|connect|LINK_REGISTER|GET_PUBLIC_KEY|fail/i);
-      // BrightLink v1 does NOT emit OSC sequences to stdout.
+      // BrightLink does NOT emit OSC sequences to stdout.
       expect(r.stdout).not.toContain('\x1b]7777;');
     },
   );
 
   it.runIf(enabled && bshBin !== null)(
-    'bsh-inject never writes wire bytes to stdout (BrightLink v1 has no OSC framing)',
+    'bsh-inject never writes wire bytes to stdout (BrightLink has no OSC framing)',
     async () => {
       const r = await runBsh(
         `printf '{"value":"a","ttl":60}' | bsh-inject --type plaintext --context test://a`,

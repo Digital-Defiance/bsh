@@ -1,5 +1,5 @@
 #!/usr/bin/env bsh
-# Live BrightLink v1 demo of bsh-inject + link-geo against running BrightNexus.app.
+# Live BrightLink demo of bsh-inject + link-geo against running BrightNexus.app.
 #
 # Three credentials should appear in the menu bar Credentials submenu and
 # the Dashboard view; the geo surface should return real coordinates if
@@ -25,7 +25,7 @@ printf '%s' '{"username":"alice","password":"hunter2-link-v1","email":"alice@exa
 printf '%s' '{"engine":"postgres","host":"prod-db.internal","port":5432,"user":"svc","pass":"shhh-link-v1","ttl":600,"issued_at":1779461600}' \
   | bsh-inject --type db-connection --context "postgres://prod-db"
 
-print -- "  three credentials delivered via real bsh-inject (BrightLink v1) — check the BrightNexus menu bar"
+print -- "  three credentials delivered via real bsh-inject (BrightLink) — check the BrightNexus menu bar"
 print
 
 print -- "===== Geo surface (link-geo -> BrightNexus) ====="

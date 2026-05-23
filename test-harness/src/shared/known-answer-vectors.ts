@@ -131,7 +131,7 @@ export const DD_ECIES_TEST_BASIC_AUTH_TAG_HEX = 'e6dbf735d3ef9a4235d5513f9e8829c
  *
  * Total: 64 (fixed overhead) + 30 (ciphertext) = 94 bytes.
  *
- * BrightLink v1 §4.5.0 names this as the canonical interop test vector for
+ * BrightLink §4.5.0 names this as the canonical interop test vector for
  * LINK_REGISTER outer envelopes. Any from-scratch implementation MUST pass
  * this round-trip in CI before being considered conformant.
  */
@@ -180,7 +180,7 @@ export const DD_ECIES_TEST_WITH_LENGTH_ENVELOPE_HEX =
   'f3c70450f1ac074e93508eb3caed91a900ebc463d4eaa78c4c56389f36ee';
 
 // ────────────────────────────────────────────────────────────────────────────
-// BrightLink v1 — derived bilateral-HKDF vector
+// BrightLink — derived bilateral-HKDF vector
 // ────────────────────────────────────────────────────────────────────────────
 
 /**

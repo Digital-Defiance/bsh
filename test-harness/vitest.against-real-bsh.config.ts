@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 /**
  * Config for `against-real-bsh` — drives a real bsh binary against
- * `mock-brightnexus` to validate the BrightLink v1 behaviors that live in the
+ * `mock-brightnexus` to validate the BrightLink behaviors that live in the
  * shell:
  *
  *   - Lazy LINK_REGISTER on first inject.
