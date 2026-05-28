@@ -1,0 +1,26 @@
+Per-series build notes for bsh-shell
+=====================================
+
+libsecp256k1 ABI by Ubuntu series:
+
+  Noble 24.04         libsecp256k1-1   (source 0.4.x)
+  Oracular 24.10      libsecp256k1-2   (source 0.5.x)
+  Plucky 25.04        libsecp256k1-2   (source 0.5.x)
+  Questing 25.10      libsecp256k1-2   (source 0.5.x)
+  26.04 +             libsecp256k1-6   (source 0.6.x)
+
+`Build-Depends: libsecp256k1-dev` resolves to whatever the chroot's
+libsecp256k1 happens to be. The runtime dependency is auto-discovered
+by dpkg-shlibdeps via `${shlibs:Depends}` and pins to the runtime
+SONAME the binary was actually linked against.
+
+Consequence: a .deb built on Plucky declares
+`libsecp256k1-2` as its runtime dep and will NOT install on Noble
+(which only has libsecp256k1-1). The Launchpad recipe MUST build
+separately per target series. Do not copy a single binary across
+series.
+
+If a series fails build with a libsecp256k1-dev missing/wrong-version
+error, check that the recipe targets that series with its own chroot
+and that the chroot's apt index has libsecp256k1-dev for that
+release.

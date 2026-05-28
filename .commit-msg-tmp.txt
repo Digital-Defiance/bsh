@@ -1,0 +1,29 @@
+debian: per-series build notes for libsecp256k1 ABI
+
+Two changes:
+
+1. _service.obs: bump tracked version 5.14.0 -> 5.14.1 so the OBS
+   tarball-build service stops generating a stale 5.14.0 source.
+
+2. debian/README.source: new file documenting the per-Ubuntu-series
+   libsecp256k1 ABI table:
+
+     Noble 24.04   -> libsecp256k1-1   (source 0.4.x)
+     Oracular/Plucky/Questing -> libsecp256k1-2  (source 0.5.x)
+     26.04 +       -> libsecp256k1-6   (source 0.6.x)
+
+   `Build-Depends: libsecp256k1-dev` resolves to whatever's in the
+   build chroot; runtime dep is auto-pinned via ${shlibs:Depends}
+   to the SONAME the binary was actually linked against. So a .deb
+   built on Plucky declares libsecp256k1-2 and will NOT install on
+   Noble (which only has libsecp256k1-1).
+
+   The Launchpad recipe MUST build separately per target series;
+   a single binary cannot be copied across series. The README.source
+   file documents this so a future "why does my Plucky-built deb
+   refuse to install on Noble" debugging session has the answer
+   written down.
+
+   No code change to debian/control was needed - the build-dep is
+   already correctly unversioned and per-chroot resolution gives
+   the right answer per build.
