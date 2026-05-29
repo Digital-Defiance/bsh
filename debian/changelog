@@ -1,3 +1,11 @@
+bsh-shell (5.14.7-1) noble; urgency=medium
+
+  * Ship brightdate-rust v0.5.3 as debian/brightdate-rust-0.5.3.tar.xz.
+    Launchpad builders are network-isolated, so the GitHub fetch in 5.14.6
+    could not run; extract the bundled tarball instead.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 29 May 2026 22:00:00 +0000
+
 bsh-shell (5.14.6-1) noble; urgency=medium
 
   * debian/fetch-brightdate-rust.py: fetch brightdate-rust via python3

@@ -4,7 +4,6 @@ Priority: optional
 Maintainer: Jessica Mulein <jessica@digitaldefiance.org>
 Build-Depends: debhelper-compat (= 13),
                autoconf,
-               ca-certificates,
                libncursesw5-dev | libncurses-dev,
                libpcre2-dev,
                libcap-dev,

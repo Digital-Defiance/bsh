@@ -35,10 +35,13 @@ directory or a stale checkout without the pinned release.
 `debian/rules` runs `debian/fetch-brightdate-rust.py`, which detects a
 missing `crates/btime/src/color.rs` and then:
   1. runs `git submodule update --init --recursive brightdate-rust`
-  2. if still missing, downloads the tag named in
-     `debian/brightdate-rust-version` from GitHub via python3 (urllib)
+  2. if still missing, extracts `debian/brightdate-rust-VERSION.tar.xz`
 
-Build-Depends includes `ca-certificates` so HTTPS fetch works in sbuild.
+Launchpad builders are network-isolated, so the tarball (not a GitHub
+download) is what makes PPA builds work.  Regenerate it after bumping
+`debian/brightdate-rust-version`:
+
+  debian/refresh-brightdate-rust-tarball.sh
 
 Bump `debian/brightdate-rust-version` whenever the bsh release rebases
 onto a new brightdate-rust tag.

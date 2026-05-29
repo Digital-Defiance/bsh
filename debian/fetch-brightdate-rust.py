@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
-"""Fetch brightdate-rust source when git submodules are not expanded (Launchpad)."""
+"""Ensure brightdate-rust sources exist when git submodules are not expanded."""
 import io
 import sys
 import tarfile
-import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,6 +28,22 @@ def try_git_submodule() -> bool:
     return MARKER.is_file()
 
 
+def extract_local_tarball(version: str) -> bool:
+    tarball = ROOT / "debian" / f"brightdate-rust-{version}.tar.xz"
+    if not tarball.is_file():
+        return False
+
+    print(f"fetch-brightdate-rust: extracting {tarball.name}", flush=True)
+    if TARGET.exists():
+        import shutil
+
+        shutil.rmtree(TARGET)
+
+    with tarfile.open(tarball, mode="r:xz") as tar:
+        tar.extractall(path=ROOT)
+    return MARKER.is_file()
+
+
 def main() -> int:
     if MARKER.is_file():
         return 0
@@ -37,37 +52,18 @@ def main() -> int:
         return 0
 
     version = VERSION_FILE.read_text(encoding="utf-8").strip()
-    url = (
-        "https://github.com/Digital-Defiance/brightdate-rust/"
-        f"archive/refs/tags/v{version}.tar.gz"
+    if extract_local_tarball(version):
+        return 0
+
+    print(
+        "ERROR: brightdate-rust sources missing and Launchpad builders have no "
+        "network access.\n"
+        f"Expected {MARKER.relative_to(ROOT)} or "
+        f"debian/brightdate-rust-{version}.tar.xz\n"
+        "Regenerate the tarball with: debian/refresh-brightdate-rust-tarball.sh",
+        file=sys.stderr,
     )
-    print(f"fetch-brightdate-rust: GET {url}", flush=True)
-
-    with urllib.request.urlopen(url) as resp:
-        data = resp.read()
-
-    if TARGET.exists():
-        import shutil
-
-        shutil.rmtree(TARGET)
-    TARGET.mkdir(parents=True)
-
-    prefix = f"brightdate-rust-{version}/"
-    with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tar:
-        for member in tar.getmembers():
-            if not member.name.startswith(prefix) or member.name == prefix:
-                continue
-            member.name = member.name[len(prefix) :]
-            if member.name:
-                tar.extract(member, path=TARGET)
-
-    if not MARKER.is_file():
-        print(
-            f"ERROR: brightdate-rust v{version} missing {MARKER.relative_to(ROOT)}",
-            file=sys.stderr,
-        )
-        return 1
-    return 0
+    return 1
 
 
 if __name__ == "__main__":

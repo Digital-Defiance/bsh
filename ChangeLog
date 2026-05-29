@@ -1,5 +1,11 @@
 2026-05-29  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
 
+        * debian/brightdate-rust-0.5.3.tar.xz: bundle brightdate-rust for
+        offline Launchpad builds (sbuild has no network).  Bump version to
+        5.14.7.
+
+2026-05-29  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
+
         * debian/fetch-brightdate-rust.py: use python3 urllib instead of
         curl to fetch brightdate-rust on Launchpad (sbuild has no curl).
         Build-Depends: ca-certificates.  Bump version to 5.14.6.
