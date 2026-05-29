@@ -7,6 +7,27 @@ export CARGO_HOME = $(CURDIR)/debian/.cargo-home
 	dh $@
 
 override_dh_auto_configure:
+	# Launchpad git clones often omit submodule tree contents; ensure the
+	# pinned brightdate-rust release is present before configure/build.
+	@BRIGHTDATE_VER=$$(cat debian/brightdate-rust-version); \
+	if [ ! -f brightdate-rust/crates/btime/src/color.rs ]; then \
+		echo "brightdate-rust submodule not expanded; trying git submodule update"; \
+		if [ -d .git ]; then \
+			git submodule update --init --recursive brightdate-rust || true; \
+		fi; \
+	fi; \
+	if [ ! -f brightdate-rust/crates/btime/src/color.rs ]; then \
+		echo "Fetching brightdate-rust v$$BRIGHTDATE_VER source tarball"; \
+		rm -rf brightdate-rust; \
+		mkdir -p brightdate-rust; \
+		curl --fail --location --retry 3 \
+			"https://github.com/Digital-Defiance/brightdate-rust/archive/refs/tags/v$$BRIGHTDATE_VER.tar.gz" \
+			| tar -xz --strip-components=1 -C brightdate-rust; \
+	fi; \
+	if [ ! -f brightdate-rust/crates/btime/src/color.rs ]; then \
+		echo "ERROR: brightdate-rust v$$BRIGHTDATE_VER is missing btime color sources"; \
+		exit 1; \
+	fi
 	# dh will auto-run autoreconf; pass bsh-specific configure flags
 	dh_auto_configure -- \
 		--enable-etcdir=/etc \

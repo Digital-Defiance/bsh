@@ -24,3 +24,18 @@ If a series fails build with a libsecp256k1-dev missing/wrong-version
 error, check that the recipe targets that series with its own chroot
 and that the chroot's apt index has libsecp256k1-dev for that
 release.
+
+brightdate-rust submodule / Launchpad
+-------------------------------------
+
+bsh embeds brightdate-rust as a git submodule. Launchpad git checkouts
+often do not expand submodules, leaving an empty `brightdate-rust/`
+directory or a stale checkout without the pinned release.
+
+`debian/rules` detects a missing `crates/btime/src/color.rs` and then:
+  1. runs `git submodule update --init --recursive brightdate-rust`
+  2. if still missing, downloads the tag named in
+     `debian/brightdate-rust-version` from GitHub
+
+Bump `debian/brightdate-rust-version` whenever the bsh release rebases
+onto a new brightdate-rust tag.

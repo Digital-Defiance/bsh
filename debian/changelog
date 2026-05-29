@@ -1,3 +1,12 @@
+bsh-shell (5.14.5-1) noble; urgency=medium
+
+  * debian/rules: Launchpad git checkouts often omit the brightdate-rust
+    submodule tree.  Detect a missing btime color source and fetch the
+    tag named in debian/brightdate-rust-version (currently v0.5.3) before
+    building so PPA packages actually include `btime --color` support.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 29 May 2026 20:00:00 +0000
+
 bsh-shell (5.14.4-1) noble; urgency=medium
 
   * Rebuild against brightdate-rust v0.5.3.  The v0.5.2 git tag did not
