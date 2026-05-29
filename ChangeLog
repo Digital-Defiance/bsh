@@ -1,6 +1,14 @@
 2026-05-29  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
 
         * brightdate-rust: rebuild bsh against brightdate Rust crates
+        v0.5.3 (bcal, bdate, btime, buptime, bwatch, brightdate-ffi).
+        v0.5.3 is the first tagged release that includes btime color
+        output (v0.5.2 tag predated those commits).  Bump version to
+        5.14.4.
+
+2026-05-29  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
+
+        * brightdate-rust: rebuild bsh against brightdate Rust crates
         v0.5.2 (bcal, bdate, btime, buptime, bwatch, brightdate-ffi).
         Bump version to 5.14.3.
 

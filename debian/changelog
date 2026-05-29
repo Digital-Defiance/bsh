@@ -1,3 +1,15 @@
+bsh-shell (5.14.4-1) noble; urgency=medium
+
+  * Rebuild against brightdate-rust v0.5.3.  The v0.5.2 git tag did not
+    include the btime color commits; v0.5.3 is the first tag with
+    `--color` / `--no-color` / `--color-scheme` support in the btime
+    builtin and binary.
+  * Note: the shell `time` keyword (TIMEFMT milliday output) is separate
+    from the `btime` builtin; use `btime cmd` for colored BrightDate
+    timing reports.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 29 May 2026 18:00:00 +0000
+
 bsh-shell (5.14.3-1) noble; urgency=medium
 
   * Rebuild against brightdate-rust v0.5.2 (bcal, bdate, btime, buptime,
