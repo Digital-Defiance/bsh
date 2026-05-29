@@ -1,3 +1,19 @@
+bsh-shell (5.14.3-1) noble; urgency=medium
+
+  * Rebuild against brightdate-rust v0.5.2 (bcal, bdate, btime, buptime,
+    bwatch, brightdate-ffi).  Includes bdate +format strftime support
+    aligned with the shell date builtin +format fix in 5.14.2.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 29 May 2026 12:00:00 +0000
+
+bsh-shell (5.14.2-1) noble; urgency=medium
+
+  * date builtin: accept +format strftime patterns like standard date(1)
+    (e.g. date +%Y%m%d for shell variable expansion).
+  * Rebuild against brightdate-rust v0.5.2.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Thu, 28 May 2026 12:00:00 +0000
+
 bsh-shell (5.14.1-1) noble; urgency=medium
 
   * link-geo builtin: autoload alongside bsh-inject so it is available
