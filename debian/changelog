@@ -1,3 +1,11 @@
+bsh-shell (5.14.8-1) noble; urgency=medium
+
+  * Rebuild against brightdate-rust v0.5.4.  btime returns errors instead of
+    exiting the shell on bad --color options when used as a bsh builtin;
+    `--color=plain` disables ANSI output.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 29 May 2026 23:00:00 +0000
+
 bsh-shell (5.14.7-1) noble; urgency=medium
 
   * Ship brightdate-rust v0.5.3 as debian/brightdate-rust-0.5.3.tar.xz.
