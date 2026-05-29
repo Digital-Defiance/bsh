@@ -3,7 +3,7 @@
     <param name="url">https://github.com/Digital-Defiance/bsh.git</param>
     <param name="scm">git</param>
     <param name="revision">main</param>
-    <param name="version">5.14.5</param>
+    <param name="version">5.14.6</param>
     <param name="submodules">enable</param>
     <param name="filename">bsh</param>
   </service>

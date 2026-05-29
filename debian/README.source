@@ -32,10 +32,13 @@ bsh embeds brightdate-rust as a git submodule. Launchpad git checkouts
 often do not expand submodules, leaving an empty `brightdate-rust/`
 directory or a stale checkout without the pinned release.
 
-`debian/rules` detects a missing `crates/btime/src/color.rs` and then:
+`debian/rules` runs `debian/fetch-brightdate-rust.py`, which detects a
+missing `crates/btime/src/color.rs` and then:
   1. runs `git submodule update --init --recursive brightdate-rust`
   2. if still missing, downloads the tag named in
-     `debian/brightdate-rust-version` from GitHub
+     `debian/brightdate-rust-version` from GitHub via python3 (urllib)
+
+Build-Depends includes `ca-certificates` so HTTPS fetch works in sbuild.
 
 Bump `debian/brightdate-rust-version` whenever the bsh release rebases
 onto a new brightdate-rust tag.

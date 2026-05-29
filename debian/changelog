@@ -1,3 +1,11 @@
+bsh-shell (5.14.6-1) noble; urgency=medium
+
+  * debian/fetch-brightdate-rust.py: fetch brightdate-rust via python3
+    urllib when Launchpad omits the submodule (sbuild has no curl).
+  * Build-Depends: ca-certificates for HTTPS tarball download.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Fri, 29 May 2026 21:00:00 +0000
+
 bsh-shell (5.14.5-1) noble; urgency=medium
 
   * debian/rules: Launchpad git checkouts often omit the brightdate-rust

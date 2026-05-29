@@ -1,5 +1,11 @@
 2026-05-29  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
 
+        * debian/fetch-brightdate-rust.py: use python3 urllib instead of
+        curl to fetch brightdate-rust on Launchpad (sbuild has no curl).
+        Build-Depends: ca-certificates.  Bump version to 5.14.6.
+
+2026-05-29  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
+
         * debian/rules: fetch brightdate-rust from its git tag when
         Launchpad omits submodule contents (fixes PPA btime missing
         --color despite bsh version bump).  Bump version to 5.14.5.
