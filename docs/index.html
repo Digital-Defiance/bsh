@@ -268,6 +268,61 @@
       .out {
         color: var(--yellow);
       }
+      /* BrightDate scalar coloring (matches bfind / btime -f %Wt) */
+      .out-bd-int {
+        color: #50c8dc;
+        font-weight: 700;
+      }
+      .out-bd-frac {
+        color: #c8ccd6;
+      }
+      .out-bd-path {
+        color: var(--text-bright);
+        font-weight: 700;
+      }
+      /* btime default report (--color=auto on TTY) */
+      .bt-label-real {
+        color: #50c8dc;
+        font-weight: 700;
+      }
+      .bt-label-user {
+        color: #78dc8c;
+        font-weight: 700;
+      }
+      .bt-label-sys {
+        color: #f0c050;
+        font-weight: 700;
+      }
+      .bt-label-cpu {
+        color: #c878dc;
+        font-weight: 700;
+      }
+      .bt-label-stamp {
+        color: #78a0f0;
+        font-weight: 700;
+      }
+      .bt-value {
+        color: #f0f0f0;
+        font-weight: 700;
+      }
+      .bt-detail {
+        color: #787878;
+      }
+      .bt-unit {
+        color: #808080;
+      }
+      .bt-cpu-low {
+        color: #64c864;
+        font-weight: 700;
+      }
+      .bt-cpu-mid {
+        color: #f0c050;
+        font-weight: 700;
+      }
+      .bt-cpu-high {
+        color: #f06464;
+        font-weight: 700;
+      }
       .cmt {
         color: #6b7399;
       }
@@ -1091,22 +1146,58 @@ $ bdate --strftime '%Y-%m-%d' 9628.0
             <div class="feature-icon">⏱️</div>
             <h3><code>btime</code> / <code>time</code></h3>
             <p>
-              Three output modes: (1)&nbsp;BrightDate report (default, optional
-              color), (2)&nbsp;GNU <code>-f</code> format strings, (3)&nbsp;POSIX
-              <code>-p</code> or verbose <code>-v</code>. As a BSH builtin, bad
-              flags return an error code instead of killing the shell.
+              Three output modes: (1)&nbsp;BrightDate report (default,
+              <strong style="color: var(--text-bright)">colorized on TTY</strong>
+              via <code>--color=auto</code>), (2)&nbsp;GNU <code>-f</code> format
+              strings, (3)&nbsp;POSIX <code>-p</code> or verbose <code>-v</code>.
+              As a BSH builtin, bad flags return an error code instead of killing
+              the shell.
             </p>
-            <pre style="margin-top: 0.75rem; font-size: 0.72rem"><code># Default BrightDate report (colored on TTY)
-$ btime sleep 1
-
-# GNU portability output
-$ btime -p sleep 1
-
-# Custom format — bfind-compatible %Wt
-$ btime -f '%Wt %C' -- true
-
-# BrightDate extensions in -f
-$ btime -f 'elapsed=%B start=%Ws end=%Wt' -- make</code></pre>
+            <div
+              class="terminal"
+              style="display: block; margin-top: 0.75rem; max-width: 100%"
+            >
+              <div class="terminal-bar">
+                <span class="dot dot-red"></span>
+                <span class="dot dot-yellow"></span>
+                <span class="dot dot-green"></span>
+              </div>
+              <div class="terminal-body">
+                <div class="cmd-line">
+                  <span class="prompt">$</span>
+                  <span class="cmd"> btime sleep 1</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="bt-label-real">real    </span><span class="bt-value">0.000011574</span><span class="bt-unit"> days</span><span class="bt-detail">  (</span><span class="bt-value">1.000000</span><span class="bt-unit"> s</span><span class="bt-detail">)</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="bt-detail">         </span><span class="bt-value">0.011574</span><span class="bt-unit"> millidays</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="bt-label-user">user    </span><span class="bt-value">0.000463</span><span class="bt-unit"> s</span><span class="bt-detail">  (</span><span class="bt-value">0.000005</span><span class="bt-unit"> millidays</span><span class="bt-detail">)</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="bt-label-sys">sys     </span><span class="bt-value">0.000926</span><span class="bt-unit"> s</span><span class="bt-detail">  (</span><span class="bt-value">0.000011</span><span class="bt-unit"> millidays</span><span class="bt-detail">)</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="bt-label-cpu">cpu     </span><span class="bt-cpu-low">0.2%</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="bt-label-stamp">start   </span><span class="out-bd-int">9628</span><span class="out-bd-frac">.195697523</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="bt-label-stamp">end     </span><span class="out-bd-int">9628</span><span class="out-bd-frac">.195709097</span>
+                </div>
+                <div class="cmd-line" style="margin-top: 0.6rem">
+                  <span class="prompt">$</span>
+                  <span class="cmd"> btime -f '%Wt %C' -- true</span>
+                </div>
+                <div class="cmd-line">
+                  <span class="out-bd-int">9628</span><span class="out-bd-frac">.195712</span>
+                  <span class="out-bd-path"> true</span>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div class="feature-card">
@@ -1177,7 +1268,11 @@ Every 0.023 md: …</code></pre>
           Color flags: <code>--color=auto|always|never|ansi|truecolor</code>,
           <code>--no-color</code>, <code>--color-scheme=default|bright</code>,
           plus <code>BTIME_COLOR</code>, <code>BTIME_COLOR_SCHEME</code>,
-          <code>NO_COLOR</code>. GNU modes disable color automatically.
+          <code>NO_COLOR</code>. GNU modes disable color automatically. On a TTY,
+          labels are cyan/green/yellow/blue by field — same scanning style as
+          <a class="link" href="https://findutils.digitaldefiance.org">bfind</a>
+          and
+          <a class="link" href="https://iputils.digitaldefiance.org">bright-iputils</a>.
         </p>
 
         <p style="margin-top: 1.25rem; font-size: 0.875rem">
@@ -1273,13 +1368,13 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
         </table>
 
         <pre style="margin-top: 1rem"><code><span style="color:var(--green)">$</span> bfind . -name '*.log' -printf '%Wt %p\n'
-9628.195697 ./app.log
+<span style="color:#50c8dc;font-weight:700">9628</span><span style="color:#c8ccd6">.195697</span> <span style="font-weight:700;color:var(--text-bright)">./app.log</span>
 
 <span style="color:var(--green)">$</span> btime -f '%Wt %C' -- sleep 0.1
-9628.195712 sleep
+<span style="color:#50c8dc;font-weight:700">9628</span><span style="color:#c8ccd6">.195712</span> <span style="font-weight:700;color:var(--text-bright)">sleep</span>
 
 <span style="color:var(--green)">$</span> btime -f 'start=%Ws end=%Wt elapsed=%B' -- ./deploy.sh
-start=9628.195700 end=9628.195850 elapsed=0.000150</code></pre>
+start=<span style="color:#50c8dc;font-weight:700">9628</span><span style="color:#c8ccd6">.195700</span> end=<span style="color:#50c8dc;font-weight:700">9628</span><span style="color:#c8ccd6">.195850</span> elapsed=<span style="color:#f0f0f0;font-weight:700">0.000150</span></code></pre>
 
         <p style="margin-top: 1rem; font-size: 0.875rem">
           Because both tools emit the same scalar, log lines from
@@ -1334,7 +1429,9 @@ TIMEFMT='%J  %U user %S system %P cpu %E real'</code></pre>
           <code>bdate</code>/<code>btime</code>/… CLI tools — no fork, no
           external process, no <code>$TZ</code> dance. The traditional binaries
           are shadowed transparently, so existing scripts switch over for free.
-          See <a class="link" href="#brightdate-utils">full tool-by-tool differences</a>.
+          <code>btime</code> colorizes its default report on TTYs for easy
+          scanning. See
+          <a class="link" href="#brightdate-utils">full tool-by-tool differences</a>.
         </p>
 
         <div class="modules">
@@ -1392,20 +1489,48 @@ TIMEFMT='%J  %U user %S system %P cpu %E real'</code></pre>
           </div>
           <div class="terminal-body">
             <div class="cmd-line">
-              <span class="prompt">[9628.19] %</span>
-              <span class="cmd">btime sleep 0.5</span>
+              <span class="cmt"># default BrightDate report — color on TTY (--color=auto)</span>
             </div>
             <div class="cmd-line">
-              <span class="out">real 0.000005787 days (0.500 s)</span>
+              <span class="prompt">[9628.19] %</span>
+              <span class="cmd">btime sleep 1</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-label-real">real    </span><span class="bt-value">0.000011574</span><span class="bt-unit"> days</span><span class="bt-detail">  (</span><span class="bt-value">1.000000</span><span class="bt-unit"> s</span><span class="bt-detail">)</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-detail">         </span><span class="bt-value">0.011574</span><span class="bt-unit"> millidays</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-detail">         </span><span class="bt-value">11.574</span><span class="bt-unit"> microdays</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-label-user">user    </span><span class="bt-value">0.000463</span><span class="bt-unit"> s</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-label-sys">sys     </span><span class="bt-value">0.000926</span><span class="bt-unit"> s</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-label-cpu">cpu     </span><span class="bt-cpu-low">0.2%</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-label-stamp">start   </span><span class="out-bd-int">9628</span><span class="out-bd-frac">.195697523</span>
+            </div>
+            <div class="cmd-line">
+              <span class="bt-label-stamp">end     </span><span class="out-bd-int">9628</span><span class="out-bd-frac">.195709097</span>
+            </div>
+            <div class="cmd-line" style="margin-top: 0.6rem">
+              <span class="cmt"># bfind-compatible -f format</span>
             </div>
             <div class="cmd-line">
               <span class="prompt">[9628.19] %</span>
               <span class="cmd">btime -f '%Wt %C' -- true</span>
             </div>
             <div class="cmd-line">
-              <span class="out">9628.195712 true</span>
+              <span class="out-bd-int">9628</span><span class="out-bd-frac">.195712</span>
+              <span class="out-bd-path"> true</span>
             </div>
-            <div class="cmd-line">
+            <div class="cmd-line" style="margin-top: 0.6rem">
               <span class="prompt">[9628.19] %</span>
               <span class="cmd">uptime</span>
             </div>
