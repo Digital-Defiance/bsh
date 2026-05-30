@@ -1,3 +1,11 @@
+bsh-shell (5.14.9-1) noble; urgency=medium
+
+  * Rebuild against brightdate-rust v0.5.5.  btime adds GNU time 1.10-style
+    compatibility (`-f`, `-p`, `-v`, `-o`, `-a`, `-q`, `TIME` env) with full
+    `%` format specifiers; BrightDate colored report remains the default.
+
+ -- Jessica Mulein <jessica@digitaldefiance.org>  Sat, 30 May 2026 00:00:00 +0000
+
 bsh-shell (5.14.8-1) noble; urgency=medium
 
   * Rebuild against brightdate-rust v0.5.4.  btime returns errors instead of
