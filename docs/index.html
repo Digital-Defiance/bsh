@@ -30,6 +30,12 @@
       .feature-card.span-double {
         grid-column: 1 / 3;
       }
+      .feature-card.span-full {
+        grid-column: 1 / -1;
+      }
+      .feature-card.span-rest {
+        grid-column: span 2;
+      }
       .feature-icon {
         display: inline-flex;
       }
@@ -176,10 +182,15 @@
         border: 1px solid var(--border);
         border-radius: var(--radius);
         text-align: left;
-        min-width: min(620px, 90vw);
-        max-width: 90vw;
+        min-width: 0;
+        max-width: 100%;
         overflow: hidden;
         box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+      }
+
+      .hero .terminal {
+        min-width: min(620px, 90vw);
+        max-width: 90vw;
       }
 
       .terminal-bar {
@@ -440,14 +451,73 @@
         margin-top: 2.5rem;
       }
 
+      .util-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .duo-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      @media (max-width: 900px) {
+        .util-grid {
+          grid-template-columns: 1fr;
+        }
+        .util-grid .feature-card.span-rest,
+        .util-grid .feature-card.span-full {
+          grid-column: 1 / -1;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .duo-grid {
+          grid-template-columns: 1fr;
+        }
+        .duo-grid .feature-card.span-double {
+          grid-column: 1 / -1;
+        }
+      }
+
       .feature-card {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius);
         padding: 1.5rem;
+        min-width: 0;
         transition:
           border-color 0.2s,
           transform 0.2s;
+      }
+
+      .feature-card .terminal {
+        display: block;
+        width: 100%;
+        margin-top: 0.75rem;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+      }
+
+      .feature-card .terminal-body {
+        overflow-x: auto;
+      }
+
+      .feature-card .cmd-line {
+        font-size: 0.78rem;
+        white-space: nowrap;
+      }
+
+      .feature-card .feature-demo {
+        margin-top: 0.75rem;
+        margin-bottom: 0;
+        padding: 0.75rem 1rem;
+        font-size: 0.68rem;
+        max-width: 100%;
+        overflow-x: auto;
+      }
+
+      .feature-card .feature-demo code {
+        font-size: inherit;
+        white-space: pre;
+        display: block;
       }
       .feature-card:hover {
         border-color: var(--accent);
@@ -1122,7 +1192,7 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
           </tbody>
         </table>
 
-        <div class="feature-grid" style="margin-top: 2rem">
+        <div class="feature-grid util-grid" style="margin-top: 2rem">
           <div class="feature-card">
             <div class="feature-icon">📅</div>
             <h3><code>bdate</code> / <code>date</code></h3>
@@ -1131,20 +1201,65 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
               honor <code>--local</code>; astronomical formats include Julian,
               modified Julian, and GPS week.
             </p>
-            <pre style="margin-top: 0.75rem; font-size: 0.72rem"><code>$ bdate
+            <pre class="feature-demo"><code>$ bdate
 9628.195697
 
 $ bdate -f iso
 2000-01-01T12:00:00Z
 
 $ bdate -d 9628.5
-0.304303
-
-$ bdate --strftime '%Y-%m-%d' 9628.0
-2026-05-29</code></pre>
+0.304303</code></pre>
           </div>
 
           <div class="feature-card">
+            <div class="feature-icon">🖥️</div>
+            <h3><code>buptime</code> / <code>uptime</code></h3>
+            <p>
+              Familiar load-average line, but uptime in millidays and boot time
+              as a BrightDate decimal.
+            </p>
+            <pre class="feature-demo"><code>$ buptime
+up 24 days, 14:59
+(24624 md) — boot 9603.57128</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🗓️</div>
+            <h3><code>bcal</code> / <code>cal</code></h3>
+            <p>
+              Standard month/year grid with a BrightDate annotation per day
+              (noon UTC). Supports <code>-3</code>, <code>-y</code>, and color.
+            </p>
+            <pre class="feature-demo"><code>$ bcal -3
+ May 2026
+  …
+  1: 9628.50</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">👁️</div>
+            <h3><code>bwatch</code> / <code>watch</code></h3>
+            <p>
+              Re-runs a command on an interval; header interval shown in
+              millidays. Accepts <code>-n</code> seconds and <code>-c</code>
+              iteration count.
+            </p>
+            <pre class="feature-demo"><code>$ bwatch -n 2 date
+Every 0.023 md: …</code></pre>
+          </div>
+
+          <div class="feature-card span-rest">
+            <div class="feature-icon">🔗</div>
+            <h3>Two names, one binary</h3>
+            <p>
+              <code>bsh -c date</code> and <code>bdate</code> call the same Rust
+              entry point. Differences vs zsh are identical whether you use the
+              builtin or the standalone CLI — only the invocation name and
+              whether a subprocess is forked change.
+            </p>
+          </div>
+
+          <div class="feature-card span-full">
             <div class="feature-icon">⏱️</div>
             <h3><code>btime</code> / <code>time</code></h3>
             <p>
@@ -1155,10 +1270,7 @@ $ bdate --strftime '%Y-%m-%d' 9628.0
               As a BSH builtin, bad flags return an error code instead of killing
               the shell.
             </p>
-            <div
-              class="terminal"
-              style="display: block; margin-top: 0.75rem; max-width: 100%"
-            >
+            <div class="terminal">
               <div class="terminal-bar">
                 <span class="dot dot-red"></span>
                 <span class="dot dot-yellow"></span>
@@ -1200,27 +1312,6 @@ $ bdate --strftime '%Y-%m-%d' 9628.0
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">📊</div>
-            <h3><code>buptime</code>, <code>bcal</code>, <code>bwatch</code></h3>
-            <p>
-              The remaining trio round out day-to-day shell use: system uptime,
-              calendar with per-day BD values, and periodic command execution —
-              all in BrightDate units where zsh would still defer to external,
-              calendar-oriented binaries.
-            </p>
-            <pre style="margin-top: 0.75rem; font-size: 0.72rem"><code>$ buptime
-up 24 days, 14:59 (24624 md) — boot 9603.57128
-
-$ bcal -3
-   May 2026              Jun 2026
-  …
-   1: 9628.50   1: 9631.50
-
-$ bwatch -n 2 date
-Every 0.023 md: …</code></pre>
           </div>
         </div>
 
@@ -1558,8 +1649,8 @@ TIMEFMT='%J  %U user %S system %P cpu %E real'</code></pre>
         <div class="section-label">Throughout the shell</div>
         <h2>Parameters, prompts, history, files.</h2>
 
-        <div class="feature-grid">
-          <div class="feature-card">
+        <div class="feature-grid duo-grid">
+          <div class="feature-card span-double">
             <div class="feature-icon">⚡</div>
             <h3><code>$BRIGHTEPOCH</code></h3>
             <p>
@@ -1568,9 +1659,7 @@ TIMEFMT='%J  %U user %S system %P cpu %E real'</code></pre>
               analogue of <code>$EPOCHREALTIME</code>. Perfect for elapsed-time
               arithmetic in scripts.
             </p>
-            <pre
-              style="margin-top: 0.75rem; font-size: 0.78rem"
-            ><code>start=$BRIGHTEPOCH
+            <pre class="feature-demo"><code>start=$BRIGHTEPOCH
 do_work
 echo "elapsed: $(( BRIGHTEPOCH - start )) md"</code></pre>
           </div>
@@ -1584,9 +1673,7 @@ echo "elapsed: $(( BRIGHTEPOCH - start )) md"</code></pre>
               BrightDate (6 d.p.).
               <em>%B is already bold, so BrightDate claims P for "Present."</em>
             </p>
-            <pre
-              style="margin-top: 0.75rem; font-size: 0.78rem"
-            ><code>PROMPT='[%P] %# '
+            <pre class="feature-demo"><code>PROMPT='[%P] %# '
 # renders as:
 # [9622.841738] %</code></pre>
           </div>
@@ -1604,7 +1691,7 @@ echo "elapsed: $(( BRIGHTEPOCH - start )) md"</code></pre>
             </p>
           </div>
 
-          <div class="feature-card">
+          <div class="feature-card span-double">
             <div class="feature-icon">📁</div>
             <h3><code>ls -l</code>, <code>stat</code></h3>
             <p>
@@ -1622,9 +1709,7 @@ echo "elapsed: $(( BRIGHTEPOCH - start )) md"</code></pre>
               <code>-r -s</code> for both side-by-side, or
               <code>-F fmt</code> for strftime.
             </p>
-            <pre
-              style="margin-top: 0.75rem; font-size: 0.72rem"
-            ><code>-rw-r--r--   1 jessica  staff       55082  9628.198451  README.md
+            <pre class="feature-demo"><code>-rw-r--r--   1 jessica  staff       55082  9628.198451  README.md
 
 $ stat README.md
   device  16777232
@@ -1656,7 +1741,7 @@ $ stat -r -s README.md
   btime   1778604277 (9628.198451)</code></pre>
           </div>
 
-          <div class="feature-card">
+          <div class="feature-card span-double">
             <div class="feature-icon">🗓️</div>
             <h3><code>sched</code></h3>
             <p>
@@ -1667,9 +1752,7 @@ $ stat -r -s README.md
               ≈ 30 min), and absolute BrightDate values. List pending events
               with bare <code>sched</code>.
             </p>
-            <pre
-              style="margin-top: 0.75rem; font-size: 0.72rem"
-            ><code>sched +0.020833 echo hello   # ~30 min from now
+            <pre class="feature-demo"><code>sched +0.020833 echo hello   # ~30 min from now
 sched 9628.5 echo midnight  # absolute BD
 
 $ sched
