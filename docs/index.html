@@ -1110,7 +1110,7 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
           <a class="link" href="https://github.com/Digital-Defiance/brightdate-rust"
             ><code>brightdate-rust</code></a
           >
-          (currently <strong>v0.5.6</strong>). Inside BSH they register as shell
+          (currently <strong>v0.5.7</strong>). Inside BSH they register as shell
           builtins and shadow <code>date</code>, <code>time</code>,
           <code>uptime</code>, <code>cal</code>, and <code>watch</code>. Outside
           BSH the same binaries install as <code>bdate</code>,
@@ -1322,7 +1322,10 @@ Every 0.023 md: …</code></pre>
           When <code>-f</code>, <code>-p</code>, or <code>-v</code> is selected,
           <code>btime</code> follows GNU&nbsp;time&nbsp;1.10 for standard letters
           (<code>%E</code>, <code>%U</code>, <code>%S</code>, <code>%P</code>,
-          <code>%M</code>, …) and adds BrightDate extensions:
+          <code>%M</code>, …) and adds BrightDate extensions (see
+          <a class="link" href="https://github.com/Digital-Defiance/brightdate-rust/blob/main/FORMAT-SPEC.md"
+            ><code>FORMAT-SPEC.md</code></a
+          >):
         </p>
         <table class="bd-table">
           <thead>
@@ -1333,12 +1336,19 @@ Every 0.023 md: …</code></pre>
           </thead>
           <tbody>
             <tr>
+              <td><code>%dE</code> / <code>%dU</code> / <code>%dS</code></td>
+              <td>
+                Elapsed / user / system time in millidays (<code>%.6f md</code>) —
+                same shape as BSH default <code>TIMEFMT</code>
+              </td>
+            </tr>
+            <tr>
               <td><code>%B</code></td>
               <td>Elapsed wall time in BrightDate days (9 d.p.)</td>
             </tr>
             <tr>
               <td><code>%b</code></td>
-              <td>Elapsed in millidays (6 d.p.)</td>
+              <td>Elapsed in millidays (6 d.p., no suffix — machine form of <code>%dE</code>)</td>
             </tr>
             <tr>
               <td><code>%N</code> / <code>%n</code></td>
@@ -1362,10 +1372,15 @@ Every 0.023 md: …</code></pre>
           <code>--no-color</code>, <code>--color-scheme=default|bright</code>,
           plus <code>BTIME_COLOR</code>, <code>BTIME_COLOR_SCHEME</code>,
           <code>NO_COLOR</code>. GNU modes disable color automatically. On a TTY,
-          labels are cyan/green/yellow/blue by field — same scanning style as
+          only the default BrightDate report is colorized — not <code>-f</code>
+          output; labels are cyan/green/yellow/blue by field — same scanning style as
           <a class="link" href="https://findutils.digitaldefiance.org">bfind</a>
           and
           <a class="link" href="https://iputils.digitaldefiance.org">bright-iputils</a>.
+          Full cross-tool rules:
+          <a class="link" href="https://github.com/Digital-Defiance/brightdate-rust/blob/main/FORMAT-SPEC.md"
+            >FORMAT-SPEC.md</a
+          >.
         </p>
 
         <p style="margin-top: 1.25rem; font-size: 0.875rem">
