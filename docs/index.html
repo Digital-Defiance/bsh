@@ -255,7 +255,9 @@
         white-space: normal;
         overflow-x: auto;
       }
-      .cmd-line > span + span {
+      .cmd-line > .prompt + .cmd,
+      .cmd-line > .out + .cmt,
+      .cmd-line > .out-bd-frac + .out-bd-path {
         margin-left: 0.5em;
       }
 
