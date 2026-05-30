@@ -643,6 +643,7 @@
       <ul class="nav-links">
         <li><a href="#why">Why BSH?</a></li>
         <li><a href="#vs-zsh">vs zsh</a></li>
+        <li><a href="#brightdate-utils">b-* tools</a></li>
         <li><a href="#builtins">Builtins</a></li>
         <li><a href="#modules">Modules</a></li>
         <li><a href="#glob">Glob</a></li>
@@ -974,6 +975,218 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
           </tbody>
         </table>
 
+        <h3 style="margin-top: 2.5rem; margin-bottom: 1rem" id="brightdate-utils">
+          BrightDate utilities: <code>bdate</code>, <code>btime</code>, and friends
+        </h3>
+        <p>
+          The five classic Unix time commands are reimplemented in Rust as
+          <a class="link" href="https://github.com/Digital-Defiance/brightdate-rust"
+            ><code>brightdate-rust</code></a
+          >
+          (currently <strong>v0.5.6</strong>). Inside BSH they register as shell
+          builtins and shadow <code>date</code>, <code>time</code>,
+          <code>uptime</code>, <code>cal</code>, and <code>watch</code>. Outside
+          BSH the same binaries install as <code>bdate</code>,
+          <code>btime</code>, <code>buptime</code>, <code>bcal</code>, and
+          <code>bwatch</code> — prefixed so they do not fight the system
+          originals on <code>PATH</code>.
+        </p>
+
+        <div class="callout">
+          <strong>Same code, two names:</strong> <code>bsh -c date</code> and
+          <code>bdate</code> call the same Rust entry point. Differences vs zsh
+          are therefore identical whether you use the builtin or the standalone
+          CLI — only the invocation name and whether a subprocess is forked
+          change.
+        </div>
+
+        <table class="bd-table" style="margin-top: 1.5rem">
+          <thead>
+            <tr>
+              <th>Tool</th>
+              <th>BSH builtin</th>
+              <th>Replaces</th>
+              <th>What changes vs the traditional tool</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>bdate</code></td>
+              <td><code>date</code></td>
+              <td><code>date(1)</code></td>
+              <td>
+                Default output is a BrightDate scalar, not a locale string.
+                Accepts BrightDate, ISO&nbsp;8601, <code>JD:</code>,
+                <code>MJD:</code>, or Unix&nbsp;ms input. Emits ISO/RFC/Julian/GPS,
+                strftime patterns, TAI, breakdown, and day diffs via flags.
+              </td>
+            </tr>
+            <tr>
+              <td><code>btime</code></td>
+              <td><code>time</code> / <code>btime</code></td>
+              <td><code>/usr/bin/time</code></td>
+              <td>
+                Default report is a multi-line BrightDate timing summary (days,
+                millidays, start/end BD, CPU&nbsp;%). Optional colored stderr.
+                Full GNU&nbsp;time&nbsp;1.10 <code>-f</code>/<code>-p</code>/<code>-v</code>
+                modes plus BrightDate <code>%</code> extensions including
+                <code>%Wt</code>/<code>%Ws</code>.
+              </td>
+            </tr>
+            <tr>
+              <td><code>buptime</code></td>
+              <td><code>uptime</code></td>
+              <td><code>uptime(1)</code></td>
+              <td>
+                Uptime shown in millidays; boot time as a BrightDate decimal
+                alongside the familiar load-average line.
+              </td>
+            </tr>
+            <tr>
+              <td><code>bcal</code></td>
+              <td><code>cal</code></td>
+              <td><code>cal(1)</code></td>
+              <td>
+                Standard month/year grid plus a BrightDate annotation for each
+                day (noon UTC). Supports <code>-3</code>, <code>-y</code>, color,
+                and configurable precision.
+              </td>
+            </tr>
+            <tr>
+              <td><code>bwatch</code></td>
+              <td><code>watch</code></td>
+              <td><code>watch(1)</code></td>
+              <td>
+                Re-runs a command on an interval; header interval shown in
+                millidays. Accepts <code>-n</code> seconds and <code>-c</code>
+                iteration count.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="feature-grid" style="margin-top: 2rem">
+          <div class="feature-card">
+            <div class="feature-icon">📅</div>
+            <h3><code>bdate</code> / <code>date</code></h3>
+            <p>
+              Parse almost anything, emit BrightDate by default. Calendar formats
+              honor <code>--local</code>; astronomical formats include Julian,
+              modified Julian, and GPS week.
+            </p>
+            <pre style="margin-top: 0.75rem; font-size: 0.72rem"><code>$ bdate
+9628.195697
+
+$ bdate -f iso
+2000-01-01T12:00:00Z
+
+$ bdate -d 9628.5
+0.304303
+
+$ bdate --strftime '%Y-%m-%d' 9628.0
+2026-05-29</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">⏱️</div>
+            <h3><code>btime</code> / <code>time</code></h3>
+            <p>
+              Three output modes: (1)&nbsp;BrightDate report (default, optional
+              color), (2)&nbsp;GNU <code>-f</code> format strings, (3)&nbsp;POSIX
+              <code>-p</code> or verbose <code>-v</code>. As a BSH builtin, bad
+              flags return an error code instead of killing the shell.
+            </p>
+            <pre style="margin-top: 0.75rem; font-size: 0.72rem"><code># Default BrightDate report (colored on TTY)
+$ btime sleep 1
+
+# GNU portability output
+$ btime -p sleep 1
+
+# Custom format — bfind-compatible %Wt
+$ btime -f '%Wt %C' -- true
+
+# BrightDate extensions in -f
+$ btime -f 'elapsed=%B start=%Ws end=%Wt' -- make</code></pre>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3><code>buptime</code>, <code>bcal</code>, <code>bwatch</code></h3>
+            <p>
+              The remaining trio round out day-to-day shell use: system uptime,
+              calendar with per-day BD values, and periodic command execution —
+              all in BrightDate units where zsh would still defer to external,
+              calendar-oriented binaries.
+            </p>
+            <pre style="margin-top: 0.75rem; font-size: 0.72rem"><code>$ buptime
+up 24 days, 14:59 (24624 md) — boot 9603.57128
+
+$ bcal -3
+   May 2026              Jun 2026
+  …
+   1: 9628.50   1: 9631.50
+
+$ bwatch -n 2 date
+Every 0.023 md: …</code></pre>
+          </div>
+        </div>
+
+        <h4 style="margin-top: 2rem; color: var(--text-bright); font-size: 0.95rem">
+          <code>btime</code> format specifiers (GNU + BrightDate)
+        </h4>
+        <p style="font-size: 0.875rem">
+          When <code>-f</code>, <code>-p</code>, or <code>-v</code> is selected,
+          <code>btime</code> follows GNU&nbsp;time&nbsp;1.10 for standard letters
+          (<code>%E</code>, <code>%U</code>, <code>%S</code>, <code>%P</code>,
+          <code>%M</code>, …) and adds BrightDate extensions:
+        </p>
+        <table class="bd-table">
+          <thead>
+            <tr>
+              <th>Specifier</th>
+              <th>Meaning</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>%B</code></td>
+              <td>Elapsed wall time in BrightDate days (9 d.p.)</td>
+            </tr>
+            <tr>
+              <td><code>%b</code></td>
+              <td>Elapsed in millidays (6 d.p.)</td>
+            </tr>
+            <tr>
+              <td><code>%N</code> / <code>%n</code></td>
+              <td>Start / end BrightDate wall time (9 d.p.)</td>
+            </tr>
+            <tr>
+              <td><code>%Wt</code> / <code>%Ws</code></td>
+              <td>
+                End / start BrightDate (9 d.p.) — same format as
+                <code>bfind&nbsp;-printf&nbsp;'%Wt'</code>
+              </td>
+            </tr>
+            <tr>
+              <td><code>%W</code></td>
+              <td>GNU swap count (unchanged; use <code>%Wt</code> for BrightDate)</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style="margin-top: 0.75rem; font-size: 0.875rem">
+          Color flags: <code>--color=auto|always|never|ansi|truecolor</code>,
+          <code>--no-color</code>, <code>--color-scheme=default|bright</code>,
+          plus <code>BTIME_COLOR</code>, <code>BTIME_COLOR_SCHEME</code>,
+          <code>NO_COLOR</code>. GNU modes disable color automatically.
+        </p>
+
+        <p style="margin-top: 1.25rem; font-size: 0.875rem">
+          Install standalone tools:
+          <code>brew install digital-defiance/tap/bdate btime buptime bcal bwatch</code>
+          or <code>cargo install bdate btime buptime bcal bwatch</code>. Inside
+          BSH they are already present as builtins — no separate install required.
+        </p>
+
         <div class="split" style="margin-top: 2.5rem">
           <div class="card">
             <h3>What you keep from zsh</h3>
@@ -1116,10 +1329,12 @@ TIMEFMT='%J  %U user %S system %P cpu %E real'</code></pre>
         <p>
           BSH bakes BrightDate directly into the classic Unix date/time
           commands. <code>date</code>, <code>time</code>, <code>uptime</code>,
-          <code>cal</code>, and <code>watch</code> are shell builtins that emit
-          BrightDate values — no fork, no external process, no
-          <code>$TZ</code> dance. The traditional binaries are shadowed
-          transparently, so existing scripts switch over for free.
+          <code>cal</code>, and <code>watch</code> are shell builtins backed by
+          the same Rust crates as the standalone
+          <code>bdate</code>/<code>btime</code>/… CLI tools — no fork, no
+          external process, no <code>$TZ</code> dance. The traditional binaries
+          are shadowed transparently, so existing scripts switch over for free.
+          See <a class="link" href="#brightdate-utils">full tool-by-tool differences</a>.
         </p>
 
         <div class="modules">
@@ -1128,43 +1343,40 @@ TIMEFMT='%J  %U user %S system %P cpu %E real'</code></pre>
 
         <div class="builtins">
           <div class="builtin">
-            <code>date</code
-            ><span
-              >Current date as BrightDate (replaces system
-              <code>date</code>); ISO, Julian, GPS, strftime via flags</span
+            <code>date</code><span
+              ><code>bdate</code> — <code>-f</code> bright/iso/julian/gps/all,
+              <code>--strftime</code>, <code>--local</code>,
+              <code>--precision</code>, <code>--breakdown</code>,
+              <code>--tai</code>, <code>--diff</code>; input as BrightDate, ISO,
+              <code>JD:</code>, <code>MJD:</code>, or Unix ms</span
             >
           </div>
           <div class="builtin">
-            <code>time</code> / <code>btime</code
-            ><span
-              >Time a command; BrightDate elapsed report by default. GNU
-              <code>-f</code>/<code>-p</code>/<code>-v</code> modes;
-              <code>%Wt</code>/<code>%Ws</code> match
-              <code>bfind&nbsp;-printf</code> format. Use
-              <code>btime&nbsp;--help</code> (not <code>time&nbsp;--help</code> —
-              <code>time</code> is a reserved word)</span
+            <code>time</code><span
+              ><code>btime</code> — BrightDate elapsed report (colored on TTY) or
+              GNU <code>-f</code>/<code>-p</code>/<code>-v</code>/<code>-o</code>;
+              <code>%Wt</code>/<code>%Ws</code>/<code>%B</code>/<code>%N</code>
+              format extensions. Use <code>btime&nbsp;--help</code> — not
+              <code>time&nbsp;--help</code> (reserved word)</span
             >
           </div>
           <div class="builtin">
-            <code>uptime</code
-            ><span
-              >System uptime in
-              <strong style="color: var(--text-bright)">millidays</strong> — 1
-              md = 86.4 s (replaces system <code>uptime</code>)</span
+            <code>uptime</code><span
+              ><code>buptime</code> — load averages plus uptime in millidays and
+              boot BrightDate</span
             >
           </div>
           <div class="builtin">
-            <code>cal</code
-            ><span
-              >Calendar in BrightDate notation (replaces system
-              <code>cal</code>)</span
+            <code>cal</code><span
+              ><code>bcal</code> — month/year grid with per-day BrightDate
+              annotations; <code>-3</code>, <code>-y</code>,
+              <code>--no-color</code>, <code>--precision</code></span
             >
           </div>
           <div class="builtin">
-            <code>watch</code
-            ><span
-              >Watch a command; elapsed time reported in millidays (replaces
-              system <code>watch</code>)</span
+            <code>watch</code><span
+              ><code>bwatch</code> — periodic re-run; interval header in
+              millidays; <code>-n</code> seconds, <code>-c</code> count</span
             >
           </div>
         </div>
