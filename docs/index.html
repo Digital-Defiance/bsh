@@ -19,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="BSH (BrightShell) — a zsh-compatible shell with BrightDate woven natively into its builtins, parameters, prompt escapes, and timestamps."
+      content="BSH (BrightShell) — a zsh 5.10 fork with BrightDate-native time, builtins, prompts, and glob qualifiers. See how BSH differs from zsh."
     />
     <title>BSH — BrightShell</title>
     <style>
@@ -565,6 +565,24 @@
         font-family: var(--mono);
         white-space: nowrap;
       }
+      .bd-table td:nth-child(2) {
+        color: #8891b0;
+      }
+      .bd-table td:nth-child(3) {
+        color: var(--green);
+      }
+
+      .callout {
+        font-size: 0.9rem;
+        margin-top: 1rem;
+        padding: 0.9rem 1.1rem;
+        background: rgba(97, 175, 239, 0.07);
+        border-left: 3px solid var(--accent);
+        border-radius: 0 var(--radius) var(--radius) 0;
+      }
+      .callout strong {
+        color: var(--text-bright);
+      }
 
       /* ── MODULE TAGS ── */
       .modules {
@@ -624,6 +642,7 @@
       <a class="nav-brand" href="#">bsh</a>
       <ul class="nav-links">
         <li><a href="#why">Why BSH?</a></li>
+        <li><a href="#vs-zsh">vs zsh</a></li>
         <li><a href="#builtins">Builtins</a></li>
         <li><a href="#modules">Modules</a></li>
         <li><a href="#glob">Glob</a></li>
@@ -808,12 +827,284 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
               in an arithmetic expansion.
             </p>
             <p style="margin-top: 0.75rem; font-size: 0.85rem">
-              BSH stays 100% zsh-compatible: every traditional builtin, option,
-              and module still works. BrightDate is layered on top — you opt in
-              by loading the modules you want.
+              BSH stays zsh-compatible: every traditional builtin, option, and
+              module still works. BrightDate is layered on top — see
+              <a class="link" href="#vs-zsh">how BSH differs from zsh</a>.
             </p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- ── BSH vs ZSH ── -->
+    <section id="vs-zsh">
+      <div class="container">
+        <div class="section-label">Compatibility</div>
+        <h2>How BSH differs from zsh.</h2>
+        <p>
+          BSH is a fork of
+          <a class="link" href="https://www.zsh.org/">zsh&nbsp;5.10</a>, not a
+          new shell language. Your zsh scripts, completion functions, options,
+          and module layout largely carry over unchanged — including
+          <code>setopt</code>, <code>zmodload</code>, <code>compinit</code>,
+          and the full zsh grammar. BSH adds a BrightDate-native time layer on
+          top and a handful of BSH-only modules; it does not remove upstream
+          behaviour.
+        </p>
+
+        <div class="callout">
+          <strong>Rule of thumb:</strong> if a feature does not touch time, it
+          behaves like zsh. When a command prints a timestamp, measures a
+          duration, or schedules an event, BSH prefers BrightDate decimals and
+          millidays over calendar strings and raw Unix seconds.
+        </div>
+
+        <h3 style="margin-top: 2.5rem; margin-bottom: 1rem">
+          Side-by-side: time-related surfaces
+        </h3>
+        <table class="bd-table">
+          <thead>
+            <tr>
+              <th>Surface</th>
+              <th>zsh</th>
+              <th>BSH</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Time scalar</td>
+              <td>Unix epoch (<code>$EPOCHSECONDS</code>, <code>$EPOCHREALTIME</code>)</td>
+              <td>
+                <a class="link" href="https://brightdate.org">BrightDate</a>
+                — SI days since J2000.0 (<code>$BRIGHTEPOCH</code>)
+              </td>
+            </tr>
+            <tr>
+              <td><code>date</code></td>
+              <td>External command; locale and OS dependent</td>
+              <td>
+                Shell builtin (<code>bdate</code>); BrightDate by default, with
+                ISO/JD/GPS/strftime conversions
+              </td>
+            </tr>
+            <tr>
+              <td><code>time</code> / <code>btime</code></td>
+              <td>
+                Reserved word; <code>TIMEFMT</code> reports seconds
+                (<code>%E</code>, <code>%U</code>, <code>%S</code>)
+              </td>
+              <td>
+                Same keyword plus <code>btime</code> builtin; default
+                <code>TIMEFMT</code> uses millidays (<code>%dE</code>,
+                <code>%dU</code>, <code>%dS</code>). GNU
+                <code>time&nbsp;-f</code> support with BrightDate extensions
+                (<code>%B</code>, <code>%b</code>, <code>%N</code>,
+                <code>%n</code>, <code>%Wt</code>, <code>%Ws</code>)
+              </td>
+            </tr>
+            <tr>
+              <td>Prompt clock</td>
+              <td><code>%T</code>, <code>%*…</code> strftime escapes</td>
+              <td><code>%P</code> — current BrightDate (6 d.p.)</td>
+            </tr>
+            <tr>
+              <td><code>history -d</code></td>
+              <td>Calendar date/time strings</td>
+              <td>BrightDate command timestamps</td>
+            </tr>
+            <tr>
+              <td><code>fc -l -D</code></td>
+              <td>Duration in seconds</td>
+              <td>Duration in millidays</td>
+            </tr>
+            <tr>
+              <td><code>ls -l</code></td>
+              <td>Locale-dependent mtime column</td>
+              <td>
+                BrightDate decimal (<code>zmodload bsh/files</code>); flags
+                <code>-u</code>/<code>-c</code> select atime/ctime
+              </td>
+            </tr>
+            <tr>
+              <td><code>stat</code></td>
+              <td>Unix seconds or strftime via <code>-F</code></td>
+              <td>
+                BrightDate defaults; new <code>btime</code> birth field;
+                <code>-r</code> / <code>-r -s</code> for Unix side-by-side
+              </td>
+            </tr>
+            <tr>
+              <td><code>sched</code></td>
+              <td><code>HH:MM:SS</code> offsets only</td>
+              <td>
+                Also BrightDate floats: relative <code>+0.020833</code> or
+                absolute <code>9628.5</code>
+              </td>
+            </tr>
+            <tr>
+              <td><code>times</code></td>
+              <td><code>mm:ss</code> user/system lines</td>
+              <td>CPU time in millidays</td>
+            </tr>
+            <tr>
+              <td><code>uptime</code> / <code>cal</code> / <code>watch</code></td>
+              <td>External, calendar/clock oriented</td>
+              <td>
+                Builtins reporting millidays and BrightDate clocks
+                (<code>buptime</code>, <code>bcal</code>, <code>bwatch</code>)
+              </td>
+            </tr>
+            <tr>
+              <td>Glob <code>.m</code> / <code>.a</code> / <code>.c</code></td>
+              <td>Integer day/hour/minute counts</td>
+              <td>
+                Fractional <strong>decimal-day</strong> values (centiday
+                precision); new <code>.b</code> birth-time qualifier
+              </td>
+            </tr>
+            <tr>
+              <td>Credential delivery</td>
+              <td>—</td>
+              <td>
+                <a class="link" href="#brightlink">BrightLink</a>
+                (<code>bsh-inject</code>, <code>link-geo</code>) — no zsh
+                equivalent
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="split" style="margin-top: 2.5rem">
+          <div class="card">
+            <h3>What you keep from zsh</h3>
+            <p>
+              BSH preserves the zsh feature set you already rely on: extended
+              globbing, parameter expansion, job control, the line editor (ZLE),
+              completion system, hash directories, multibyte/UTF-8 support, and
+              the module ecosystem. Third-party frameworks such as
+              <a class="link" href="https://github.com/Digital-Defiance/ohmybsh"
+                >Oh&nbsp;My&nbsp;Bsh</a
+              >
+              target BSH directly but inherit zsh conventions.
+            </p>
+            <p style="margin-top: 0.75rem">
+              Environment and startup files follow the zsh layout
+              (<code>/etc/bsh</code>, <code>~/.bshrc</code>, etc.) with BSH
+              naming. Parameters like <code>$ZSH_VERSION</code> are mirrored by
+              <code>$BSH_VERSION</code> and <code>$BSH_PATCHLEVEL</code>.
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>Implementation difference</h3>
+            <p>
+              BrightDate conversion lives in a statically-linked Rust library
+              (<a class="link" href="https://github.com/Digital-Defiance/brightdate-rust"
+                ><code>brightdate-rust</code></a
+              >) exposed through two C FFI entry points. Shell builtins
+              (<code>date</code>, <code>time</code>, …) call into that library
+              instead of fork/execing external tools or reimplementing calendar
+              math in C.
+            </p>
+            <pre style="margin-top: 0.75rem"><code>double bsh_unix_to_brightdate(double unix_secs);
+double bsh_brightdate_to_unix(double bd);</code></pre>
+            <p style="margin-top: 0.75rem; font-size: 0.85rem">
+              The same crate powers standalone CLI tools
+              (<code>bdate</code>, <code>btime</code>, …) for use outside the
+              shell, and the BrightDate ecosystem on npm and crates.io.
+            </p>
+          </div>
+        </div>
+
+        <h3 style="margin-top: 2.5rem; margin-bottom: 1rem">
+          BrightDate format alignment with bfind
+        </h3>
+        <p>
+          The
+          <a class="link" href="https://findutils.digitaldefiance.org"
+            >bright-findutils</a
+          >
+          toolchain (<code>bfind</code>, <code>blocate</code>, …) prints file
+          timestamps with <code>-printf '%Wt'</code> — modification time as a
+          BrightDate decimal with 9 places, matching the C library in
+          <code>brightdate-rust</code>. BSH’s <code>btime</code> builtin uses
+          the same <code>%Wt</code> / <code>%Ws</code> letters in GNU
+          <code>-f</code> format strings, but for command timing:
+        </p>
+
+        <table class="bd-table">
+          <thead>
+            <tr>
+              <th>Specifier</th>
+              <th><code>bfind -printf</code></th>
+              <th><code>btime -f</code></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>%Wt</code></td>
+              <td>File mtime (BrightDate)</td>
+              <td>Command end time (BrightDate)</td>
+            </tr>
+            <tr>
+              <td><code>%Wa</code> / <code>%Wc</code> / <code>%WB</code></td>
+              <td>atime / ctime / birth time</td>
+              <td>— (not applicable to timing)</td>
+            </tr>
+            <tr>
+              <td><code>%Ws</code></td>
+              <td>—</td>
+              <td>Command start time (BrightDate)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <pre style="margin-top: 1rem"><code><span style="color:var(--green)">$</span> bfind . -name '*.log' -printf '%Wt %p\n'
+9628.195697 ./app.log
+
+<span style="color:var(--green)">$</span> btime -f '%Wt %C' -- sleep 0.1
+9628.195712 sleep
+
+<span style="color:var(--green)">$</span> btime -f 'start=%Ws end=%Wt elapsed=%B' -- ./deploy.sh
+start=9628.195700 end=9628.195850 elapsed=0.000150</code></pre>
+
+        <p style="margin-top: 1rem; font-size: 0.875rem">
+          Because both tools emit the same scalar, log lines from
+          <code>bfind</code>, timing output from <code>btime</code>, and your
+          shell prompt (<code>%P</code>) can be compared, sorted, and subtracted
+          without conversion — paste a <code>%Wt</code> from a build log into
+          <code>sched</code> or compare it against <code>$BRIGHTEPOCH</code> in
+          arithmetic expansion.
+        </p>
+
+        <h3 style="margin-top: 2.5rem; margin-bottom: 1rem">
+          Default <code>TIMEFMT</code> (the <code>time</code> keyword)
+        </h3>
+        <p>
+          When you prefix a command with the <code>time</code> reserved word, zsh
+          formats resource usage using <code>$TIMEFMT</code>. BSH changes the
+          default template to millidays:
+        </p>
+        <div class="split">
+          <pre><code># zsh default (seconds)
+TIMEFMT='%J  %U user %S system %P cpu %*E total'
+
+# BSH default (millidays)
+TIMEFMT='%J  %dU user  %dS sys  %P cpu  %dE real'</code></pre>
+          <pre><code>$ time sleep 1
+0.011574 md user  0.004630 md sys  0.2% cpu  0.011574 md real
+
+# Override back to zsh-style seconds anytime:
+TIMEFMT='%J  %U user %S system %P cpu %E real'</code></pre>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.875rem">
+          The standalone <code>btime</code> builtin (also invoked as
+          <code>time</code> for timing commands) prints a richer BrightDate
+          report by default — elapsed days, millidays, microdays, nanodays,
+          start/end BrightDate, and CPU percentage — and accepts GNU
+          <code>-f</code>/<code>-p</code>/<code>-v</code> when you need
+          traditional <code>/usr/bin/time</code> output instead.
+        </p>
       </div>
     </section>
 
@@ -840,14 +1131,18 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
             <code>date</code
             ><span
               >Current date as BrightDate (replaces system
-              <code>date</code>)</span
+              <code>date</code>); ISO, Julian, GPS, strftime via flags</span
             >
           </div>
           <div class="builtin">
-            <code>time</code
+            <code>time</code> / <code>btime</code
             ><span
-              >Current time of day in BrightDate units (replaces system
-              <code>time</code>)</span
+              >Time a command; BrightDate elapsed report by default. GNU
+              <code>-f</code>/<code>-p</code>/<code>-v</code> modes;
+              <code>%Wt</code>/<code>%Ws</code> match
+              <code>bfind&nbsp;-printf</code> format. Use
+              <code>btime&nbsp;--help</code> (not <code>time&nbsp;--help</code> —
+              <code>time</code> is a reserved word)</span
             >
           </div>
           <div class="builtin">
@@ -886,9 +1181,18 @@ double bsh_brightdate_to_unix(double bd);</code></pre>
           <div class="terminal-body">
             <div class="cmd-line">
               <span class="prompt">[9628.19] %</span>
-              <span class="cmd">date</span>
+              <span class="cmd">btime sleep 0.5</span>
             </div>
-            <div class="cmd-line"><span class="out">9628.195697</span></div>
+            <div class="cmd-line">
+              <span class="out">real 0.000005787 days (0.500 s)</span>
+            </div>
+            <div class="cmd-line">
+              <span class="prompt">[9628.19] %</span>
+              <span class="cmd">btime -f '%Wt %C' -- true</span>
+            </div>
+            <div class="cmd-line">
+              <span class="out">9628.195712 true</span>
+            </div>
             <div class="cmd-line">
               <span class="prompt">[9628.19] %</span>
               <span class="cmd">uptime</span>
@@ -1507,9 +1811,10 @@ brew install bdate btime buptime bcal bwatch bsh</code></pre>
             <img src="UbuntuCoF.svg" height="24" alt="Ubuntu & Debian logo" />
           </div>
           <div class="feature-heading">
-          <h3 style="margin-top: 0; margin-bottom: 0.5rem"></div>
-            Ubuntu &amp; Debian — PPA
-          </h3>
+            <h3 style="margin-top: 0; margin-bottom: 0.5rem">
+              Ubuntu &amp; Debian — PPA
+            </h3>
+          </div>
           <pre><code>sudo add-apt-repository ppa:digital-defiance/ppa
 sudo apt update
 sudo apt install bsh-shell
