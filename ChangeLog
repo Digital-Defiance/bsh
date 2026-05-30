@@ -1,5 +1,10 @@
 2026-05-30  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
 
+        * Config/version.mk: align `bsh --version` with release tag (5.14.11
+        still reported 5.14.10).  Bump version to 5.14.12.
+
+2026-05-30  Jessica (Digital-Defiance)  <jessica@digitaldefiance.org>
+
         * brightdate-rust: rebuild bsh against v0.5.6 (btime %Wt/%Ws format
         specifiers).  Bump version to 5.14.10.
 
